@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 
 /**
- * Dedicated connection to the primary database, used only for restore transactions
- * (see ADR-002 in the specification notes).
+ * Dedicated connection to the primary database, used only for restore transactions.
  *
  * Why not $wpdb:
  *  - on error 2006 wpdb::query() reconnects and re-runs the statement OUTSIDE the transaction;
@@ -187,6 +188,7 @@ final class RestoreConnection implements RestoreTransaction
             throw new StorageUnavailable('mysqli_unavailable');
         }
 
+        // phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_init -- A separate transactional session is required; see the class comment for why $wpdb cannot be used.
         $link = mysqli_init();
 
         if ($link === false) {

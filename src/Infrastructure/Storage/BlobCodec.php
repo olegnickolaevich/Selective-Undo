@@ -93,6 +93,7 @@ final class BlobCodec
         // The decompression limit equals the declared size (decompression bomb protection).
         // gzdecode() returns false and emits a warning when max_length is exceeded,
         // so the warning is intercepted locally instead of being hidden with @.
+        // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler -- Scoped to this call and restored in finally.
         set_error_handler(static fn (): bool => true);
 
         try {

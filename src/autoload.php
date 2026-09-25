@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+defined('ABSPATH') || exit;
+
 /**
  * PSR-4 autoloader for the SelectiveUndo namespace.
  *

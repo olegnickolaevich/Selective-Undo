@@ -29,24 +29,34 @@ final class HistoryExport
             self::MAX_ROWS
         ), ARRAY_A);
 
-        $out = fopen('php://temp', 'r+');
-
-        if ($out === false) {
-            return '';
-        }
-
-        fputcsv($out, ['changeset', 'created_at_utc', 'kind', 'source', 'actor_user_id', 'change_id', 'event',
-            'object_type', 'post_type', 'object_id', 'field', 'restorable', 'reason', 'quality'], ',', '"', '\\');
+        $csv = self::line(['changeset', 'created_at_utc', 'kind', 'source', 'actor_user_id', 'change_id', 'event',
+            'object_type', 'post_type', 'object_id', 'field', 'restorable', 'reason', 'quality']);
 
         foreach ($rows as $row) {
-            // Neutralise spreadsheet formulas in any cell.
-            fputcsv($out, array_map(static fn ($v): string => preg_match('/^[=+\-@]/', (string) $v) ? "'" . $v : (string) $v, array_values($row)), ',', '"', '\\');
+            $csv .= self::line(array_values((array) $row));
         }
 
-        rewind($out);
-        $csv = (string) stream_get_contents($out);
-        fclose($out);
-
         return $csv;
+    }
+
+    /**
+     * One RFC 4180 record. Cells that a spreadsheet would treat as a formula are
+     * prefixed with an apostrophe.
+     *
+     * @param list<mixed> $cells
+     */
+    private static function line(array $cells): string
+    {
+        $encoded = array_map(static function (mixed $cell): string {
+            $value = (string) $cell;
+
+            if (preg_match('/^[=+\-@]/', $value)) {
+                $value = "'" . $value;
+            }
+
+            return preg_match('/[",\r\n]/', $value) ? '"' . str_replace('"', '""', $value) . '"' : $value;
+        }, $cells);
+
+        return implode(',', $encoded) . "\r\n";
     }
 }

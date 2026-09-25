@@ -1,0 +1,14 @@
+# Files left out of the WordPress.org package (bin/dist.sh).
+/.git
+/.gitignore
+/.distignore
+/.wordpress-org
+/.work
+/bin
+/dist
+/node_modules
+/tests
+/vendor
+/package-lock.json
+/playwright.config.ts
+/README.md

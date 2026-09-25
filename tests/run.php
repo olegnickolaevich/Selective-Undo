@@ -13,6 +13,7 @@ declare(strict_types=1);
 $suite = $argv[1] ?? 'all';
 $filter = $argv[2] ?? null;
 $root = dirname(__DIR__);
+$site = getenv('SU_TEST_SITE') ?: $root . '/.work/site';
 
 require_once __DIR__ . '/lib/AssertionFailed.php';
 require_once __DIR__ . '/lib/TestCase.php';
@@ -21,14 +22,15 @@ require_once __DIR__ . '/lib/Runner.php';
 $runner = new SelectiveUndo\Tests\Runner($filter);
 
 if ($suite === 'unit' || $suite === 'all') {
+    // Plugin files refuse direct access without ABSPATH. Use the test site's path so
+    // that a later wp-load.php in the same process sees the correct value.
+    defined('ABSPATH') || define('ABSPATH', $site . '/');
     require_once $root . '/src/autoload.php';
     echo "Unit tests\n";
     $runner->runDirectory(__DIR__ . '/unit');
 }
 
 if ($suite === 'integration' || $suite === 'all') {
-    $site = getenv('SU_TEST_SITE') ?: $root . '/.work/site';
-
     if (!is_file($site . '/wp-load.php')) {
         fwrite(STDERR, "Test site not found. Run: bin/test-env.sh up\n");
         exit(2);

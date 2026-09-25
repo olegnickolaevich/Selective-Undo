@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\History;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\DomainError;

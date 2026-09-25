@@ -30,6 +30,7 @@ final class CacheInvalidator
         }
 
         if (defined('LSCWP_V')) {
+            // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Public purge action of the LiteSpeed Cache plugin.
             do_action('litespeed_purge_post', $postId);
         }
 

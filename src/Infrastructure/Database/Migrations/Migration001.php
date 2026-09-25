@@ -34,8 +34,7 @@ final class Migration001 implements Migration
     private function statements(Tables $t, string $collate): array
     {
         return [
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->operations} (
+            "CREATE TABLE IF NOT EXISTS {$t->operations} (
   id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   uuid            CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   label           VARCHAR(255) NOT NULL DEFAULT '',
@@ -51,10 +50,8 @@ CREATE TABLE IF NOT EXISTS {$t->operations} (
   PRIMARY KEY (id),
   UNIQUE KEY uuid (uuid),
   KEY status_abandon (status, abandon_after)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->changesets} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->changesets} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   uuid                CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   request_uuid        CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -82,10 +79,8 @@ CREATE TABLE IF NOT EXISTS {$t->changesets} (
   KEY created_id (created_at, id),
   KEY status_updated (status, updated_at),
   KEY restore_job (restore_job_id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->blobs} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->blobs} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   content_hash        BINARY(32) NOT NULL,
   encoding            VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -97,10 +92,8 @@ CREATE TABLE IF NOT EXISTS {$t->blobs} (
   PRIMARY KEY (id),
   UNIQUE KEY content_hash (content_hash),
   KEY last_seen (last_seen_at, id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->changes} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->changes} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   changeset_id        BIGINT UNSIGNED NOT NULL,
   sequence_no         INT UNSIGNED NOT NULL,
@@ -127,10 +120,8 @@ CREATE TABLE IF NOT EXISTS {$t->changes} (
   KEY before_blob (before_blob_id),
   KEY after_blob (after_blob_id),
   KEY reverts (reverts_change_id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->gaps} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->gaps} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   reason              VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   scope               VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -145,10 +136,8 @@ CREATE TABLE IF NOT EXISTS {$t->gaps} (
   KEY open_reason (ended_at, reason),
   KEY object_ref (object_type, object_id, id),
   KEY started (started_at, id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->plans} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->plans} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   uuid                CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   blog_id             BIGINT UNSIGNED NOT NULL,
@@ -167,10 +156,8 @@ CREATE TABLE IF NOT EXISTS {$t->plans} (
   UNIQUE KEY claimed_job (claimed_job_id),
   KEY actor_id (actor_user_id, id),
   KEY status_expires (status, expires_at)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->planItems} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->planItems} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   plan_id             BIGINT UNSIGNED NOT NULL,
   object_type         VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -191,18 +178,14 @@ CREATE TABLE IF NOT EXISTS {$t->planItems} (
   PRIMARY KEY (id),
   UNIQUE KEY plan_object_field (plan_id, object_type, object_id, field_key),
   KEY target_blob (target_blob_id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->planItemSources} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->planItemSources} (
   plan_item_id        BIGINT UNSIGNED NOT NULL,
   change_id           BIGINT UNSIGNED NOT NULL,
   PRIMARY KEY (plan_item_id, change_id),
   KEY change_id (change_id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->jobs} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->jobs} (
   id                    BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   uuid                  CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   plan_id               BIGINT UNSIGNED NOT NULL,
@@ -236,10 +219,8 @@ CREATE TABLE IF NOT EXISTS {$t->jobs} (
   UNIQUE KEY actor_idempotency (actor_user_id, idempotency_key_hash),
   KEY status_lease (status, lease_expires_at),
   KEY actor_id (actor_user_id, id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->jobItems} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->jobItems} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   job_id              BIGINT UNSIGNED NOT NULL,
   plan_item_id        BIGINT UNSIGNED NOT NULL,
@@ -255,10 +236,8 @@ CREATE TABLE IF NOT EXISTS {$t->jobItems} (
   PRIMARY KEY (id),
   UNIQUE KEY job_plan_item (job_id, plan_item_id),
   KEY job_status_object (job_id, status, object_type, object_id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->outbox} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->outbox} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   event_uuid          CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
   topic               VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -277,10 +256,8 @@ CREATE TABLE IF NOT EXISTS {$t->outbox} (
   UNIQUE KEY event_uuid (event_uuid),
   KEY status_available (status, available_at),
   KEY job_object (job_id, object_type, object_id)
-) ENGINE=InnoDB {$collate}
-SQL,
-            <<<SQL
-CREATE TABLE IF NOT EXISTS {$t->eventLog} (
+) ENGINE=InnoDB {$collate}",
+            "CREATE TABLE IF NOT EXISTS {$t->eventLog} (
   id                  BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   created_at          DATETIME NOT NULL,
   level               VARCHAR(8) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
@@ -295,8 +272,7 @@ CREATE TABLE IF NOT EXISTS {$t->eventLog} (
   PRIMARY KEY (id),
   KEY created (created_at, id),
   KEY level_id (level, id)
-) ENGINE=InnoDB {$collate}
-SQL,
+) ENGINE=InnoDB {$collate}",
         ];
     }
 }
