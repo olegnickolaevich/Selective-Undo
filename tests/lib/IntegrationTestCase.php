@@ -27,7 +27,57 @@ abstract class IntegrationTestCase extends TestCase
         delete_option(CaptureState::OPTION);
         $this->s->settings()->flush();
         $this->s->requestContext()->reset();
+        delete_transient('selective_undo_restore_ready');
         wp_set_current_user(1);
+    }
+
+    /**
+     * @param array<string, mixed> $selection
+     */
+    protected function plan(array $selection, int $userId = 1): string
+    {
+        return $this->s->buildPlan()->handle($userId, $selection);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function planView(string $uuid, int $userId = 1): array
+    {
+        $view = $this->s->planView()->forUser($uuid, $userId);
+
+        if ($view === null) {
+            throw new \RuntimeException('Plan not visible');
+        }
+
+        return $view;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function start(string $planUuid, ?string $key = null, int $userId = 1): array
+    {
+        $result = $this->s->createJob()->handle($userId, $planUuid, $key ?? wp_generate_uuid4());
+        $this->endRequest();
+        $job = $this->s->jobView()->forUser($result['job_uuid'], $userId);
+        $job['created'] = $result['created'];
+
+        return $job;
+    }
+
+    /**
+     * @return list<int>
+     */
+    protected function updateIds(int $postId, ?string $field = null): array
+    {
+        return array_map(
+            static fn (array $r): int => (int) $r['id'],
+            array_values(array_filter(
+                $this->changes($postId, 'update'),
+                static fn (array $r): bool => $field === null || $r['field_key'] === $field
+            ))
+        );
     }
 
     public function tearDown(): void

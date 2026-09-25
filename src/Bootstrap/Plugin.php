@@ -37,6 +37,47 @@ final class Plugin
 
         add_action('init', [self::class, 'onInit']);
         add_action('admin_init', [self::class, 'maybeMigrate']);
+
+        add_filter('cron_schedules', [self::class, 'cronSchedules']);
+        add_action(\SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, [self::class, 'runJob']);
+        add_action(self::QUEUE_HOOK, [self::class, 'processQueue']);
+    }
+
+    public const QUEUE_HOOK = 'sundo_process_queue';
+
+    /**
+     * @param array<string, array{interval: int, display: string}> $schedules
+     *
+     * @return array<string, array{interval: int, display: string}>
+     */
+    public static function cronSchedules(array $schedules): array
+    {
+        $schedules['sundo_five_minutes'] ??= [
+            'interval' => 5 * MINUTE_IN_SECONDS,
+            'display' => __('Every five minutes (Selective Undo)', 'selective-undo'),
+        ];
+
+        return $schedules;
+    }
+
+    public static function runJob(int|string $jobId): void
+    {
+        self::services()->executeJob()->run((int) $jobId);
+    }
+
+    /**
+     * Recovers stuck jobs and delivers due outbox events.
+     */
+    public static function processQueue(): void
+    {
+        $s = self::services();
+        update_option('selective_undo_last_queue_run', time(), false);
+
+        foreach ($s->jobs()->recoverable() as $jobId) {
+            $s->executeJob()->run($jobId, 10.0);
+        }
+
+        $s->outbox()->dispatchDue();
     }
 
     public static function onInit(): void
@@ -79,12 +120,23 @@ final class Plugin
         if (get_option($s->settings()::OPTION) === false) {
             add_option($s->settings()::OPTION, $s->settings()->defaults(), '', true);
         }
+
+        self::scheduleEvents();
+    }
+
+    public static function scheduleEvents(): void
+    {
+        add_filter('cron_schedules', [self::class, 'cronSchedules']);
+
+        if (!wp_next_scheduled(self::QUEUE_HOOK)) {
+            wp_schedule_event(time() + MINUTE_IN_SECONDS, 'sundo_five_minutes', self::QUEUE_HOOK);
+        }
     }
 
     public static function deactivate(): void
     {
-        foreach (['sundo_hourly_maintenance', 'sundo_process_queue', 'sundo_run_job'] as $hook) {
-            wp_clear_scheduled_hook($hook);
+        foreach (['sundo_hourly_maintenance', self::QUEUE_HOOK, 'sundo_run_job'] as $hook) {
+            wp_unschedule_hook($hook);
         }
     }
 }

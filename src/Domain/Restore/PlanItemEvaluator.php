@@ -18,7 +18,7 @@ final class PlanItemEvaluator
         $warnings = $facts->warnings;
 
         if (!$facts->supported) {
-            return new PlanItemDecision(PlanItemStatus::Unsupported, 'field_not_supported', $warnings);
+            return new PlanItemDecision(PlanItemStatus::Unsupported, $facts->unsupportedReason ?? 'field_not_supported', $warnings);
         }
 
         if (!$facts->objectExists) {

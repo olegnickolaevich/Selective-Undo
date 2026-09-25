@@ -22,6 +22,32 @@ use SelectiveUndo\Infrastructure\WordPress\PostChangeObserver;
 use SelectiveUndo\Infrastructure\WordPress\PostRowReader;
 use SelectiveUndo\Infrastructure\WordPress\SystemClock;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
+use SelectiveUndo\Application\Restore\AdapterRegistry;
+use SelectiveUndo\Application\Restore\BuildRestorePlan;
+use SelectiveUndo\Application\Restore\CreateRestoreJob;
+use SelectiveUndo\Application\Restore\ExecuteRestoreJob;
+use SelectiveUndo\Application\Restore\JobView;
+use SelectiveUndo\Application\Restore\PlanView;
+use SelectiveUndo\Application\Restore\PostRestoreHandler;
+use SelectiveUndo\Application\Restore\RestoreObjectExecutor;
+use SelectiveUndo\Application\Restore\RestorePreconditions;
+use SelectiveUndo\Application\Restore\RestoreReadiness;
+use SelectiveUndo\Application\Support\ObjectPresenter;
+use SelectiveUndo\Domain\Restore\ChainResolver;
+use SelectiveUndo\Domain\Restore\ConflictDetector;
+use SelectiveUndo\Domain\Restore\JobOutcome;
+use SelectiveUndo\Domain\Restore\PlanItemEvaluator;
+use SelectiveUndo\Infrastructure\Database\DbCredentials;
+use SelectiveUndo\Infrastructure\Database\RestoreConnection;
+use SelectiveUndo\Infrastructure\Database\StorageUnavailable;
+use SelectiveUndo\Infrastructure\Storage\JobRepository;
+use SelectiveUndo\Infrastructure\Storage\JournalReader;
+use SelectiveUndo\Infrastructure\Storage\Outbox;
+use SelectiveUndo\Infrastructure\Storage\PlanRepository;
+use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
+use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
+use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
+use SelectiveUndo\Bootstrap\Plugin;
 
 /**
  * Lazily constructed service graph. Explicit factories keep the wiring readable
@@ -144,6 +170,166 @@ final class Services
             $this->requestContext(),
             $this->journal(),
         ));
+    }
+
+    public function cacheInvalidator(): CacheInvalidator
+    {
+        return $this->get(CacheInvalidator::class, fn () => new CacheInvalidator());
+    }
+
+    public function postFieldsAdapter(): PostFieldsAdapter
+    {
+        return $this->get(PostFieldsAdapter::class, fn () => new PostFieldsAdapter(
+            $this->db->posts,
+            $this->trackingPolicy(),
+            $this->clock(),
+            $this->postRowReader(),
+            $this->cacheInvalidator(),
+        ));
+    }
+
+    public function adapters(): AdapterRegistry
+    {
+        return $this->get(AdapterRegistry::class, fn () => new AdapterRegistry(
+            fn (AdapterRegistry $registry) => $registry->register($this->postFieldsAdapter())
+        ));
+    }
+
+    /**
+     * Dedicated connection for restore transactions. Each new connection proves that it
+     * reaches the same database as WordPress by reading the site instance marker.
+     */
+    public function restoreConnection(): RestoreConnection
+    {
+        return $this->get(RestoreConnection::class, fn () => new RestoreConnection(
+            fn () => DbCredentials::fromWordPress($this->db),
+            $this->db->charset !== '' ? $this->db->charset : 'utf8mb4',
+            5,
+            function (RestoreConnection $connection): void {
+                $expected = (string) get_option(Plugin::INSTANCE_OPTION, '');
+                $rows = $connection->select(
+                    sprintf('SELECT option_value FROM `%s` WHERE option_name = ?', $this->tables()->options),
+                    's',
+                    [Plugin::INSTANCE_OPTION]
+                );
+
+                if ($expected === '' || $rows === [] || (string) $rows[0]['option_value'] !== $expected) {
+                    throw new StorageUnavailable('restore_connection_wrong_database');
+                }
+            },
+        ));
+    }
+
+    public function journalReader(): JournalReader
+    {
+        return $this->get(JournalReader::class, fn () => new JournalReader($this->db, $this->tables()));
+    }
+
+    public function plans(): PlanRepository
+    {
+        return $this->get(PlanRepository::class, fn () => new PlanRepository($this->db, $this->tables()));
+    }
+
+    public function jobs(): JobRepository
+    {
+        return $this->get(JobRepository::class, fn () => new JobRepository($this->db, $this->tables(), $this->restoreConnection()));
+    }
+
+    public function restoreJournal(): RestoreJournal
+    {
+        return $this->get(RestoreJournal::class, fn () => new RestoreJournal($this->tables(), $this->blobs()));
+    }
+
+    public function outbox(): Outbox
+    {
+        return $this->get(Outbox::class, function (): Outbox {
+            $outbox = new Outbox($this->db, $this->tables(), $this->eventLog());
+            $outbox->on('object_restored', new PostRestoreHandler($this->adapters(), $this->settings()));
+
+            return $outbox;
+        });
+    }
+
+    public function preconditions(): RestorePreconditions
+    {
+        return $this->get(RestorePreconditions::class, fn () => new RestorePreconditions());
+    }
+
+    public function buildPlan(): BuildRestorePlan
+    {
+        return $this->get(BuildRestorePlan::class, fn () => new BuildRestorePlan(
+            $this->journalReader(),
+            $this->plans(),
+            $this->blobs(),
+            $this->adapters(),
+            new ChainResolver(),
+            new PlanItemEvaluator(new ConflictDetector()),
+            $this->preconditions(),
+        ));
+    }
+
+    public function objectExecutor(): RestoreObjectExecutor
+    {
+        return $this->get(RestoreObjectExecutor::class, fn () => new RestoreObjectExecutor(
+            $this->restoreConnection(),
+            $this->adapters(),
+            $this->blobs(),
+            $this->jobs(),
+            $this->restoreJournal(),
+            $this->outbox(),
+            new ConflictDetector(),
+            $this->preconditions(),
+        ));
+    }
+
+    public function executeJob(): ExecuteRestoreJob
+    {
+        return $this->get(ExecuteRestoreJob::class, fn () => new ExecuteRestoreJob(
+            $this->jobs(),
+            $this->objectExecutor(),
+            $this->journal(),
+            new JobOutcome(),
+            $this->eventLog(),
+        ));
+    }
+
+    public function readiness(): RestoreReadiness
+    {
+        return $this->get(RestoreReadiness::class, fn () => new RestoreReadiness(
+            $this->db,
+            $this->tables(),
+            $this->schema(),
+            $this->restoreConnection(),
+        ));
+    }
+
+    public function createJob(): CreateRestoreJob
+    {
+        return $this->get(CreateRestoreJob::class, fn () => new CreateRestoreJob(
+            $this->restoreConnection(),
+            $this->tables(),
+            $this->plans(),
+            $this->jobs(),
+            $this->executeJob(),
+            $this->readiness(),
+            $this->requestContext(),
+            $this->restoreJournal(),
+        ));
+    }
+
+    public function objectPresenter(): ObjectPresenter
+    {
+        return $this->get(ObjectPresenter::class, fn () => new ObjectPresenter());
+    }
+
+    public function planView(): PlanView
+    {
+        return $this->get(PlanView::class, fn () => new PlanView($this->plans(), $this->jobs(), $this->adapters(), $this->objectPresenter()));
+    }
+
+    public function jobView(): JobView
+    {
+        return $this->get(JobView::class, fn () => new JobView($this->jobs(), $this->plans(), $this->journalReader(), $this->adapters(), $this->objectPresenter()));
     }
 
     /**

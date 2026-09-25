@@ -25,6 +25,7 @@ final readonly class ItemFacts
         public ?string $currentHash,
         public array $blockingReasons = [],
         public array $warnings = [],
+        public ?string $unsupportedReason = null,
     ) {
     }
 }
