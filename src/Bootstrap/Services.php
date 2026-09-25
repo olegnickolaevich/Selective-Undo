@@ -48,6 +48,15 @@ use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
 use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Bootstrap\Plugin;
+use SelectiveUndo\Application\History\DiffBuilder;
+use SelectiveUndo\Application\History\DiffService;
+use SelectiveUndo\Application\History\HistoryExport;
+use SelectiveUndo\Application\History\HistoryQuery;
+use SelectiveUndo\Application\Retention\BlobCollector;
+use SelectiveUndo\Application\Retention\PurgeService;
+use SelectiveUndo\Application\Retention\RetentionService;
+use SelectiveUndo\Application\Health\HealthService;
+use SelectiveUndo\Infrastructure\WordPress\PrivacyIntegration;
 
 /**
  * Lazily constructed service graph. Explicit factories keep the wiring readable
@@ -330,6 +339,66 @@ final class Services
     public function jobView(): JobView
     {
         return $this->get(JobView::class, fn () => new JobView($this->jobs(), $this->plans(), $this->journalReader(), $this->adapters(), $this->objectPresenter()));
+    }
+
+    public function history(): HistoryQuery
+    {
+        return $this->get(HistoryQuery::class, fn () => new HistoryQuery($this->db, $this->tables(), $this->journalReader(), $this->adapters(), $this->objectPresenter()));
+    }
+
+    public function diffs(): DiffService
+    {
+        return $this->get(DiffService::class, fn () => new DiffService($this->journalReader(), $this->plans(), $this->blobs(), $this->adapters(), new DiffBuilder()));
+    }
+
+    public function historyExport(): HistoryExport
+    {
+        return $this->get(HistoryExport::class, fn () => new HistoryExport($this->db, $this->tables()));
+    }
+
+    public function blobCollector(): BlobCollector
+    {
+        return $this->get(BlobCollector::class, fn () => new BlobCollector($this->db, $this->tables()));
+    }
+
+    public function retention(): RetentionService
+    {
+        return $this->get(RetentionService::class, fn () => new RetentionService(
+            $this->db,
+            $this->tables(),
+            $this->settings(),
+            $this->plans(),
+            $this->journal(),
+            $this->captureState(),
+            $this->blobCollector(),
+            $this->eventLog(),
+        ));
+    }
+
+    public function purge(): PurgeService
+    {
+        return $this->get(PurgeService::class, fn () => new PurgeService($this->db, $this->tables(), $this->retention(), $this->blobCollector(), $this->eventLog()));
+    }
+
+    public function health(): HealthService
+    {
+        return $this->get(HealthService::class, fn () => new HealthService(
+            $this->db,
+            $this->tables(),
+            $this->settings(),
+            $this->schema(),
+            $this->captureState(),
+            $this->readiness(),
+            $this->retention(),
+            $this->dbInfo(),
+            $this->cacheInvalidator(),
+            $this->adapters(),
+        ));
+    }
+
+    public function privacy(): PrivacyIntegration
+    {
+        return $this->get(PrivacyIntegration::class, fn () => new PrivacyIntegration($this->db, $this->tables()));
     }
 
     /**

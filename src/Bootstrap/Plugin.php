@@ -41,6 +41,19 @@ final class Plugin
         add_filter('cron_schedules', [self::class, 'cronSchedules']);
         add_action(\SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, [self::class, 'runJob']);
         add_action(self::QUEUE_HOOK, [self::class, 'processQueue']);
+        add_action(\SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK, [self::class, 'runMaintenance']);
+        $s->privacy()->register();
+    }
+
+    public static function runMaintenance(): void
+    {
+        update_option('selective_undo_last_maintenance_run', time(), false);
+
+        try {
+            self::services()->retention()->run();
+        } catch (\Throwable $e) {
+            self::services()->eventLog()->exception('maintenance_failed', $e);
+        }
     }
 
     public const QUEUE_HOOK = 'sundo_process_queue';
@@ -87,6 +100,7 @@ final class Plugin
 
     public static function maybeMigrate(): void
     {
+        self::scheduleEvents();
         $schema = self::services()->schema();
 
         if (!$schema->isCurrent()) {
@@ -130,6 +144,10 @@ final class Plugin
 
         if (!wp_next_scheduled(self::QUEUE_HOOK)) {
             wp_schedule_event(time() + MINUTE_IN_SECONDS, 'sundo_five_minutes', self::QUEUE_HOOK);
+        }
+
+        if (!wp_next_scheduled(\SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK)) {
+            wp_schedule_event(time() + 5 * MINUTE_IN_SECONDS, 'hourly', \SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK);
         }
     }
 

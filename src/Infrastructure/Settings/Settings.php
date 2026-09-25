@@ -125,7 +125,7 @@ final class Settings
 
     public function quotaBytes(): int
     {
-        return (int) $this->all()['quota_mb'] * 1024 * 1024;
+        return (int) apply_filters('selective_undo/quota_bytes', (int) $this->all()['quota_mb'] * 1024 * 1024);
     }
 
     public function evictOldest(): bool
