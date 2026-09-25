@@ -6,7 +6,8 @@
  * Version:           1.0.0
  * Requires at least: 6.8
  * Requires PHP:      8.2
- * Author:            Selective Undo
+ * Author:            olegnickolaevich
+ * Author URI:        https://github.com/olegnickolaevich
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain:       selective-undo

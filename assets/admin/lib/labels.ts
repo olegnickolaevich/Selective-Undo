@@ -1,4 +1,4 @@
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import type {
 	ChangeEvent,
 	ChangesetSummary,
@@ -336,15 +336,27 @@ export function changesetTitle(
 	const title = first ? displayTitle( first.title, first.id ) : '';
 
 	if ( cs.kind === 'restore' ) {
-		return cs.object_count === 1
-			? /* translators: %s: post title. */
-				sprintf( __( 'Restore of “%s”', 'selective-undo' ), title )
-			: __( 'Restore', 'selective-undo' );
+		if ( cs.object_count !== 1 ) {
+			return _x(
+				'Restore',
+				'noun: a restore operation',
+				'selective-undo'
+			);
+		}
+
+		return sprintf(
+			/* translators: %s: post title. */
+			__( 'Restore of “%s”', 'selective-undo' ),
+			title
+		);
 	}
 
 	if ( cs.kind === 'autosave' ) {
-		/* translators: %s: post title. */
-		return sprintf( __( 'Autosaved draft “%s”', 'selective-undo' ), title );
+		return sprintf(
+			/* translators: %s: post title. */
+			__( 'Autosaved draft “%s”', 'selective-undo' ),
+			title
+		);
 	}
 
 	if ( cs.kind === 'operation' ) {
@@ -357,7 +369,12 @@ export function changesetTitle(
 		cs.events[ 0 ] !== 'restore' &&
 		cs.object_count === 1
 	) {
-		return `${ eventLabel( cs.events[ 0 ]! ) }: “${ title }”`;
+		return sprintf(
+			/* translators: 1: event name, for example "Created". 2: post title. */
+			_x( '%1$s: “%2$s”', 'event: post title', 'selective-undo' ),
+			eventLabel( cs.events[ 0 ]! ),
+			title
+		);
 	}
 
 	if ( cs.object_count === 1 ) {
@@ -370,7 +387,12 @@ export function changesetTitle(
 
 	return sprintf(
 		/* translators: %d: number of items. */
-		__( 'Edit of %d items', 'selective-undo' ),
+		_n(
+			'Edit of %d item',
+			'Edit of %d items',
+			cs.object_count,
+			'selective-undo'
+		),
 		cs.object_count
 	);
 }

@@ -93,7 +93,8 @@ final class AdminPage
         wp_enqueue_script(self::HANDLE, $url . 'index.js', $asset['dependencies'], $asset['version'], true);
         wp_enqueue_style(self::HANDLE, $url . 'index.css', ['wp-components'], $asset['version']);
         wp_style_add_data(self::HANDLE, 'rtl', 'replace');
-        wp_set_script_translations(self::HANDLE, 'selective-undo', SELECTIVE_UNDO_DIR . '/languages');
+        // Translations come from WordPress.org language packs (wp-content/languages/plugins).
+        wp_set_script_translations(self::HANDLE, 'selective-undo');
 
         // Configuration only: no secrets. The REST nonce is set up by wp-api-fetch itself.
         $config = [

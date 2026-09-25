@@ -123,3 +123,30 @@ test( 'editors without permission do not see the plugin', async ( { page } ) => 
 	await page.goto( '/wp-admin/edit.php?post_type=page' );
 	await expect( page.getByRole( 'link', { name: /Change history/ } ) ).toHaveCount( 0 );
 } );
+
+test( 'interface follows the user language from an installed language pack', async ( { page } ) => {
+	execFileSync( ROOT + 'bin/i18n.sh', [ 'install-test-site' ], { encoding: 'utf8' } );
+	const title = `Контакты ${ RUN }`;
+	const id = wp( 'post', 'create', '--post_type=page', '--post_status=publish', `--post_title=${ title }`, '--porcelain' );
+	wp( 'post', 'update', id, `--post_title=${ title }!` );
+	wp( 'user', 'meta', 'update', 'admin', 'locale', 'ru_RU' );
+	try {
+		await login( page );
+		// PHP strings (row action) come from the .mo / .l10n.php file.
+		await page.goto( `/wp-admin/edit.php?post_type=page&s=${ encodeURIComponent( title ) }` );
+		const row = page.locator( `#post-${ id }` );
+		await row.hover();
+		await row.getByRole( 'link', { name: `История изменений «${ title }!»` } ).click();
+		// JS strings come from the JSON file registered with wp_set_script_translations().
+		const sections = page.getByRole( 'navigation', { name: 'Разделы Selective Undo' } );
+		await expect( sections ).toBeVisible();
+		await expect( page.getByText( 'Журнал изменений', { exact: true } ) ).toBeVisible();
+		await expect( page.getByText( /последние 7 дней/ ) ).toBeVisible();
+		await expect( page.getByRole( 'button', { name: 'Проверить восстановление' } ) ).toBeVisible();
+		await sections.getByRole( 'link', { name: 'Настройки' } ).click();
+		await page.getByRole( 'link', { name: 'Хранилище', exact: true } ).click();
+		await expect( page.getByText( /От 1 до 7 дней/ ) ).toBeVisible();
+	} finally {
+		wp( 'user', 'meta', 'delete', 'admin', 'locale' );
+	}
+} );

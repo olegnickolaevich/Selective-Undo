@@ -1,5 +1,5 @@
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { api } from '../api/client';
 import type { RestoreJob } from '../api/types';
 import {
@@ -76,8 +76,10 @@ export function RestoresPage() {
 									>
 										{ sprintf(
 											/* translators: 1: number restored, 2: total number of fields. */
-											__(
+											_n(
+												'%1$d of %2$d field restored',
 												'%1$d of %2$d fields restored',
+												job.counters.total,
 												'selective-undo'
 											),
 											job.counters.restored,

@@ -1,5 +1,5 @@
 import { Notice } from '@wordpress/components';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import type { Overview } from '../api/types';
 import { exactDate, formatBytes } from '../lib/format';
 import { blockerText } from '../lib/labels';
@@ -66,8 +66,10 @@ export function AppHeader( { overview }: { overview: Overview | null } ) {
 							{ overview.oldest_event_at
 								? sprintf(
 										/* translators: 1: number of days, 2: date of the oldest recorded change. */
-										__(
+										_n(
+											'last %1$d day, since %2$s',
 											'last %1$d days, since %2$s',
+											overview.retention_days,
 											'selective-undo'
 										),
 										overview.retention_days,
@@ -75,7 +77,12 @@ export function AppHeader( { overview }: { overview: Overview | null } ) {
 									)
 								: sprintf(
 										/* translators: %d: number of days. */
-										__( 'last %d days', 'selective-undo' ),
+										_n(
+											'last %d day',
+											'last %d days',
+											overview.retention_days,
+											'selective-undo'
+										),
 										overview.retention_days
 									) }
 						</dd>

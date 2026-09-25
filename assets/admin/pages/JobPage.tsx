@@ -1,6 +1,6 @@
 import { Button, Notice } from '@wordpress/components';
 import { useEffect, useRef, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { speak } from '@wordpress/a11y';
 import { api } from '../api/client';
 import type { JobItem, RestoreJob } from '../api/types';
@@ -150,8 +150,10 @@ export function JobPage( { id }: { id: string } ) {
 					<label htmlFor="su-job-progress">
 						{ sprintf(
 							/* translators: 1: processed fields, 2: total fields. */
-							__(
+							_n(
+								'Processed %1$d of %2$d field',
 								'Processed %1$d of %2$d fields',
+								job.counters.total,
 								'selective-undo'
 							),
 							done,

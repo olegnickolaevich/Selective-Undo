@@ -7,7 +7,7 @@ import {
 	ToggleControl,
 } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import { speak } from '@wordpress/a11y';
 import { api } from '../api/client';
 import type {
@@ -227,7 +227,12 @@ function PurgeForm( { canPurge }: { canPurge: boolean } ) {
 			const r = await api.purge( preview.token, confirmation );
 			const message = sprintf(
 				/* translators: %d: number of deleted changes. */
-				__( 'Deleted %d recorded changes.', 'selective-undo' ),
+				_n(
+					'Deleted %d recorded change.',
+					'Deleted %d recorded changes.',
+					r.deleted_changes,
+					'selective-undo'
+				),
 				r.deleted_changes
 			);
 			setResult(
@@ -331,20 +336,23 @@ function PurgeForm( { canPurge }: { canPurge: boolean } ) {
 				<div className="su-danger-zone">
 					<p>
 						{ sprintf(
-							/* translators: 1: number of changes, 2: number of operations. */
-							__(
-								'%1$d recorded changes in %2$d operations will be deleted permanently.',
+							/* translators: %d: number of recorded changes. */
+							_n(
+								'%d recorded change will be deleted permanently.',
+								'%d recorded changes will be deleted permanently.',
+								preview.changes,
 								'selective-undo'
 							),
-							preview.changes,
-							preview.changesets
+							preview.changes
 						) }
 						{ preview.protected_changesets > 0 &&
 							' ' +
 								sprintf(
 									/* translators: %d: number of operations. */
-									__(
+									_n(
+										'%d operation is kept because an open preview or a running restore uses it.',
 										'%d operations are kept because an open preview or a running restore uses them.',
+										preview.protected_changesets,
 										'selective-undo'
 									),
 									preview.protected_changesets
@@ -445,8 +453,10 @@ function RetentionTab( {
 				label={ __( 'Keep history for (days)', 'selective-undo' ) }
 				help={ sprintf(
 					/* translators: %d: maximum number of days. */
-					__(
+					_n(
+						'From 1 to %d day. The size limit below may remove older history earlier.',
 						'From 1 to %d days. The size limit below may remove older history earlier.',
+						max,
 						'selective-undo'
 					),
 					max
@@ -597,7 +607,16 @@ function AccessTab( {
 											htmlFor={ `su-cap-${ slug }-${ c.key }` }
 											className="screen-reader-text"
 										>
-											{ `${ role.name }: ${ c.label }` }
+											{ sprintf(
+												/* translators: 1: user role name. 2: permission name. */
+												_x(
+													'%1$s: %2$s',
+													'role: permission',
+													'selective-undo'
+												),
+												role.name,
+												c.label
+											) }
 										</label>
 									</td>
 								) ) }

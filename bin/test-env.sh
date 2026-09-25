@@ -77,6 +77,8 @@ PHP
   wp user create editor editor@example.test --role=editor --user_pass=password >/dev/null
   wp user create author author@example.test --role=author --user_pass=password >/dev/null
   wp plugin activate selective-undo >/dev/null
+  # Install bundled translations the way WordPress.org language packs are installed.
+  SU_WPCLI="$WPCLI" "$ROOT/bin/i18n.sh" install-test-site >/dev/null
   echo "Site ready: $SITE (WordPress $(wp core version), DB $DB_IMAGE on port $DB_PORT)"
 }
 

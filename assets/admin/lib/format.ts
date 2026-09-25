@@ -1,5 +1,5 @@
 import { dateI18n, getSettings, humanTimeDiff } from '@wordpress/date';
-import { __, _n, sprintf } from '@wordpress/i18n';
+import { _n, _x, sprintf } from '@wordpress/i18n';
 
 export function exactDate( iso: string | null ): string {
 	if ( ! iso ) {
@@ -22,10 +22,10 @@ export function relativeDate( iso: string | null ): string {
 
 export function formatBytes( bytes: number ): string {
 	const units = [
-		__( 'B', 'selective-undo' ),
-		__( 'KB', 'selective-undo' ),
-		__( 'MB', 'selective-undo' ),
-		__( 'GB', 'selective-undo' ),
+		_x( 'B', 'unit: bytes', 'selective-undo' ),
+		_x( 'KB', 'unit: kilobytes', 'selective-undo' ),
+		_x( 'MB', 'unit: megabytes', 'selective-undo' ),
+		_x( 'GB', 'unit: gigabytes', 'selective-undo' ),
 	];
 	let value = bytes;
 	let unit = 0;

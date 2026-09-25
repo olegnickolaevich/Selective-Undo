@@ -35,7 +35,6 @@ final class Plugin
         $s->capabilities()->register();
         $s->observer()->register();
 
-        add_action('init', [self::class, 'onInit']);
         add_action('admin_init', [self::class, 'maybeMigrate']);
 
         add_filter('cron_schedules', [self::class, 'cronSchedules']);
@@ -100,11 +99,6 @@ final class Plugin
         }
 
         $s->outbox()->dispatchDue();
-    }
-
-    public static function onInit(): void
-    {
-        load_plugin_textdomain('selective-undo', false, dirname(plugin_basename(SELECTIVE_UNDO_FILE)) . '/languages');
     }
 
     public static function maybeMigrate(): void

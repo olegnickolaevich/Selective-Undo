@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterCapabilities;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
@@ -15,7 +17,7 @@ use SelectiveUndo\Infrastructure\Database\StorageError;
 
 /**
  * Standard wp_posts fields. The field list is hard-coded and never extended from
- * request data. Writes go through a direct, whitelisted UPDATE (see ADR-001):
+ * request data. Writes go through a direct, whitelisted UPDATE:
  * wp_update_post() would run arbitrary save hooks inside the restore.
  */
 final class PostFieldsAdapter implements AdapterInterface
@@ -73,7 +75,7 @@ final class PostFieldsAdapter implements AdapterInterface
             'post_title' => __('Title', 'selective-undo'),
             'post_content' => __('Content', 'selective-undo'),
             'post_excerpt' => __('Excerpt', 'selective-undo'),
-            'menu_order' => __('Order', 'selective-undo'),
+            'menu_order' => _x('Order', 'post menu order field', 'selective-undo'),
             default => $fieldKey,
         };
     }
@@ -163,6 +165,7 @@ final class PostFieldsAdapter implements AdapterInterface
         // would overwrite the restored values.
         $lock = (string) get_post_meta($current->id, '_edit_lock', true);
         $parts = array_map('intval', explode(':', $lock) + [0, 0]);
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Core filter, applied with the same default as wp_check_post_lock().
         $window = (int) apply_filters('wp_check_post_lock_window', 150);
 
         if (($parts[1] ?? 0) > 0 && $parts[1] !== $viewerUserId && $parts[0] > time() - $window) {

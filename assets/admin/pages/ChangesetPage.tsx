@@ -1,6 +1,6 @@
 import { Button, CheckboxControl, Notice } from '@wordpress/components';
 import { useCallback, useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __, _n, sprintf } from '@wordpress/i18n';
 import { api } from '../api/client';
 import type {
 	ChangeSummary,
@@ -175,8 +175,10 @@ export function ChangesetPage( {
 				<Notice status="info" isDismissible={ false }>
 					{ sprintf(
 						/* translators: %d: number of items. */
-						__(
+						_n(
+							'This operation also changed %d item you are not allowed to view.',
 							'This operation also changed %d items you are not allowed to view.',
+							data.hidden_objects,
 							'selective-undo'
 						),
 						data.hidden_objects

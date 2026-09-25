@@ -1,0 +1,1715 @@
+# Copyright (C) 2026 olegnickolaevich
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Selective Undo 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/olegnickolaevich/Selective-Undo/issues\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-09-25T21:05:33+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: selective-undo\n"
+
+#. Plugin Name of the plugin
+#: selective-undo.php
+#: src/Presentation/Admin/AdminPage.php:40
+#: src/Presentation/Admin/AdminPage.php:41
+#: src/Presentation/Admin/AdminPage.php:57
+#: build/index.js:3
+#: build/index.js:11
+#: build/index.js:30
+msgid "Selective Undo"
+msgstr ""
+
+#. Plugin URI of the plugin
+#: selective-undo.php
+msgid "https://github.com/olegnickolaevich/Selective-Undo"
+msgstr ""
+
+#. Description of the plugin
+#: selective-undo.php
+msgid "Undo a specific content change and keep everything else. Selective restore of supported post fields with conflict checks."
+msgstr ""
+
+#. Author of the plugin
+#: selective-undo.php
+msgid "olegnickolaevich"
+msgstr ""
+
+#. Author URI of the plugin
+#: selective-undo.php
+msgid "https://github.com/olegnickolaevich"
+msgstr ""
+
+#: selective-undo.php:36
+msgid "Selective Undo requires PHP 8.2 or newer. The plugin is inactive."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:85
+msgid "Database schema"
+msgstr ""
+
+#. translators: %d: schema version.
+#: src/Application/Health/HealthService.php:87
+#, php-format
+msgid "Version %d, all tables present."
+msgstr ""
+
+#. translators: %d: schema version.
+#: src/Application/Health/HealthService.php:88
+msgid "The schema is outdated. Open any admin page to run the update."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:96
+msgid "Transactional tables"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:98
+msgid "Posts and history tables use InnoDB."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:99
+msgid "Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:107
+msgid "Restore connection"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:109
+msgid "A dedicated transactional connection to the primary database works and reaches the same database."
+msgstr ""
+
+#. translators: %s: error code.
+#: src/Application/Health/HealthService.php:110
+#, php-format
+msgid "The dedicated database connection failed (%s). Restoring is blocked."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:118
+#: build/index.js:11
+msgid "Recording"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:120
+msgid "Changes of tracked content are being recorded."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:121
+msgid "Recording is turned off in the settings."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:122
+msgid "Recording is paused: the history size limit is reached."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:123
+msgid "Recording is paused until the database update finishes."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:124
+msgid "Recording is paused."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:133
+msgid "History size"
+msgstr ""
+
+#. translators: 1: used size, 2: limit.
+#: src/Application/Health/HealthService.php:136
+#, php-format
+msgid "%1$s of %2$s used."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:146
+msgid "Largest recorded value"
+msgstr ""
+
+#. translators: %s: size.
+#: src/Application/Health/HealthService.php:149
+#, php-format
+msgid "Values up to %s are stored. Larger values are listed but cannot be restored."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:160
+msgid "Background tasks"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:162
+msgid "Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:164
+msgid "WP-Cron is disabled; make sure a system cron job calls wp-cron.php."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:165
+msgid "Maintenance runs through WP-Cron."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:172
+msgid "Page cache"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:174
+msgid "No page cache without an integration was detected."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:175
+msgid "A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:181
+msgid "Object cache"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:183
+msgid "A persistent object cache is used; restored posts are purged from it."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:184
+msgid "No persistent object cache."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:191
+msgid "Database drop-in"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:193
+msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:194
+msgid "None."
+msgstr ""
+
+#: src/Application/History/DiffService.php:41
+msgid "This change no longer exists in the history."
+msgstr ""
+
+#: src/Application/History/DiffService.php:45
+msgid "Informational events have no values to compare."
+msgstr ""
+
+#: src/Application/History/DiffService.php:54
+msgid "Before restore"
+msgstr ""
+
+#: src/Application/History/DiffService.php:54
+msgid "Before"
+msgstr ""
+
+#: src/Application/History/DiffService.php:55
+msgid "After restore"
+msgstr ""
+
+#: src/Application/History/DiffService.php:55
+msgid "After"
+msgstr ""
+
+#: src/Application/History/DiffService.php:72
+#: src/Application/Restore/CreateRestoreJob.php:53
+#: src/Presentation/Rest/RestApi.php:242
+msgid "This preview does not exist."
+msgstr ""
+
+#: src/Application/History/DiffService.php:78
+msgid "Nothing to compare for this item."
+msgstr ""
+
+#: src/Application/History/DiffService.php:93
+msgid "After the selected change"
+msgstr ""
+
+#: src/Application/History/DiffService.php:94
+#: src/Application/History/DiffService.php:103
+msgid "Current value"
+msgstr ""
+
+#: src/Application/History/DiffService.php:104
+msgid "Will be restored"
+msgstr ""
+
+#: src/Application/History/HistoryQuery.php:107
+#: src/Application/History/HistoryQuery.php:114
+#: src/Application/Restore/BuildRestorePlan.php:125
+msgid "This operation no longer exists in the history."
+msgstr ""
+
+#: src/Application/History/HistoryQuery.php:156
+msgid "You are not allowed to view the history of this item."
+msgstr ""
+
+#: src/Application/History/HistoryQuery.php:457
+msgid "Invalid page cursor."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:103
+msgid "Select between 1 and 500 changes."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:109
+msgid "Some of the selected changes no longer exist in the history."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:114
+msgid "Informational events cannot be restored."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:138
+msgid "The selection contains no restorable changes."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:142
+msgid "Select at most 500 changes at a time."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:148
+msgid "Unknown selection type."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:198
+msgid "You are not allowed to view the history of some of the selected items."
+msgstr ""
+
+#: src/Application/Restore/BuildRestorePlan.php:220
+msgid "The free version restores one item at a time. Select changes of a single item."
+msgstr ""
+
+#: src/Application/Restore/CreateRestoreJob.php:69
+msgid "Restoring is unavailable on this site right now. See Settings → Diagnostics."
+msgstr ""
+
+#: src/Application/Restore/CreateRestoreJob.php:130
+#: src/Application/Restore/CreateRestoreJob.php:197
+msgid "This preview has expired. Check the changes again."
+msgstr ""
+
+#: src/Application/Restore/CreateRestoreJob.php:143
+#: src/Application/Restore/CreateRestoreJob.php:189
+#: build/index.js:19
+msgid "This preview has already been used to start a restore."
+msgstr ""
+
+#: src/Application/Restore/CreateRestoreJob.php:172
+msgid "This request key was already used for another restore."
+msgstr ""
+
+#: src/Application/Restore/CreateRestoreJob.php:201
+#: build/index.js:20
+msgid "Nothing in this preview can be restored."
+msgstr ""
+
+#: src/Application/Retention/PurgeService.php:65
+msgid "Type DELETE to confirm."
+msgstr ""
+
+#: src/Application/Retention/PurgeService.php:145
+msgid "Choose an item."
+msgstr ""
+
+#: src/Application/Retention/PurgeService.php:148
+msgid "Choose a valid date."
+msgstr ""
+
+#: src/Application/Retention/PurgeService.php:150
+msgid "Unknown deletion scope."
+msgstr ""
+
+#: src/Application/Retention/PurgeService.php:188
+msgid "The deletion preview is invalid. Preview again."
+msgstr ""
+
+#: src/Application/Retention/PurgeService.php:194
+msgid "The deletion preview has expired. Preview again."
+msgstr ""
+
+#. translators: %d: user ID of a deleted user.
+#: src/Application/Support/ObjectPresenter.php:64
+#, php-format
+msgid "Deleted user #%d"
+msgstr ""
+
+#: src/Bootstrap/Plugin.php:78
+msgid "Every five minutes (Selective Undo)"
+msgstr ""
+
+#: src/Bootstrap/Plugin.php:123
+msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
+msgstr ""
+
+#: src/Bootstrap/Plugin.php:124
+msgid "Plugin activation"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:75
+msgid "Title"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:76
+msgid "Content"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:77
+msgid "Excerpt"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:78
+msgctxt "post menu order field"
+msgid "Order"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:39
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:54
+msgid "Selective Undo change history"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:87
+msgid "Content change history"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:90
+msgid "Date (UTC)"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:91
+msgid "Type"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:92
+#: build/index.js:16
+msgid "Source"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:93
+#: build/index.js:17
+msgid "Items"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:94
+msgid "Fields"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:127
+msgid "Recorded content changes remain until they expire; delete them in Selective Undo → Settings if needed."
+msgstr ""
+
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:140
+msgid "This site records changes to selected content (titles, text, excerpts and order of posts and pages) so that administrators can undo specific changes. The history stores who made a change, when, and the previous and new values. Removed text can remain in the history until it expires (up to the retention period set by the administrator). The history is stored in this site's database and is not sent to third parties."
+msgstr ""
+
+#: src/Presentation/Admin/AdminPage.php:51
+#: build/index.js:15
+#: build/index.js:17
+msgid "History"
+msgstr ""
+
+#: src/Presentation/Admin/AdminPage.php:52
+#: build/index.js:15
+#: build/index.js:17
+#: build/index.js:22
+msgid "Restores"
+msgstr ""
+
+#: src/Presentation/Admin/AdminPage.php:53
+#: src/Presentation/Admin/AdminPage.php:144
+#: build/index.js:15
+#: build/index.js:30
+msgid "Settings"
+msgstr ""
+
+#: src/Presentation/Admin/AdminPage.php:69
+msgid "Selective Undo needs JavaScript to show the history."
+msgstr ""
+
+#: src/Presentation/Admin/AdminPage.php:83
+msgid "Selective Undo: the admin interface is not built. Run \"npm install && npm run build\"."
+msgstr ""
+
+#. translators: %s: post title.
+#: src/Presentation/Admin/AdminPage.php:126
+#, php-format
+msgid "Change history of “%s”"
+msgstr ""
+
+#: src/Presentation/Admin/AdminPage.php:127
+msgid "Change history"
+msgstr ""
+
+#: src/Presentation/Rest/ErrorMapper.php:37
+msgid "The history storage is temporarily unavailable."
+msgstr ""
+
+#: src/Presentation/Rest/ErrorMapper.php:41
+msgid "Something went wrong. The details were written to the Selective Undo diagnostics log."
+msgstr ""
+
+#: src/Presentation/Rest/RestApi.php:299
+#: src/Presentation/Rest/RestApi.php:467
+msgid "This restore does not exist."
+msgstr ""
+
+#: src/Presentation/Rest/RestApi.php:336
+msgid "Only the author of a restore can continue it."
+msgstr ""
+
+#: src/Presentation/Rest/RestApi.php:449
+msgid "View history"
+msgstr ""
+
+#: src/Presentation/Rest/RestApi.php:450
+msgid "Restore changes"
+msgstr ""
+
+#: src/Presentation/Rest/RestApi.php:451
+msgid "Manage settings"
+msgstr ""
+
+#: src/Presentation/Rest/RestApi.php:452
+#: build/index.js:23
+msgid "Delete history"
+msgstr ""
+
+#: src/Presentation/Rest/RestApi.php:453
+msgid "Export history"
+msgstr ""
+
+#: build/index.js:1
+msgctxt "unit: bytes"
+msgid "B"
+msgstr ""
+
+#: build/index.js:1
+msgctxt "unit: kilobytes"
+msgid "KB"
+msgstr ""
+
+#: build/index.js:1
+msgctxt "unit: megabytes"
+msgid "MB"
+msgstr ""
+
+#: build/index.js:1
+msgctxt "unit: gigabytes"
+msgid "GB"
+msgstr ""
+
+#. translators: %d: number of posts or pages.
+#: build/index.js:2
+#, js-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:2
+msgid "This field was changed again after the selected change. It is skipped so that the newer version is not lost."
+msgstr ""
+
+#: build/index.js:2
+msgid "The item no longer exists. Deleted items cannot be restored in this version."
+msgstr ""
+
+#: build/index.js:2
+msgid "You are not allowed to edit this item."
+msgstr ""
+
+#: build/index.js:2
+msgid "The item is in the trash. Restore it from the trash first, then check again."
+msgstr ""
+
+#: build/index.js:2
+msgid "The previous value contains markup that your account is not allowed to publish. Ask an administrator to restore it."
+msgstr ""
+
+#: build/index.js:2
+msgid "The selected changes of this field do not follow each other. Select one change, or a continuous sequence of changes."
+msgstr ""
+
+#: build/index.js:2
+msgid "The same change was selected twice."
+msgstr ""
+
+#: build/index.js:2
+msgid "The value was too large to be stored, so it cannot be restored."
+msgstr ""
+
+#: build/index.js:2
+msgid "This change was recorded in an inconsistent situation, so automatic restore is not allowed."
+msgstr ""
+
+#: build/index.js:2
+msgid "This change cannot be restored."
+msgstr ""
+
+#: build/index.js:2
+msgid "This is an informational event without values to restore."
+msgstr ""
+
+#: build/index.js:2
+msgid "This field is not supported."
+msgstr ""
+
+#: build/index.js:2
+msgid "This content type is no longer recorded. Enable it in the settings to restore it."
+msgstr ""
+
+#: build/index.js:2
+msgid "The component that restores this kind of data is not active."
+msgstr ""
+
+#: build/index.js:2
+msgid "This change was recorded in an older, incompatible format."
+msgstr ""
+
+#: build/index.js:2
+msgid "The stored value has an unexpected type."
+msgstr ""
+
+#: build/index.js:2
+msgid "The stored value could not be read."
+msgstr ""
+
+#: build/index.js:2
+msgid "The current value could not be read."
+msgstr ""
+
+#: build/index.js:2
+msgid "The stored value is missing from the history."
+msgstr ""
+
+#: build/index.js:2
+msgid "The stored value is damaged (checksum mismatch). It will not be restored."
+msgstr ""
+
+#: build/index.js:2
+msgid "The stored value is damaged. It will not be restored."
+msgstr ""
+
+#: build/index.js:2
+msgid "The stored value uses an unknown format."
+msgstr ""
+
+#: build/index.js:2
+msgid "The stored value exceeds the current size limit."
+msgstr ""
+
+#: build/index.js:2
+msgid "The server cannot decompress the stored value (zlib is missing)."
+msgstr ""
+
+#: build/index.js:2
+msgid "The item was locked by another save for too long. It will be retried."
+msgstr ""
+
+#: build/index.js:2
+msgid "A database conflict occurred. It will be retried."
+msgstr ""
+
+#: build/index.js:2
+msgid "The database connection was lost. It will be retried."
+msgstr ""
+
+#. translators: %s: technical reason code.
+#: build/index.js:3
+#, js-format
+msgid "Blocked by a site rule (%s)."
+msgstr ""
+
+#: build/index.js:3
+#: build/index.js:20
+#: build/index.js:21
+msgid "Ready to restore"
+msgstr ""
+
+#: build/index.js:3
+#: build/index.js:17
+#: build/index.js:20
+#: build/index.js:21
+msgid "Already in the desired state"
+msgstr ""
+
+#: build/index.js:3
+msgid "Changed again"
+msgstr ""
+
+#: build/index.js:3
+msgid "Item deleted"
+msgstr ""
+
+#: build/index.js:3
+msgid "No permission"
+msgstr ""
+
+#: build/index.js:3
+msgid "Not supported"
+msgstr ""
+
+#: build/index.js:3
+msgid "Cannot be restored"
+msgstr ""
+
+#: build/index.js:3
+msgid "Waiting"
+msgstr ""
+
+#: build/index.js:3
+#: build/index.js:17
+msgid "Restored"
+msgstr ""
+
+#: build/index.js:3
+#: build/index.js:17
+msgid "Skipped: changed again"
+msgstr ""
+
+#: build/index.js:3
+msgid "Skipped"
+msgstr ""
+
+#: build/index.js:3
+#: build/index.js:17
+msgid "Failed"
+msgstr ""
+
+#: build/index.js:3
+msgid "Not started (stopped)"
+msgstr ""
+
+#: build/index.js:3
+msgid "Waiting to start"
+msgstr ""
+
+#: build/index.js:3
+msgid "In progress"
+msgstr ""
+
+#: build/index.js:3
+msgid "Stopping"
+msgstr ""
+
+#: build/index.js:3
+msgid "Completed"
+msgstr ""
+
+#: build/index.js:3
+msgid "Completed with skipped fields"
+msgstr ""
+
+#: build/index.js:3
+msgid "Partially failed"
+msgstr ""
+
+#: build/index.js:3
+msgid "Stopped"
+msgstr ""
+
+#: build/index.js:3
+msgid "Block editor or REST"
+msgstr ""
+
+#: build/index.js:3
+msgid "Classic editor"
+msgstr ""
+
+#: build/index.js:3
+msgid "Quick Edit"
+msgstr ""
+
+#: build/index.js:3
+msgid "Bulk edit"
+msgstr ""
+
+#: build/index.js:3
+msgid "Autosave"
+msgstr ""
+
+#: build/index.js:3
+msgid "REST API (application password)"
+msgstr ""
+
+#: build/index.js:3
+msgid "REST API"
+msgstr ""
+
+#: build/index.js:3
+msgid "XML-RPC"
+msgstr ""
+
+#: build/index.js:3
+msgid "WP-CLI"
+msgstr ""
+
+#: build/index.js:3
+msgid "Scheduled task"
+msgstr ""
+
+#: build/index.js:3
+msgid "Admin request"
+msgstr ""
+
+#: build/index.js:3
+msgid "Other"
+msgstr ""
+
+#: build/index.js:3
+msgid "Created"
+msgstr ""
+
+#: build/index.js:3
+msgid "Moved to trash"
+msgstr ""
+
+#: build/index.js:3
+msgid "Restored from trash"
+msgstr ""
+
+#: build/index.js:3
+msgid "Deleted permanently"
+msgstr ""
+
+#: build/index.js:3
+msgid "Changed"
+msgstr ""
+
+#: build/index.js:3
+msgctxt "noun: a restore operation"
+msgid "Restore"
+msgstr ""
+
+#. translators: %s: post title.
+#: build/index.js:4
+#, js-format
+msgid "Restore of “%s”"
+msgstr ""
+
+#. translators: %s: post title.
+#: build/index.js:5
+#, js-format
+msgid "Autosaved draft “%s”"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:17
+msgid "Operation"
+msgstr ""
+
+#. translators: 1: event name, for example "Created". 2: post title.
+#: build/index.js:6
+#, js-format
+msgctxt "event: post title"
+msgid "%1$s: “%2$s”"
+msgstr ""
+
+#. translators: %s: post title.
+#: build/index.js:7
+#, js-format
+msgid "Edit of “%s”"
+msgstr ""
+
+#. translators: %d: number of items.
+#: build/index.js:8
+#, js-format
+msgid "Edit of %d item"
+msgid_plural "Edit of %d items"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: post ID.
+#: build/index.js:9
+#, js-format
+msgid "Deleted item #%d"
+msgstr ""
+
+#. translators: %d: post ID.
+#: build/index.js:10
+#, js-format
+msgid "(no title) #%d"
+msgstr ""
+
+#. translators: %s: operation name.
+#: build/index.js:11
+#, js-format
+msgid "Confirmed operation: %s"
+msgstr ""
+
+#: build/index.js:11
+msgid "integration"
+msgstr ""
+
+#: build/index.js:11
+msgid "Autosave session"
+msgstr ""
+
+#: build/index.js:11
+msgid "One request"
+msgstr ""
+
+#: build/index.js:11
+msgid "fields you did not select"
+msgstr ""
+
+#: build/index.js:11
+msgid "status and publication dates"
+msgstr ""
+
+#: build/index.js:11
+msgid "slug and author"
+msgstr ""
+
+#: build/index.js:11
+msgid "custom fields and metadata"
+msgstr ""
+
+#: build/index.js:11
+msgid "comments"
+msgstr ""
+
+#: build/index.js:11
+msgid "users"
+msgstr ""
+
+#: build/index.js:11
+msgid "items created later"
+msgstr ""
+
+#: build/index.js:11
+msgid "the database update has not finished"
+msgstr ""
+
+#: build/index.js:11
+msgid "the posts table does not support transactions (InnoDB is required)"
+msgstr ""
+
+#: build/index.js:11
+msgid "history tables are missing or do not support transactions"
+msgstr ""
+
+#: build/index.js:11
+msgid "a dedicated database connection could not be opened"
+msgstr ""
+
+#: build/index.js:11
+msgid "the dedicated database connection reaches a different database"
+msgstr ""
+
+#: build/index.js:11
+msgid "the database connection character set could not be set"
+msgstr ""
+
+#: build/index.js:11
+msgid "database settings in wp-config.php are not available"
+msgstr ""
+
+#: build/index.js:11
+msgid "DB_HOST in wp-config.php could not be read"
+msgstr ""
+
+#: build/index.js:11
+msgid "the PHP mysqli extension is missing"
+msgstr ""
+
+#: build/index.js:11
+msgid "Change history and safe restore"
+msgstr ""
+
+#: build/index.js:11
+msgid "active"
+msgstr ""
+
+#: build/index.js:11
+msgid "turned off"
+msgstr ""
+
+#: build/index.js:11
+msgid "paused — size limit reached"
+msgstr ""
+
+#: build/index.js:11
+msgid "paused"
+msgstr ""
+
+#: build/index.js:11
+#: build/index.js:23
+msgid "Storage"
+msgstr ""
+
+#. translators: 1: used size, 2: size limit.
+#: build/index.js:12
+#, js-format
+msgid "%1$s of %2$s"
+msgstr ""
+
+#: build/index.js:12
+msgid "Available"
+msgstr ""
+
+#. translators: 1: number of days, 2: date of the oldest recorded change.
+#: build/index.js:13
+#, js-format
+msgid "last %1$d day, since %2$s"
+msgid_plural "last %1$d days, since %2$s"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of days.
+#: build/index.js:14
+#, js-format
+msgid "last %d day"
+msgid_plural "last %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: list of reasons.
+#: build/index.js:15
+#, js-format
+msgid "Restoring is unavailable: %s. History is still recorded."
+msgstr ""
+
+#: build/index.js:15
+#: build/index.js:23
+msgid "Diagnostics"
+msgstr ""
+
+#: build/index.js:15
+msgid "The history has gaps in the last 24 hours."
+msgstr ""
+
+#: build/index.js:15
+msgid "Details"
+msgstr ""
+
+#: build/index.js:15
+msgid "The history is almost at its size limit. The oldest history will be removed or recording will pause."
+msgstr ""
+
+#: build/index.js:15
+msgid "The history uses more than 80% of its size limit."
+msgstr ""
+
+#: build/index.js:15
+msgid "The server could not be reached. Check your connection and try again."
+msgstr ""
+
+#: build/index.js:15
+msgid "Something went wrong. Try again."
+msgstr ""
+
+#: build/index.js:15
+msgid "Try again"
+msgstr ""
+
+#: build/index.js:15
+msgid "Loading…"
+msgstr ""
+
+#: build/index.js:15
+msgid "Show more"
+msgstr ""
+
+#: build/index.js:15
+msgid "Selective Undo sections"
+msgstr ""
+
+#. translators: %d: number of unchanged lines hidden from the comparison.
+#: build/index.js:16
+#, js-format
+msgid "%d unchanged line hidden"
+msgid_plural "%d unchanged lines hidden"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:16
+msgid "Unchanged:"
+msgstr ""
+
+#: build/index.js:16
+msgid "Added:"
+msgstr ""
+
+#: build/index.js:16
+msgid "Removed:"
+msgstr ""
+
+#: build/index.js:16
+msgid "The stored values are not available for comparison."
+msgstr ""
+
+#: build/index.js:16
+msgid "This value contains binary data and cannot be shown as text."
+msgstr ""
+
+#: build/index.js:16
+msgid "Both values are empty."
+msgstr ""
+
+#: build/index.js:16
+msgid "Show more of the comparison"
+msgstr ""
+
+#: build/index.js:16
+msgid "Loading comparison…"
+msgstr ""
+
+#: build/index.js:16
+msgid "in trash"
+msgstr ""
+
+#: build/index.js:16
+msgid "History of this item"
+msgstr ""
+
+#: build/index.js:16
+#: build/index.js:18
+msgid "Open editor"
+msgstr ""
+
+#: build/index.js:16
+msgid "restored value"
+msgstr ""
+
+#: build/index.js:16
+msgid "Not restorable"
+msgstr ""
+
+#: build/index.js:16
+msgid "Hide comparison"
+msgstr ""
+
+#: build/index.js:16
+msgid "Compare before / after"
+msgstr ""
+
+#: build/index.js:16
+#: build/index.js:17
+msgid "Author"
+msgstr ""
+
+#: build/index.js:16
+#: build/index.js:17
+#: build/index.js:18
+msgid "System"
+msgstr ""
+
+#: build/index.js:16
+#: build/index.js:17
+msgid "Time"
+msgstr ""
+
+#: build/index.js:16
+msgid "Group"
+msgstr ""
+
+#. translators: %d: number of items.
+#: build/index.js:17
+#, js-format
+msgid "This operation also changed %d item you are not allowed to view."
+msgid_plural "This operation also changed %d items you are not allowed to view."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:17
+msgid "Some values of this operation were recorded from WordPress hook data only. They are shown, but check them before restoring."
+msgstr ""
+
+#: build/index.js:17
+msgid "Items in this operation"
+msgstr ""
+
+#: build/index.js:17
+msgid "Changed fields"
+msgstr ""
+
+#: build/index.js:17
+msgid "Restores are checked one item at a time."
+msgstr ""
+
+#: build/index.js:17
+#: build/index.js:18
+#: build/index.js:20
+msgid "Check restore"
+msgstr ""
+
+#: build/index.js:17
+#: build/index.js:18
+msgid "Check undo of this restore"
+msgstr ""
+
+#: build/index.js:17
+msgid "+ items you cannot view"
+msgstr ""
+
+#: build/index.js:17
+msgid "Partly restorable"
+msgstr ""
+
+#: build/index.js:17
+msgid "History available"
+msgstr ""
+
+#: build/index.js:17
+msgid "Changed:"
+msgstr ""
+
+#: build/index.js:17
+msgid "View changes"
+msgstr ""
+
+#: build/index.js:17
+msgid "Search by current title or ID"
+msgstr ""
+
+#: build/index.js:17
+msgid "Period"
+msgstr ""
+
+#: build/index.js:17
+msgid "Whole history"
+msgstr ""
+
+#: build/index.js:17
+msgid "Last 24 hours"
+msgstr ""
+
+#: build/index.js:17
+msgid "Last 7 days"
+msgstr ""
+
+#: build/index.js:17
+msgid "Everyone"
+msgstr ""
+
+#: build/index.js:17
+msgid "My changes"
+msgstr ""
+
+#: build/index.js:17
+msgid "Content type"
+msgstr ""
+
+#: build/index.js:17
+msgid "All types"
+msgstr ""
+
+#: build/index.js:17
+msgid "Edits, restores and operations"
+msgstr ""
+
+#: build/index.js:17
+msgid "Edits"
+msgstr ""
+
+#: build/index.js:17
+msgid "Integrated operations"
+msgstr ""
+
+#: build/index.js:17
+msgid "Autosaved drafts"
+msgstr ""
+
+#: build/index.js:17
+msgid "Clear filters"
+msgstr ""
+
+#: build/index.js:17
+msgid "Nothing matches these filters."
+msgstr ""
+
+#: build/index.js:17
+msgid "No changes recorded yet."
+msgstr ""
+
+#: build/index.js:17
+msgid "Edits of titles, content, excerpts and order of tracked content will appear here."
+msgstr ""
+
+#: build/index.js:17
+msgid "Recorded operations, newest first"
+msgstr ""
+
+#: build/index.js:17
+msgid "Changes"
+msgstr ""
+
+#: build/index.js:17
+msgid "Notes"
+msgstr ""
+
+#: build/index.js:17
+msgid "Restore completed"
+msgstr ""
+
+#: build/index.js:17
+msgid "Restore completed, some fields were skipped"
+msgstr ""
+
+#: build/index.js:17
+msgid "Restore partially failed"
+msgstr ""
+
+#: build/index.js:17
+msgid "Restore failed"
+msgstr ""
+
+#: build/index.js:17
+msgid "Restore stopped"
+msgstr ""
+
+#: build/index.js:17
+msgid "Restoring changes"
+msgstr ""
+
+#: build/index.js:17
+msgid "Skipped for another reason"
+msgstr ""
+
+#: build/index.js:17
+msgid "Not started"
+msgstr ""
+
+#. translators: 1: processed fields, 2: total fields.
+#: build/index.js:18
+#, js-format
+msgid "Processed %1$d of %2$d field"
+msgid_plural "Processed %1$d of %2$d fields"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:18
+msgid "You can close this page. The restore continues if background tasks on the site work."
+msgstr ""
+
+#: build/index.js:18
+msgid "Continue in this tab"
+msgstr ""
+
+#: build/index.js:18
+msgid "Background processing on this site seems delayed."
+msgstr ""
+
+#: build/index.js:18
+msgid "Stop after the current item"
+msgstr ""
+
+#: build/index.js:18
+msgid "Stopping does not undo items that were already restored."
+msgstr ""
+
+#: build/index.js:18
+msgid "The content is restored. Cache clearing and other follow-up tasks are still running."
+msgstr ""
+
+#: build/index.js:18
+msgid "The content is restored, but some follow-up tasks (such as clearing the page cache) failed. Clear the page cache manually if visitors still see the old version."
+msgstr ""
+
+#: build/index.js:18
+msgid "Report"
+msgstr ""
+
+#: build/index.js:18
+msgid "Back to history"
+msgstr ""
+
+#: build/index.js:18
+msgid "All restores"
+msgstr ""
+
+#: build/index.js:18
+msgid "Item history"
+msgstr ""
+
+#: build/index.js:18
+msgid "No recorded changes for this item."
+msgstr ""
+
+#: build/index.js:18
+msgid "Whole operation"
+msgstr ""
+
+#: build/index.js:18
+msgid "Select one change, or several consecutive changes of the same field to return to the state before the first one."
+msgstr ""
+
+#. translators: %d: number of changes.
+#: build/index.js:19
+#, js-format
+msgid "%d change is undone together."
+msgid_plural "%d consecutive changes are undone together."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:19
+msgid "Between the selected changes there are other changes that cancel each other out."
+msgstr ""
+
+#: build/index.js:19
+msgid "This field was changed later and then returned to the same value."
+msgstr ""
+
+#: build/index.js:19
+msgid "Someone is editing this item right now. If they save their open editor, the restored value will be overwritten."
+msgstr ""
+
+#: build/index.js:19
+msgid "This page is built with a page builder. Restoring the content may not change what visitors see."
+msgstr ""
+
+#: build/index.js:19
+msgid "Another plugin keeps a copy of this content (for example Markdown source) and may overwrite the restored content on the next edit."
+msgstr ""
+
+#: build/index.js:19
+msgid "The history of this item is incomplete for this period."
+msgstr ""
+
+#: build/index.js:19
+msgid "Compare current and restored value"
+msgstr ""
+
+#: build/index.js:19
+msgid "What changed since"
+msgstr ""
+
+#: build/index.js:19
+msgid "Check again"
+msgstr ""
+
+#: build/index.js:19
+msgid "Open that restore"
+msgstr ""
+
+#: build/index.js:19
+msgid "Restore actions"
+msgstr ""
+
+#: build/index.js:19
+msgid "Could not confirm that the restore started. You can safely try again: the same request will not run twice."
+msgstr ""
+
+#: build/index.js:19
+msgid "This preview has expired. Check the changes again before restoring."
+msgstr ""
+
+#. translators: %d: number of fields that will be restored.
+#: build/index.js:20
+#, js-format
+msgid "Restore %d field"
+msgid_plural "Restore %d fields"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:20
+#: build/index.js:22
+msgid "Checking the current state…"
+msgstr ""
+
+#: build/index.js:20
+#: build/index.js:21
+msgid "Need attention"
+msgstr ""
+
+#: build/index.js:20
+msgid "Will be processed:"
+msgstr ""
+
+#. translators: %d: number of fields.
+#: build/index.js:21
+#, js-format
+msgid "%d field"
+msgid_plural "%d fields"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:21
+msgid "Will not be changed:"
+msgstr ""
+
+#. translators: %s: date and time.
+#: build/index.js:22
+#, js-format
+msgid "This preview is valid until %s. Values are checked again right before writing."
+msgstr ""
+
+#: build/index.js:22
+msgid "No restores yet."
+msgstr ""
+
+#. translators: 1: number restored, 2: total number of fields.
+#: build/index.js:23
+#, js-format
+msgid "%1$d of %2$d field restored"
+msgid_plural "%1$d of %2$d fields restored"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:23
+msgid "What to record"
+msgstr ""
+
+#: build/index.js:23
+msgid "Access"
+msgstr ""
+
+#: build/index.js:23
+msgid "Removal"
+msgstr ""
+
+#: build/index.js:23
+msgid "Save changes"
+msgstr ""
+
+#: build/index.js:23
+msgid "Record changes"
+msgstr ""
+
+#: build/index.js:23
+msgid "When turned off, changes are not recorded and cannot be undone later. The period appears as a gap in the history."
+msgstr ""
+
+#: build/index.js:23
+msgid "Content types"
+msgstr ""
+
+#: build/index.js:23
+msgid "Title, content, excerpt and order of existing items are recorded."
+msgstr ""
+
+#: build/index.js:23
+msgid "Merge autosaves of drafts"
+msgstr ""
+
+#: build/index.js:23
+msgid "Autosaves of a draft by its author become one entry per editing session instead of one entry per minute."
+msgstr ""
+
+#: build/index.js:23
+msgid "Create a WordPress revision after a restore"
+msgstr ""
+
+#: build/index.js:23
+msgid "What is not recorded or restored"
+msgstr ""
+
+#: build/index.js:23
+msgid "Deleted items, creation of new items, status, slug, author, dates, custom fields, comments, users, settings, files, orders and payments. Changes made directly in the database, bypassing WordPress, are detected but not recorded. Emails, webhooks and other external effects are never undone."
+msgstr ""
+
+#: build/index.js:23
+msgid "Text removed from pages can stay in the history until it expires. Delete it here, for example after removing personal data."
+msgstr ""
+
+#: build/index.js:23
+msgid "What to delete"
+msgstr ""
+
+#: build/index.js:23
+msgid "History of one item"
+msgstr ""
+
+#: build/index.js:23
+msgid "History older than a date"
+msgstr ""
+
+#: build/index.js:23
+msgid "All history"
+msgstr ""
+
+#: build/index.js:23
+msgid "Item ID"
+msgstr ""
+
+#: build/index.js:23
+msgid "Older than"
+msgstr ""
+
+#. translators: %d: number of recorded changes.
+#: build/index.js:24
+#, js-format
+msgid "%d recorded change will be deleted permanently."
+msgid_plural "%d recorded changes will be deleted permanently."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of operations.
+#: build/index.js:25
+#, js-format
+msgid "%d operation is kept because an open preview or a running restore uses it."
+msgid_plural "%d operations are kept because an open preview or a running restore uses them."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:25
+msgid "Type DELETE to confirm"
+msgstr ""
+
+#. translators: %d: number of deleted changes.
+#: build/index.js:26
+#, js-format
+msgid "Deleted %d recorded change."
+msgid_plural "Deleted %d recorded changes."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:26
+msgid "Some history is left; run the deletion again."
+msgstr ""
+
+#: build/index.js:26
+msgid "Delete permanently"
+msgstr ""
+
+#: build/index.js:26
+msgid "Cancel"
+msgstr ""
+
+#: build/index.js:26
+msgid "Preview deletion"
+msgstr ""
+
+#: build/index.js:26
+msgid "Used"
+msgstr ""
+
+#: build/index.js:26
+msgid "On disk"
+msgstr ""
+
+#: build/index.js:26
+msgid "Oldest available change"
+msgstr ""
+
+#: build/index.js:26
+msgid "The database file does not shrink automatically after deletions; freed space is reused for new history."
+msgstr ""
+
+#: build/index.js:26
+msgid "Keep history for (days)"
+msgstr ""
+
+#. translators: %d: maximum number of days.
+#: build/index.js:27
+#, js-format
+msgid "From 1 to %d day. The size limit below may remove older history earlier."
+msgid_plural "From 1 to %d days. The size limit below may remove older history earlier."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:27
+msgid "History size limit (MB)"
+msgstr ""
+
+#: build/index.js:27
+msgid "Remove the oldest history when the limit is reached"
+msgstr ""
+
+#: build/index.js:27
+msgid "When off, recording pauses at the limit instead."
+msgstr ""
+
+#: build/index.js:27
+msgid "Largest value to store (KB)"
+msgstr ""
+
+#. translators: %s: size.
+#: build/index.js:28
+#, js-format
+msgid "Effective limit on this server: %s. Larger values are listed in the history but cannot be restored."
+msgstr ""
+
+#: build/index.js:28
+msgid "Each permission is granted separately. Users additionally need permission to edit an item to see or restore its history."
+msgstr ""
+
+#: build/index.js:28
+msgid "Permissions by role"
+msgstr ""
+
+#: build/index.js:28
+msgid "Role"
+msgstr ""
+
+#. translators: 1: user role name. 2: permission name.
+#: build/index.js:29
+#, js-format
+msgctxt "role: permission"
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: build/index.js:29
+msgid "History gaps"
+msgstr ""
+
+#: build/index.js:29
+msgid "No gaps recorded."
+msgstr ""
+
+#: build/index.js:29
+msgid "A field was changed outside WordPress (for example by a direct database query). That change is not in the history."
+msgstr ""
+
+#: build/index.js:29
+msgid "A change could not be recorded because of an error. See diagnostics."
+msgstr ""
+
+#: build/index.js:29
+msgid "A value was too large to be stored."
+msgstr ""
+
+#: build/index.js:29
+msgid "Too many nested saves of one item in a single request; some were not recorded."
+msgstr ""
+
+#: build/index.js:29
+msgid "WordPress saved an item based on outdated cached data. The recorded values are correct."
+msgstr ""
+
+#: build/index.js:29
+msgid "Recording was paused because the history size limit was reached."
+msgstr ""
+
+#: build/index.js:29
+msgid "Recording was paused while the database was being updated."
+msgstr ""
+
+#: build/index.js:29
+msgid "Recording was turned off in the settings."
+msgstr ""
+
+#. translators: %s: date.
+#: build/index.js:30
+#, js-format
+msgid "since %s, ongoing"
+msgstr ""
+
+#: build/index.js:30
+msgid "Download diagnostics (no content)"
+msgstr ""
+
+#: build/index.js:30
+msgid "Export history list (CSV, no values)"
+msgstr ""
+
+#: build/index.js:30
+msgid "Deactivating the plugin keeps the history. Deleting the plugin keeps the history too, unless you allow it below."
+msgstr ""
+
+#: build/index.js:30
+msgid "Delete all history and settings when the plugin is deleted"
+msgstr ""
+
+#: build/index.js:30
+msgid "When the plugin is deleted from the Plugins screen, the history is destroyed and cannot be recovered."
+msgstr ""
+
+#: build/index.js:30
+msgid "Settings saved."
+msgstr ""
+
+#: build/index.js:30
+msgid "Settings sections"
+msgstr ""
