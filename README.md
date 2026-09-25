@@ -66,20 +66,6 @@ bin/i18n.sh install-test-site           # install them into the test site
 
 To use a translation before its language pack is published, copy the files from `bin/i18n.sh compile` into `wp-content/languages/plugins/`.
 
-## Release
-
-```sh
-bin/dist.sh             # builds dist/selective-undo/ and dist/selective-undo-<version>.zip
-```
-
-The package leaves out the paths listed in `.distignore`. Check it with [Plugin Check](https://wordpress.org/plugins/plugin-check/) before uploading:
-
-```sh
-wp plugin check selective-undo --include-experimental
-```
-
-Before a release, update `Version` in `selective-undo.php`, `Stable tag` and the changelog in `readme.txt`; `bin/dist.sh` refuses to build when the version and the stable tag differ.
-
 ## License
 
 GPL-2.0-or-later. See [LICENSE](LICENSE).
