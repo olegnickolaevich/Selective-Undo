@@ -76,7 +76,8 @@ final class RetentionService
     {
         $stats = get_option(self::STATS_OPTION);
 
-        if (!is_array($stats) || !isset($stats['logical_bytes'])) {
+        // Aggregates are cheap but not free: recompute at most every five minutes.
+        if (!is_array($stats) || !isset($stats['logical_bytes']) || (int) ($stats['updated_at'] ?? 0) < time() - 5 * MINUTE_IN_SECONDS) {
             return $this->refreshStats();
         }
 

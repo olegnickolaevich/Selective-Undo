@@ -77,6 +77,8 @@ final class PlanView
             'untouched' => self::UNTOUCHED,
             'items' => $items,
             'job_id' => $job !== null ? (string) $job['uuid'] : null,
+            // IDs only: lets the UI build a fresh preview when this one expires.
+            'selection' => json_decode((string) $plan['selection_json'], true),
         ];
     }
 }

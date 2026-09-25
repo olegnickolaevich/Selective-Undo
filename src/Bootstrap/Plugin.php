@@ -45,6 +45,10 @@ final class Plugin
         $s->privacy()->register();
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RestApi(self::services()))->register());
 
+        if (is_admin()) {
+            (new \SelectiveUndo\Presentation\Admin\AdminPage($s->trackingPolicy()))->register();
+        }
+
         if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {
             \WP_CLI::add_command('selective-undo', \SelectiveUndo\Presentation\Cli\CliCommand::class);
         }

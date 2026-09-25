@@ -70,6 +70,9 @@ require_once ABSPATH . 'wp-settings.php';
 PHP
   wp core install --url=http://127.0.0.1:8899 --title='Selective Undo Test' --admin_user=admin \
     --admin_password=password --admin_email=admin@example.test --skip-email >/dev/null
+  # wp_install() guesses the URL from the CLI path; pin it for the web server used by E2E tests.
+  wp option update siteurl http://127.0.0.1:8899 >/dev/null
+  wp option update home http://127.0.0.1:8899 >/dev/null
   ln -sfn "$ROOT" "$SITE/wp-content/plugins/selective-undo"
   wp user create editor editor@example.test --role=editor --user_pass=password >/dev/null
   wp user create author author@example.test --role=author --user_pass=password >/dev/null
