@@ -5,16 +5,26 @@
 #   bin/test-env.sh up      start database, install a fresh site, activate the plugin
 #   bin/test-env.sh down    remove the database container
 #   bin/test-env.sh wp ...  run WP-CLI against the test site
+#
+# Optional environment:
+#   SU_WP_IMAGE=wordpress:6.8-php8.2-apache   WordPress version to take the core files from
+#   SU_TEST_SITE=/path  SU_DB_NAME=name  SU_E2E_PORT=8968  SU_TABLE_PREFIX=xyz_   a second, independent site
+#   SU_PLUGIN_ZIP=dist/selective-undo-1.0.0.zip   install the packaged plugin instead of linking this checkout
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORK="$ROOT/.work"
-SITE="$WORK/site"
+SITE="${SU_TEST_SITE:-$WORK/site}"
+DB_NAME="${SU_DB_NAME:-wptest}"
+PORT="${SU_E2E_PORT:-8899}"
+TABLE_PREFIX="${SU_TABLE_PREFIX:-wp_}"
+PLUGIN_ZIP="${SU_PLUGIN_ZIP:-}"
 DB_CONTAINER="${SU_DB_CONTAINER:-sundo-test-db}"
 DB_IMAGE="${SU_DB_IMAGE:-mysql:8.4}"
 DB_PORT="${SU_DB_PORT:-33080}"
 WP_IMAGE="${SU_WP_IMAGE:-wordpress:latest}"
 WPCLI="$WORK/wp-cli.phar"
+CORE="$WORK/core/${WP_IMAGE//[:\/]/_}"
 
 mkdir -p "$WORK"
 
@@ -37,10 +47,11 @@ start_db() {
 }
 
 ensure_wordpress() {
-  if [ ! -f "$WORK/wordpress/wp-includes/version.php" ]; then
+  if [ ! -f "$CORE/wp-includes/version.php" ]; then
     docker image inspect "$WP_IMAGE" >/dev/null 2>&1 || docker pull -q "$WP_IMAGE" >/dev/null
     local cid; cid="$(docker create "$WP_IMAGE")"
-    docker cp "$cid:/usr/src/wordpress" "$WORK/wordpress" >/dev/null
+    mkdir -p "$(dirname "$CORE")"
+    docker cp "$cid:/usr/src/wordpress" "$CORE" >/dev/null
     docker rm "$cid" >/dev/null
   fi
   if [ ! -f "$WPCLI" ]; then
@@ -49,37 +60,42 @@ ensure_wordpress() {
 }
 
 install_site() {
-  docker exec "$DB_CONTAINER" "$(db_client)" -uroot -proot -e 'DROP DATABASE IF EXISTS wptest; CREATE DATABASE wptest CHARACTER SET utf8mb4' 2>/dev/null
-  rm -rf "$SITE" && cp -r "$WORK/wordpress" "$SITE"
+  docker exec "$DB_CONTAINER" "$(db_client)" -uroot -proot -e "DROP DATABASE IF EXISTS $DB_NAME; CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4" 2>/dev/null
+  rm -rf "$SITE" && cp -r "$CORE" "$SITE"
   cat > "$SITE/wp-config.php" <<PHP
 <?php
-define('DB_NAME', 'wptest');
+define('DB_NAME', '$DB_NAME');
 define('DB_USER', 'root');
 define('DB_PASSWORD', 'root');
 define('DB_HOST', '127.0.0.1:$DB_PORT');
 define('DB_CHARSET', 'utf8mb4');
 define('DB_COLLATE', '');
-\$table_prefix = 'wp_';
+\$table_prefix = '$TABLE_PREFIX';
 define('WP_DEBUG', true);
 define('WP_DEBUG_DISPLAY', false);
-define('WP_DEBUG_LOG', '$WORK/debug.log');
+define('WP_DEBUG_LOG', '$SITE/debug.log');
 define('DISABLE_WP_CRON', true);
 foreach (['AUTH_KEY','SECURE_AUTH_KEY','LOGGED_IN_KEY','NONCE_KEY','AUTH_SALT','SECURE_AUTH_SALT','LOGGED_IN_SALT','NONCE_SALT'] as \$k) { define(\$k, 'test-' . \$k); }
 if (!defined('ABSPATH')) define('ABSPATH', __DIR__ . '/');
 require_once ABSPATH . 'wp-settings.php';
 PHP
-  wp core install --url=http://127.0.0.1:8899 --title='Selective Undo Test' --admin_user=admin \
+  wp core install --url="http://127.0.0.1:$PORT" --title='Selective Undo Test' --admin_user=admin \
     --admin_password=password --admin_email=admin@example.test --skip-email >/dev/null
   # wp_install() guesses the URL from the CLI path; pin it for the web server used by E2E tests.
-  wp option update siteurl http://127.0.0.1:8899 >/dev/null
-  wp option update home http://127.0.0.1:8899 >/dev/null
-  ln -sfn "$ROOT" "$SITE/wp-content/plugins/selective-undo"
+  wp option update siteurl "http://127.0.0.1:$PORT" >/dev/null
+  wp option update home "http://127.0.0.1:$PORT" >/dev/null
   wp user create editor editor@example.test --role=editor --user_pass=password >/dev/null
   wp user create author author@example.test --role=author --user_pass=password >/dev/null
-  wp plugin activate selective-undo >/dev/null
+  if [ -n "$PLUGIN_ZIP" ]; then
+    # The same installer WordPress uses for plugins from the directory.
+    wp plugin install "$PLUGIN_ZIP" --activate >/dev/null
+  else
+    ln -sfn "$ROOT" "$SITE/wp-content/plugins/selective-undo"
+    wp plugin activate selective-undo >/dev/null
+  fi
   # Install bundled translations the way WordPress.org language packs are installed.
-  SU_WPCLI="$WPCLI" "$ROOT/bin/i18n.sh" install-test-site >/dev/null
-  echo "Site ready: $SITE (WordPress $(wp core version), DB $DB_IMAGE on port $DB_PORT)"
+  SU_WPCLI="$WPCLI" SU_TEST_SITE="$SITE" "$ROOT/bin/i18n.sh" install-test-site >/dev/null
+  echo "Site ready: $SITE (WordPress $(wp core version), DB $DB_IMAGE on port $DB_PORT, http://127.0.0.1:$PORT)"
 }
 
 case "${1:-up}" in

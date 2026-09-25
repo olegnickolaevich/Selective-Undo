@@ -36,7 +36,7 @@ if ($suite === 'integration' || $suite === 'all') {
         exit(2);
     }
 
-    $_SERVER['HTTP_HOST'] = '127.0.0.1:8899';
+    $_SERVER['HTTP_HOST'] = '127.0.0.1:' . (getenv('SU_E2E_PORT') ?: '8899');
     $_SERVER['REQUEST_URI'] = '/';
     $_SERVER['SERVER_NAME'] = '127.0.0.1';
     require $site . '/wp-load.php';

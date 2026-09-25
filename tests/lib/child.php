@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 [, $suSite, $suBarrier, $suAction] = $argv;
 $suArgs = array_slice($argv, 4);
-$_SERVER['HTTP_HOST'] = '127.0.0.1:8899';
+$_SERVER['HTTP_HOST'] = '127.0.0.1:' . (getenv('SU_E2E_PORT') ?: '8899');
 $_SERVER['REQUEST_URI'] = '/';
 require $suSite . '/wp-load.php';
 wp_set_current_user(1);

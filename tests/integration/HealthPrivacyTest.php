@@ -109,7 +109,8 @@ final class HealthPrivacyTest extends IntegrationTestCase
 
         wp_cache_delete('selective_undo_settings', 'options');
         wp_cache_delete('alloptions', 'options');
-        include dirname(__DIR__, 2) . '/uninstall.php';
+        // The installed copy: a symlink to this checkout or the packaged plugin.
+        include SELECTIVE_UNDO_DIR . '/uninstall.php';
         wp_cache_flush();
         $this->s->settings()->flush();
     }

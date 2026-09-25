@@ -50,6 +50,6 @@ case "${1:-}" in
     [ -n "${2:-}" ] || { echo "usage: bin/i18n.sh compile <dir>" >&2; exit 1; }
     compile "$2"
     ;;
-  install-test-site) compile "$ROOT/.work/site/wp-content/languages/plugins" ;;
+  install-test-site) compile "${SU_TEST_SITE:-$ROOT/.work/site}/wp-content/languages/plugins" ;;
   *) sed -n '2,12p' "$0"; exit 1 ;;
 esac
