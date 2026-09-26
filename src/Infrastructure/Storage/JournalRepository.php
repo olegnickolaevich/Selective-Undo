@@ -22,7 +22,7 @@ final class JournalRepository
 
     /**
      * @param array{kind: ChangesetKind, source: string, grouping: string, actor: int|null, request_uuid: string,
-     *              operation_id?: int|null, restore_job_id?: int|null, label?: string} $data
+     *              operation_id?: int|null, restore_job_id?: int|null, label?: string, created_at?: string} $data
      *
      * @return array{id: int, uuid: string}
      */
@@ -41,7 +41,8 @@ final class JournalRepository
             'grouping_mode' => $data['grouping'],
             'label' => mb_substr($data['label'] ?? '', 0, 255),
             'status' => 'open',
-            'created_at' => $now,
+            // Imported history keeps the time the change was originally saved.
+            'created_at' => $data['created_at'] ?? $now,
             'updated_at' => $now,
         ]);
 
@@ -56,7 +57,7 @@ final class JournalRepository
      * @param list<array{changeset_id: int, sequence_no: int, event: string, object: ObjectRef, adapter_key: string,
      *                   adapter_version: int, field_key: string, before_blob_id: int|null, after_blob_id: int|null,
      *                   before_hash: string|null, after_hash: string|null, quality: string, restorable: bool,
-     *                   reason_code: string|null, reverts_change_id?: int|null}> $rows
+     *                   reason_code: string|null, reverts_change_id?: int|null, created_at?: string}> $rows
      */
     public function insertChanges(array $rows): void
     {
@@ -77,7 +78,7 @@ final class JournalRepository
                     $r['changeset_id'], $r['sequence_no'], $r['event'], $r['object']->type, $r['object']->subtype,
                     $r['object']->id, $r['adapter_key'], $r['adapter_version'], $r['field_key'],
                     $r['before_blob_id'], $r['after_blob_id'], $r['before_hash'], $r['after_hash'],
-                    $r['quality'], $r['restorable'] ? 1 : 0, $r['reason_code'], $r['reverts_change_id'] ?? null, $now,
+                    $r['quality'], $r['restorable'] ? 1 : 0, $r['reason_code'], $r['reverts_change_id'] ?? null, $r['created_at'] ?? $now,
                 ], static fn ($v): bool => $v !== null))
             );
         }

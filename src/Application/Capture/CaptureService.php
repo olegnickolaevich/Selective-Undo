@@ -38,6 +38,7 @@ final class CaptureService
         private readonly Settings $settings,
         private readonly EventLog $log,
         private readonly WallClock $clock,
+        private readonly RevisionImporter $revisions,
     ) {
     }
 
@@ -80,6 +81,7 @@ final class CaptureService
         }
 
         $this->quietly(function () use ($object, $changed, $quality, $frame): void {
+            $this->revisions->ensureImported($object);
             $actor = get_current_user_id();
 
             if ($this->request->source() === Source::Autosave && $this->settings->coalesceAutosaves() && $actor > 0) {
@@ -105,6 +107,7 @@ final class CaptureService
         }
 
         $this->quietly(function () use ($event, $object, $sequence): void {
+            $this->revisions->ensureImported($object);
             $this->journal->insertChanges([[
                 'changeset_id' => $this->currentChangesetId(),
                 'sequence_no' => $sequence ?? $this->request->reserveSequence(),

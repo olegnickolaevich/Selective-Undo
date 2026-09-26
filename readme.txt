@@ -36,6 +36,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 * Existing posts, pages and the custom post types you choose (those with an admin screen).
 * Fields: title, content, excerpt and menu order.
 * History for up to 7 days, with a size limit (256 MB by default) and automatic removal of the oldest history.
+* A head start: title, content and excerpt changes saved in WordPress revisions during the 7 days before activation are imported, so they can be undone too.
 * One item per restore.
 * Merged autosaves: autosaves of a draft by its author become one entry per editing session.
 * Optional WordPress revision after each restore, so the post's own revision history stays complete.
@@ -61,7 +62,7 @@ The source code of the admin interface (React, TypeScript) is in `assets/admin`;
 1. Install the plugin from **Plugins → Add New** or upload the `selective-undo` folder to `/wp-content/plugins/`.
 2. Activate it on the **Plugins** screen. On a multisite network, activate it on individual sites.
 3. Open **Selective Undo → Settings → Diagnostics** and check that restoring is available. It needs InnoDB tables and the PHP mysqli extension.
-4. History starts with the first change made after activation. Earlier changes cannot be undone.
+4. Changes of the title, content and excerpt saved in WordPress revisions during the last 7 days are imported right away; everything else is recorded from activation on. Run `wp selective-undo import-revisions` on large sites where WP-Cron does not run.
 
 For rarely visited sites, run WP-Cron from a system cron job so that background maintenance and restores are not delayed.
 

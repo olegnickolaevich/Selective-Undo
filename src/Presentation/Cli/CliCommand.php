@@ -60,4 +60,31 @@ final class CliCommand
         Plugin::processQueue();
         \WP_CLI::success('Queue processed.');
     }
+
+    /**
+     * Imports recent WordPress revisions saved before recording started.
+     *
+     * Runs until every item is handled. Normally this happens in the background
+     * after activation; use it on large sites or when WP-Cron does not run.
+     *
+     * @subcommand import-revisions
+     *
+     * @param list<string>          $args
+     * @param array<string, string> $assoc
+     */
+    public function importRevisions(array $args, array $assoc): void
+    {
+        Plugin::maybeMigrate();
+        $importer = Plugin::services()->revisionImporter();
+        $items = 0;
+        $changes = 0;
+
+        do {
+            $result = $importer->run(30.0);
+            $items += $result['items'];
+            $changes += $result['changes'];
+        } while (!$result['done'] && $result['handled'] > 0);
+
+        \WP_CLI::success(sprintf('Imported %d changes of %d items.', $changes, $items));
+    }
 }

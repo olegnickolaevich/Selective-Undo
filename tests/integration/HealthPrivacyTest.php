@@ -43,7 +43,7 @@ final class HealthPrivacyTest extends IntegrationTestCase
         $this->assertFalse(str_contains($json, 'Top secret'));
         $this->assertFalse(str_contains($json, DB_PASSWORD === '' ? 'no-password' : DB_PASSWORD));
         $this->assertFalse(str_contains($json, (string) get_option('selective_undo_instance_id')));
-        $this->assertTrue(str_contains($json, '"schema":1'));
+        $this->assertTrue(str_contains($json, '"schema":' . \SelectiveUndo\Infrastructure\Database\SchemaManager::VERSION));
     }
 
     public function testPrivacyExporterAndEraser(): void

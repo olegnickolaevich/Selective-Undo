@@ -9,6 +9,7 @@ use SelectiveUndo\Application\Capture\CaptureState;
 use SelectiveUndo\Application\Capture\GapRecorder;
 use SelectiveUndo\Application\Capture\OperationManager;
 use SelectiveUndo\Application\Capture\RequestContext;
+use SelectiveUndo\Application\Capture\RevisionImporter;
 use SelectiveUndo\Application\Capture\SourceDetector;
 use SelectiveUndo\Infrastructure\Database\DbInfo;
 use SelectiveUndo\Infrastructure\Database\SchemaManager;
@@ -153,6 +154,21 @@ final class Services
             $this->settings(),
             $this->eventLog(),
             $this->clock(),
+            $this->revisionImporter(),
+        ));
+    }
+
+    public function revisionImporter(): RevisionImporter
+    {
+        return $this->get(RevisionImporter::class, fn () => new RevisionImporter(
+            $this->db,
+            $this->tables(),
+            $this->journal(),
+            $this->blobs(),
+            $this->settings(),
+            $this->trackingPolicy(),
+            $this->captureState(),
+            $this->eventLog(),
         ));
     }
 
@@ -393,6 +409,7 @@ final class Services
             $this->dbInfo(),
             $this->cacheInvalidator(),
             $this->adapters(),
+            $this->revisionImporter(),
         ));
     }
 

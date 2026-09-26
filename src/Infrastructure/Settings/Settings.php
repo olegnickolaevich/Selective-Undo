@@ -44,6 +44,7 @@ final class Settings
             'max_value_kb' => 2048,
             'create_revision_after_restore' => true,
             'coalesce_autosaves' => true,
+            'import_revisions' => true,
             'delete_data_on_uninstall' => false,
         ];
     }
@@ -156,6 +157,14 @@ final class Settings
         return (bool) $this->all()['coalesce_autosaves'];
     }
 
+    /**
+     * Whether recent WordPress revisions saved before recording started become history.
+     */
+    public function importRevisions(): bool
+    {
+        return (bool) apply_filters('selective_undo/import_revisions', (bool) $this->all()['import_revisions']);
+    }
+
     public function deleteDataOnUninstall(): bool
     {
         return (bool) $this->all()['delete_data_on_uninstall'];
@@ -175,7 +184,7 @@ final class Settings
     {
         $out = $this->defaults();
 
-        foreach (['capture_enabled', 'evict_oldest_on_quota', 'create_revision_after_restore', 'coalesce_autosaves', 'delete_data_on_uninstall'] as $key) {
+        foreach (['capture_enabled', 'evict_oldest_on_quota', 'create_revision_after_restore', 'coalesce_autosaves', 'import_revisions', 'delete_data_on_uninstall'] as $key) {
             $out[$key] = filter_var($s[$key] ?? $out[$key], FILTER_VALIDATE_BOOLEAN);
         }
 

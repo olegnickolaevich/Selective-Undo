@@ -36,6 +36,8 @@ $selective_undo_uninstall_site = static function (): void {
         'selective_undo_storage_stats',
         'selective_undo_last_queue_run',
         'selective_undo_last_maintenance_run',
+        'selective_undo_recording_since',
+        'selective_undo_revision_import',
     ] as $option) {
         delete_option($option);
     }

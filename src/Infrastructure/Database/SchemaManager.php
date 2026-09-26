@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Infrastructure\Database;
 
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration001;
+use SelectiveUndo\Infrastructure\Database\Migrations\Migration002;
 
 /**
  * The schema version is stored separately from the plugin version. Migrations run
@@ -13,7 +14,7 @@ use SelectiveUndo\Infrastructure\Database\Migrations\Migration001;
  */
 final class SchemaManager
 {
-    public const VERSION = 1;
+    public const VERSION = 2;
     public const OPTION = 'selective_undo_schema_version';
 
     public function __construct(
@@ -124,6 +125,7 @@ final class SchemaManager
     {
         return [
             1 => new Migration001(),
+            2 => new Migration002(),
         ];
     }
 }

@@ -261,6 +261,7 @@ export interface Settings {
 	max_value_kb: number;
 	create_revision_after_restore: boolean;
 	coalesce_autosaves: boolean;
+	import_revisions: boolean;
 	delete_data_on_uninstall: boolean;
 }
 

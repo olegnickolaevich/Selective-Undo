@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\Health;
 
 use SelectiveUndo\Application\Capture\CaptureState;
+use SelectiveUndo\Application\Capture\RevisionImporter;
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Restore\RestoreReadiness;
 use SelectiveUndo\Application\Retention\RetentionService;
@@ -33,6 +34,7 @@ final class HealthService
         private readonly DbInfo $dbInfo,
         private readonly CacheInvalidator $caches,
         private readonly AdapterRegistry $adapters,
+        private readonly RevisionImporter $revisions,
     ) {
     }
 
@@ -122,6 +124,28 @@ final class HealthService
                 'quota_exceeded' => __('Recording is paused: the history size limit is reached.', 'selective-undo'),
                 'schema_outdated' => __('Recording is paused until the database update finishes.', 'selective-undo'),
                 default => __('Recording is paused.', 'selective-undo'),
+            }
+        );
+
+        $import = $this->revisions->status();
+        $add(
+            'revision_import',
+            'info',
+            __('Earlier changes', 'selective-undo'),
+            match (true) {
+                !$import['enabled'] => __('Importing WordPress revisions is turned off in the settings.', 'selective-undo'),
+                !$import['done'] => __('Changes saved in WordPress revisions before recording started are being imported.', 'selective-undo'),
+                default => sprintf(
+                    /* translators: 1: number of changes, 2: number of items. */
+                    _n(
+                        '%1$d change from WordPress revisions of %2$d item was imported.',
+                        '%1$d changes from WordPress revisions of %2$d items were imported.',
+                        $import['changes'],
+                        'selective-undo'
+                    ),
+                    $import['changes'],
+                    $import['items']
+                ),
             }
         );
 
@@ -235,7 +259,9 @@ final class HealthService
                 'max_value_kb' => $settings['max_value_kb'],
                 'evict_oldest_on_quota' => $settings['evict_oldest_on_quota'],
                 'create_revision_after_restore' => $settings['create_revision_after_restore'],
+                'import_revisions' => $settings['import_revisions'],
             ],
+            'revision_import' => $this->revisions->status(),
             'checks' => $this->checks(),
             'counts' => [
                 'changesets' => $count($this->t->changesets),

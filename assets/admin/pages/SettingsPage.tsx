@@ -138,6 +138,27 @@ function RecordingTab( {
 			<ToggleControl
 				__nextHasNoMarginBottom
 				label={ __(
+					'Import recent WordPress revisions',
+					'selective-undo'
+				) }
+				help={ sprintf(
+					/* translators: %d: number of days history is kept. */
+					_n(
+						'Title, content and excerpt changes saved in WordPress revisions during the last %d day before recording started are added to the history, so they can be undone too.',
+						'Title, content and excerpt changes saved in WordPress revisions during the last %d days before recording started are added to the history, so they can be undone too.',
+						payload.settings.retention_days,
+						'selective-undo'
+					),
+					payload.settings.retention_days
+				) }
+				checked={ draft.import_revisions }
+				onChange={ ( v: boolean ) =>
+					setDraft( { ...draft, import_revisions: v } )
+				}
+			/>
+			<ToggleControl
+				__nextHasNoMarginBottom
+				label={ __(
 					'Create a WordPress revision after a restore',
 					'selective-undo'
 				) }
@@ -169,6 +190,7 @@ function RecordingTab( {
 						capture_enabled: draft.capture_enabled,
 						tracked_post_types: draft.tracked_post_types,
 						coalesce_autosaves: draft.coalesce_autosaves,
+						import_revisions: draft.import_revisions,
 						create_revision_after_restore:
 							draft.create_revision_after_restore,
 					} );

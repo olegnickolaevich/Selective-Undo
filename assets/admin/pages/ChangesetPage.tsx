@@ -185,6 +185,22 @@ export function ChangesetPage( {
 					) }
 				</Notice>
 			) }
+			{ data.source === 'revisions' && (
+				<Notice status="info" isDismissible={ false }>
+					{ __(
+						'This change was taken from WordPress revisions saved before Selective Undo started recording. Changes WordPress did not keep in revisions are not included.',
+						'selective-undo'
+					) }
+				</Notice>
+			) }
+			{ data.source === 'revisions' && (
+				<Notice status="info" isDismissible={ false }>
+					{ __(
+						'This change was taken from WordPress revisions saved before Selective Undo started recording. Changes WordPress did not keep in revisions are not included.',
+						'selective-undo'
+					) }
+				</Notice>
+			) }
 			{ data.quality !== 'verified' && (
 				<Notice status="warning" isDismissible={ false }>
 					{ __(

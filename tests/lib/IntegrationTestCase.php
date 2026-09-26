@@ -91,6 +91,7 @@ abstract class IntegrationTestCase extends TestCase
         $this->s->observer()->onShutdown();
         $this->s->capture()->sealRequestChangesets();
         $this->s->requestContext()->reset();
+        $this->s->revisionImporter()->reset();
         wp_cache_flush();
     }
 

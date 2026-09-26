@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-25T21:05:33+00:00\n"
+"POT-Creation-Date: 2026-09-26T20:19:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: src/Presentation/Admin/AdminPage.php:57
 #: build/index.js:3
 #: build/index.js:11
-#: build/index.js:30
+#: build/index.js:31
 msgid "Selective Undo"
 msgstr ""
 
@@ -49,141 +49,161 @@ msgstr ""
 msgid "Selective Undo requires PHP 8.2 or newer. The plugin is inactive."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:85
+#: src/Application/Health/HealthService.php:87
 msgid "Database schema"
 msgstr ""
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:87
+#: src/Application/Health/HealthService.php:89
 #, php-format
 msgid "Version %d, all tables present."
 msgstr ""
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:88
+#: src/Application/Health/HealthService.php:90
 msgid "The schema is outdated. Open any admin page to run the update."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:96
+#: src/Application/Health/HealthService.php:98
 msgid "Transactional tables"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:98
+#: src/Application/Health/HealthService.php:100
 msgid "Posts and history tables use InnoDB."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:99
+#: src/Application/Health/HealthService.php:101
 msgid "Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:107
+#: src/Application/Health/HealthService.php:109
 msgid "Restore connection"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:109
+#: src/Application/Health/HealthService.php:111
 msgid "A dedicated transactional connection to the primary database works and reaches the same database."
 msgstr ""
 
 #. translators: %s: error code.
-#: src/Application/Health/HealthService.php:110
+#: src/Application/Health/HealthService.php:112
 #, php-format
 msgid "The dedicated database connection failed (%s). Restoring is blocked."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:118
+#: src/Application/Health/HealthService.php:120
 #: build/index.js:11
 msgid "Recording"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:120
+#: src/Application/Health/HealthService.php:122
 msgid "Changes of tracked content are being recorded."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:121
+#: src/Application/Health/HealthService.php:123
 msgid "Recording is turned off in the settings."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:122
+#: src/Application/Health/HealthService.php:124
 msgid "Recording is paused: the history size limit is reached."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:123
+#: src/Application/Health/HealthService.php:125
 msgid "Recording is paused until the database update finishes."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:124
+#: src/Application/Health/HealthService.php:126
 msgid "Recording is paused."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:133
+#: src/Application/Health/HealthService.php:134
+msgid "Earlier changes"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:136
+msgid "Importing WordPress revisions is turned off in the settings."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:137
+msgid "Changes saved in WordPress revisions before recording started are being imported."
+msgstr ""
+
+#. translators: 1: number of changes, 2: number of items.
+#: src/Application/Health/HealthService.php:140
+#, php-format
+msgid "%1$d change from WordPress revisions of %2$d item was imported."
+msgid_plural "%1$d changes from WordPress revisions of %2$d items were imported."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Application/Health/HealthService.php:157
 msgid "History size"
 msgstr ""
 
 #. translators: 1: used size, 2: limit.
-#: src/Application/Health/HealthService.php:136
+#: src/Application/Health/HealthService.php:160
 #, php-format
 msgid "%1$s of %2$s used."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:146
+#: src/Application/Health/HealthService.php:170
 msgid "Largest recorded value"
 msgstr ""
 
 #. translators: %s: size.
-#: src/Application/Health/HealthService.php:149
+#: src/Application/Health/HealthService.php:173
 #, php-format
 msgid "Values up to %s are stored. Larger values are listed but cannot be restored."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:160
+#: src/Application/Health/HealthService.php:184
 msgid "Background tasks"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:162
+#: src/Application/Health/HealthService.php:186
 msgid "Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:164
+#: src/Application/Health/HealthService.php:188
 msgid "WP-Cron is disabled; make sure a system cron job calls wp-cron.php."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:165
+#: src/Application/Health/HealthService.php:189
 msgid "Maintenance runs through WP-Cron."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:172
+#: src/Application/Health/HealthService.php:196
 msgid "Page cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:174
+#: src/Application/Health/HealthService.php:198
 msgid "No page cache without an integration was detected."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:175
+#: src/Application/Health/HealthService.php:199
 msgid "A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:181
+#: src/Application/Health/HealthService.php:205
 msgid "Object cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:183
+#: src/Application/Health/HealthService.php:207
 msgid "A persistent object cache is used; restored posts are purged from it."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:184
+#: src/Application/Health/HealthService.php:208
 msgid "No persistent object cache."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:191
+#: src/Application/Health/HealthService.php:215
 msgid "Database drop-in"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:193
+#: src/Application/Health/HealthService.php:217
 msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:194
+#: src/Application/Health/HealthService.php:218
 msgid "None."
 msgstr ""
 
@@ -234,17 +254,18 @@ msgstr ""
 msgid "Will be restored"
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:107
-#: src/Application/History/HistoryQuery.php:114
+#: src/Application/History/HistoryQuery.php:113
+#: src/Application/History/HistoryQuery.php:120
 #: src/Application/Restore/BuildRestorePlan.php:125
 msgid "This operation no longer exists in the history."
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:156
+#: src/Application/History/HistoryQuery.php:162
 msgid "You are not allowed to view the history of this item."
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:457
+#: src/Application/History/HistoryQuery.php:471
+#: src/Application/History/HistoryQuery.php:482
 msgid "Invalid page cursor."
 msgstr ""
 
@@ -338,11 +359,11 @@ msgstr ""
 msgid "Every five minutes (Selective Undo)"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:123
+#: src/Bootstrap/Plugin.php:137
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:124
+#: src/Bootstrap/Plugin.php:138
 msgid "Plugin activation"
 msgstr ""
 
@@ -418,7 +439,7 @@ msgstr ""
 #: src/Presentation/Admin/AdminPage.php:53
 #: src/Presentation/Admin/AdminPage.php:144
 #: build/index.js:15
-#: build/index.js:30
+#: build/index.js:31
 msgid "Settings"
 msgstr ""
 
@@ -470,7 +491,7 @@ msgid "Manage settings"
 msgstr ""
 
 #: src/Presentation/Rest/RestApi.php:452
-#: build/index.js:23
+#: build/index.js:24
 msgid "Delete history"
 msgstr ""
 
@@ -750,6 +771,10 @@ msgstr ""
 
 #: build/index.js:3
 msgid "Admin request"
+msgstr ""
+
+#: build/index.js:3
+msgid "WordPress revisions"
 msgstr ""
 
 #: build/index.js:3
@@ -1111,6 +1136,10 @@ msgid "This operation also changed %d item you are not allowed to view."
 msgid_plural "This operation also changed %d items you are not allowed to view."
 msgstr[0] ""
 msgstr[1] ""
+
+#: build/index.js:17
+msgid "This change was taken from WordPress revisions saved before Selective Undo started recording. Changes WordPress did not keep in revisions are not included."
+msgstr ""
 
 #: build/index.js:17
 msgid "Some values of this operation were recorded from WordPress hook data only. They are shown, but check them before restoring."
@@ -1488,47 +1517,59 @@ msgid "Autosaves of a draft by its author become one entry per editing session i
 msgstr ""
 
 #: build/index.js:23
+msgid "Import recent WordPress revisions"
+msgstr ""
+
+#. translators: %d: number of days history is kept.
+#: build/index.js:24
+#, js-format
+msgid "Title, content and excerpt changes saved in WordPress revisions during the last %d day before recording started are added to the history, so they can be undone too."
+msgid_plural "Title, content and excerpt changes saved in WordPress revisions during the last %d days before recording started are added to the history, so they can be undone too."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:24
 msgid "Create a WordPress revision after a restore"
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "What is not recorded or restored"
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Deleted items, creation of new items, status, slug, author, dates, custom fields, comments, users, settings, files, orders and payments. Changes made directly in the database, bypassing WordPress, are detected but not recorded. Emails, webhooks and other external effects are never undone."
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Text removed from pages can stay in the history until it expires. Delete it here, for example after removing personal data."
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "What to delete"
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "History of one item"
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "History older than a date"
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "All history"
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Item ID"
 msgstr ""
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Older than"
 msgstr ""
 
 #. translators: %d: number of recorded changes.
-#: build/index.js:24
+#: build/index.js:25
 #, js-format
 msgid "%d recorded change will be deleted permanently."
 msgid_plural "%d recorded changes will be deleted permanently."
@@ -1536,180 +1577,180 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: %d: number of operations.
-#: build/index.js:25
+#: build/index.js:26
 #, js-format
 msgid "%d operation is kept because an open preview or a running restore uses it."
 msgid_plural "%d operations are kept because an open preview or a running restore uses them."
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/index.js:25
+#: build/index.js:26
 msgid "Type DELETE to confirm"
 msgstr ""
 
 #. translators: %d: number of deleted changes.
-#: build/index.js:26
+#: build/index.js:27
 #, js-format
 msgid "Deleted %d recorded change."
 msgid_plural "Deleted %d recorded changes."
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Some history is left; run the deletion again."
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Delete permanently"
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Cancel"
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Preview deletion"
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Used"
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "On disk"
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Oldest available change"
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "The database file does not shrink automatically after deletions; freed space is reused for new history."
 msgstr ""
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Keep history for (days)"
 msgstr ""
 
 #. translators: %d: maximum number of days.
-#: build/index.js:27
+#: build/index.js:28
 #, js-format
 msgid "From 1 to %d day. The size limit below may remove older history earlier."
 msgid_plural "From 1 to %d days. The size limit below may remove older history earlier."
 msgstr[0] ""
 msgstr[1] ""
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "History size limit (MB)"
 msgstr ""
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Remove the oldest history when the limit is reached"
 msgstr ""
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "When off, recording pauses at the limit instead."
 msgstr ""
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Largest value to store (KB)"
 msgstr ""
 
 #. translators: %s: size.
-#: build/index.js:28
+#: build/index.js:29
 #, js-format
 msgid "Effective limit on this server: %s. Larger values are listed in the history but cannot be restored."
 msgstr ""
 
-#: build/index.js:28
+#: build/index.js:29
 msgid "Each permission is granted separately. Users additionally need permission to edit an item to see or restore its history."
 msgstr ""
 
-#: build/index.js:28
+#: build/index.js:29
 msgid "Permissions by role"
 msgstr ""
 
-#: build/index.js:28
+#: build/index.js:29
 msgid "Role"
 msgstr ""
 
 #. translators: 1: user role name. 2: permission name.
-#: build/index.js:29
+#: build/index.js:30
 #, js-format
 msgctxt "role: permission"
 msgid "%1$s: %2$s"
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "History gaps"
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "No gaps recorded."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "A field was changed outside WordPress (for example by a direct database query). That change is not in the history."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "A change could not be recorded because of an error. See diagnostics."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "A value was too large to be stored."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "Too many nested saves of one item in a single request; some were not recorded."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "WordPress saved an item based on outdated cached data. The recorded values are correct."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "Recording was paused because the history size limit was reached."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "Recording was paused while the database was being updated."
 msgstr ""
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "Recording was turned off in the settings."
 msgstr ""
 
 #. translators: %s: date.
-#: build/index.js:30
+#: build/index.js:31
 #, js-format
 msgid "since %s, ongoing"
 msgstr ""
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Download diagnostics (no content)"
 msgstr ""
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Export history list (CSV, no values)"
 msgstr ""
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Deactivating the plugin keeps the history. Deleting the plugin keeps the history too, unless you allow it below."
 msgstr ""
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Delete all history and settings when the plugin is deleted"
 msgstr ""
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "When the plugin is deleted from the Plugins screen, the history is destroyed and cannot be recovered."
 msgstr ""
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Settings saved."
 msgstr ""
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Settings sections"
 msgstr ""

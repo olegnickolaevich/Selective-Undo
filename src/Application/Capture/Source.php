@@ -19,5 +19,7 @@ enum Source: string
     case Cron = 'cron';
     case Ajax = 'ajax';
     case Restore = 'restore';
+    /** Changes reconstructed from WordPress revisions saved before recording started. */
+    case Revisions = 'revisions';
     case Unknown = 'unknown';
 }

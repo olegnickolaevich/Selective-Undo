@@ -21,6 +21,7 @@ final readonly class Tables
     public string $jobItems;
     public string $outbox;
     public string $eventLog;
+    public string $revisionImports;
     public string $posts;
     public string $options;
 
@@ -39,6 +40,7 @@ final readonly class Tables
         $this->jobItems = $p . 'restore_job_items';
         $this->outbox = $p . 'outbox';
         $this->eventLog = $p . 'event_log';
+        $this->revisionImports = $p . 'revision_imports';
         $this->posts = $postsTable;
         $this->options = $optionsTable;
     }
@@ -56,7 +58,7 @@ final readonly class Tables
         return [
             $this->operations, $this->changesets, $this->changes, $this->blobs, $this->gaps,
             $this->plans, $this->planItems, $this->planItemSources, $this->jobs, $this->jobItems,
-            $this->outbox, $this->eventLog,
+            $this->outbox, $this->eventLog, $this->revisionImports,
         ];
     }
 }

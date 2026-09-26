@@ -15,9 +15,12 @@ use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 
 /**
- * History read model with cursor pagination (by id, newest first) and per-object
- * permission filtering. Nothing about objects the viewer cannot see is revealed
- * besides a count.
+ * History read model with cursor pagination and per-object permission filtering.
+ * Nothing about objects the viewer cannot see is revealed besides a count.
+ *
+ * The operation list is ordered by time (changes imported from WordPress revisions
+ * are written later than they happened); an item's timeline is ordered by id, which
+ * is chronological per item.
  */
 final class HistoryQuery
 {
@@ -42,7 +45,7 @@ final class HistoryQuery
     public function list(int $userId, array $filters, ?string $cursor, int $limit): array
     {
         $limit = max(1, min(self::MAX_LIMIT, $limit));
-        $beforeId = $cursor !== null ? $this->decodeCursor($cursor) : PHP_INT_MAX;
+        [$beforeAt, $beforeId] = $cursor !== null ? $this->decodeListCursor($cursor) : ['9999-12-31 23:59:59', PHP_INT_MAX];
         [$where, $params] = $this->where($filters);
 
         if ($where === null) {
@@ -55,8 +58,10 @@ final class HistoryQuery
 
         for ($round = 0; $round < self::MAX_ROUNDS && count($items) < $limit; $round++) {
             $batch = (array) $this->db->get_results($this->db->prepare(
-                "SELECT * FROM {$this->t->changesets} cs WHERE cs.id < %d {$where} ORDER BY cs.id DESC LIMIT %d",
-                ...[$beforeId, ...$params, $limit * 2]
+                "SELECT * FROM {$this->t->changesets} cs
+                 WHERE (cs.created_at < %s OR (cs.created_at = %s AND cs.id < %d)) {$where}
+                 ORDER BY cs.created_at DESC, cs.id DESC LIMIT %d",
+                ...[$beforeAt, $beforeAt, $beforeId, ...$params, $limit * 2]
             ), ARRAY_A);
 
             if ($batch === []) {
@@ -69,6 +74,7 @@ final class HistoryQuery
             foreach ($batch as $row) {
                 $lastScanned = (int) $row['id'];
                 $beforeId = $lastScanned;
+                $beforeAt = (string) $row['created_at'];
                 $item = $this->present($row, $details[(int) $row['id']] ?? null, $userId, 3);
 
                 if ($item !== null) {
@@ -90,7 +96,7 @@ final class HistoryQuery
 
         return [
             'items' => $items,
-            'next_cursor' => !$exhausted && $lastScanned !== null ? $this->encodeCursor($lastScanned) : null,
+            'next_cursor' => !$exhausted && $lastScanned !== null ? $this->encodeListCursor($beforeAt, $lastScanned) : null,
         ];
     }
 
@@ -447,6 +453,25 @@ final class HistoryQuery
     private function encodeCursor(int $id): string
     {
         return rtrim(strtr(base64_encode('c1:' . $id), '+/', '-_'), '=');
+    }
+
+    private function encodeListCursor(string $createdAt, int $id): string
+    {
+        return rtrim(strtr(base64_encode('t1:' . $createdAt . '|' . $id), '+/', '-_'), '=');
+    }
+
+    /**
+     * @return array{0: string, 1: int}
+     */
+    private function decodeListCursor(string $cursor): array
+    {
+        $raw = base64_decode(strtr($cursor, '-_', '+/'), true);
+
+        if ($raw === false || !preg_match('/^t1:(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\|(\d{1,19})$/', $raw, $m)) {
+            throw new DomainError('su_invalid_cursor', 400, __('Invalid page cursor.', 'selective-undo'));
+        }
+
+        return [$m[1], (int) $m[2]];
     }
 
     private function decodeCursor(string $cursor): int

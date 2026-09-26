@@ -99,6 +99,19 @@ final class Plugin
         }
 
         $s->outbox()->dispatchDue();
+        self::importRevisions(15.0);
+    }
+
+    /**
+     * Continues importing WordPress revisions saved before recording started.
+     */
+    public static function importRevisions(float $budgetSeconds): void
+    {
+        try {
+            self::services()->revisionImporter()->run($budgetSeconds);
+        } catch (\Throwable $e) {
+            self::services()->eventLog()->exception('revision_import_failed', $e);
+        }
     }
 
     public static function maybeMigrate(): void
@@ -109,6 +122,7 @@ final class Plugin
         if (!$schema->isCurrent()) {
             try {
                 $schema->migrate();
+                self::services()->revisionImporter()->initialize();
             } catch (\Throwable $e) {
                 self::services()->eventLog()->exception('schema_migration_failed', $e);
             }
@@ -139,6 +153,11 @@ final class Plugin
         }
 
         self::scheduleEvents();
+
+        // Most sites have few recent revisions: import them right away so that the
+        // history is not empty on the first visit; the queue finishes the rest.
+        $s->revisionImporter()->initialize();
+        self::importRevisions(5.0);
     }
 
     public static function scheduleEvents(): void
