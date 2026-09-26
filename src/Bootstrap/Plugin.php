@@ -46,6 +46,7 @@ final class Plugin
 
         if (is_admin()) {
             (new \SelectiveUndo\Presentation\Admin\AdminPage($s->trackingPolicy()))->register();
+            (new \SelectiveUndo\Presentation\Admin\EditorPanel($s->trackingPolicy()))->register();
         }
 
         if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {

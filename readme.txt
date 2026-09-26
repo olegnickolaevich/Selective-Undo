@@ -17,7 +17,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 **How it works**
 
 1. Selective Undo records changes of the title, content, excerpt and order of posts, pages and the custom post types you choose, whatever made them: the block editor, Quick Edit, bulk edit, the REST API, WP-CLI, XML-RPC or another plugin.
-2. Open **Change history** from the row actions on the Posts or Pages screen, or go to **Selective Undo → History**.
+2. Open **Change history** from the row actions on the Posts or Pages screen, from the **Change history** panel in the block editor sidebar, or go to **Selective Undo → History**.
 3. Compare before and after, select the changes to undo and click **Check restore**.
 4. The preview shows what will be restored, what is already in the desired state and what needs attention. Nothing is written yet.
 5. Click **Restore**. Every value is checked again inside a database transaction right before it is written.

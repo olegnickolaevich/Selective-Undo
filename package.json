@@ -5,11 +5,11 @@
   "description": "Selective Undo admin interface",
   "license": "GPL-2.0-or-later",
   "scripts": {
-    "build": "wp-scripts build assets/admin/index.tsx --output-path=build",
-    "start": "wp-scripts start assets/admin/index.tsx --output-path=build",
+    "build": "wp-scripts build index=./assets/admin/index.tsx editor=./assets/editor/index.tsx --output-path=build",
+    "start": "wp-scripts start index=./assets/admin/index.tsx editor=./assets/editor/index.tsx --output-path=build",
     "typecheck": "tsc -p tsconfig.json",
-    "lint:js": "wp-scripts lint-js assets/admin",
-    "lint:css": "wp-scripts lint-style 'assets/admin/**/*.scss'"
+    "lint:js": "wp-scripts lint-js assets/admin assets/editor",
+    "lint:css": "wp-scripts lint-style 'assets/**/*.scss'"
   },
   "engines": {
     "node": ">=22.22.2"
@@ -22,10 +22,13 @@
     "@wordpress/a11y": "^4.56.0",
     "@wordpress/api-fetch": "^7.56.0",
     "@wordpress/components": "^41.0.0",
+    "@wordpress/data": "^10.56.0",
     "@wordpress/date": "^5.56.0",
+    "@wordpress/editor": "^15.1.0",
     "@wordpress/element": "^8.8.0",
     "@wordpress/i18n": "^6.29.0",
     "@wordpress/icons": "^17.0.0",
+    "@wordpress/plugins": "^7.56.0",
     "@wordpress/scripts": "^36.0.0",
     "@wordpress/url": "^4.56.0",
     "typescript": "5.9"

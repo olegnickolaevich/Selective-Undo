@@ -93,11 +93,12 @@ export const api = {
 	objectTimeline: (
 		postId: number,
 		cursor: string | null,
-		signal?: AbortSignal
+		signal?: AbortSignal,
+		limit = 50
 	) =>
 		get< ObjectTimeline >(
 			`/objects/post/${ postId }/changes`,
-			{ cursor, limit: 50 },
+			{ cursor, limit },
 			signal
 		),
 	changeDiff: ( changeId: number, offset = 0, signal?: AbortSignal ) =>

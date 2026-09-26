@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T20:19:55+00:00\n"
+"POT-Creation-Date: 2026-09-26T20:24:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -355,15 +355,15 @@ msgstr ""
 msgid "Deleted user #%d"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:78
+#: src/Bootstrap/Plugin.php:79
 msgid "Every five minutes (Selective Undo)"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:137
+#: src/Bootstrap/Plugin.php:138
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:138
+#: src/Bootstrap/Plugin.php:139
 msgid "Plugin activation"
 msgstr ""
 
@@ -458,6 +458,7 @@ msgid "Change history of “%s”"
 msgstr ""
 
 #: src/Presentation/Admin/AdminPage.php:127
+#: build/editor.js:1
 msgid "Change history"
 msgstr ""
 
@@ -497,6 +498,62 @@ msgstr ""
 
 #: src/Presentation/Rest/RestApi.php:453
 msgid "Export history"
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Created"
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Moved to trash"
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Restored from trash"
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Deleted permanently"
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:3
+#: build/index.js:17
+msgid "Restored"
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Changed"
+msgstr ""
+
+#: build/editor.js:1
+msgid "The history could not be loaded."
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:15
+msgid "Loading…"
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:17
+msgid "No changes recorded yet."
+msgstr ""
+
+#: build/editor.js:1
+#: build/index.js:16
+#: build/index.js:17
+#: build/index.js:18
+msgid "System"
+msgstr ""
+
+#: build/editor.js:1
+msgid "Compare and undo changes"
 msgstr ""
 
 #: build/index.js:1
@@ -680,11 +737,6 @@ msgstr ""
 
 #: build/index.js:3
 #: build/index.js:17
-msgid "Restored"
-msgstr ""
-
-#: build/index.js:3
-#: build/index.js:17
 msgid "Skipped: changed again"
 msgstr ""
 
@@ -779,26 +831,6 @@ msgstr ""
 
 #: build/index.js:3
 msgid "Other"
-msgstr ""
-
-#: build/index.js:3
-msgid "Created"
-msgstr ""
-
-#: build/index.js:3
-msgid "Moved to trash"
-msgstr ""
-
-#: build/index.js:3
-msgid "Restored from trash"
-msgstr ""
-
-#: build/index.js:3
-msgid "Deleted permanently"
-msgstr ""
-
-#: build/index.js:3
-msgid "Changed"
 msgstr ""
 
 #: build/index.js:3
@@ -1029,10 +1061,6 @@ msgid "Try again"
 msgstr ""
 
 #: build/index.js:15
-msgid "Loading…"
-msgstr ""
-
-#: build/index.js:15
 msgid "Show more"
 msgstr ""
 
@@ -1112,12 +1140,6 @@ msgstr ""
 #: build/index.js:16
 #: build/index.js:17
 msgid "Author"
-msgstr ""
-
-#: build/index.js:16
-#: build/index.js:17
-#: build/index.js:18
-msgid "System"
 msgstr ""
 
 #: build/index.js:16
@@ -1246,10 +1268,6 @@ msgstr ""
 
 #: build/index.js:17
 msgid "Nothing matches these filters."
-msgstr ""
-
-#: build/index.js:17
-msgid "No changes recorded yet."
 msgstr ""
 
 #: build/index.js:17

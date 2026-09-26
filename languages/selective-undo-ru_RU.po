@@ -11,8 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"POT-Creation-Date: 2026-09-26T20:19:55+00:00\n"
-"PO-Revision-Date: 2026-09-26 20:20+0000\n"
+"POT-Creation-Date: 2026-09-26T20:24:45+00:00\n"
+"PO-Revision-Date: 2026-09-26 20:24+0000\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
 
@@ -358,15 +358,15 @@ msgstr "Срок действия предпросмотра удаления и
 msgid "Deleted user #%d"
 msgstr "Удалённый пользователь #%d"
 
-#: src/Bootstrap/Plugin.php:78
+#: src/Bootstrap/Plugin.php:79
 msgid "Every five minutes (Selective Undo)"
 msgstr "Каждые пять минут (Selective Undo)"
 
-#: src/Bootstrap/Plugin.php:137
+#: src/Bootstrap/Plugin.php:138
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr "Selective Undo нельзя активировать для всей сети. Активируйте его на отдельных сайтах."
 
-#: src/Bootstrap/Plugin.php:138
+#: src/Bootstrap/Plugin.php:139
 msgid "Plugin activation"
 msgstr "Активация плагина"
 
@@ -461,6 +461,7 @@ msgid "Change history of “%s”"
 msgstr "История изменений «%s»"
 
 #: src/Presentation/Admin/AdminPage.php:127
+#: build/editor.js:1
 msgid "Change history"
 msgstr "История изменений"
 
@@ -501,6 +502,62 @@ msgstr "Удаление истории"
 #: src/Presentation/Rest/RestApi.php:453
 msgid "Export history"
 msgstr "Экспорт истории"
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Created"
+msgstr "Создано"
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Moved to trash"
+msgstr "Перемещено в корзину"
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Restored from trash"
+msgstr "Восстановлено из корзины"
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Deleted permanently"
+msgstr "Удалено навсегда"
+
+#: build/editor.js:1
+#: build/index.js:3
+#: build/index.js:17
+msgid "Restored"
+msgstr "Восстановлено"
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Changed"
+msgstr "Изменено"
+
+#: build/editor.js:1
+msgid "The history could not be loaded."
+msgstr "Не удалось загрузить историю."
+
+#: build/editor.js:1
+#: build/index.js:15
+msgid "Loading…"
+msgstr "Загрузка…"
+
+#: build/editor.js:1
+#: build/index.js:17
+msgid "No changes recorded yet."
+msgstr "Изменений пока нет."
+
+#: build/editor.js:1
+#: build/index.js:16
+#: build/index.js:17
+#: build/index.js:18
+msgid "System"
+msgstr "Система"
+
+#: build/editor.js:1
+msgid "Compare and undo changes"
+msgstr "Сравнить и отменить изменения"
 
 #: build/index.js:1
 msgctxt "unit: bytes"
@@ -684,11 +741,6 @@ msgstr "Ожидает"
 
 #: build/index.js:3
 #: build/index.js:17
-msgid "Restored"
-msgstr "Восстановлено"
-
-#: build/index.js:3
-#: build/index.js:17
 msgid "Skipped: changed again"
 msgstr "Пропущено: изменено повторно"
 
@@ -784,26 +836,6 @@ msgstr "Редакции WordPress"
 #: build/index.js:3
 msgid "Other"
 msgstr "Другое"
-
-#: build/index.js:3
-msgid "Created"
-msgstr "Создано"
-
-#: build/index.js:3
-msgid "Moved to trash"
-msgstr "Перемещено в корзину"
-
-#: build/index.js:3
-msgid "Restored from trash"
-msgstr "Восстановлено из корзины"
-
-#: build/index.js:3
-msgid "Deleted permanently"
-msgstr "Удалено навсегда"
-
-#: build/index.js:3
-msgid "Changed"
-msgstr "Изменено"
 
 #: build/index.js:3
 msgctxt "noun: a restore operation"
@@ -1036,10 +1068,6 @@ msgid "Try again"
 msgstr "Повторить"
 
 #: build/index.js:15
-msgid "Loading…"
-msgstr "Загрузка…"
-
-#: build/index.js:15
 msgid "Show more"
 msgstr "Показать ещё"
 
@@ -1121,12 +1149,6 @@ msgstr "Сравнить «было / стало»"
 #: build/index.js:17
 msgid "Author"
 msgstr "Автор"
-
-#: build/index.js:16
-#: build/index.js:17
-#: build/index.js:18
-msgid "System"
-msgstr "Система"
 
 #: build/index.js:16
 #: build/index.js:17
@@ -1256,10 +1278,6 @@ msgstr "Сбросить фильтры"
 #: build/index.js:17
 msgid "Nothing matches these filters."
 msgstr "По этим фильтрам ничего не найдено."
-
-#: build/index.js:17
-msgid "No changes recorded yet."
-msgstr "Изменений пока нет."
 
 #: build/index.js:17
 msgid "Edits of titles, content, excerpts and order of tracked content will appear here."

@@ -12,3 +12,4 @@
 /package-lock.json
 /playwright.config.ts
 /README.md
+/.claude
