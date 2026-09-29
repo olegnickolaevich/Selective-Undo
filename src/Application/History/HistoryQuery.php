@@ -444,10 +444,10 @@ final class HistoryQuery
             return [(int) $search];
         }
 
-        return array_map('intval', (array) $this->db->get_col($this->db->prepare(
+        return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare(
             "SELECT ID FROM {$this->db->posts} WHERE post_title LIKE %s AND post_type <> 'revision' ORDER BY ID DESC LIMIT 200",
             '%' . $this->db->esc_like($search) . '%'
-        )));
+        ))));
     }
 
     private function encodeCursor(int $id): string

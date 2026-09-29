@@ -188,7 +188,7 @@ final class RevisionImporter
             return [];
         }
 
-        return array_map('intval', (array) $this->db->get_col($this->db->prepare(
+        return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare(
             "SELECT DISTINCT r.post_parent FROM {$this->t->posts} r
              JOIN {$this->t->posts} p ON p.ID = r.post_parent
              LEFT JOIN {$this->t->revisionImports} i ON i.object_type = 'post' AND i.object_id = r.post_parent
@@ -201,7 +201,7 @@ final class RevisionImporter
             $this->windowStart(),
             $this->since(),
             ...[...$types, self::BATCH]
-        )));
+        ))));
     }
 
     /**

@@ -276,7 +276,7 @@ final class RestoreTest extends IntegrationTestCase
         try {
             $job = $this->start($planId);
         } finally {
-            $this->db->query("ALTER TABLE {$changes} DROP CHECK sundo_test_block");
+            $this->db->query("ALTER TABLE {$changes} DROP CONSTRAINT sundo_test_block");
         }
 
         $this->assertSame('running', $job['status']);

@@ -95,7 +95,7 @@ final class JournalReader
      */
     public function fieldChangeIdsInRange(ObjectRef $object, string $field, int $fromId, int $toId): array
     {
-        return array_map('intval', (array) $this->db->get_col($this->db->prepare(
+        return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare(
             "SELECT id FROM {$this->t->changes}
              WHERE object_type = %s AND object_id = %d AND field_key = %s AND id BETWEEN %d AND %d",
             $object->type,
@@ -103,7 +103,7 @@ final class JournalReader
             $field,
             $fromId,
             $toId
-        )));
+        ))));
     }
 
     public function hasLaterFieldChanges(ObjectRef $object, string $field, int $afterId): bool

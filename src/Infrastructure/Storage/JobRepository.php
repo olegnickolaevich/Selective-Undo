@@ -358,7 +358,7 @@ final class JobRepository
      */
     public function recoverable(int $limit = 10): array
     {
-        return array_map('intval', (array) $this->db->get_col($this->db->prepare(
+        return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare(
             "SELECT id FROM {$this->t->jobs}
              WHERE status IN ('queued', 'running', 'cancel_requested')
                AND blog_id = %d
@@ -366,7 +366,7 @@ final class JobRepository
              ORDER BY id LIMIT %d",
             get_current_blog_id(),
             $limit
-        )));
+        ))));
     }
 
     /**

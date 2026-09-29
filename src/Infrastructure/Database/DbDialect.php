@@ -25,6 +25,10 @@ final class DbDialect
         $sqlite = (defined('DB_ENGINE') && constant('DB_ENGINE') === 'sqlite')
             || (class_exists('WP_SQLite_DB') && $wpdb instanceof \WP_SQLite_DB);
 
+        if (!isset($wpdb)) {
+            return $sqlite ? self::SQLITE : self::MYSQL; // before WordPress connects: do not cache
+        }
+
         return self::$detected = $sqlite ? self::SQLITE : self::MYSQL;
     }
 

@@ -145,7 +145,7 @@ final class RetentionService
     {
         [$sql, $params] = $this->prunableSql($cutoffUtc, $extraWhere, $extraParams);
 
-        return array_map('intval', (array) $this->db->get_col($this->db->prepare($sql . ' ORDER BY cs.id LIMIT %d', ...[...$params, $limit])));
+        return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare($sql . ' ORDER BY cs.id LIMIT %d', ...[...$params, $limit]))));
     }
 
     /**

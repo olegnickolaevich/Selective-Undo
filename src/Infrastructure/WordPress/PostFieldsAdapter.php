@@ -186,7 +186,7 @@ final class PostFieldsAdapter implements AdapterInterface
 
             // For example Jetpack Markdown keeps the source in post_content_filtered and
             // would overwrite the restored post_content on the next edit.
-            if ((string) get_post_field('post_content_filtered', $current->id, 'raw') !== '') {
+            if (!in_array(get_post_field('post_content_filtered', $current->id, 'raw'), ['', null], true)) {
                 $warnings[] = 'linked_field_present';
             }
         }
