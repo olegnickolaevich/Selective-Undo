@@ -107,7 +107,7 @@ final class RestApiTest extends IntegrationTestCase
         wp_update_post(['ID' => $id, 'post_title' => 'X']);
         $this->endRequest();
         [, $plan] = $this->call('POST', '/restore-plans', ['selection' => ['type' => 'changes', 'change_ids' => $this->updateIds($id)]]);
-        $this->db->query($this->db->prepare("UPDATE {$this->s->tables()->plans} SET expires_at = UTC_TIMESTAMP() - INTERVAL 1 SECOND WHERE uuid = %s", $plan['id']));
+        $this->db->query($this->db->prepare("UPDATE {$this->s->tables()->plans} SET expires_at = DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 SECOND) WHERE uuid = %s", $plan['id']));
 
         [$status, $error] = $this->call('POST', '/restore-jobs', ['plan_id' => $plan['id'], 'idempotency_key' => wp_generate_uuid4()]);
         $this->assertSame(409, $status);

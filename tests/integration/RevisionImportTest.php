@@ -153,7 +153,7 @@ final class RevisionImportTest extends IntegrationTestCase
     {
         $shift = 5 * DAY_IN_SECONDS;
         $this->db->query($this->db->prepare(
-            "UPDATE {$this->db->posts} SET post_date_gmt = post_date_gmt - INTERVAL %d SECOND, post_date = post_date - INTERVAL %d SECOND
+            "UPDATE {$this->db->posts} SET post_date_gmt = DATE_SUB(post_date_gmt, INTERVAL %d SECOND), post_date = DATE_SUB(post_date, INTERVAL %d SECOND)
              WHERE post_parent = %d AND post_type = 'revision'",
             $shift,
             $shift,

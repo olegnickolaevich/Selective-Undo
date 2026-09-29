@@ -9,6 +9,7 @@ use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 use SelectiveUndo\Domain\Value\FieldValue;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
 /**
@@ -28,7 +29,7 @@ final class RestoreJournal
         $tx->write(
             "INSERT INTO `{$this->t->changesets}`
              (uuid, request_uuid, restore_job_id, actor_user_id, kind, source, grouping_mode, label, status, created_at, updated_at)
-             VALUES (?, ?, ?, ?, 'restore', 'restore', 'request', '', 'open', UTC_TIMESTAMP(), UTC_TIMESTAMP())",
+             VALUES (?, ?, ?, ?, 'restore', 'restore', 'request', '', 'open', " . SqlTime::utc() . ", " . SqlTime::utc() . ")",
             'ssii',
             [wp_generate_uuid4(), $requestUuid, $jobId, $actorUserId]
         );
@@ -57,7 +58,7 @@ final class RestoreJournal
             "INSERT INTO `{$this->t->changes}`
              (changeset_id, sequence_no, event, object_type, object_subtype, object_id, adapter_key, adapter_version, field_key,
               before_blob_id, after_blob_id, before_hash, after_hash, quality, restorable, reason_code, reverts_change_id, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'verified', 1, NULL, ?, UTC_TIMESTAMP())",
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'verified', 1, NULL, ?, " . SqlTime::utc() . ")",
             'iisssisisiissi',
             [
                 $changesetId, $sequenceNo, ChangeEvent::Restore->value, $object->type, $object->subtype, $object->id,

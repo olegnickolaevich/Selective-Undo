@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace SelectiveUndo\Domain\Contracts;
 
 /**
- * A restore transaction. Implemented by Infrastructure\Database\RestoreConnection.
+ * A restore transaction. Implemented by Infrastructure\Database\RestoreConnection
+ * and, in compatibility mode, by WpdbTransactionRunner.
  */
 interface RestoreTransaction
 {

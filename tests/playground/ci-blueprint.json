@@ -1,0 +1,26 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "preferredVersions": {
+    "php": "8.2",
+    "wp": "latest"
+  },
+  "steps": [
+    {
+      "step": "login",
+      "username": "admin",
+      "password": "password"
+    },
+    {
+      "step": "activatePlugin",
+      "pluginPath": "selective-undo/selective-undo.php"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php define('SU_SMOKE_PHASE', 'record'); require '/smoke/smoke.php';"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php define('SU_SMOKE_PHASE', 'restore'); require '/smoke/smoke.php';"
+    }
+  ]
+}

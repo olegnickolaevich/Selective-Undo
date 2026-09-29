@@ -232,7 +232,7 @@ final class RestoreTest extends IntegrationTestCase
         wp_update_post(['ID' => $id, 'post_title' => 'Two']);
         $this->endRequest();
         $planId = $this->plan(['type' => 'changes', 'change_ids' => $this->updateIds($id)]);
-        $this->db->query($this->db->prepare("UPDATE {$this->s->tables()->plans} SET expires_at = UTC_TIMESTAMP() - INTERVAL 1 MINUTE WHERE uuid = %s", $planId));
+        $this->db->query($this->db->prepare("UPDATE {$this->s->tables()->plans} SET expires_at = DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 MINUTE) WHERE uuid = %s", $planId));
         $this->assertSame('expired', $this->planView($planId)['status']);
         $e = $this->assertThrows(DomainError::class, fn () => $this->start($planId));
         $this->assertSame('su_plan_expired', $e->errorCode);
@@ -319,7 +319,7 @@ final class RestoreTest extends IntegrationTestCase
             $received[] = $payload;
         };
         add_action('selective_undo/object_restored', $collect);
-        $this->db->query("UPDATE {$this->s->tables()->outbox} SET available_at = UTC_TIMESTAMP() - INTERVAL 1 SECOND");
+        $this->db->query("UPDATE {$this->s->tables()->outbox} SET available_at = DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 SECOND)");
         $this->s->outbox()->dispatchDue();
         remove_action('selective_undo/object_restored', $collect);
 
@@ -436,6 +436,10 @@ final class RestoreTest extends IntegrationTestCase
 
     public function testWrongDatabaseBlocksRestore(): void
     {
+        if (\SelectiveUndo\Infrastructure\Database\DbDialect::compatMode()) {
+            return; // Only the dedicated connection can reach another database.
+        }
+
         $id = $this->createPost();
         wp_update_post(['ID' => $id, 'post_title' => 'Two']);
         $this->endRequest();

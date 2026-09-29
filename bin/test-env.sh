@@ -10,6 +10,8 @@
 #   SU_WP_IMAGE=wordpress:6.8-php8.2-apache   WordPress version to take the core files from
 #   SU_TEST_SITE=/path  SU_DB_NAME=name  SU_E2E_PORT=8968  SU_TABLE_PREFIX=xyz_   a second, independent site
 #   SU_PLUGIN_ZIP=dist/selective-undo-1.0.0.zip   install the packaged plugin instead of linking this checkout
+#   SU_DB_ENGINE=sqlite   run the site on SQLite (as WordPress Playground does) instead of MySQL;
+#                         needs pdo_sqlite and the SQLite Database Integration plugin (cloned from GitHub)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -23,6 +25,8 @@ DB_CONTAINER="${SU_DB_CONTAINER:-sundo-test-db}"
 DB_IMAGE="${SU_DB_IMAGE:-mysql:8.4}"
 DB_PORT="${SU_DB_PORT:-33080}"
 WP_IMAGE="${SU_WP_IMAGE:-wordpress:latest}"
+DB_ENGINE="${SU_DB_ENGINE:-mysql}"
+SQLITE_PLUGIN="$WORK/sqlite-database-integration"
 WPCLI="$WORK/wp-cli.phar"
 CORE="$WORK/core/${WP_IMAGE//[:\/]/_}"
 
@@ -59,15 +63,52 @@ ensure_wordpress() {
   fi
 }
 
-install_site() {
-  docker exec "$DB_CONTAINER" "$(db_client)" -uroot -proot -e "DROP DATABASE IF EXISTS $DB_NAME; CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4" 2>/dev/null
-  rm -rf "$SITE" && cp -r "$CORE" "$SITE"
-  cat > "$SITE/wp-config.php" <<PHP
-<?php
+ensure_sqlite_plugin() {
+  if [ ! -f "$SQLITE_PLUGIN/load.php" ]; then
+    local tmp; tmp="$(mktemp -d)"
+    git clone -q --depth 1 https://github.com/WordPress/sqlite-database-integration.git "$tmp/repo"
+    rm -rf "$SQLITE_PLUGIN"
+    # -L: in the monorepo the plugin links to the driver package; copy the files instead.
+    cp -rL "$tmp/repo/packages/plugin-sqlite-database-integration" "$SQLITE_PLUGIN"
+    rm -rf "$tmp"
+  fi
+}
+
+db_config() {
+  if [ "$DB_ENGINE" = sqlite ]; then
+    cat <<PHP
+define('DB_ENGINE', 'sqlite');
+define('DB_DIR', '$SITE/wp-content/database/');
+define('DB_FILE', '.ht.sqlite');
+define('DB_NAME', '$DB_NAME');
+define('DB_USER', '');
+define('DB_PASSWORD', '');
+define('DB_HOST', '');
+PHP
+  else
+    cat <<PHP
 define('DB_NAME', '$DB_NAME');
 define('DB_USER', 'root');
 define('DB_PASSWORD', 'root');
 define('DB_HOST', '127.0.0.1:$DB_PORT');
+PHP
+  fi
+}
+
+install_site() {
+  if [ "$DB_ENGINE" != sqlite ]; then
+    docker exec "$DB_CONTAINER" "$(db_client)" -uroot -proot -e "DROP DATABASE IF EXISTS $DB_NAME; CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4" 2>/dev/null
+  fi
+  rm -rf "$SITE" && cp -r "$CORE" "$SITE"
+  if [ "$DB_ENGINE" = sqlite ]; then
+    cp -r "$SQLITE_PLUGIN" "$SITE/wp-content/plugins/sqlite-database-integration"
+    sed "s#{SQLITE_IMPLEMENTATION_FOLDER_PATH}#$SITE/wp-content/plugins/sqlite-database-integration#" \
+      "$SQLITE_PLUGIN/db.copy" > "$SITE/wp-content/db.php"
+    mkdir -p "$SITE/wp-content/database"
+  fi
+  cat > "$SITE/wp-config.php" <<PHP
+<?php
+$(db_config)
 define('DB_CHARSET', 'utf8mb4');
 define('DB_COLLATE', '');
 \$table_prefix = '$TABLE_PREFIX';
@@ -95,11 +136,14 @@ PHP
   fi
   # Install bundled translations the way WordPress.org language packs are installed.
   SU_WPCLI="$WPCLI" SU_TEST_SITE="$SITE" "$ROOT/bin/i18n.sh" install-test-site >/dev/null
-  echo "Site ready: $SITE (WordPress $(wp core version), DB $DB_IMAGE on port $DB_PORT, http://127.0.0.1:$PORT)"
+  local db="$DB_IMAGE on port $DB_PORT"; [ "$DB_ENGINE" = sqlite ] && db=SQLite
+  echo "Site ready: $SITE (WordPress $(wp core version), DB $db, http://127.0.0.1:$PORT)"
 }
 
 case "${1:-up}" in
-  up) start_db; ensure_wordpress; install_site ;;
+  up)
+    if [ "$DB_ENGINE" = sqlite ]; then ensure_sqlite_plugin; else start_db; fi
+    ensure_wordpress; install_site ;;
   down) docker rm -f "$DB_CONTAINER" >/dev/null 2>&1 || true ;;
   wp) shift; wp "$@" ;;
   *) echo "usage: $0 up|down|wp ..." >&2; exit 2 ;;

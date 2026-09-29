@@ -8,6 +8,9 @@ declare(strict_types=1);
  *   php tests/run.php unit                     domain tests, no WordPress required
  *   php tests/run.php integration [filter]     requires bin/test-env.sh up
  *   php tests/run.php all
+ *
+ * SU_COMPAT_MODE=1 runs everything in compatibility mode (restore through $wpdb),
+ * the mode used on SQLite, against the MySQL test database.
  */
 
 $suite = $argv[1] ?? 'all';
@@ -20,6 +23,10 @@ require_once __DIR__ . '/lib/TestCase.php';
 require_once __DIR__ . '/lib/Runner.php';
 
 $runner = new SelectiveUndo\Tests\Runner($filter);
+
+if (getenv('SU_COMPAT_MODE')) {
+    define('SELECTIVE_UNDO_COMPAT_MODE', true);
+}
 
 if ($suite === 'unit' || $suite === 'all') {
     // Plugin files refuse direct access without ABSPATH. Use the test site's path so

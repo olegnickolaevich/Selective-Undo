@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Restore;
 
-use SelectiveUndo\Infrastructure\Database\RestoreConnection;
+use SelectiveUndo\Domain\Contracts\TransactionRunner;
+use SelectiveUndo\Infrastructure\Database\DbDialect;
 use SelectiveUndo\Infrastructure\Database\SchemaManager;
 use SelectiveUndo\Infrastructure\Database\StorageUnavailable;
 use SelectiveUndo\Infrastructure\Database\Tables;
@@ -12,6 +13,8 @@ use SelectiveUndo\Infrastructure\Database\Tables;
 /**
  * Strict mode requirements. When they are not met, capture may continue but restore
  * is blocked with an explanation; there is no silent fallback to a weaker mode.
+ * Compatibility mode is chosen only by the database (SQLite) or a constant, and is
+ * always shown to the user.
  */
 final class RestoreReadiness
 {
@@ -21,7 +24,7 @@ final class RestoreReadiness
         private readonly \wpdb $db,
         private readonly Tables $t,
         private readonly SchemaManager $schema,
-        private readonly RestoreConnection $connection,
+        private readonly TransactionRunner $connection,
     ) {
     }
 
@@ -41,12 +44,8 @@ final class RestoreReadiness
         }
 
         $blockers = [];
-        $engine = strtolower((string) $this->db->get_var($this->db->prepare(
-            'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
-            $this->t->posts
-        )));
 
-        if ($engine !== 'innodb') {
+        if (!DbDialect::isSqlite() && $this->postsEngine() !== 'innodb') {
             $blockers[] = 'posts_table_not_innodb';
         }
 
@@ -65,5 +64,19 @@ final class RestoreReadiness
         set_transient(self::TRANSIENT, $blockers, $blockers === [] ? 10 * MINUTE_IN_SECONDS : MINUTE_IN_SECONDS);
 
         return $blockers;
+    }
+
+    /** DEDICATED or COMPAT (SQLite, or SELECTIVE_UNDO_COMPAT_MODE): shown in the interface. */
+    public function mode(): string
+    {
+        return $this->connection->mode();
+    }
+
+    private function postsEngine(): string
+    {
+        return strtolower((string) $this->db->get_var($this->db->prepare(
+            'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
+            $this->t->posts
+        )));
     }
 }

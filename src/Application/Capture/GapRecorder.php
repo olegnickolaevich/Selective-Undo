@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\Capture;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
 /**
@@ -46,7 +47,7 @@ final class GapRecorder
     {
         $this->quietly(function () use ($reason): void {
             $this->db->query($this->db->prepare(
-                "UPDATE {$this->t->gaps} SET ended_at = UTC_TIMESTAMP(), last_seen_at = UTC_TIMESTAMP()
+                "UPDATE {$this->t->gaps} SET ended_at = " . SqlTime::utc() . ", last_seen_at = " . SqlTime::utc() . "
                  WHERE scope = 'global' AND reason = %s AND ended_at IS NULL",
                 $reason
             ));
@@ -64,7 +65,7 @@ final class GapRecorder
             $id = $this->db->get_var($this->db->prepare(
                 "SELECT id FROM {$this->t->gaps}
                  WHERE scope = 'object' AND reason = %s AND object_type = %s AND object_id = %d
-                   AND last_seen_at > UTC_TIMESTAMP() - INTERVAL 1 DAY
+                   AND last_seen_at > " . SqlTime::utc(-DAY_IN_SECONDS) . "
                  ORDER BY id DESC LIMIT 1",
                 $reason,
                 $object->type,
@@ -73,7 +74,7 @@ final class GapRecorder
 
             if ($id !== null) {
                 $this->db->query($this->db->prepare(
-                    "UPDATE {$this->t->gaps} SET occurrences = occurrences + 1, last_seen_at = UTC_TIMESTAMP(), ended_at = UTC_TIMESTAMP() WHERE id = %d",
+                    "UPDATE {$this->t->gaps} SET occurrences = occurrences + 1, last_seen_at = " . SqlTime::utc() . ", ended_at = " . SqlTime::utc() . " WHERE id = %d",
                     (int) $id
                 ));
 

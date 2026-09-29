@@ -61,7 +61,7 @@ The source code of the admin interface (React, TypeScript) is in `assets/admin`;
 
 1. Install the plugin from **Plugins → Add New** or upload the `selective-undo` folder to `/wp-content/plugins/`.
 2. Activate it on the **Plugins** screen. On a multisite network, activate it on individual sites.
-3. Open **Selective Undo → Settings → Diagnostics** and check that restoring is available. It needs InnoDB tables and the PHP mysqli extension.
+3. Open **Selective Undo → Settings → Diagnostics** and check that restoring is available. On MySQL and MariaDB it needs InnoDB tables and the PHP mysqli extension; SQLite sites work in compatibility mode.
 4. Changes of the title, content and excerpt saved in WordPress revisions during the retention period (30 days by default) are imported right away; everything else is recorded from activation on. Run `wp selective-undo import-revisions` on large sites where WP-Cron does not run.
 
 For rarely visited sites, run WP-Cron from a system cron job so that background maintenance and restores are not delayed.
@@ -95,6 +95,10 @@ Values are deduplicated and compressed. The history size is shown in the header 
 = Does the plugin work with object and page caches? =
 
 Restored items are removed from the object cache. Page caches with a known integration are purged; for other page caches, the diagnostics screen reminds you to clear the page cache manually.
+
+= Does it work on SQLite and WordPress Playground? =
+
+Yes. On SQLite, restores run in compatibility mode through the WordPress database connection, and every restored value is read back and checked before it is saved. The mode is shown in the plugin header and explained in **Settings → Diagnostics**. Hosts that allow only one MySQL connection can turn it on with `define( 'SELECTIVE_UNDO_COMPAT_MODE', true );` in `wp-config.php`.
 
 = What happens when I deactivate or delete the plugin? =
 

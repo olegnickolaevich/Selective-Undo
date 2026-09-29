@@ -8,9 +8,10 @@ namespace SelectiveUndo\Application\Restore;
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
+use SelectiveUndo\Domain\Contracts\TransactionRunner;
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\Database\DbError;
-use SelectiveUndo\Infrastructure\Database\RestoreConnection;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
@@ -29,7 +30,7 @@ final class CreateRestoreJob
     public const INLINE_OBJECT_LIMIT = 5;
 
     public function __construct(
-        private readonly RestoreConnection $db,
+        private readonly TransactionRunner $db,
         private readonly Tables $t,
         private readonly PlanRepository $plans,
         private readonly JobRepository $jobs,
@@ -77,7 +78,7 @@ final class CreateRestoreJob
             $jobId = $this->db->transactional(function (RestoreTransaction $tx) use ($plan, $userId, $keyHash): int {
                 $claimed = $tx->write(
                     "UPDATE `{$this->t->plans}` SET status = 'consumed'
-                     WHERE id = ? AND status = 'ready' AND expires_at > UTC_TIMESTAMP()",
+                     WHERE id = ? AND status = 'ready' AND expires_at > " . SqlTime::utc(),
                     'i',
                     [(int) $plan['id']]
                 );
@@ -90,7 +91,7 @@ final class CreateRestoreJob
                 $tx->write(
                     "INSERT INTO `{$this->t->jobs}`
                      (uuid, plan_id, blog_id, actor_user_id, idempotency_key_hash, mode, status, created_at, updated_at)
-                     VALUES (?, ?, ?, ?, ?, ?, 'queued', UTC_TIMESTAMP(), UTC_TIMESTAMP())",
+                     VALUES (?, ?, ?, ?, ?, ?, 'queued', " . SqlTime::utc() . ", " . SqlTime::utc() . ")",
                     'siiiss',
                     [wp_generate_uuid4(), (int) $plan['id'], get_current_blog_id(), $userId, $keyHash, $objects > self::INLINE_OBJECT_LIMIT ? 'queued' : 'inline']
                 );

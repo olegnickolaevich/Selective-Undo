@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\Capture;
 
 use SelectiveUndo\Domain\DomainError;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
@@ -81,7 +82,7 @@ final class OperationManager implements OperationManagerInterface
         }
 
         $this->db->query($this->db->prepare(
-            "UPDATE {$this->t->operations} SET updated_at = UTC_TIMESTAMP(), abandon_after = %s WHERE id = %d",
+            "UPDATE {$this->t->operations} SET updated_at = " . SqlTime::utc() . ", abandon_after = %s WHERE id = %d",
             gmdate('Y-m-d H:i:s', time() + self::ABANDON_AFTER_SECONDS),
             (int) $row['id']
         ));
@@ -125,7 +126,7 @@ final class OperationManager implements OperationManagerInterface
 
         $this->db->query($this->db->prepare(
             "UPDATE {$this->t->operations}
-             SET status = %s, reason_code = " . ($reason === null ? 'NULL' : '%s') . ", finished_at = UTC_TIMESTAMP(), updated_at = UTC_TIMESTAMP()
+             SET status = %s, reason_code = " . ($reason === null ? 'NULL' : '%s') . ", finished_at = " . SqlTime::utc() . ", updated_at = " . SqlTime::utc() . "
              WHERE uuid = %s AND status = 'active'",
             ...array_values(array_filter([$status, $reason, $token->id], static fn ($v): bool => $v !== null))
         ));

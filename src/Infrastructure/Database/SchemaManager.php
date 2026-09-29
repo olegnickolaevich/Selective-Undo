@@ -5,21 +5,24 @@ declare(strict_types=1);
 namespace SelectiveUndo\Infrastructure\Database;
 
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration001;
+use SelectiveUndo\Domain\Contracts\LockService;
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration002;
+use SelectiveUndo\Infrastructure\Database\Migrations\Migration003;
 
 /**
  * The schema version is stored separately from the plugin version. Migrations run
- * sequentially under a MySQL named lock, so two parallel requests after a plugin
+ * sequentially under a lock, so two parallel requests after a plugin
  * update never run them twice.
  */
 final class SchemaManager
 {
-    public const VERSION = 2;
+    public const VERSION = 3;
     public const OPTION = 'selective_undo_schema_version';
 
     public function __construct(
         private readonly \wpdb $db,
         private readonly Tables $tables,
+        private readonly LockService $locks,
     ) {
     }
 
@@ -40,9 +43,12 @@ final class SchemaManager
             return 'up_to_date';
         }
 
-        $lock = 'sundo_migrate_' . substr(md5($this->db->prefix), 0, 16);
+        if (DbDialect::isSqlite()) {
+            // The lock table itself is needed to take the migration lock.
+            (new Migration003())->up($this->db, $this->tables);
+        }
 
-        if ((int) $this->db->get_var($this->db->prepare('SELECT GET_LOCK(%s, 0)', $lock)) !== 1) {
+        if (!$this->locks->acquire('migrate', 0)) {
             return 'busy';
         }
 
@@ -69,7 +75,7 @@ final class SchemaManager
 
             return 'migrated';
         } finally {
-            $this->db->query($this->db->prepare('SELECT RELEASE_LOCK(%s)', $lock));
+            $this->locks->release('migrate');
         }
     }
 
@@ -78,6 +84,14 @@ final class SchemaManager
      */
     public function verify(): array
     {
+        if (DbDialect::isSqlite()) {
+            // No information_schema and no engines: only check that the tables exist.
+            $names = (array) $this->db->get_col($this->db->prepare('SHOW TABLES LIKE %s', $this->db->esc_like($this->tables->prefix . 'sundo_') . '%'));
+            $missing = array_diff($this->tables->own(), array_map('strval', $names));
+
+            return array_values(array_map(static fn (string $table): string => 'missing:' . $table, $missing));
+        }
+
         $rows = $this->db->get_results(
             $this->db->prepare(
                 'SELECT TABLE_NAME AS name, ENGINE AS engine FROM information_schema.TABLES
@@ -109,10 +123,10 @@ final class SchemaManager
     /**
      * Drops all plugin tables. Used by uninstall only.
      */
-    public function drop(): void
+    public static function drop(\wpdb $db, Tables $tables): void
     {
-        foreach ($this->tables->own() as $table) {
-            $this->db->query('DROP TABLE IF EXISTS `' . str_replace('`', '', $table) . '`');
+        foreach ($tables->own() as $table) {
+            $db->query('DROP TABLE IF EXISTS `' . str_replace('`', '', $table) . '`');
         }
 
         delete_option(self::OPTION);
@@ -126,6 +140,7 @@ final class SchemaManager
         return [
             1 => new Migration001(),
             2 => new Migration002(),
+            3 => new Migration003(),
         ];
     }
 }

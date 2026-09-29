@@ -6,12 +6,13 @@ namespace SelectiveUndo\Application\Restore;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
+use SelectiveUndo\Domain\Contracts\TransactionRunner;
 use SelectiveUndo\Domain\Restore\Comparison;
 use SelectiveUndo\Domain\Restore\ConflictDetector;
 use SelectiveUndo\Domain\Restore\JobItemStatus;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
-use SelectiveUndo\Infrastructure\Database\RestoreConnection;
+use SelectiveUndo\Infrastructure\Database\DbError;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\Outbox;
@@ -24,7 +25,8 @@ use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
  *   targets, checks that call WordPress APIs or third-party filters (kses,
  *   preconditions). Third-party code must NOT run while FOR UPDATE locks are held:
  *   if it wrote the same row through $wpdb the PHP process would block itself.
- * Phase 2 (one short transaction on the dedicated connection): fencing, locking job
+ * Phase 2 (one short transaction on the dedicated connection, or on $wpdb in
+ *   compatibility mode): fencing, locking job
  *   items, locking the object row, fresh three-way comparison, writing only ready
  *   fields, journal, item statuses and counters, outbox. All or nothing.
  * Phase 3 (after commit): immediate attempt to deliver outbox events.
@@ -32,7 +34,7 @@ use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
 final class RestoreObjectExecutor
 {
     public function __construct(
-        private readonly RestoreConnection $db,
+        private readonly TransactionRunner $db,
         private readonly AdapterRegistry $adapters,
         private readonly BlobStore $blobs,
         private readonly JobRepository $jobs,
@@ -158,6 +160,17 @@ final class RestoreObjectExecutor
 
                     if ($writes !== []) {
                         $adapter->write($tx, $current, $writes);
+
+                        if ($this->db->mode() === TransactionRunner::COMPAT) {
+                            // No dedicated connection: make sure the write really landed before COMMIT.
+                            $check = $adapter->lockAndRead($tx, $object);
+
+                            foreach ($writes as $field => $value) {
+                                if ($check === null || !$check->field($field)->equals($value)) {
+                                    throw new DbError('compat_verify_failed');
+                                }
+                            }
+                        }
                     }
                 }
 

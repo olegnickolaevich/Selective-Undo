@@ -11,18 +11,11 @@ use SelectiveUndo\Application\Capture\OperationManager;
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Application\Capture\RevisionImporter;
 use SelectiveUndo\Application\Capture\SourceDetector;
-use SelectiveUndo\Infrastructure\Database\DbInfo;
-use SelectiveUndo\Infrastructure\Database\SchemaManager;
-use SelectiveUndo\Infrastructure\Database\Tables;
-use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
-use SelectiveUndo\Infrastructure\Settings\Settings;
-use SelectiveUndo\Infrastructure\Storage\BlobStore;
-use SelectiveUndo\Infrastructure\Storage\JournalRepository;
-use SelectiveUndo\Infrastructure\WordPress\CapabilityManager;
-use SelectiveUndo\Infrastructure\WordPress\PostChangeObserver;
-use SelectiveUndo\Infrastructure\WordPress\PostRowReader;
-use SelectiveUndo\Infrastructure\WordPress\SystemClock;
-use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
+use SelectiveUndo\Application\Health\HealthService;
+use SelectiveUndo\Application\History\DiffBuilder;
+use SelectiveUndo\Application\History\DiffService;
+use SelectiveUndo\Application\History\HistoryExport;
+use SelectiveUndo\Application\History\HistoryQuery;
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Restore\BuildRestorePlan;
 use SelectiveUndo\Application\Restore\CreateRestoreJob;
@@ -33,31 +26,44 @@ use SelectiveUndo\Application\Restore\PostRestoreHandler;
 use SelectiveUndo\Application\Restore\RestoreObjectExecutor;
 use SelectiveUndo\Application\Restore\RestorePreconditions;
 use SelectiveUndo\Application\Restore\RestoreReadiness;
+use SelectiveUndo\Application\Retention\BlobCollector;
+use SelectiveUndo\Application\Retention\PurgeService;
+use SelectiveUndo\Application\Retention\RetentionService;
 use SelectiveUndo\Application\Support\ObjectPresenter;
+use SelectiveUndo\Bootstrap\Plugin;
+use SelectiveUndo\Domain\Contracts\LockService;
+use SelectiveUndo\Domain\Contracts\TransactionRunner;
 use SelectiveUndo\Domain\Restore\ChainResolver;
 use SelectiveUndo\Domain\Restore\ConflictDetector;
 use SelectiveUndo\Domain\Restore\JobOutcome;
 use SelectiveUndo\Domain\Restore\PlanItemEvaluator;
 use SelectiveUndo\Infrastructure\Database\DbCredentials;
+use SelectiveUndo\Infrastructure\Database\DbDialect;
+use SelectiveUndo\Infrastructure\Database\DbInfo;
+use SelectiveUndo\Infrastructure\Database\MysqlLockService;
 use SelectiveUndo\Infrastructure\Database\RestoreConnection;
+use SelectiveUndo\Infrastructure\Database\SchemaManager;
 use SelectiveUndo\Infrastructure\Database\StorageUnavailable;
+use SelectiveUndo\Infrastructure\Database\TableLockService;
+use SelectiveUndo\Infrastructure\Database\Tables;
+use SelectiveUndo\Infrastructure\Database\WpdbTransactionRunner;
+use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
+use SelectiveUndo\Infrastructure\Settings\Settings;
+use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
+use SelectiveUndo\Infrastructure\Storage\JournalRepository;
 use SelectiveUndo\Infrastructure\Storage\Outbox;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
 use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
+use SelectiveUndo\Infrastructure\WordPress\CapabilityManager;
+use SelectiveUndo\Infrastructure\WordPress\PostChangeObserver;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
-use SelectiveUndo\Bootstrap\Plugin;
-use SelectiveUndo\Application\History\DiffBuilder;
-use SelectiveUndo\Application\History\DiffService;
-use SelectiveUndo\Application\History\HistoryExport;
-use SelectiveUndo\Application\History\HistoryQuery;
-use SelectiveUndo\Application\Retention\BlobCollector;
-use SelectiveUndo\Application\Retention\PurgeService;
-use SelectiveUndo\Application\Retention\RetentionService;
-use SelectiveUndo\Application\Health\HealthService;
+use SelectiveUndo\Infrastructure\WordPress\PostRowReader;
 use SelectiveUndo\Infrastructure\WordPress\PrivacyIntegration;
+use SelectiveUndo\Infrastructure\WordPress\SystemClock;
+use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
 /**
  * Lazily constructed service graph. Explicit factories keep the wiring readable
@@ -89,7 +95,14 @@ final class Services
 
     public function schema(): SchemaManager
     {
-        return $this->get(SchemaManager::class, fn () => new SchemaManager($this->db, $this->tables()));
+        return $this->get(SchemaManager::class, fn () => new SchemaManager($this->db, $this->tables(), $this->locks()));
+    }
+
+    public function locks(): LockService
+    {
+        return $this->get(LockService::class, fn () => DbDialect::isSqlite()
+            ? new TableLockService($this->db, $this->tables())
+            : new MysqlLockService($this->db));
     }
 
     public function dbInfo(): DbInfo
@@ -169,6 +182,7 @@ final class Services
             $this->trackingPolicy(),
             $this->captureState(),
             $this->eventLog(),
+            $this->locks(),
         ));
     }
 
@@ -223,9 +237,14 @@ final class Services
     /**
      * Dedicated connection for restore transactions. Each new connection proves that it
      * reaches the same database as WordPress by reading the site instance marker.
+     * In compatibility mode (SQLite, or SELECTIVE_UNDO_COMPAT_MODE) restore uses $wpdb.
      */
-    public function restoreConnection(): RestoreConnection
+    public function restoreConnection(): TransactionRunner
     {
+        if (DbDialect::compatMode()) {
+            return $this->get(WpdbTransactionRunner::class, fn () => new WpdbTransactionRunner($this->db));
+        }
+
         return $this->get(RestoreConnection::class, fn () => new RestoreConnection(
             fn () => DbCredentials::fromWordPress($this->db),
             $this->db->charset !== '' ? $this->db->charset : 'utf8mb4',

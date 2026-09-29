@@ -6,6 +6,7 @@ namespace SelectiveUndo\Application\Retention;
 
 use SelectiveUndo\Application\Capture\CaptureService;
 use SelectiveUndo\Application\Capture\CaptureState;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
 use SelectiveUndo\Infrastructure\Settings\Settings;
@@ -45,8 +46,8 @@ final class RetentionService
         $done = ['expired_plans' => $this->plans->expireStale()];
         $done['sealed'] = $this->sealStale();
         $done['abandoned_operations'] = (int) $this->db->query(
-            "UPDATE {$this->t->operations} SET status = 'abandoned', updated_at = UTC_TIMESTAMP()
-             WHERE status = 'active' AND abandon_after < UTC_TIMESTAMP()"
+            "UPDATE {$this->t->operations} SET status = 'abandoned', updated_at = " . SqlTime::utc() . "
+             WHERE status = 'active' AND abandon_after < " . SqlTime::utc()
         );
 
         $cutoff = gmdate('Y-m-d H:i:s', time() - $this->settings->retentionDays() * DAY_IN_SECONDS);
@@ -263,8 +264,8 @@ final class RetentionService
             $this->db->query("DELETE FROM {$this->t->plans} WHERE id IN ({$in})");
         }
 
-        $this->db->query("DELETE FROM {$this->t->outbox} WHERE status = 'done' AND done_at < UTC_TIMESTAMP() - INTERVAL 7 DAY");
-        $this->db->query("DELETE FROM {$this->t->eventLog} WHERE created_at < UTC_TIMESTAMP() - INTERVAL 30 DAY");
+        $this->db->query("DELETE FROM {$this->t->outbox} WHERE status = 'done' AND done_at < " . SqlTime::utc(-7 * DAY_IN_SECONDS));
+        $this->db->query("DELETE FROM {$this->t->eventLog} WHERE created_at < " . SqlTime::utc(-30 * DAY_IN_SECONDS));
         $this->db->query($this->db->prepare(
             "DELETE FROM {$this->t->gaps} WHERE ended_at IS NOT NULL AND ended_at < %s",
             $cutoff

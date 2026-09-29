@@ -58,7 +58,8 @@ final class CaptureTest extends IntegrationTestCase
         $row = $this->changes($id, 'update')[0];
         $this->assertSame($content, $this->blobValue((int) $row['after_blob_id'], $row['after_hash']));
         $encoding = $this->db->get_var($this->db->prepare("SELECT encoding FROM {$this->s->tables()->blobs} WHERE id = %d", (int) $row['after_blob_id']));
-        $this->assertSame('c1+gz', $encoding, 'binary gzip payload survives $wpdb');
+        // SQLite stores payloads as base64 ('c1+gz+b64').
+        $this->assertTrue(str_starts_with((string) $encoding, 'c1+gz'), 'binary gzip payload survives $wpdb');
     }
 
     public function testOneRequestOneChangeset(): void
@@ -284,13 +285,16 @@ final class CaptureTest extends IntegrationTestCase
     public function testCaptureFailureNeverBreaksTheSave(): void
     {
         $id = $this->createPost();
-        $this->db->query("RENAME TABLE {$this->s->tables()->changes} TO {$this->s->tables()->changes}_tmp");
+        $changes = $this->s->tables()->changes;
+        // Every write to the journal fails, as if the table were broken.
+        $break = static fn (string $sql): string => preg_match('/^\s*INSERT INTO `?' . $changes . '`?\s/', $sql) ? 'INSERT INTO sundo_missing_table VALUES (1)' : $sql;
+        add_filter('query', $break);
 
         try {
             $result = wp_update_post(['ID' => $id, 'post_title' => 'Saved anyway'], true);
             $this->endRequest();
         } finally {
-            $this->db->query("RENAME TABLE {$this->s->tables()->changes}_tmp TO {$this->s->tables()->changes}");
+            remove_filter('query', $break);
         }
 
         $this->assertSame($id, $result);

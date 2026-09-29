@@ -26,7 +26,7 @@ $selective_undo_uninstall_site = static function (): void {
     }
 
     $tables = SelectiveUndo\Infrastructure\Database\Tables::fromWpdb($wpdb);
-    (new SelectiveUndo\Infrastructure\Database\SchemaManager($wpdb, $tables))->drop();
+    SelectiveUndo\Infrastructure\Database\SchemaManager::drop($wpdb, $tables);
     (new SelectiveUndo\Infrastructure\WordPress\CapabilityManager())->uninstall();
 
     foreach ([

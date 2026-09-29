@@ -7,6 +7,7 @@ namespace SelectiveUndo\Infrastructure\Storage;
 use SelectiveUndo\Domain\Value\CanonicalEncoder;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
+use SelectiveUndo\Infrastructure\Database\DbDialect;
 
 /**
  * Packs a canonical value into a blobs table row and unpacks it with integrity checks.
@@ -15,6 +16,8 @@ final class BlobCodec
 {
     public const ENCODING_PLAIN = 'c1';
     public const ENCODING_GZIP = 'c1+gz';
+    /** Suffix for base64 transport on SQLite. */
+    public const BASE64 = '+b64';
 
     private const COMPRESS_FROM_BYTES = 1024;
     private const MIN_SAVING_RATIO = 0.9;
@@ -49,6 +52,12 @@ final class BlobCodec
             }
         }
 
+        if (DbDialect::isSqlite()) {
+            // The SQLite driver passes queries as text: keep NUL bytes out of the SQL.
+            $payload = base64_encode($payload);
+            $encoding .= self::BASE64;
+        }
+
         return [
             'content_hash' => hash('sha256', $canonical, true),
             'encoding' => $encoding,
@@ -65,6 +74,17 @@ final class BlobCodec
     {
         if ($uncompressedBytes < 0 || $uncompressedBytes > $this->maxPayloadBytes) {
             throw new InvalidPayload('payload_too_large');
+        }
+
+        if (str_ends_with($encoding, self::BASE64)) {
+            $decoded = base64_decode($payload, true);
+
+            if ($decoded === false) {
+                throw new InvalidPayload('payload_unknown_encoding');
+            }
+
+            $payload = $decoded;
+            $encoding = substr($encoding, 0, -strlen(self::BASE64));
         }
 
         $canonical = match ($encoding) {

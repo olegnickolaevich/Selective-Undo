@@ -58,6 +58,10 @@ final class ConcurrencyTest extends IntegrationTestCase
 
     public function testConcurrentSaveHoldingTheRowIsRespected(): void
     {
+        if (\SelectiveUndo\Infrastructure\Database\DbDialect::isSqlite()) {
+            return; // Row locks held by another MySQL session; SQLite has one writer at a time.
+        }
+
         $jobId = $this->queuedJob($id);
         $other = $this->rawConnection();
         $other->query('START TRANSACTION');

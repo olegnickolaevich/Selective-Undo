@@ -8,8 +8,10 @@ use SelectiveUndo\Domain\Change\CaptureQuality;
 use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Change\ChangesetKind;
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Domain\Contracts\LockService;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
 use SelectiveUndo\Infrastructure\Settings\Settings;
@@ -56,6 +58,7 @@ final class RevisionImporter
         private readonly TrackingPolicy $policy,
         private readonly CaptureState $state,
         private readonly EventLog $log,
+        private readonly LockService $locks,
     ) {
     }
 
@@ -204,9 +207,9 @@ final class RevisionImporter
      */
     private function importItem(int $postId, int $lockWait): ?int
     {
-        $lock = 'sundo_import_' . substr(md5($this->db->prefix), 0, 12) . '_' . $postId;
+        $lock = 'import_' . $postId;
 
-        if ((int) $this->db->get_var($this->db->prepare('SELECT GET_LOCK(%s, %d)', $lock, $lockWait)) !== 1) {
+        if (!$this->locks->acquire($lock, $lockWait)) {
             return null;
         }
 
@@ -237,7 +240,7 @@ final class RevisionImporter
 
             return $this->write($object, $saves);
         } finally {
-            $this->db->query($this->db->prepare('SELECT RELEASE_LOCK(%s)', $lock));
+            $this->locks->release($lock);
         }
     }
 
@@ -415,7 +418,7 @@ final class RevisionImporter
     {
         $this->db->query($this->db->prepare(
             "INSERT IGNORE INTO {$this->t->revisionImports} (object_type, object_id, status, change_count, created_at)
-             VALUES ('post', %d, %s, %d, UTC_TIMESTAMP())",
+             VALUES ('post', %d, %s, %d, " . SqlTime::utc() . ")",
             $postId,
             $status,
             $changes

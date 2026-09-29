@@ -9,10 +9,12 @@ use SelectiveUndo\Application\Restore\JobLease;
 use SelectiveUndo\Application\Restore\LeaseLost;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
+use SelectiveUndo\Domain\Contracts\TransactionRunner;
 use SelectiveUndo\Domain\Restore\JobCounters;
 use SelectiveUndo\Domain\Restore\JobItemStatus;
 use SelectiveUndo\Domain\Restore\JobStatus;
-use SelectiveUndo\Infrastructure\Database\RestoreConnection;
+use SelectiveUndo\Infrastructure\Database\DbDialect;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
 /**
@@ -39,7 +41,7 @@ final class JobRepository
     public function __construct(
         private readonly \wpdb $db,
         private readonly Tables $t,
-        private readonly RestoreConnection $connection,
+        private readonly TransactionRunner $connection,
     ) {
     }
 
@@ -69,9 +71,9 @@ final class JobRepository
     public function findByIdempotency(int $actorUserId, string $keyHash): ?array
     {
         $row = $this->db->get_row($this->db->prepare(
-            "SELECT * FROM {$this->t->jobs} WHERE actor_user_id = %d AND idempotency_key_hash = %s",
+            "SELECT * FROM {$this->t->jobs} WHERE actor_user_id = %d AND " . DbDialect::binaryEquals('idempotency_key_hash', '%s'),
             $actorUserId,
-            $keyHash
+            DbDialect::binaryParam($keyHash)
         ), ARRAY_A);
 
         return is_array($row) ? $row : null;
@@ -86,13 +88,13 @@ final class JobRepository
         $affected = $this->connection->write(
             "UPDATE `{$this->t->jobs}`
              SET status = CASE WHEN status = 'queued' THEN 'running' ELSE status END,
-                 lease_token = ?, lease_expires_at = UTC_TIMESTAMP() + INTERVAL ? SECOND,
-                 started_at = COALESCE(started_at, UTC_TIMESTAMP()), attempt_count = attempt_count + 1,
-                 fence_seq = fence_seq + 1, heartbeat_at = UTC_TIMESTAMP(), updated_at = UTC_TIMESTAMP()
+                 lease_token = ?, lease_expires_at = " . SqlTime::utc(self::LEASE_SECONDS) . ",
+                 started_at = COALESCE(started_at, " . SqlTime::utc() . "), attempt_count = attempt_count + 1,
+                 fence_seq = fence_seq + 1, heartbeat_at = " . SqlTime::utc() . ", updated_at = " . SqlTime::utc() . "
              WHERE id = ? AND status IN ('queued', 'running', 'cancel_requested')
-               AND (lease_token IS NULL OR lease_expires_at IS NULL OR lease_expires_at < UTC_TIMESTAMP())",
-            'sii',
-            [$token, self::LEASE_SECONDS, $jobId]
+               AND (lease_token IS NULL OR lease_expires_at IS NULL OR lease_expires_at < " . SqlTime::utc() . ")",
+            'si',
+            [$token, $jobId]
         );
 
         if ($affected !== 1) {
@@ -111,7 +113,7 @@ final class JobRepository
     public function release(JobLease $lease): void
     {
         $this->connection->write(
-            "UPDATE `{$this->t->jobs}` SET lease_token = NULL, lease_expires_at = NULL, updated_at = UTC_TIMESTAMP()
+            "UPDATE `{$this->t->jobs}` SET lease_token = NULL, lease_expires_at = NULL, updated_at = " . SqlTime::utc() . "
              WHERE id = ? AND lease_token = ?",
             'is',
             [$lease->jobId, $lease->token]
@@ -127,11 +129,11 @@ final class JobRepository
     {
         $affected = $tx->write(
             "UPDATE `{$this->t->jobs}`
-             SET fence_seq = fence_seq + 1, heartbeat_at = UTC_TIMESTAMP(),
-                 lease_expires_at = UTC_TIMESTAMP() + INTERVAL ? SECOND, updated_at = UTC_TIMESTAMP()
+             SET fence_seq = fence_seq + 1, heartbeat_at = " . SqlTime::utc() . ",
+                 lease_expires_at = " . SqlTime::utc(self::LEASE_SECONDS) . ", updated_at = " . SqlTime::utc() . "
              WHERE id = ? AND lease_token = ? AND status IN ('running', 'cancel_requested')",
-            'iis',
-            [self::LEASE_SECONDS, $lease->jobId, $lease->token]
+            'is',
+            [$lease->jobId, $lease->token]
         );
 
         if ($affected !== 1) {
@@ -212,7 +214,7 @@ final class JobRepository
         $tx->write(
             "UPDATE `{$this->t->jobItems}`
              SET status = ?, reason_code = ?, error_code = ?, result_change_id = ?, attempt_count = attempt_count + 1,
-                 started_at = COALESCE(started_at, UTC_TIMESTAMP()), finished_at = UTC_TIMESTAMP()
+                 started_at = COALESCE(started_at, " . SqlTime::utc() . "), finished_at = " . SqlTime::utc() . "
              WHERE id = ? AND status = 'pending'",
             'sssii',
             [$status->value, $reason, $errorCode, $resultChangeId, $itemId]
@@ -239,7 +241,7 @@ final class JobRepository
         }
 
         $sql = implode(', ', array_map(static fn (string $c, int $n): string => sprintf('%1$s = %1$s + %2$d', $c, $n), array_keys($sets), $sets));
-        $tx->write("UPDATE `{$this->t->jobs}` SET {$sql}, updated_at = UTC_TIMESTAMP() WHERE id = ?", 'i', [$jobId]);
+        $tx->write("UPDATE `{$this->t->jobs}` SET {$sql}, updated_at = " . SqlTime::utc() . " WHERE id = ?", 'i', [$jobId]);
     }
 
     /**
@@ -256,7 +258,7 @@ final class JobRepository
         );
 
         $failed = $this->connection->write(
-            "UPDATE `{$this->t->jobItems}` SET status = 'failed', finished_at = UTC_TIMESTAMP()
+            "UPDATE `{$this->t->jobItems}` SET status = 'failed', finished_at = " . SqlTime::utc() . "
              WHERE job_id = ? AND object_type = ? AND object_id = ? AND status = 'pending' AND attempt_count >= ?",
             'isii',
             [$jobId, $object->type, $object->id, self::MAX_ATTEMPTS]
@@ -264,7 +266,7 @@ final class JobRepository
 
         if ($failed > 0) {
             $this->connection->write(
-                "UPDATE `{$this->t->jobs}` SET failed_items = failed_items + ?, updated_at = UTC_TIMESTAMP() WHERE id = ?",
+                "UPDATE `{$this->t->jobs}` SET failed_items = failed_items + ?, updated_at = " . SqlTime::utc() . " WHERE id = ?",
                 'ii',
                 [$failed, $jobId]
             );
@@ -276,7 +278,7 @@ final class JobRepository
     public function cancelPending(int $jobId): int
     {
         $cancelled = $this->connection->write(
-            "UPDATE `{$this->t->jobItems}` SET status = 'cancelled', finished_at = UTC_TIMESTAMP()
+            "UPDATE `{$this->t->jobItems}` SET status = 'cancelled', finished_at = " . SqlTime::utc() . "
              WHERE job_id = ? AND status = 'pending'",
             'i',
             [$jobId]
@@ -284,7 +286,7 @@ final class JobRepository
 
         if ($cancelled > 0) {
             $this->connection->write(
-                "UPDATE `{$this->t->jobs}` SET cancelled_items = cancelled_items + ?, updated_at = UTC_TIMESTAMP() WHERE id = ?",
+                "UPDATE `{$this->t->jobs}` SET cancelled_items = cancelled_items + ?, updated_at = " . SqlTime::utc() . " WHERE id = ?",
                 'ii',
                 [$cancelled, $jobId]
             );
@@ -318,7 +320,7 @@ final class JobRepository
         return $this->connection->write(
             "UPDATE `{$this->t->jobs}`
              SET status = ?, restored_items = ?, already_items = ?, conflict_items = ?, skipped_items = ?,
-                 failed_items = ?, cancelled_items = ?, finished_at = UTC_TIMESTAMP(), updated_at = UTC_TIMESTAMP(),
+                 failed_items = ?, cancelled_items = ?, finished_at = " . SqlTime::utc() . ", updated_at = " . SqlTime::utc() . ",
                  lease_token = NULL, lease_expires_at = NULL
              WHERE id = ? AND lease_token = ? AND status IN ('running', 'cancel_requested')",
             'siiiiiiis',
@@ -329,7 +331,7 @@ final class JobRepository
     public function requestCancel(int $jobId): bool
     {
         return $this->connection->write(
-            "UPDATE `{$this->t->jobs}` SET status = 'cancel_requested', cancel_requested_at = UTC_TIMESTAMP(), updated_at = UTC_TIMESTAMP()
+            "UPDATE `{$this->t->jobs}` SET status = 'cancel_requested', cancel_requested_at = " . SqlTime::utc() . ", updated_at = " . SqlTime::utc() . "
              WHERE id = ? AND status IN ('queued', 'running')",
             'i',
             [$jobId]
@@ -360,7 +362,7 @@ final class JobRepository
             "SELECT id FROM {$this->t->jobs}
              WHERE status IN ('queued', 'running', 'cancel_requested')
                AND blog_id = %d
-               AND (lease_token IS NULL OR lease_expires_at < UTC_TIMESTAMP())
+               AND (lease_token IS NULL OR lease_expires_at < " . SqlTime::utc() . ")
              ORDER BY id LIMIT %d",
             get_current_blog_id(),
             $limit

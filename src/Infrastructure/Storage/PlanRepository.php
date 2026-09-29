@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Storage;
 
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
@@ -186,8 +187,8 @@ final class PlanRepository
     {
         return (int) $this->db->query(
             "UPDATE {$this->t->plans} SET status = 'expired'
-             WHERE (status = 'ready' AND expires_at <= UTC_TIMESTAMP())
-                OR (status = 'preparing' AND created_at <= UTC_TIMESTAMP() - INTERVAL 1 HOUR)"
+             WHERE (status = 'ready' AND expires_at <= " . SqlTime::utc() . ")
+                OR (status = 'preparing' AND created_at <= " . SqlTime::utc(-HOUR_IN_SECONDS) . ')'
         );
     }
 }

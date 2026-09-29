@@ -11,8 +11,11 @@ use SelectiveUndo\Application\Restore\RestoreReadiness;
 use SelectiveUndo\Application\Retention\RetentionService;
 use SelectiveUndo\Application\Support\Time;
 use SelectiveUndo\Bootstrap\Plugin;
+use SelectiveUndo\Domain\Contracts\TransactionRunner;
+use SelectiveUndo\Infrastructure\Database\DbDialect;
 use SelectiveUndo\Infrastructure\Database\DbInfo;
 use SelectiveUndo\Infrastructure\Database\SchemaManager;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
@@ -48,13 +51,14 @@ final class HealthService
         $usage = $stats['logical_bytes'] / $quota;
         $gaps = (int) $this->db->get_var(
             "SELECT COUNT(*) FROM {$this->t->gaps}
-             WHERE (ended_at IS NULL OR ended_at > UTC_TIMESTAMP() - INTERVAL 1 DAY)
+             WHERE (ended_at IS NULL OR ended_at > " . SqlTime::utc(-DAY_IN_SECONDS) . ")
                AND reason IN ('external_write_detected', 'capture_failed', 'payload_not_stored', 'nesting_too_deep', 'quota_exceeded', 'schema_outdated', 'capture_disabled')"
         );
 
         return [
             'capture' => $this->capture->describe(),
             'restore_blockers' => $this->readiness->blockers(),
+            'restore_mode' => $this->readiness->mode(),
             'storage' => [
                 'logical_bytes' => $stats['logical_bytes'],
                 'physical_bytes' => $stats['physical_bytes'],
@@ -91,16 +95,28 @@ final class HealthService
             !$this->schema->isCurrent()
         );
 
+        $compat = $this->readiness->mode() === TransactionRunner::COMPAT;
         $innodb = !in_array('posts_table_not_innodb', $blockers, true) && !in_array('plugin_tables_invalid', $blockers, true);
         $add(
             'transactions',
             $innodb ? 'ok' : 'error',
             __('Transactional tables', 'selective-undo'),
-            $innodb
-                ? __('Posts and history tables use InnoDB.', 'selective-undo')
-                : __('Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked.', 'selective-undo'),
+            match (true) {
+                !$innodb => __('Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked.', 'selective-undo'),
+                DbDialect::isSqlite() => __('The site uses SQLite. Restores run in transactions of the SQLite database.', 'selective-undo'),
+                default => __('Posts and history tables use InnoDB.', 'selective-undo'),
+            },
             !$innodb
         );
+
+        if ($compat) {
+            $add(
+                'compat_mode',
+                'warning',
+                __('Compatibility mode', 'selective-undo'),
+                __('Restores use the WordPress database connection instead of a dedicated one, because the site runs on SQLite or SELECTIVE_UNDO_COMPAT_MODE is set. Every restored value is read back and checked before it is saved, but protection against a dropped connection in the middle of a restore is weaker. This mode is meant for demos and hosts that allow only one database connection.', 'selective-undo')
+            );
+        }
 
         $connection = array_values(array_filter($blockers, static fn (string $b): bool => str_starts_with($b, 'restore_connection') || str_starts_with($b, 'db_') || $b === 'mysqli_unavailable'));
         $add(
@@ -108,7 +124,9 @@ final class HealthService
             $connection === [] ? 'ok' : 'error',
             __('Restore connection', 'selective-undo'),
             $connection === []
-                ? __('A dedicated transactional connection to the primary database works and reaches the same database.', 'selective-undo')
+                ? ($compat
+                    ? __('Restores use the WordPress database connection (compatibility mode).', 'selective-undo')
+                    : __('A dedicated transactional connection to the primary database works and reaches the same database.', 'selective-undo'))
                 : sprintf(/* translators: %s: error code. */ __('The dedicated database connection failed (%s). Restoring is blocked.', 'selective-undo'), implode(', ', $connection)),
             $connection !== []
         );
@@ -213,9 +231,12 @@ final class HealthService
             'db_dropin',
             'info',
             __('Database drop-in', 'selective-undo'),
-            $dropin
-                ? __('A db.php drop-in is installed. Restores use a separate connection to the primary database.', 'selective-undo')
-                : __('None.', 'selective-undo')
+            match (true) {
+                !$dropin => __('None.', 'selective-undo'),
+                DbDialect::isSqlite() => __('The SQLite database drop-in is installed.', 'selective-undo'),
+                $compat => __('A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode).', 'selective-undo'),
+                default => __('A db.php drop-in is installed. Restores use a separate connection to the primary database.', 'selective-undo'),
+            }
         );
 
         return $checks;

@@ -227,6 +227,7 @@ export interface Overview {
 		since: number | null;
 	};
 	restore_blockers: string[];
+	restore_mode: 'dedicated' | 'compat';
 	storage: {
 		logical_bytes: number;
 		physical_bytes: number;

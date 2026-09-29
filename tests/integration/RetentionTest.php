@@ -12,8 +12,8 @@ final class RetentionTest extends IntegrationTestCase
     private function age(int $days): void
     {
         $t = $this->s->tables();
-        $this->db->query($this->db->prepare("UPDATE {$t->changesets} SET created_at = UTC_TIMESTAMP() - INTERVAL %d DAY", $days));
-        $this->db->query("UPDATE {$t->blobs} SET last_seen_at = UTC_TIMESTAMP() - INTERVAL 2 HOUR");
+        $this->db->query($this->db->prepare("UPDATE {$t->changesets} SET created_at = DATE_SUB(UTC_TIMESTAMP(), INTERVAL %d DAY)", $days));
+        $this->db->query("UPDATE {$t->blobs} SET last_seen_at = DATE_SUB(UTC_TIMESTAMP(), INTERVAL 2 HOUR)");
     }
 
     public function testExpiredHistoryIsDeletedAndBlobsCollected(): void
@@ -147,7 +147,7 @@ final class RetentionTest extends IntegrationTestCase
         $this->s->requestContext()->setSource(\SelectiveUndo\Application\Capture\Source::Autosave);
         wp_update_post(['ID' => $id, 'post_content' => 'draft v2']);
         $this->endRequest();
-        $this->db->query("UPDATE {$this->s->tables()->changesets} SET updated_at = UTC_TIMESTAMP() - INTERVAL 1 HOUR WHERE kind = 'autosave'");
+        $this->db->query("UPDATE {$this->s->tables()->changesets} SET updated_at = DATE_SUB(UTC_TIMESTAMP(), INTERVAL 1 HOUR) WHERE kind = 'autosave'");
         $this->s->retention()->run();
         $this->assertSame('sealed', $this->db->get_var("SELECT status FROM {$this->s->tables()->changesets} WHERE kind = 'autosave'"));
     }

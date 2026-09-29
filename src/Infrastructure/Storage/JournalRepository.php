@@ -6,6 +6,7 @@ namespace SelectiveUndo\Infrastructure\Storage;
 
 use SelectiveUndo\Domain\Change\ChangesetKind;
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
@@ -109,22 +110,21 @@ final class JournalRepository
             return $result;
         }
 
-        $parts = [];
+        // Latest row per field. A plain IN over MAX(id) works on MySQL and SQLite alike
+        // (SQLite does not allow ORDER BY ... LIMIT inside UNION members).
+        $rows = $this->db->get_results($this->db->prepare(
+            "SELECT field_key, after_hash, event FROM {$this->t->changes}
+             WHERE id IN (
+               SELECT MAX(id) FROM {$this->t->changes}
+               WHERE object_type = %s AND object_id = %d AND field_key IN (" . implode(', ', array_fill(0, count($fields), '%s')) . ')
+               GROUP BY field_key
+             )',
+            $object->type,
+            $object->id,
+            ...$fields
+        ), ARRAY_A);
 
-        foreach ($fields as $field) {
-            $parts[] = $this->db->prepare(
-                "(SELECT field_key, after_hash, event FROM {$this->t->changes}
-                  WHERE object_type = %s AND object_id = %d AND field_key = %s
-                  ORDER BY id DESC LIMIT 1)",
-                $object->type,
-                $object->id,
-                $field
-            );
-        }
-
-        $rows = $this->db->get_results(implode(' UNION ALL ', $parts), ARRAY_A);
-
-        if (!is_array($rows)) {
+        if (!is_array($rows) || $this->db->last_error !== '') {
             throw new StorageError('journal_read_failed');
         }
 
@@ -216,7 +216,7 @@ final class JournalRepository
     public function touchChangeset(int $changesetId): void
     {
         $this->db->query($this->db->prepare(
-            "UPDATE {$this->t->changesets} SET updated_at = UTC_TIMESTAMP() WHERE id = %d",
+            "UPDATE {$this->t->changesets} SET updated_at = " . SqlTime::utc() . " WHERE id = %d",
             $changesetId
         ));
     }
@@ -229,7 +229,7 @@ final class JournalRepository
     {
         $stats = $this->db->get_row($this->db->prepare(
             "SELECT COUNT(*) AS changes,
-                    COUNT(DISTINCT object_type, object_id) AS objects,
+                    COUNT(DISTINCT CONCAT(object_type, ':', object_id)) AS objects,
                     SUM(quality = 'ambiguous') AS ambiguous,
                     SUM(quality = 'observed') AS observed,
                     SUM(restorable = 0 AND event IN ('update', 'restore')) AS limited
@@ -260,7 +260,7 @@ final class JournalRepository
 
         $this->db->query($this->db->prepare(
             "UPDATE {$this->t->changesets}
-             SET status = 'sealed', sealed_at = UTC_TIMESTAMP(), updated_at = UTC_TIMESTAMP(),
+             SET status = 'sealed', sealed_at = " . SqlTime::utc() . ", updated_at = " . SqlTime::utc() . ",
                  change_count = %d, object_count = %d, quality = %s, summary_json = %s
              WHERE id = %d AND status = 'open'",
             $changes,

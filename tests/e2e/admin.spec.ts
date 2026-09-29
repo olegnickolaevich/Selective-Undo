@@ -141,11 +141,11 @@ test( 'interface follows the user language from an installed language pack', asy
 		const sections = page.getByRole( 'navigation', { name: 'Разделы Selective Undo' } );
 		await expect( sections ).toBeVisible();
 		await expect( page.getByText( 'Журнал изменений', { exact: true } ) ).toBeVisible();
-		await expect( page.getByText( /последние 7 дней/ ) ).toBeVisible();
+		await expect( page.getByText( /последние 30 дней/ ) ).toBeVisible();
 		await expect( page.getByRole( 'button', { name: 'Проверить восстановление' } ) ).toBeVisible();
 		await sections.getByRole( 'link', { name: 'Настройки' } ).click();
 		await page.getByRole( 'link', { name: 'Хранилище', exact: true } ).click();
-		await expect( page.getByText( /От 1 до 7 дней/ ) ).toBeVisible();
+		await expect( page.getByText( /От 1 до 365 дней/ ) ).toBeVisible();
 	} finally {
 		wp( 'user', 'meta', 'delete', 'admin', 'locale' );
 	}

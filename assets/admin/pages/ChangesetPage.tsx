@@ -139,6 +139,9 @@ export function ChangesetPage( {
 				? [ ...( prev[ objectId ] ?? [] ), changeId ]
 				: ( prev[ objectId ] ?? [] ).filter( ( c ) => c !== changeId ),
 		} ) );
+	// One restore may combine changes of several items, up to the server's limit.
+	const allChosen = Object.values( selected ).flat();
+	const maxObjects = overview?.limits.max_objects_per_plan ?? 50;
 	const restorable = data.objects.some( ( o ) =>
 		o.changes.some( ( c ) => c.restorable )
 	);
@@ -298,7 +301,7 @@ export function ChangesetPage( {
 										checkRestore(
 											{
 												type: 'changes',
-												change_ids: chosen,
+												change_ids: allChosen,
 											},
 											setPlanError,
 											setBusy

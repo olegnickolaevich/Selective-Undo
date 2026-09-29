@@ -49,7 +49,10 @@ final class DbInfo
             return $this->info = ['max_allowed_packet' => (int) $cached['max_allowed_packet'], 'version' => (string) $cached['version']];
         }
 
-        $row = $this->db->get_row('SELECT @@max_allowed_packet AS packet, VERSION() AS version', ARRAY_A);
+        // SQLite has no packet limit; 16 MB keeps payloads in the same range as on MySQL.
+        $row = DbDialect::isSqlite()
+            ? ['packet' => 16 * MB_IN_BYTES, 'version' => 'SQLite ' . (class_exists('SQLite3') ? (string) (\SQLite3::version()['versionString'] ?? '') : '')]
+            : $this->db->get_row('SELECT @@max_allowed_packet AS packet, VERSION() AS version', ARRAY_A);
         $info = [
             'max_allowed_packet' => (int) ($row['packet'] ?? 0),
             'version' => (string) ($row['version'] ?? ''),

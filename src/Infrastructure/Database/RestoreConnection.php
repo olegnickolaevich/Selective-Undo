@@ -7,6 +7,7 @@ namespace SelectiveUndo\Infrastructure\Database;
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
 
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
+use SelectiveUndo\Domain\Contracts\TransactionRunner;
 
 /**
  * Dedicated connection to the primary database, used only for restore transactions.
@@ -19,7 +20,7 @@ use SelectiveUndo\Domain\Contracts\RestoreTransaction;
  * mysqli_report() is a process-wide driver setting. wpdb sets MYSQLI_REPORT_OFF, while
  * PHP 8.1+ defaults to exceptions. This class never changes it and works in both modes.
  */
-final class RestoreConnection implements RestoreTransaction
+final class RestoreConnection implements TransactionRunner
 {
     private const RETRYABLE = [1205 => 'lock_wait_timeout', 1213 => 'deadlock'];
     private const CONNECTION_LOST = [2006, 2013];
@@ -117,6 +118,11 @@ final class RestoreConnection implements RestoreTransaction
     public function lastInsertId(): int
     {
         return (int) $this->link()->insert_id;
+    }
+
+    public function mode(): string
+    {
+        return self::DEDICATED;
     }
 
     /**

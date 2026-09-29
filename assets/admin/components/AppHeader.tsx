@@ -1,5 +1,5 @@
 import { Notice } from '@wordpress/components';
-import { __, _n, sprintf } from '@wordpress/i18n';
+import { __, _n, _x, sprintf } from '@wordpress/i18n';
 import type { Overview } from '../api/types';
 import { exactDate, formatBytes } from '../lib/format';
 import { blockerText } from '../lib/labels';
@@ -87,6 +87,28 @@ export function AppHeader( { overview }: { overview: Overview | null } ) {
 									) }
 						</dd>
 					</div>
+					{ overview.restore_mode === 'compat' && (
+						<div className="su-fact su-fact--warning">
+							<dt>
+								{ _x(
+									'Restore',
+									'noun: header label for the restore mode',
+									'selective-undo'
+								) }
+							</dt>
+							<dd>
+								<a
+									href={ viewToUrl( diagnostics ) }
+									onClick={ linkHandler( diagnostics ) }
+								>
+									{ __(
+										'compatibility mode',
+										'selective-undo'
+									) }
+								</a>
+							</dd>
+						</div>
+					) }
 				</dl>
 			) }
 			{ overview && overview.restore_blockers.length > 0 && (
