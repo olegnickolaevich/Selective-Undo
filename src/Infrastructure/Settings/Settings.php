@@ -23,7 +23,9 @@ final class Settings
         'shop_order_placehold',
     ];
 
-    public const FREE_MAX_RETENTION_DAYS = 7;
+    /** Technical bounds, not a paid limit (WordPress.org guideline 5). */
+    public const DEFAULT_RETENTION_DAYS = 30;
+    public const MAX_RETENTION_DAYS = 365;
     public const MIN_QUOTA_MB = 16;
     public const MAX_QUOTA_MB = 102400;
 
@@ -38,7 +40,7 @@ final class Settings
         return [
             'capture_enabled' => true,
             'tracked_post_types' => ['post', 'page'],
-            'retention_days' => self::FREE_MAX_RETENTION_DAYS,
+            'retention_days' => self::DEFAULT_RETENTION_DAYS,
             'quota_mb' => 256,
             'evict_oldest_on_quota' => true,
             'max_value_kb' => 2048,
@@ -118,7 +120,7 @@ final class Settings
 
     public function maxRetentionDays(): int
     {
-        return max(1, (int) apply_filters('selective_undo/retention_max_days', self::FREE_MAX_RETENTION_DAYS));
+        return max(1, (int) apply_filters('selective_undo/retention_max_days', self::MAX_RETENTION_DAYS));
     }
 
     public function retentionDays(): int

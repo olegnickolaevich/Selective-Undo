@@ -21,7 +21,7 @@ final class HealthPrivacyTest extends IntegrationTestCase
         $overview = $this->s->health()->overview();
         $this->assertSame('active', $overview['capture']['state']);
         $this->assertSame([], $overview['restore_blockers']);
-        $this->assertSame(7, $overview['retention_days']);
+        $this->assertSame(30, $overview['retention_days']);
     }
 
     public function testDisabledCaptureIsVisibleNotGreen(): void
@@ -70,7 +70,7 @@ final class HealthPrivacyTest extends IntegrationTestCase
     public function testSettingsValidation(): void
     {
         $settings = $this->s->settings();
-        $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['retention_days' => 30]));
+        $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['retention_days' => 366]));
         $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['tracked_post_types' => ['attachment']]));
         $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['unknown' => 1]));
         $next = $settings->update(['retention_days' => 3, 'tracked_post_types' => ['post']]);

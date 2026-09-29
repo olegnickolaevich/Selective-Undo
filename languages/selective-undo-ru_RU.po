@@ -11,8 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"POT-Creation-Date: 2026-09-26T20:24:45+00:00\n"
-"PO-Revision-Date: 2026-09-26 20:24+0000\n"
+"POT-Creation-Date: 2026-09-29T07:37:24+00:00\n"
+"PO-Revision-Date: 2026-09-29 07:37+0000\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
 
@@ -23,7 +23,7 @@ msgstr ""
 #: src/Presentation/Admin/AdminPage.php:57
 #: build/index.js:3
 #: build/index.js:11
-#: build/index.js:31
+#: build/index.js:32
 msgid "Selective Undo"
 msgstr "Selective Undo"
 
@@ -259,7 +259,7 @@ msgstr "Будет восстановлено"
 
 #: src/Application/History/HistoryQuery.php:113
 #: src/Application/History/HistoryQuery.php:120
-#: src/Application/Restore/BuildRestorePlan.php:125
+#: src/Application/Restore/BuildRestorePlan.php:128
 msgid "This operation no longer exists in the history."
 msgstr "Этой операции больше нет в истории."
 
@@ -272,37 +272,42 @@ msgstr "У вас нет прав на просмотр истории этой 
 msgid "Invalid page cursor."
 msgstr "Неверный указатель страницы."
 
-#: src/Application/Restore/BuildRestorePlan.php:103
+#: src/Application/Restore/BuildRestorePlan.php:106
 msgid "Select between 1 and 500 changes."
 msgstr "Выберите от 1 до 500 изменений."
 
-#: src/Application/Restore/BuildRestorePlan.php:109
+#: src/Application/Restore/BuildRestorePlan.php:112
 msgid "Some of the selected changes no longer exist in the history."
 msgstr "Некоторых выбранных изменений больше нет в истории."
 
-#: src/Application/Restore/BuildRestorePlan.php:114
+#: src/Application/Restore/BuildRestorePlan.php:117
 msgid "Informational events cannot be restored."
 msgstr "Информационные события нельзя восстановить."
 
-#: src/Application/Restore/BuildRestorePlan.php:138
+#: src/Application/Restore/BuildRestorePlan.php:141
 msgid "The selection contains no restorable changes."
 msgstr "В выборе нет изменений, которые можно восстановить."
 
-#: src/Application/Restore/BuildRestorePlan.php:142
+#: src/Application/Restore/BuildRestorePlan.php:145
 msgid "Select at most 500 changes at a time."
 msgstr "Выберите не больше 500 изменений за раз."
 
-#: src/Application/Restore/BuildRestorePlan.php:148
+#: src/Application/Restore/BuildRestorePlan.php:151
 msgid "Unknown selection type."
 msgstr "Неизвестный тип выбора."
 
-#: src/Application/Restore/BuildRestorePlan.php:198
+#: src/Application/Restore/BuildRestorePlan.php:201
 msgid "You are not allowed to view the history of some of the selected items."
 msgstr "У вас нет прав на просмотр истории некоторых выбранных записей."
 
-#: src/Application/Restore/BuildRestorePlan.php:220
-msgid "The free version restores one item at a time. Select changes of a single item."
-msgstr "Бесплатная версия восстанавливает одну запись за раз. Выберите изменения одной записи."
+#. translators: %d: maximum number of items in one restore.
+#: src/Application/Restore/BuildRestorePlan.php:225
+#, php-format
+msgid "One restore can include changes of at most %d item. Select fewer items and restore them in several steps."
+msgid_plural "One restore can include changes of at most %d items. Select fewer items and restore them in several steps."
+msgstr[0] "Одно восстановление может включать изменения не более чем %d записи. Выберите меньше записей и восстановите их в несколько приёмов."
+msgstr[1] "Одно восстановление может включать изменения не более чем %d записей. Выберите меньше записей и восстановите их в несколько приёмов."
+msgstr[2] "Одно восстановление может включать изменения не более чем %d записей. Выберите меньше записей и восстановите их в несколько приёмов."
 
 #: src/Application/Restore/CreateRestoreJob.php:69
 msgid "Restoring is unavailable on this site right now. See Settings → Diagnostics."
@@ -315,7 +320,7 @@ msgstr "Срок действия предпросмотра истёк. Про�
 
 #: src/Application/Restore/CreateRestoreJob.php:143
 #: src/Application/Restore/CreateRestoreJob.php:189
-#: build/index.js:19
+#: build/index.js:20
 msgid "This preview has already been used to start a restore."
 msgstr "Этот предпросмотр уже использован для запуска восстановления."
 
@@ -324,7 +329,7 @@ msgid "This request key was already used for another restore."
 msgstr "Этот ключ запроса уже использован для другого восстановления."
 
 #: src/Application/Restore/CreateRestoreJob.php:201
-#: build/index.js:20
+#: build/index.js:21
 msgid "Nothing in this preview can be restored."
 msgstr "В этом предпросмотре нечего восстанавливать."
 
@@ -410,7 +415,7 @@ msgid "Source"
 msgstr "Источник"
 
 #: src/Infrastructure/WordPress/PrivacyIntegration.php:93
-#: build/index.js:17
+#: build/index.js:18
 msgid "Items"
 msgstr "Записи"
 
@@ -428,21 +433,21 @@ msgstr "Этот сайт записывает изменения выбранн
 
 #: src/Presentation/Admin/AdminPage.php:51
 #: build/index.js:15
-#: build/index.js:17
+#: build/index.js:18
 msgid "History"
 msgstr "История"
 
 #: src/Presentation/Admin/AdminPage.php:52
 #: build/index.js:15
-#: build/index.js:17
-#: build/index.js:22
+#: build/index.js:18
+#: build/index.js:23
 msgid "Restores"
 msgstr "Восстановления"
 
 #: src/Presentation/Admin/AdminPage.php:53
 #: src/Presentation/Admin/AdminPage.php:144
 #: build/index.js:15
-#: build/index.js:31
+#: build/index.js:32
 msgid "Settings"
 msgstr "Настройки"
 
@@ -495,7 +500,7 @@ msgid "Manage settings"
 msgstr "Управление настройками"
 
 #: src/Presentation/Rest/RestApi.php:452
-#: build/index.js:24
+#: build/index.js:25
 msgid "Delete history"
 msgstr "Удаление истории"
 
@@ -525,7 +530,7 @@ msgstr "Удалено навсегда"
 
 #: build/editor.js:1
 #: build/index.js:3
-#: build/index.js:17
+#: build/index.js:18
 msgid "Restored"
 msgstr "Восстановлено"
 
@@ -544,14 +549,14 @@ msgid "Loading…"
 msgstr "Загрузка…"
 
 #: build/editor.js:1
-#: build/index.js:17
+#: build/index.js:18
 msgid "No changes recorded yet."
 msgstr "Изменений пока нет."
 
 #: build/editor.js:1
 #: build/index.js:16
-#: build/index.js:17
 #: build/index.js:18
+#: build/index.js:19
 msgid "System"
 msgstr "Система"
 
@@ -703,15 +708,15 @@ msgid "Blocked by a site rule (%s)."
 msgstr "Заблокировано правилом сайта (%s)."
 
 #: build/index.js:3
-#: build/index.js:20
 #: build/index.js:21
+#: build/index.js:22
 msgid "Ready to restore"
 msgstr "Готово к восстановлению"
 
 #: build/index.js:3
-#: build/index.js:17
-#: build/index.js:20
+#: build/index.js:18
 #: build/index.js:21
+#: build/index.js:22
 msgid "Already in the desired state"
 msgstr "Уже в нужном состоянии"
 
@@ -740,7 +745,7 @@ msgid "Waiting"
 msgstr "Ожидает"
 
 #: build/index.js:3
-#: build/index.js:17
+#: build/index.js:18
 msgid "Skipped: changed again"
 msgstr "Пропущено: изменено повторно"
 
@@ -749,7 +754,7 @@ msgid "Skipped"
 msgstr "Пропущено"
 
 #: build/index.js:3
-#: build/index.js:17
+#: build/index.js:18
 msgid "Failed"
 msgstr "Ошибка"
 
@@ -855,7 +860,7 @@ msgid "Autosaved draft “%s”"
 msgstr "Автосохранение черновика «%s»"
 
 #: build/index.js:5
-#: build/index.js:17
+#: build/index.js:18
 msgid "Operation"
 msgstr "Операция"
 
@@ -996,7 +1001,7 @@ msgid "paused"
 msgstr "приостановлен"
 
 #: build/index.js:11
-#: build/index.js:23
+#: build/index.js:24
 msgid "Storage"
 msgstr "Хранилище"
 
@@ -1035,7 +1040,7 @@ msgid "Restoring is unavailable: %s. History is still recorded."
 msgstr "Восстановление недоступно: %s. История продолжает записываться."
 
 #: build/index.js:15
-#: build/index.js:23
+#: build/index.js:24
 msgid "Diagnostics"
 msgstr "Диагностика"
 
@@ -1125,7 +1130,7 @@ msgid "History of this item"
 msgstr "История этой записи"
 
 #: build/index.js:16
-#: build/index.js:18
+#: build/index.js:19
 msgid "Open editor"
 msgstr "Открыть в редакторе"
 
@@ -1146,12 +1151,12 @@ msgid "Compare before / after"
 msgstr "Сравнить «было / стало»"
 
 #: build/index.js:16
-#: build/index.js:17
+#: build/index.js:18
 msgid "Author"
 msgstr "Автор"
 
 #: build/index.js:16
-#: build/index.js:17
+#: build/index.js:18
 msgid "Time"
 msgstr "Время"
 
@@ -1184,151 +1189,156 @@ msgstr "Записи в этой операции"
 msgid "Changed fields"
 msgstr "Изменённые поля"
 
-#: build/index.js:17
-msgid "Restores are checked one item at a time."
-msgstr "Восстановление проверяется по одной записи."
-
-#: build/index.js:17
+#. translators: %d: maximum number of items in one restore.
 #: build/index.js:18
-#: build/index.js:20
+#, js-format
+msgid "One restore can include at most %d item."
+msgid_plural "One restore can include at most %d items."
+msgstr[0] "Одно восстановление может включать не более %d записи."
+msgstr[1] "Одно восстановление может включать не более %d записей."
+msgstr[2] "Одно восстановление может включать не более %d записей."
+
+#: build/index.js:18
+#: build/index.js:19
+#: build/index.js:21
 msgid "Check restore"
 msgstr "Проверить восстановление"
 
-#: build/index.js:17
 #: build/index.js:18
+#: build/index.js:19
 msgid "Check undo of this restore"
 msgstr "Проверить отмену этого восстановления"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "+ items you cannot view"
 msgstr "+ записи, которые вам нельзя просматривать"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Partly restorable"
 msgstr "Восстанавливается частично"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "History available"
 msgstr "История доступна"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Changed:"
 msgstr "Изменено:"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "View changes"
 msgstr "Посмотреть изменения"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Search by current title or ID"
 msgstr "Поиск по текущему заголовку или ID"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Period"
 msgstr "Период"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Whole history"
 msgstr "Вся история"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Last 24 hours"
 msgstr "Последние 24 часа"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Last 7 days"
 msgstr "Последние 7 дней"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Everyone"
 msgstr "Все"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "My changes"
 msgstr "Мои изменения"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Content type"
 msgstr "Тип контента"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "All types"
 msgstr "Все типы"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Edits, restores and operations"
 msgstr "Правки, восстановления и операции"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Edits"
 msgstr "Правки"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Integrated operations"
 msgstr "Операции интеграций"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Autosaved drafts"
 msgstr "Автосохранения черновиков"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Clear filters"
 msgstr "Сбросить фильтры"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Nothing matches these filters."
 msgstr "По этим фильтрам ничего не найдено."
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Edits of titles, content, excerpts and order of tracked content will appear here."
 msgstr "Здесь появятся изменения заголовков, содержимого, отрывков и порядка отслеживаемого контента."
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Recorded operations, newest first"
 msgstr "Записанные операции, сначала новые"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Changes"
 msgstr "Изменения"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Notes"
 msgstr "Примечания"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Restore completed"
 msgstr "Восстановление завершено"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Restore completed, some fields were skipped"
 msgstr "Восстановление завершено, часть полей пропущена"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Restore partially failed"
 msgstr "Восстановление выполнено частично"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Restore failed"
 msgstr "Восстановление не удалось"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Restore stopped"
 msgstr "Восстановление остановлено"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Restoring changes"
 msgstr "Восстанавливаем изменения"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Skipped for another reason"
 msgstr "Пропущено по другой причине"
 
-#: build/index.js:17
+#: build/index.js:18
 msgid "Not started"
 msgstr "Не начато"
 
 #. translators: 1: processed fields, 2: total fields.
-#: build/index.js:18
+#: build/index.js:19
 #, js-format
 msgid "Processed %1$d of %2$d field"
 msgid_plural "Processed %1$d of %2$d fields"
@@ -1336,64 +1346,64 @@ msgstr[0] "Обработано %1$d из %2$d поля"
 msgstr[1] "Обработано %1$d из %2$d полей"
 msgstr[2] "Обработано %1$d из %2$d полей"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "You can close this page. The restore continues if background tasks on the site work."
 msgstr "Эту страницу можно закрыть. Восстановление продолжится, если на сайте работают фоновые задачи."
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Continue in this tab"
 msgstr "Продолжить в этой вкладке"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Background processing on this site seems delayed."
 msgstr "Похоже, фоновая обработка на этом сайте задерживается."
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Stop after the current item"
 msgstr "Остановить после текущей записи"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Stopping does not undo items that were already restored."
 msgstr "Остановка не отменяет уже восстановленные записи."
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "The content is restored. Cache clearing and other follow-up tasks are still running."
 msgstr "Контент восстановлен. Очистка кэша и другие завершающие задачи ещё выполняются."
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "The content is restored, but some follow-up tasks (such as clearing the page cache) failed. Clear the page cache manually if visitors still see the old version."
 msgstr "Контент восстановлен, но часть завершающих задач (например, очистка кэша страниц) не выполнилась. Если посетители видят старую версию, очистите кэш страниц вручную."
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Report"
 msgstr "Отчёт"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Back to history"
 msgstr "Вернуться к истории"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "All restores"
 msgstr "Все восстановления"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Item history"
 msgstr "История записи"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "No recorded changes for this item."
 msgstr "Для этой записи нет записанных изменений."
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Whole operation"
 msgstr "Вся операция"
 
-#: build/index.js:18
+#: build/index.js:19
 msgid "Select one change, or several consecutive changes of the same field to return to the state before the first one."
 msgstr "Выберите одно изменение или несколько идущих подряд изменений одного поля, чтобы вернуться к состоянию до первого из них."
 
 #. translators: %d: number of changes.
-#: build/index.js:19
+#: build/index.js:20
 #, js-format
 msgid "%d change is undone together."
 msgid_plural "%d consecutive changes are undone together."
@@ -1401,60 +1411,60 @@ msgstr[0] "Отменяется %d изменение."
 msgstr[1] "Вместе отменяются %d последовательных изменения."
 msgstr[2] "Вместе отменяются %d последовательных изменений."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Between the selected changes there are other changes that cancel each other out."
 msgstr "Между выбранными изменениями есть другие изменения, которые взаимно отменяют друг друга."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "This field was changed later and then returned to the same value."
 msgstr "Это поле позже меняли, а затем вернули к тому же значению."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Someone is editing this item right now. If they save their open editor, the restored value will be overwritten."
 msgstr "Эту запись сейчас кто-то редактирует. Если он сохранит открытый редактор, восстановленное значение будет перезаписано."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "This page is built with a page builder. Restoring the content may not change what visitors see."
 msgstr "Эта страница собрана конструктором. Восстановление содержимого может не изменить то, что видят посетители."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Another plugin keeps a copy of this content (for example Markdown source) and may overwrite the restored content on the next edit."
 msgstr "Другой плагин хранит копию этого содержимого (например, исходник Markdown) и может перезаписать восстановленное содержимое при следующем редактировании."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "The history of this item is incomplete for this period."
 msgstr "История этой записи за этот период неполная."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Compare current and restored value"
 msgstr "Сравнить текущее и восстанавливаемое значение"
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "What changed since"
 msgstr "Что изменилось с тех пор"
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Check again"
 msgstr "Проверить ещё раз"
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Open that restore"
 msgstr "Открыть это восстановление"
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Restore actions"
 msgstr "Действия восстановления"
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "Could not confirm that the restore started. You can safely try again: the same request will not run twice."
 msgstr "Не удалось подтвердить запуск восстановления. Можно безопасно повторить: тот же запрос не выполнится дважды."
 
-#: build/index.js:19
+#: build/index.js:20
 msgid "This preview has expired. Check the changes again before restoring."
 msgstr "Срок действия предпросмотра истёк. Проверьте изменения ещё раз перед восстановлением."
 
 #. translators: %d: number of fields that will be restored.
-#: build/index.js:20
+#: build/index.js:21
 #, js-format
 msgid "Restore %d field"
 msgid_plural "Restore %d fields"
@@ -1462,22 +1472,22 @@ msgstr[0] "Восстановить %d поле"
 msgstr[1] "Восстановить %d поля"
 msgstr[2] "Восстановить %d полей"
 
-#: build/index.js:20
-#: build/index.js:22
+#: build/index.js:21
+#: build/index.js:23
 msgid "Checking the current state…"
 msgstr "Проверяем текущее состояние…"
 
-#: build/index.js:20
 #: build/index.js:21
+#: build/index.js:22
 msgid "Need attention"
 msgstr "Требуют внимания"
 
-#: build/index.js:20
+#: build/index.js:21
 msgid "Will be processed:"
 msgstr "Будет обработано:"
 
 #. translators: %d: number of fields.
-#: build/index.js:21
+#: build/index.js:22
 #, js-format
 msgid "%d field"
 msgid_plural "%d fields"
@@ -1485,22 +1495,22 @@ msgstr[0] "%d поле"
 msgstr[1] "%d поля"
 msgstr[2] "%d полей"
 
-#: build/index.js:21
+#: build/index.js:22
 msgid "Will not be changed:"
 msgstr "Не будут изменены:"
 
 #. translators: %s: date and time.
-#: build/index.js:22
+#: build/index.js:23
 #, js-format
 msgid "This preview is valid until %s. Values are checked again right before writing."
 msgstr "Предпросмотр действителен до %s. Значения проверяются ещё раз непосредственно перед записью."
 
-#: build/index.js:22
+#: build/index.js:23
 msgid "No restores yet."
 msgstr "Восстановлений пока нет."
 
 #. translators: 1: number restored, 2: total number of fields.
-#: build/index.js:23
+#: build/index.js:24
 #, js-format
 msgid "%1$d of %2$d field restored"
 msgid_plural "%1$d of %2$d fields restored"
@@ -1508,52 +1518,52 @@ msgstr[0] "Восстановлено %1$d из %2$d поля"
 msgstr[1] "Восстановлено %1$d из %2$d полей"
 msgstr[2] "Восстановлено %1$d из %2$d полей"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "What to record"
 msgstr "Что записывать"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Access"
 msgstr "Доступ"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Removal"
 msgstr "Удаление"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Save changes"
 msgstr "Сохранить изменения"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Record changes"
 msgstr "Вести журнал изменений"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "When turned off, changes are not recorded and cannot be undone later. The period appears as a gap in the history."
 msgstr "Если выключить, изменения не записываются и их нельзя будет отменить. Этот период будет отмечен как пробел в истории."
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Content types"
 msgstr "Типы контента"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Title, content, excerpt and order of existing items are recorded."
 msgstr "Записываются заголовок, содержимое, отрывок и порядок существующих записей."
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Merge autosaves of drafts"
 msgstr "Объединять автосохранения черновиков"
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Autosaves of a draft by its author become one entry per editing session instead of one entry per minute."
 msgstr "Автосохранения черновика его автором объединяются в одну запись истории на сеанс редактирования вместо записи каждую минуту."
 
-#: build/index.js:23
+#: build/index.js:24
 msgid "Import recent WordPress revisions"
 msgstr "Импортировать недавние редакции WordPress"
 
 #. translators: %d: number of days history is kept.
-#: build/index.js:24
+#: build/index.js:25
 #, js-format
 msgid "Title, content and excerpt changes saved in WordPress revisions during the last %d day before recording started are added to the history, so they can be undone too."
 msgid_plural "Title, content and excerpt changes saved in WordPress revisions during the last %d days before recording started are added to the history, so they can be undone too."
@@ -1561,48 +1571,48 @@ msgstr[0] "Изменения заголовка, содержимого и от
 msgstr[1] "Изменения заголовка, содержимого и отрывка, сохранённые в редакциях WordPress за последние %d дня до начала записи, добавляются в историю, и их тоже можно отменить."
 msgstr[2] "Изменения заголовка, содержимого и отрывка, сохранённые в редакциях WordPress за последние %d дней до начала записи, добавляются в историю, и их тоже можно отменить."
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "Create a WordPress revision after a restore"
 msgstr "Создавать редакцию WordPress после восстановления"
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "What is not recorded or restored"
 msgstr "Что не записывается и не восстанавливается"
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "Deleted items, creation of new items, status, slug, author, dates, custom fields, comments, users, settings, files, orders and payments. Changes made directly in the database, bypassing WordPress, are detected but not recorded. Emails, webhooks and other external effects are never undone."
 msgstr "Удалённые записи, создание новых записей, статус, ярлык, автор, даты, произвольные поля, комментарии, пользователи, настройки, файлы, заказы и платежи. Изменения, внесённые напрямую в базу данных в обход WordPress, обнаруживаются, но не записываются. Отправленные письма, вебхуки и другие внешние действия никогда не отменяются."
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "Text removed from pages can stay in the history until it expires. Delete it here, for example after removing personal data."
 msgstr "Удалённый со страниц текст может оставаться в истории до истечения срока хранения. Удалите его здесь, например после удаления персональных данных."
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "What to delete"
 msgstr "Что удалить"
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "History of one item"
 msgstr "Историю одной записи"
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "History older than a date"
 msgstr "Историю старше даты"
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "All history"
 msgstr "Всю историю"
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "Item ID"
 msgstr "ID записи"
 
-#: build/index.js:24
+#: build/index.js:25
 msgid "Older than"
 msgstr "Старше чем"
 
 #. translators: %d: number of recorded changes.
-#: build/index.js:25
+#: build/index.js:26
 #, js-format
 msgid "%d recorded change will be deleted permanently."
 msgid_plural "%d recorded changes will be deleted permanently."
@@ -1611,7 +1621,7 @@ msgstr[1] "%d записанных изменения будут удалены 
 msgstr[2] "%d записанных изменений будут удалены навсегда."
 
 #. translators: %d: number of operations.
-#: build/index.js:26
+#: build/index.js:27
 #, js-format
 msgid "%d operation is kept because an open preview or a running restore uses it."
 msgid_plural "%d operations are kept because an open preview or a running restore uses them."
@@ -1619,12 +1629,12 @@ msgstr[0] "%d операция сохранится, потому что её и
 msgstr[1] "%d операции сохранятся, потому что их использует открытый предпросмотр или выполняющееся восстановление."
 msgstr[2] "%d операций сохранятся, потому что их использует открытый предпросмотр или выполняющееся восстановление."
 
-#: build/index.js:26
+#: build/index.js:27
 msgid "Type DELETE to confirm"
 msgstr "Для подтверждения введите DELETE"
 
 #. translators: %d: number of deleted changes.
-#: build/index.js:27
+#: build/index.js:28
 #, js-format
 msgid "Deleted %d recorded change."
 msgid_plural "Deleted %d recorded changes."
@@ -1632,44 +1642,44 @@ msgstr[0] "Удалено %d записанное изменение."
 msgstr[1] "Удалено %d записанных изменения."
 msgstr[2] "Удалено %d записанных изменений."
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Some history is left; run the deletion again."
 msgstr "Часть истории осталась — запустите удаление ещё раз."
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Delete permanently"
 msgstr "Удалить навсегда"
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Cancel"
 msgstr "Отмена"
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Preview deletion"
 msgstr "Предпросмотр удаления"
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Used"
 msgstr "Занято"
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "On disk"
 msgstr "На диске"
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Oldest available change"
 msgstr "Самое старое доступное изменение"
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "The database file does not shrink automatically after deletions; freed space is reused for new history."
 msgstr "Файл базы данных не уменьшается автоматически после удаления; освобождённое место используется для новой истории."
 
-#: build/index.js:27
+#: build/index.js:28
 msgid "Keep history for (days)"
 msgstr "Хранить историю (дней)"
 
 #. translators: %d: maximum number of days.
-#: build/index.js:28
+#: build/index.js:29
 #, js-format
 msgid "From 1 to %d day. The size limit below may remove older history earlier."
 msgid_plural "From 1 to %d days. The size limit below may remove older history earlier."
@@ -1677,117 +1687,117 @@ msgstr[0] "От 1 до %d дня. Лимит объёма ниже может у
 msgstr[1] "От 1 до %d дней. Лимит объёма ниже может удалить старую историю раньше."
 msgstr[2] "От 1 до %d дней. Лимит объёма ниже может удалить старую историю раньше."
 
-#: build/index.js:28
+#: build/index.js:29
 msgid "History size limit (MB)"
 msgstr "Лимит объёма истории (МБ)"
 
-#: build/index.js:28
+#: build/index.js:29
 msgid "Remove the oldest history when the limit is reached"
 msgstr "Удалять самую старую историю при достижении лимита"
 
-#: build/index.js:28
+#: build/index.js:29
 msgid "When off, recording pauses at the limit instead."
 msgstr "Если выключено, при достижении лимита журнал приостанавливается."
 
-#: build/index.js:28
+#: build/index.js:29
 msgid "Largest value to store (KB)"
 msgstr "Максимальный размер сохраняемого значения (КБ)"
 
 #. translators: %s: size.
-#: build/index.js:29
+#: build/index.js:30
 #, js-format
 msgid "Effective limit on this server: %s. Larger values are listed in the history but cannot be restored."
 msgstr "Действующий лимит на этом сервере: %s. Более крупные значения видны в истории, но восстановить их нельзя."
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "Each permission is granted separately. Users additionally need permission to edit an item to see or restore its history."
 msgstr "Каждое право выдаётся отдельно. Чтобы видеть или восстанавливать историю записи, пользователю также нужно право на её редактирование."
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "Permissions by role"
 msgstr "Права по ролям"
 
-#: build/index.js:29
+#: build/index.js:30
 msgid "Role"
 msgstr "Роль"
 
 #. translators: 1: user role name. 2: permission name.
-#: build/index.js:30
+#: build/index.js:31
 #, js-format
 msgctxt "role: permission"
 msgid "%1$s: %2$s"
 msgstr "%1$s: %2$s"
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "History gaps"
 msgstr "Пробелы в истории"
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "No gaps recorded."
 msgstr "Пробелов не зафиксировано."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "A field was changed outside WordPress (for example by a direct database query). That change is not in the history."
 msgstr "Поле изменили в обход WordPress (например, прямым запросом к базе данных). Этого изменения нет в истории."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "A change could not be recorded because of an error. See diagnostics."
 msgstr "Из-за ошибки изменение не удалось записать. См. диагностику."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "A value was too large to be stored."
 msgstr "Значение оказалось слишком большим для сохранения."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Too many nested saves of one item in a single request; some were not recorded."
 msgstr "Слишком много вложенных сохранений одной записи в одном запросе; часть из них не записана."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "WordPress saved an item based on outdated cached data. The recorded values are correct."
 msgstr "WordPress сохранил запись на основе устаревших данных из кэша. Записанные значения верны."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Recording was paused because the history size limit was reached."
 msgstr "Журнал изменений был приостановлен из-за достижения лимита объёма истории."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Recording was paused while the database was being updated."
 msgstr "Журнал изменений был приостановлен на время обновления базы данных."
 
-#: build/index.js:30
+#: build/index.js:31
 msgid "Recording was turned off in the settings."
 msgstr "Журнал изменений был выключен в настройках."
 
 #. translators: %s: date.
-#: build/index.js:31
+#: build/index.js:32
 #, js-format
 msgid "since %s, ongoing"
 msgstr "с %s, продолжается"
 
-#: build/index.js:31
+#: build/index.js:32
 msgid "Download diagnostics (no content)"
 msgstr "Скачать диагностику (без контента)"
 
-#: build/index.js:31
+#: build/index.js:32
 msgid "Export history list (CSV, no values)"
 msgstr "Экспортировать список истории (CSV, без значений)"
 
-#: build/index.js:31
+#: build/index.js:32
 msgid "Deactivating the plugin keeps the history. Deleting the plugin keeps the history too, unless you allow it below."
 msgstr "Деактивация плагина сохраняет историю. Удаление плагина тоже сохраняет историю, если вы не разрешите иное ниже."
 
-#: build/index.js:31
+#: build/index.js:32
 msgid "Delete all history and settings when the plugin is deleted"
 msgstr "Удалить всю историю и настройки при удалении плагина"
 
-#: build/index.js:31
+#: build/index.js:32
 msgid "When the plugin is deleted from the Plugins screen, the history is destroyed and cannot be recovered."
 msgstr "При удалении плагина на экране «Плагины» история будет уничтожена без возможности восстановления."
 
-#: build/index.js:31
+#: build/index.js:32
 msgid "Settings saved."
 msgstr "Настройки сохранены."
 
-#: build/index.js:31
+#: build/index.js:32
 msgid "Settings sections"
 msgstr "Разделы настроек"

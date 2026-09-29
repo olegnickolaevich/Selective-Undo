@@ -31,13 +31,13 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 * **Transactional.** Each item is restored in a short database transaction on a dedicated connection, with row locks and a final comparison. A failure leaves the item unchanged.
 * **Honest about gaps.** Changes made directly in the database, bypassing WordPress, are detected and shown as gaps in the history instead of being guessed.
 
-**What the free version covers**
+**What Selective Undo covers**
 
 * Existing posts, pages and the custom post types you choose (those with an admin screen).
 * Fields: title, content, excerpt and menu order.
-* History for up to 7 days, with a size limit (256 MB by default) and automatic removal of the oldest history.
-* A head start: title, content and excerpt changes saved in WordPress revisions during the 7 days before activation are imported, so they can be undone too.
-* One item per restore.
+* History for as long as you choose (30 days by default, up to a year), limited by a size limit (256 MB by default) with automatic removal of the oldest history.
+* A head start: title, content and excerpt changes saved in WordPress revisions during the retention period before activation are imported, so they can be undone too.
+* Restore changes of several items at once (up to 50 per restore).
 * Merged autosaves: autosaves of a draft by its author become one entry per editing session.
 * Optional WordPress revision after each restore, so the post's own revision history stays complete.
 
@@ -62,7 +62,7 @@ The source code of the admin interface (React, TypeScript) is in `assets/admin`;
 1. Install the plugin from **Plugins → Add New** or upload the `selective-undo` folder to `/wp-content/plugins/`.
 2. Activate it on the **Plugins** screen. On a multisite network, activate it on individual sites.
 3. Open **Selective Undo → Settings → Diagnostics** and check that restoring is available. It needs InnoDB tables and the PHP mysqli extension.
-4. Changes of the title, content and excerpt saved in WordPress revisions during the last 7 days are imported right away; everything else is recorded from activation on. Run `wp selective-undo import-revisions` on large sites where WP-Cron does not run.
+4. Changes of the title, content and excerpt saved in WordPress revisions during the retention period (30 days by default) are imported right away; everything else is recorded from activation on. Run `wp selective-undo import-revisions` on large sites where WP-Cron does not run.
 
 For rarely visited sites, run WP-Cron from a system cron job so that background maintenance and restores are not delayed.
 

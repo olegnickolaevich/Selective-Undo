@@ -275,19 +275,23 @@ export function ChangesetPage( {
 								{ planError !== null && (
 									<ErrorNotice error={ planError } />
 								) }
-								{ data.objects.length > 1 &&
-									( overview?.limits.max_objects_per_plan ??
-										1 ) === 1 && (
-										<p className="su-muted">
-											{ __(
-												'Restores are checked one item at a time.',
+								{ data.objects.length > maxObjects && (
+									<p className="su-muted">
+										{ sprintf(
+											/* translators: %d: maximum number of items in one restore. */
+											_n(
+												'One restore can include at most %d item.',
+												'One restore can include at most %d items.',
+												maxObjects,
 												'selective-undo'
-											) }
-										</p>
-									) }
+											),
+											maxObjects
+										) }
+									</p>
+								) }
 								<Button
 									variant="primary"
-									disabled={ chosen.length === 0 || busy }
+									disabled={ allChosen.length === 0 || busy }
 									isBusy={ busy }
 									accessibleWhenDisabled
 									onClick={ () =>

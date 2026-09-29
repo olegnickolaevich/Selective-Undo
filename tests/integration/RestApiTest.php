@@ -165,13 +165,13 @@ final class RestApiTest extends IntegrationTestCase
     {
         [$status, $settings] = $this->call('GET', '/settings');
         $this->assertSame(200, $status);
-        $this->assertSame(7, $settings['limits']['retention_max_days']);
+        $this->assertSame(365, $settings['limits']['retention_max_days']);
         $names = array_column($settings['post_types'], 'name');
         $this->assertContains('post', $names);
         $this->assertNotContains('attachment', $names);
         $this->assertTrue($settings['roles']['administrator']['caps']['sundo_manage_settings']);
 
-        [$status, $error] = $this->call('PATCH', '/settings', ['settings' => ['retention_days' => 60]]);
+        [$status, $error] = $this->call('PATCH', '/settings', ['settings' => ['retention_days' => 366]]);
         $this->assertSame(400, $status);
         $this->assertSame('su_invalid_settings', $error['code']);
 
@@ -217,6 +217,6 @@ final class RestApiTest extends IntegrationTestCase
         [$status, $overview] = $this->call('GET', '/overview');
         $this->assertSame(200, $status);
         $this->assertTrue($overview['user']['can']['restore']);
-        $this->assertSame(1, $overview['limits']['max_objects_per_plan']);
+        $this->assertSame(50, $overview['limits']['max_objects_per_plan']);
     }
 }

@@ -371,7 +371,7 @@ final class RestoreTest extends IntegrationTestCase
         $this->assertSame('C', get_post($id)->post_title);
     }
 
-    public function testFreeVersionRestoresOneObjectPerPlan(): void
+    public function testSeveralObjectsInOnePlanUpToTheTechnicalLimit(): void
     {
         $a = $this->createPost();
         $b = $this->createPost();
@@ -379,11 +379,17 @@ final class RestoreTest extends IntegrationTestCase
         wp_update_post(['ID' => $b, 'post_title' => 'B2']);
         $this->endRequest();
         $changeset = $this->db->get_var("SELECT uuid FROM {$this->s->tables()->changesets} WHERE change_count = 2");
-        $e = $this->assertThrows(DomainError::class, fn () => $this->plan(['type' => 'changeset', 'changeset_id' => $changeset]));
-        $this->assertSame('su_selection_requires_pro', $e->errorCode);
+        $plan = $this->planView($this->plan(['type' => 'changeset', 'changeset_id' => $changeset]));
+        $this->assertCount(2, $plan['items']);
 
-        $plan = $this->planView($this->plan(['type' => 'changeset', 'changeset_id' => $changeset, 'object_ids' => [$a]]));
-        $this->assertCount(1, $plan['items']);
+        add_filter('selective_undo/max_objects_per_plan', $max = static fn (): int => 1);
+
+        try {
+            $e = $this->assertThrows(DomainError::class, fn () => $this->plan(['type' => 'changeset', 'changeset_id' => $changeset]));
+            $this->assertSame('su_selection_too_large', $e->errorCode);
+        } finally {
+            remove_filter('selective_undo/max_objects_per_plan', $max);
+        }
     }
 
     public function testRestoreBumpsModifiedDateAndCreatesRevision(): void

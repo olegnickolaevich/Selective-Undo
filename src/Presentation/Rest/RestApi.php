@@ -126,7 +126,7 @@ final class RestApi
                     'export' => current_user_can(Capabilities::EXPORT_HISTORY),
                 ],
             ],
-            'limits' => ['max_objects_per_plan' => max(1, (int) apply_filters('selective_undo/max_objects_per_plan', 1))],
+            'limits' => ['max_objects_per_plan' => max(1, (int) apply_filters('selective_undo/max_objects_per_plan', \SelectiveUndo\Application\Restore\BuildRestorePlan::MAX_OBJECTS))],
         ]);
     }
 

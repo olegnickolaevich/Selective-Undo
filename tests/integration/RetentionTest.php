@@ -21,7 +21,7 @@ final class RetentionTest extends IntegrationTestCase
         $id = $this->createPost();
         wp_update_post(['ID' => $id, 'post_title' => 'Old']);
         $this->endRequest();
-        $this->age(10);
+        $this->age(40);
 
         $done = $this->s->retention()->run();
         $this->assertTrue($done['expired_changesets'] >= 2);
@@ -45,7 +45,7 @@ final class RetentionTest extends IntegrationTestCase
         wp_update_post(['ID' => $id, 'post_title' => 'Old']);
         $this->endRequest();
         $planId = $this->plan(['type' => 'changes', 'change_ids' => $this->updateIds($id)]);
-        $this->age(10);
+        $this->age(40);
         $this->s->retention()->run();
         $this->assertCount(1, $this->changes($id, 'update'), 'protected by a ready plan');
 

@@ -32,6 +32,9 @@ final class BuildRestorePlan
 {
     public const MAX_CHANGES = 500;
 
+    /** Keeps a preview responsive; larger selections are restored in several steps. */
+    public const MAX_OBJECTS = 50;
+
     public function __construct(
         private readonly JournalReader $journal,
         private readonly PlanRepository $plans,
@@ -211,13 +214,22 @@ final class BuildRestorePlan
             $objects[$group['object']->key()] = true;
         }
 
-        $max = max(1, (int) apply_filters('selective_undo/max_objects_per_plan', 1));
+        $max = max(1, (int) apply_filters('selective_undo/max_objects_per_plan', self::MAX_OBJECTS));
 
         if (count($objects) > $max) {
             throw new DomainError(
-                'su_selection_requires_pro',
+                'su_selection_too_large',
                 422,
-                __('The free version restores one item at a time. Select changes of a single item.', 'selective-undo'),
+                sprintf(
+                    /* translators: %d: maximum number of items in one restore. */
+                    _n(
+                        'One restore can include changes of at most %d item. Select fewer items and restore them in several steps.',
+                        'One restore can include changes of at most %d items. Select fewer items and restore them in several steps.',
+                        $max,
+                        'selective-undo'
+                    ),
+                    $max
+                ),
                 ['max_objects' => $max, 'objects' => count($objects)]
             );
         }
