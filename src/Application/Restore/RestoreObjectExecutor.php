@@ -112,7 +112,7 @@ final class RestoreObjectExecutor
 
                 if ($adapter === null || $objectVerdict !== null) {
                     foreach ($locked as $item) {
-                        $outcomes[] = new ItemOutcome($item, JobItemStatus::Skipped, $objectVerdict ?? 'adapter_unavailable');
+                        $outcomes[] = new ItemOutcome($item, JobItemStatus::Skipped, $adapter === null ? 'adapter_unavailable' : $objectVerdict);
                     }
                 } else {
                     $current = $adapter->lockAndRead($tx, $object);

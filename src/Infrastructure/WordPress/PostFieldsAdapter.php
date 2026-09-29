@@ -208,13 +208,13 @@ final class PostFieldsAdapter implements AdapterInterface
 
             $sets[] = sprintf('`%s` = ?', $field);
 
-            if ($field === 'menu_order') {
-                $types .= 'i';
-                $params[] = (int) $value->value;
-            } else {
-                $types .= 's';
-                $params[] = (string) $value->value;
-            }
+            // validateTarget() already rejected other types; this guards the SQL types.
+            $params[] = match (true) {
+                $field === 'menu_order' && is_int($value->value) => $value->value,
+                $field !== 'menu_order' && is_string($value->value) => $value->value,
+                default => throw new \LogicException('Target type does not match the field.'),
+            };
+            $types .= $field === 'menu_order' ? 'i' : 's';
         }
 
         if ($sets === []) {

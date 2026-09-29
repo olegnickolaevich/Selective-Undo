@@ -15,6 +15,8 @@ use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
  * User-initiated history deletion (privacy, space). Always two steps: a preview
  * returns counts and a signed token bound to the criteria; deletion requires the
  * token and typing DELETE. Data of active plans and running jobs is skipped.
+ *
+ * @phpstan-type Criteria array{scope: 'all'}|array{scope: 'object', object_id: int}|array{scope: 'before', before: string}
  */
 final class PurgeService
 {
@@ -31,7 +33,7 @@ final class PurgeService
     }
 
     /**
-     * @param array{scope: string, object_id?: int, before?: string} $criteria
+     * @param array<string, mixed> $criteria Request input, validated here.
      *
      * @return array{token: string, changesets: int, changes: int, protected_changesets: int, criteria: array<string, mixed>}
      */
@@ -133,7 +135,7 @@ final class PurgeService
     /**
      * @param array<string, mixed> $criteria
      *
-     * @return array{scope: string, object_id?: int, before?: string}
+     * @return Criteria
      */
     private function normalize(array $criteria): array
     {
@@ -152,7 +154,7 @@ final class PurgeService
     }
 
     /**
-     * @param array{scope: string, object_id?: int, before?: string} $criteria
+     * @param Criteria $criteria
      *
      * @return array{0: string, 1: list<int|string>}
      */
@@ -166,7 +168,7 @@ final class PurgeService
     }
 
     /**
-     * @param array{scope: string, object_id?: int, before?: string} $criteria
+     * @param Criteria $criteria
      */
     private function countChanges(array $criteria): int
     {
@@ -178,7 +180,7 @@ final class PurgeService
     }
 
     /**
-     * @return array{scope: string, object_id?: int, before?: string}
+     * @return Criteria
      */
     private function verify(string $token, int $userId): array
     {
@@ -194,7 +196,7 @@ final class PurgeService
             throw new DomainError('su_invalid_token', 400, __('The deletion preview has expired. Preview again.', 'selective-undo'));
         }
 
-        /** @var array{scope: string, object_id?: int, before?: string} */
-        return $data['c'];
+        // The token is signed, but its criteria are validated again like new input.
+        return $this->normalize(is_array($data['c'] ?? null) ? $data['c'] : []);
     }
 }

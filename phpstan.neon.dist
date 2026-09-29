@@ -1,0 +1,22 @@
+includes:
+  - vendor/szepeviktor/phpstan-wordpress/extension.neon
+parameters:
+  level: 8
+  paths:
+    - src
+    - selective-undo.php
+    - uninstall.php
+  scanFiles:
+    - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+  bootstrapFiles:
+    - tests/phpstan-bootstrap.php
+  treatPhpDocTypesAsCertain: false
+  ignoreErrors:
+    # Table names come from Tables (the site prefix), never from requests, and are
+    # interpolated into prepare() templates as WordPress core does.
+    - message: '#^Parameter \#1 \$query of method wpdb::prepare\(\) expects literal-string#'
+      identifier: argument.type
+    # prepare() returns null only for a template without placeholders, which never
+    # happens here; wpdb::query() treats null as an empty query anyway.
+    - message: '#^Parameter \#1 \$query of method wpdb::query\(\) expects string, string\|null given\.$#'
+      identifier: argument.type

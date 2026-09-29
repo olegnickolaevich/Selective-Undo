@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    name: Static checks
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer
+      - name: PHP syntax (8.2)
+        run: find src selective-undo.php uninstall.php -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+      - run: composer install --no-interaction --no-progress
+      - run: composer analyse
+      - name: No MySQL-only time functions
+        run: '! grep -rnE "UTC_TIMESTAMP|INTERVAL [0-9]" src'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint:js && npm run lint:css && npm run typecheck
+      - name: build/ is up to date
+        run: npm run build && git diff --exit-code -- build
+
+  syntax-84:
+    name: PHP syntax (8.4)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: none
+      - run: find src selective-undo.php uninstall.php -name '*.php' -print0 | xargs -0 -n1 php -l > /dev/null
+
+  integration:
+    name: Tests (${{ matrix.name }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: 'WP 6.8, PHP 8.2, MySQL 8.0', wp: 'wordpress:6.8-php8.2-apache', php: '8.2', db: 'mysql:8.0', engine: mysql, prefix: 'wp_' }
+          - { name: 'WP latest, PHP 8.4, MySQL 8.4', wp: 'wordpress:latest', php: '8.4', db: 'mysql:8.4', engine: mysql, prefix: 'su9_' }
+          - { name: 'WP latest, PHP 8.3, MariaDB 10.11', wp: 'wordpress:latest', php: '8.3', db: 'mariadb:10.11', engine: mysql, prefix: 'wp_' }
+          - { name: 'WP latest, PHP 8.4, MySQL 8.4, compatibility mode', wp: 'wordpress:latest', php: '8.4', db: 'mysql:8.4', engine: mysql, prefix: 'wp_', compat: '1' }
+          - { name: 'WP latest, PHP 8.3, SQLite', wp: 'wordpress:latest', php: '8.3', db: '', engine: sqlite, prefix: 'wp_' }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mysqli, pdo_sqlite
+          coverage: none
+      - name: Test site
+        env:
+          SU_WP_IMAGE: ${{ matrix.wp }}
+          SU_DB_IMAGE: ${{ matrix.db }}
+          SU_DB_ENGINE: ${{ matrix.engine }}
+          SU_TABLE_PREFIX: ${{ matrix.prefix }}
+        run: bin/test-env.sh up
+      - name: Unit and integration tests
+        env:
+          SU_COMPAT_MODE: ${{ matrix.compat }}
+        run: php tests/run.php all
+
+  e2e:
+    name: E2E
+    runs-on: ubuntu-24.04
+    needs: [static]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mysqli
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci && npx playwright install --with-deps chromium
+      - run: bin/test-env.sh up
+      - run: (bin/serve.sh > server.log 2>&1 &) && sleep 2
+      - run: npx playwright test
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-results
+          path: |
+            .work/e2e-results
+            server.log
+
+  package:
+    name: Package, Plugin Check, Playground
+    runs-on: ubuntu-24.04
+    needs: [static]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci && bin/dist.sh
+      - name: Package contents
+        run: |
+          ! unzip -l dist/selective-undo-*.zip | grep -E ' selective-undo/(vendor|tests|\.github|\.claude|\.wordpress-org|composer\.|phpstan)'
+      - uses: wordpress/plugin-check-action@v1
+        with:
+          build-dir: dist/selective-undo
+          include-experimental: true
+      - name: Playground smoke test (SQLite)
+        run: |
+          npx --yes @wp-playground/cli@latest run-blueprint \
+            --blueprint=tests/playground/ci-blueprint.json \
+            --mount=dist/selective-undo:/wordpress/wp-content/plugins/selective-undo \
+            --mount=tests/playground:/smoke

@@ -87,6 +87,8 @@ final class JobView
     }
 
     /**
+     * @param array<string, mixed> $job
+     *
      * @return list<array<string, mixed>>
      */
     public function items(array $job, int $userId, ?string $status, int $afterId, int $limit): array

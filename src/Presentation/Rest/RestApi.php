@@ -229,8 +229,7 @@ final class RestApi
     public function createPlan(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(function () use ($r): \WP_REST_Response {
-            $selection = (array) $r->get_param('selection');
-            $uuid = $this->s->buildPlan()->handle(get_current_user_id(), $selection);
+            $uuid = $this->s->buildPlan()->handle(get_current_user_id(), $this->selection((array) $r->get_param('selection')));
 
             return new \WP_REST_Response($this->s->planView()->forUser($uuid, get_current_user_id()), 201);
         });
@@ -248,7 +247,7 @@ final class RestApi
             (string) $r['id'],
             (int) $r['item'],
             get_current_user_id(),
-            (string) $r->get_param('view'),
+            $r->get_param('view') === 'conflict' ? 'conflict' : 'current_target',
             (int) $r->get_param('offset')
         ));
     }
@@ -481,6 +480,39 @@ final class RestApi
     }
 
     /**
+     * The selection as BuildRestorePlan expects it. The route schema has already
+     * validated the shape; this only gives the values their PHP types.
+     *
+     * @param array<mixed> $raw
+     *
+     * @return array{type: string, change_ids?: list<int>, changeset_id?: string, fields?: list<string>, object_ids?: list<int>}
+     */
+    private function selection(array $raw): array
+    {
+        $ints = static fn (mixed $v): array => array_values(array_map('intval', (array) $v));
+        $selection = ['type' => (string) ($raw['type'] ?? '')];
+
+        if (isset($raw['change_ids'])) {
+            $selection['change_ids'] = $ints($raw['change_ids']);
+        }
+
+        if (isset($raw['changeset_id'])) {
+            $selection['changeset_id'] = (string) $raw['changeset_id'];
+        }
+
+        if (isset($raw['fields'])) {
+            $selection['fields'] = array_values(array_map('strval', (array) $raw['fields']));
+        }
+
+        if (isset($raw['object_ids'])) {
+            $selection['object_ids'] = $ints($raw['object_ids']);
+        }
+
+        return $selection;
+    }
+
+    /**
+     * @param non-falsy-string $path
      * @param array<string, array<string, mixed>> $args
      */
     private function route(string $path, string $method, callable $permission, callable $callback, array $args = []): void

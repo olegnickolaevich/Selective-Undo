@@ -33,6 +33,8 @@ use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
  * imported before its first recorded change: on the capture path (under a per-item
  * lock) or by the background pass. An item that already has recorded history is
  * never imported.
+ *
+ * @phpstan-import-type ChangeRow from JournalRepository
  */
 final class RevisionImporter
 {
@@ -353,7 +355,7 @@ final class RevisionImporter
     /**
      * @param array<string, array{0: FieldValue, 1: FieldValue}> $changes
      *
-     * @return list<array<string, mixed>>
+     * @return list<ChangeRow>
      */
     private function rows(int $changesetId, ObjectRef $object, array $changes, string $at): array
     {

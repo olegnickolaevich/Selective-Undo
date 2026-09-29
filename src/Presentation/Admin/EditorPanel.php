@@ -33,7 +33,7 @@ final class EditorPanel
             return;
         }
 
-        /** @var array{dependencies: list<string>, version: string} $asset */
+        /** @var array{dependencies: list<non-empty-string>, version: string} $asset */
         $asset = require $assetFile;
         $url = plugins_url('build/', SELECTIVE_UNDO_FILE);
 

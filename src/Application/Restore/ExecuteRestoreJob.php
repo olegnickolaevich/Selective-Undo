@@ -111,7 +111,9 @@ final class ExecuteRestoreJob
          *
          * @param array<string, mixed> $job Job row (IDs, status, counters). No content.
          */
-        do_action('selective_undo/restore_job_finished', $job);
+        if ($job !== null) {
+            do_action('selective_undo/restore_job_finished', $job);
+        }
 
         return true;
     }

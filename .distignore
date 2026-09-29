@@ -13,3 +13,7 @@
 /playwright.config.ts
 /README.md
 /.claude
+/.github
+/composer.json
+/composer.lock
+/phpstan.neon.dist

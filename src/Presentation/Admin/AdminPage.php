@@ -86,7 +86,7 @@ final class AdminPage
             return;
         }
 
-        /** @var array{dependencies: list<string>, version: string} $asset */
+        /** @var array{dependencies: list<non-empty-string>, version: string} $asset */
         $asset = require $assetFile;
         $url = plugins_url('build/', SELECTIVE_UNDO_FILE);
 
@@ -131,9 +131,9 @@ final class AdminPage
     }
 
     /**
-     * @param array<string, string> $links
+     * @param array<int|string, string> $links
      *
-     * @return array<string, string>
+     * @return array<int|string, string>
      */
     public function pluginLinks(array $links): array
     {

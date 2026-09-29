@@ -12,6 +12,11 @@ use SelectiveUndo\Infrastructure\Database\Tables;
 
 /**
  * Journal writes on the capture path ($wpdb, autocommit).
+ *
+ * @phpstan-type ChangeRow array{changeset_id: int, sequence_no: int, event: string, object: ObjectRef, adapter_key: string,
+ *                               adapter_version: int, field_key: string, before_blob_id: int|null, after_blob_id: int|null,
+ *                               before_hash: string|null, after_hash: string|null, quality: string, restorable: bool,
+ *                               reason_code: string|null, reverts_change_id?: int|null, created_at?: string}
  */
 final class JournalRepository
 {
@@ -55,10 +60,7 @@ final class JournalRepository
     }
 
     /**
-     * @param list<array{changeset_id: int, sequence_no: int, event: string, object: ObjectRef, adapter_key: string,
-     *                   adapter_version: int, field_key: string, before_blob_id: int|null, after_blob_id: int|null,
-     *                   before_hash: string|null, after_hash: string|null, quality: string, restorable: bool,
-     *                   reason_code: string|null, reverts_change_id?: int|null, created_at?: string}> $rows
+     * @param list<ChangeRow> $rows
      */
     public function insertChanges(array $rows): void
     {
@@ -248,7 +250,7 @@ final class JournalRepository
             return;
         }
 
-        $quality = (int) $stats['ambiguous'] > 0 ? 'ambiguous' : ((int) $stats['observed'] > 0 ? 'observed' : 'verified');
+        $quality = (int) ($stats['ambiguous'] ?? 0) > 0 ? 'ambiguous' : ((int) ($stats['observed'] ?? 0) > 0 ? 'observed' : 'verified');
         $fields = $this->db->get_col($this->db->prepare(
             "SELECT DISTINCT field_key FROM {$this->t->changes} WHERE changeset_id = %d AND field_key <> '' LIMIT 50",
             $changesetId
@@ -264,12 +266,12 @@ final class JournalRepository
                  change_count = %d, object_count = %d, quality = %s, summary_json = %s
              WHERE id = %d AND status = 'open'",
             $changes,
-            (int) $stats['objects'],
+            (int) ($stats['objects'] ?? 0),
             $quality,
             (string) wp_json_encode([
                 'fields' => array_values(array_map('strval', (array) $fields)),
                 'events' => array_values(array_map('strval', (array) $events)),
-                'limited' => (int) $stats['limited'],
+                'limited' => (int) ($stats['limited'] ?? 0),
             ]),
             $changesetId
         ));

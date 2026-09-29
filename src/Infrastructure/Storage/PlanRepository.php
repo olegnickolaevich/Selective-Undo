@@ -70,7 +70,7 @@ final class PlanRepository
 
         if ($sourceChangeIds !== []) {
             $values = implode(', ', array_map(
-                fn (int $changeId): string => $this->db->prepare('(%d, %d)', $itemId, $changeId),
+                static fn (int $changeId): string => sprintf('(%d, %d)', $itemId, $changeId),
                 array_values(array_unique($sourceChangeIds))
             ));
 

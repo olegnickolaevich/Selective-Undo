@@ -25,7 +25,7 @@ final class PostRestoreHandler
     public function __invoke(array $payload): void
     {
         $object = new ObjectRef((string) ($payload['object_type'] ?? ''), (int) ($payload['object_id'] ?? 0));
-        $fields = array_map('strval', (array) ($payload['fields'] ?? []));
+        $fields = array_values(array_map('strval', (array) ($payload['fields'] ?? [])));
         $adapter = $this->adapters->find((string) ($payload['adapter_key'] ?? ''));
 
         if ($adapter === null) {

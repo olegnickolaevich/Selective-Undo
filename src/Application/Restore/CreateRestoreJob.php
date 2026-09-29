@@ -151,7 +151,9 @@ final class CreateRestoreJob
          *
          * @param array<string, mixed> $job Job row. No content.
          */
-        do_action('selective_undo/restore_job_started', $job);
+        if ($job !== null) {
+            do_action('selective_undo/restore_job_started', $job);
+        }
 
         if (is_array($job) && $job['mode'] === 'inline') {
             $this->executor->run($jobId);

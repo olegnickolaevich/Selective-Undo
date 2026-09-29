@@ -124,6 +124,7 @@ final class DiffBuilder
             }
         }
 
+        /** @var list<array{op: string, text?: string, count?: int}> $out */
         $out = [];
         $hidden = 0;
 

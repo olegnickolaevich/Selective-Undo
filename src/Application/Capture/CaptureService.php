@@ -22,6 +22,8 @@ use SelectiveUndo\Infrastructure\WordPress\PostRow;
 /**
  * Writes captured changes to the journal. Every write is a short autocommit
  * statement on the WordPress connection so that nothing is lost between requests.
+ *
+ * @phpstan-import-type ChangeRow from JournalRepository
  */
 final class CaptureService
 {
@@ -275,7 +277,7 @@ final class CaptureService
     /**
      * @param array<string, array{0: FieldValue, 1: FieldValue}> $changed
      *
-     * @return list<array<string, mixed>>
+     * @return list<ChangeRow>
      */
     private function buildRows(int $changesetId, int $sequence, ObjectRef $object, array $changed, CaptureQuality $quality): array
     {
