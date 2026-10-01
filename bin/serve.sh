@@ -16,4 +16,5 @@ if [ -n "${SU_PHP_IMAGE:-}" ]; then
 fi
 
 # OPcache as on any production host; without it every request compiles WordPress again.
-exec php -d opcache.enable_cli=1 -S 127.0.0.1:"$PORT" -t "$SITE"
+# JIT stays off: with it, PHP 8.4's built-in server segfaults in opcache.so (CI run 13).
+exec php -d opcache.enable_cli=1 -d opcache.jit=disable -S 127.0.0.1:"$PORT" -t "$SITE"
