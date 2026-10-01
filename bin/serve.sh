@@ -15,4 +15,5 @@ if [ -n "${SU_PHP_IMAGE:-}" ]; then
     -e PHP_CLI_SERVER_WORKERS --entrypoint php "$SU_PHP_IMAGE" -S 127.0.0.1:"$PORT" -t "$SITE"
 fi
 
-exec php -S 127.0.0.1:"$PORT" -t "$SITE"
+# OPcache as on any production host; without it every request compiles WordPress again.
+exec php -d opcache.enable_cli=1 -S 127.0.0.1:"$PORT" -t "$SITE"

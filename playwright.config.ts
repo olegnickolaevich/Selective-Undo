@@ -7,6 +7,9 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig( {
 	testDir: 'tests/e2e',
 	timeout: 60_000,
+	// The first admin page of a run loads React and several REST requests on a cold
+	// server; assertions still have to come true, they may just take longer on CI.
+	expect: { timeout: 15_000 },
 	retries: 0,
 	workers: 1,
 	reporter: [ [ 'list' ] ],
