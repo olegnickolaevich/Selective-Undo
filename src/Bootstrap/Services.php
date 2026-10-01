@@ -19,6 +19,7 @@ use SelectiveUndo\Application\History\HistoryQuery;
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Restore\BuildRestorePlan;
 use SelectiveUndo\Application\Restore\CreateRestoreJob;
+use SelectiveUndo\Application\Restore\EditorMergePreview;
 use SelectiveUndo\Application\Restore\ExecuteRestoreJob;
 use SelectiveUndo\Application\Restore\JobView;
 use SelectiveUndo\Application\Restore\MergeView;
@@ -373,6 +374,11 @@ final class Services
             $this->jobView(),
             $this->jobs(),
         ));
+    }
+
+    public function editorMergePreview(): EditorMergePreview
+    {
+        return $this->get(EditorMergePreview::class, fn () => new EditorMergePreview($this->journalReader(), $this->blobs(), $this->adapters()));
     }
 
     public function mergeView(): MergeView

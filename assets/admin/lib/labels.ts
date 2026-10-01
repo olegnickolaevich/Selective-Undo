@@ -313,6 +313,7 @@ export function sourceLabel( source: string ): string {
 		ajax: __( 'Admin request', 'selective-undo' ),
 		restore: __( 'Selective Undo', 'selective-undo' ),
 		revisions: __( 'WordPress revisions', 'selective-undo' ),
+		editor_undo: __( 'Undo in the editor', 'selective-undo' ),
 	};
 
 	return map[ source ] ?? __( 'Other', 'selective-undo' );

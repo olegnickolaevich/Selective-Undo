@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Presentation\Admin;
 
+use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
 /**
@@ -43,7 +44,10 @@ final class EditorPanel
         wp_set_script_translations(self::HANDLE, 'selective-undo');
         wp_add_inline_script(
             self::HANDLE,
-            'window.selectiveUndoEditor = ' . wp_json_encode(['historyUrl' => admin_url('admin.php?page=' . AdminPage::SLUG)]) . ';',
+            'window.selectiveUndoEditor = ' . wp_json_encode([
+                'historyUrl' => admin_url('admin.php?page=' . AdminPage::SLUG),
+                'canRestore' => current_user_can(Capabilities::RESTORE_CHANGES),
+            ]) . ';',
             'before'
         );
     }

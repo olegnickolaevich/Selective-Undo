@@ -22,6 +22,12 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 4. The preview shows what will be restored, what is already in the desired state and what needs attention. Nothing is written yet.
 5. Click **Restore**. Every value is checked again inside a database transaction right before it is written.
 
+**Undo one change, keep everything after it**
+
+* When the content was edited again after a mistake, undoing the mistake brings back only the blocks it changed; later edits of other blocks stay. Unchanged blocks keep every character.
+* If the same block was changed twice, the preview shows both versions side by side and you choose which to keep.
+* In the block editor, **Undo in the editor** applies the undo to the open, possibly unsaved, post. You see the result, can press Ctrl+Z, and save as usual.
+
 **Undo right where the mistake happened**
 
 * After Quick Edit or bulk edit on the Posts and Pages screens, a notice offers **Undo**. Small, conflict-free changes are undone at once; anything else opens the preview first.

@@ -43,6 +43,7 @@ final class Plugin
         add_action(\SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK, [self::class, 'runMaintenance']);
         $s->privacy()->register();
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RestApi(self::services()))->register());
+        add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RevertIntentField(self::services()->trackingPolicy(), self::services()->requestContext()))->register());
 
         if (!is_admin()) {
             (new \SelectiveUndo\Presentation\Frontend\ChangeIndicator($s->journalReader(), $s->diffs(), $s->trackingPolicy(), $s->postFieldsAdapter()))->register();

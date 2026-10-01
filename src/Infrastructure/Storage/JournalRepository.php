@@ -137,6 +137,28 @@ final class JournalRepository
         return $result;
     }
 
+    /**
+     * Of the changes the user undid in the editor, the latest one of this field.
+     *
+     * @param list<int> $changeIds
+     */
+    public function pickRevertTarget(ObjectRef $object, string $field, array $changeIds): ?int
+    {
+        if ($changeIds === []) {
+            return null;
+        }
+
+        $id = $this->db->get_var($this->db->prepare(
+            "SELECT id FROM {$this->t->changes}
+             WHERE id IN (" . implode(', ', array_fill(0, count($changeIds), '%d')) . ')
+               AND object_type = %s AND object_id = %d AND field_key = %s
+             ORDER BY id DESC LIMIT 1',
+            ...[...$changeIds, $object->type, $object->id, $field]
+        ));
+
+        return $id === null ? null : (int) $id;
+    }
+
     public function findOpenAutosaveChangeset(int $actor, ObjectRef $object, string $sinceUtc): ?int
     {
         $id = $this->db->get_var($this->db->prepare(

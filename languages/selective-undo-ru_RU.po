@@ -11,8 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"POT-Creation-Date: 2026-10-01T16:58:27+00:00\n"
-"PO-Revision-Date: 2026-10-01 16:58+0000\n"
+"POT-Creation-Date: 2026-10-01T17:08:39+00:00\n"
+"PO-Revision-Date: 2026-10-01 17:08+0000\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
 
@@ -235,6 +235,7 @@ msgid "A db.php drop-in is installed. Restores use a separate connection to the 
 msgstr "Установлен drop-in db.php. Восстановление использует отдельное соединение с основной базой данных."
 
 #: src/Application/History/DiffService.php:41
+#: src/Application/Restore/EditorMergePreview.php:52
 msgid "This change no longer exists in the history."
 msgstr "Этого изменения больше нет в истории."
 
@@ -261,7 +262,7 @@ msgstr "Стало"
 #: src/Application/History/DiffService.php:97
 #: src/Application/Restore/CreateRestoreJob.php:54
 #: src/Application/Restore/QuickUndo.php:57
-#: src/Presentation/Rest/RestApi.php:296
+#: src/Presentation/Rest/RestApi.php:323
 msgid "This preview does not exist."
 msgstr "Такого предпросмотра нет."
 
@@ -358,6 +359,11 @@ msgstr "Этот ключ запроса уже использован для д
 msgid "Nothing in this preview can be restored."
 msgstr "В этом предпросмотре нечего восстанавливать."
 
+#: src/Application/Restore/EditorMergePreview.php:61
+#: build/index.js:2
+msgid "You are not allowed to edit this item."
+msgstr "У вас нет прав на редактирование этой записи."
+
 #: src/Application/Restore/MergeView.php:44
 #: src/Application/Restore/MergeView.php:53
 #: src/Application/Restore/MergeView.php:75
@@ -398,15 +404,15 @@ msgstr "Срок действия предпросмотра удаления и
 msgid "Deleted user #%d"
 msgstr "Удалённый пользователь #%d"
 
-#: src/Bootstrap/Plugin.php:85
+#: src/Bootstrap/Plugin.php:86
 msgid "Every five minutes (Selective Undo)"
 msgstr "Каждые пять минут (Selective Undo)"
 
-#: src/Bootstrap/Plugin.php:144
+#: src/Bootstrap/Plugin.php:145
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr "Selective Undo нельзя активировать для всей сети. Активируйте его на отдельных сайтах."
 
-#: src/Bootstrap/Plugin.php:145
+#: src/Bootstrap/Plugin.php:146
 msgid "Plugin activation"
 msgstr "Активация плагина"
 
@@ -585,33 +591,33 @@ msgstr "Хранилище истории временно недоступно.
 msgid "Something went wrong. The details were written to the Selective Undo diagnostics log."
 msgstr "Что-то пошло не так. Подробности записаны в журнал диагностики Selective Undo."
 
-#: src/Presentation/Rest/RestApi.php:361
-#: src/Presentation/Rest/RestApi.php:529
+#: src/Presentation/Rest/RestApi.php:388
+#: src/Presentation/Rest/RestApi.php:556
 msgid "This restore does not exist."
 msgstr "Такого восстановления нет."
 
-#: src/Presentation/Rest/RestApi.php:398
+#: src/Presentation/Rest/RestApi.php:425
 msgid "Only the author of a restore can continue it."
 msgstr "Продолжить восстановление может только тот, кто его запустил."
 
-#: src/Presentation/Rest/RestApi.php:511
+#: src/Presentation/Rest/RestApi.php:538
 msgid "View history"
 msgstr "Просмотр истории"
 
-#: src/Presentation/Rest/RestApi.php:512
+#: src/Presentation/Rest/RestApi.php:539
 msgid "Restore changes"
 msgstr "Восстановление изменений"
 
-#: src/Presentation/Rest/RestApi.php:513
+#: src/Presentation/Rest/RestApi.php:540
 msgid "Manage settings"
 msgstr "Управление настройками"
 
-#: src/Presentation/Rest/RestApi.php:514
+#: src/Presentation/Rest/RestApi.php:541
 #: build/index.js:27
 msgid "Delete history"
 msgstr "Удаление истории"
 
-#: src/Presentation/Rest/RestApi.php:515
+#: src/Presentation/Rest/RestApi.php:542
 msgid "Export history"
 msgstr "Экспорт истории"
 
@@ -700,6 +706,7 @@ msgid "Review undo"
 msgstr "Проверить отмену"
 
 #: build/commands.js:3
+#: build/editor.js:1
 #: build/list.js:3
 msgid "Could not undo. Open the history to try again."
 msgstr "Не удалось отменить. Откройте журнал и попробуйте ещё раз."
@@ -747,6 +754,65 @@ msgstr "Восстановлено"
 #: build/index.js:3
 msgid "Changed"
 msgstr "Изменено"
+
+#: build/editor.js:1
+msgid "Some parts were changed twice"
+msgstr "Некоторые части менялись дважды"
+
+#: build/editor.js:1
+#: build/index.js:19
+msgid "These parts were changed again after the change you are undoing. Choose what to keep for each part; everything else keeps its later edits."
+msgstr "Эти части менялись ещё раз после отменяемого изменения. Выберите, что оставить для каждой из них; всё остальное сохранит поздние правки."
+
+#: build/editor.js:1
+#: build/index.js:20
+msgid "Now"
+msgstr "Сейчас"
+
+#: build/editor.js:1
+#: build/index.js:20
+msgid "Comes back"
+msgstr "Вернётся"
+
+#: build/editor.js:1
+#: build/index.js:20
+msgid "Keep"
+msgstr "Оставить"
+
+#: build/editor.js:1
+#: build/index.js:20
+msgid "The current text"
+msgstr "Текущий текст"
+
+#: build/editor.js:1
+#: build/index.js:20
+msgid "The earlier text"
+msgstr "Прежний текст"
+
+#: build/editor.js:1
+msgid "Undo with this choice"
+msgstr "Отменить с этим выбором"
+
+#: build/editor.js:1
+msgid "The change was undone in the editor. Save the post to keep it."
+msgstr "Изменение отменено в редакторе. Сохраните запись, чтобы оставить результат."
+
+#: build/editor.js:1
+msgid "Revert"
+msgstr "Вернуть"
+
+#: build/editor.js:1
+msgid "This change is already undone."
+msgstr "Это изменение уже отменено."
+
+#: build/editor.js:1
+msgid "This change cannot be undone in the editor. Use the change history instead."
+msgstr "Это изменение нельзя отменить в редакторе. Воспользуйтесь журналом изменений."
+
+#: build/editor.js:1
+#: build/index.js:3
+msgid "Undo in the editor"
+msgstr "Отменить в редакторе"
 
 #: build/editor.js:1
 msgid "Show the change history of this item"
@@ -811,10 +877,6 @@ msgstr "Это поле изменили ещё раз после выбранн
 #: build/index.js:2
 msgid "The item no longer exists. Deleted items cannot be restored in this version."
 msgstr "Записи больше нет. Удалённые записи в этой версии не восстанавливаются."
-
-#: build/index.js:2
-msgid "You are not allowed to edit this item."
-msgstr "У вас нет прав на редактирование этой записи."
 
 #: build/index.js:2
 msgid "The item is in the trash. Restore it from the trash first, then check again."
@@ -1618,35 +1680,11 @@ msgstr "Выберите одно изменение или несколько �
 msgid "(removed)"
 msgstr "(удалено)"
 
-#: build/index.js:19
-msgid "These parts were changed again after the change you are undoing. Choose what to keep for each part; everything else keeps its later edits."
-msgstr "Эти части менялись ещё раз после отменяемого изменения. Выберите, что оставить для каждой из них; всё остальное сохранит поздние правки."
-
 #. translators: %s: block name, e.g. "paragraph".
 #: build/index.js:20
 #, js-format
 msgid "Block: %s"
 msgstr "Блок: %s"
-
-#: build/index.js:20
-msgid "Now"
-msgstr "Сейчас"
-
-#: build/index.js:20
-msgid "Comes back"
-msgstr "Вернётся"
-
-#: build/index.js:20
-msgid "Keep"
-msgstr "Оставить"
-
-#: build/index.js:20
-msgid "The current text"
-msgstr "Текущий текст"
-
-#: build/index.js:20
-msgid "The earlier text"
-msgstr "Прежний текст"
 
 #: build/index.js:20
 msgid "Check with this choice"

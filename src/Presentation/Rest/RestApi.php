@@ -63,6 +63,11 @@ final class RestApi
         ]);
         $this->route('/objects/post/(?P<id>\d+)/changes', 'GET', $view, [$this, 'objectTimeline'], ['cursor' => $cursor, 'limit' => $limit]);
         $this->route('/changes/(?P<id>\d+)/diff', 'GET', $view, [$this, 'changeDiff'], ['offset' => $offset]);
+        $this->route('/changes/(?P<id>\d+)/merge-preview', 'POST', $restore, [$this, 'mergePreview'], [
+            'current' => ['type' => 'string', 'required' => true, 'maxLength' => 8388608],
+            'resolutions' => ['type' => 'object', 'maxProperties' => 500, 'additionalProperties' => ['type' => 'string', 'enum' => ['current', 'restored']]],
+            'hunks' => ['type' => 'array', 'maxItems' => 500, 'uniqueItems' => true, 'items' => ['type' => 'integer', 'minimum' => 0]],
+        ]);
         $this->route('/gaps', 'GET', $view, [$this, 'gaps'], ['limit' => $limit]);
         $this->route('/adapters', 'GET', $view, [$this, 'adapters']);
 
@@ -287,6 +292,28 @@ final class RestApi
             $page['items'] = array_values(array_filter($page['items'], static fn (array $cs): bool => $cs['kind'] !== 'restore'));
 
             return $page;
+        });
+    }
+
+    /**
+     * Undo of one change against the editor's current value. Nothing is written.
+     */
+    public function mergePreview(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
+    {
+        return $this->errors->run(function () use ($r): array {
+            $resolutions = [];
+
+            foreach ((array) $r->get_param('resolutions') as $index => $side) {
+                $resolutions[(int) $index] = $side === 'restored' ? 'restored' : 'current';
+            }
+
+            return $this->s->editorMergePreview()->preview(
+                get_current_user_id(),
+                (int) $r['id'],
+                (string) $r->get_param('current'),
+                $resolutions,
+                array_values(array_map('intval', (array) $r->get_param('hunks')))
+            );
         });
     }
 

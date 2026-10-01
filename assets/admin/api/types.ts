@@ -350,3 +350,16 @@ export interface QuickUndoResult {
 	plan_id: Uuid | null;
 	job?: RestoreJob;
 }
+
+/** Undo of one change against the editor's own value (nothing is written). */
+export interface EditorMergePreview {
+	status: 'clean' | 'conflict' | 'already' | 'unsupported';
+	field: string;
+	value?: string;
+	conflicts?: Array< {
+		index: number;
+		label: string;
+		current: string;
+		restored: string;
+	} >;
+}

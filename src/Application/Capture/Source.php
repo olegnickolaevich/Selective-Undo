@@ -21,5 +21,7 @@ enum Source: string
     case Restore = 'restore';
     /** Changes reconstructed from WordPress revisions saved before recording started. */
     case Revisions = 'revisions';
+    /** A save from the block editor after "Undo in the editor". */
+    case EditorUndo = 'editor_undo';
     case Unknown = 'unknown';
 }

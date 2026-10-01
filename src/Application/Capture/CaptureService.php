@@ -308,6 +308,8 @@ final class CaptureService
                 'quality' => $quality->value,
                 'restorable' => $restorable,
                 'reason_code' => $restorable ? null : $reason,
+                // Saved after "Undo in the editor": link the value to the change it undoes.
+                'reverts_change_id' => $this->journal->pickRevertTarget($object, $field, $this->request->revertIntent($object->id)),
             ];
         }
 

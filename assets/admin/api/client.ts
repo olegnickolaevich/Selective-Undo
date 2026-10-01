@@ -4,7 +4,9 @@ import type {
 	ApiErrorBody,
 	ChangesetDetail,
 	ChangesetSummary,
+	ConflictSide,
 	DiffChunk,
+	EditorMergePreview,
 	Gap,
 	HealthCheck,
 	JobItem,
@@ -113,6 +115,17 @@ export const api = {
 	quickUndo: ( changesetId: Uuid, idempotencyKey: Uuid ) =>
 		post< QuickUndoResult >( `/changesets/${ changesetId }/undo`, {
 			idempotency_key: idempotencyKey,
+		} ),
+	mergePreview: (
+		changeId: number,
+		current: string,
+		resolutions: Record< number, ConflictSide > = {},
+		hunks: number[] = []
+	) =>
+		post< EditorMergePreview >( `/changes/${ changeId }/merge-preview`, {
+			current,
+			resolutions,
+			hunks,
 		} ),
 	createPlan: ( selection: PlanSelection ) =>
 		post< RestorePlan >( '/restore-plans', { selection } ),

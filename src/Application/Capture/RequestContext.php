@@ -20,6 +20,9 @@ final class RequestContext
     /** @var array<string, int> */
     private array $changesets = [];
 
+    /** @var array<int, list<int>> post ID => change IDs the user undid in the editor */
+    private array $revertIntent = [];
+
     public function __construct(private readonly SourceDetector $detector)
     {
     }
@@ -93,5 +96,24 @@ final class RequestContext
         $this->sequence = 0;
         $this->operation = null;
         $this->changesets = [];
+        $this->revertIntent = [];
+    }
+
+    /**
+     * The values about to be saved undo these changes (the editor's "Undo in the editor").
+     *
+     * @param list<int> $changeIds
+     */
+    public function setRevertIntent(int $postId, array $changeIds): void
+    {
+        $this->revertIntent[$postId] = array_values(array_unique($changeIds));
+    }
+
+    /**
+     * @return list<int>
+     */
+    public function revertIntent(int $postId): array
+    {
+        return $this->revertIntent[$postId] ?? [];
     }
 }

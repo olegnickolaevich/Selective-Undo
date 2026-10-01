@@ -12,10 +12,12 @@ import { api } from '../admin/api/client';
 import type { TimelineItem } from '../admin/api/types';
 import { exactDate, relativeDate } from '../admin/lib/format';
 import { eventLabel } from '../admin/lib/labels';
+import { EDITOR_FIELDS, UndoInEditorButton } from './undo-in-editor';
 import './editor.scss';
 
 interface EditorConfig {
 	historyUrl: string;
+	canRestore: boolean;
 }
 
 declare global {
@@ -47,9 +49,9 @@ function changeUrl( base: string, item: TimelineItem ): string {
 }
 
 /**
- * Recent recorded changes of the post being edited. Undo happens in Selective
- * Undo itself: the editor keeps its own copy of the content and would write it
- * back on the next save.
+ * Recent recorded changes of the post being edited. Title, content and excerpt
+ * changes can be undone right here, against the editor's own value; other
+ * changes are undone from the change history.
  */
 function HistoryPanel() {
 	const config = window.selectiveUndoEditor;
@@ -147,6 +149,14 @@ function HistoryPanel() {
 								{ relativeDate( item.created_at ) }
 							</time>
 						</span>
+						{ config.canRestore &&
+							item.restorable &&
+							EDITOR_FIELDS.includes( item.field ) && (
+								<UndoInEditorButton
+									changeId={ item.id }
+									field={ item.field }
+								/>
+							) }
 					</li>
 				) ) }
 			</ul>
