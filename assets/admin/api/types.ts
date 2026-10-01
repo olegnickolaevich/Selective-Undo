@@ -192,6 +192,8 @@ export type PlanSelection = (
 			fields?: string[];
 			object_ids?: number[];
 	  }
+	| { type: 'segments'; change_id: number; hunks: number[] }
+	| { type: 'as_of'; object_id: number; at: IsoDateTime; fields?: string[] }
 ) & { resolutions?: Resolutions };
 
 export interface RestorePlan {
@@ -361,5 +363,40 @@ export interface EditorMergePreview {
 		label: string;
 		current: string;
 		restored: string;
+	} >;
+}
+
+export interface DiffBlock {
+	name: string;
+	text: string;
+	html: string;
+}
+
+/** One change as numbered hunks of blocks; the numbers select parts to undo. */
+export interface BlockDiff {
+	available: boolean;
+	hunks: Array<
+		| { kind: 'same'; blocks: number }
+		| {
+				kind: 'change';
+				index: number;
+				before: DiffBlock[];
+				after: DiffBlock[];
+		  }
+	>;
+}
+
+/** Who last changed each top-level block of the content. */
+export interface BlameResult {
+	complete: boolean;
+	blocks: Array< {
+		index: number;
+		name: string;
+		change: {
+			id: number;
+			hunk: number | null;
+			created_at: IsoDateTime | null;
+			actor: Actor | null;
+		} | null;
 	} >;
 }

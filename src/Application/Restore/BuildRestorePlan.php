@@ -6,6 +6,7 @@ namespace SelectiveUndo\Application\Restore;
 
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
 
+use SelectiveUndo\Application\Support\Time;
 use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
@@ -57,8 +58,10 @@ final class BuildRestorePlan
 
     /**
      * @param array{type: string, change_ids?: list<int>, changeset_id?: string, fields?: list<string>, object_ids?: list<int>,
-     *              resolutions?: array<string, array<int, 'current'|'restored'>>} $selection Resolutions: decisions per merge
-     *              conflict, keyed "<object type>:<object id>:<field>".
+     *              resolutions?: array<string, array<int, 'current'|'restored'>>, change_id?: int, hunks?: list<int>,
+     *              object_id?: int, at?: string} $selection Types: "changes", "changeset", "segments" (some hunks of
+     *              one change), "as_of" (an item back to a moment). Resolutions: decisions per merge conflict, keyed
+     *              "<object type>:<object id>:<field>".
      *
      * @return string Plan UUID.
      *
@@ -79,7 +82,13 @@ final class BuildRestorePlan
 
         try {
             foreach ($groups as $group) {
-                $item = $this->evaluateGroup($userId, $group, $snapshots, $selection['resolutions'] ?? []);
+                $item = $this->evaluateGroup(
+                    $userId,
+                    $group,
+                    $snapshots,
+                    $selection['resolutions'] ?? [],
+                    ($selection['type'] ?? '') === 'segments' ? array_values(array_map('intval', (array) ($selection['hunks'] ?? []))) : null
+                );
                 $this->plans->addItem($plan['id'], $item, $group['change_ids']);
                 $counts['item_count']++;
                 $counts['ready_count'] += $item['status'] === PlanItemStatus::Ready->value ? 1 : 0;
@@ -139,7 +148,7 @@ final class BuildRestorePlan
                 throw new DomainError('su_not_found', 404, __('This operation no longer exists in the history.', 'selective-undo'));
             }
 
-            $fields = array_map('strval', (array) ($selection['fields'] ?? []));
+            $fields = array_values(array_map('strval', (array) ($selection['fields'] ?? [])));
             $objectIds = array_map('intval', (array) ($selection['object_ids'] ?? []));
             $rows = array_values(array_filter(
                 $this->journal->changesOfChangeset((int) $changeset['id'], self::MAX_CHANGES + 1),
@@ -154,6 +163,41 @@ final class BuildRestorePlan
 
             if (count($rows) > self::MAX_CHANGES) {
                 throw new DomainError('su_selection_too_large', 422, __('Select at most 500 changes at a time.', 'selective-undo'));
+            }
+
+            return $rows;
+        }
+
+        if ($type === 'segments') {
+            // Some hunks of one change: the target is the value after it with those hunks reverted.
+            $changeId = (int) ($selection['change_id'] ?? 0);
+            $hunks = (array) ($selection['hunks'] ?? []);
+            $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
+
+            if ($row === null || $hunks === [] || !ChangeEvent::from((string) $row['event'])->isFieldChange()) {
+                throw new DomainError('su_invalid_selection', 400, __('Choose the parts of a change to undo.', 'selective-undo'));
+            }
+
+            return [$row];
+        }
+
+        if ($type === 'as_of') {
+            $objectId = (int) ($selection['object_id'] ?? 0);
+            $at = Time::mysqlFromIso((string) ($selection['at'] ?? ''));
+
+            if ($objectId < 1 || $at === null) {
+                throw new DomainError('su_invalid_selection', 400, __('Choose an item and a moment.', 'selective-undo'));
+            }
+
+            $fields = array_values(array_map('strval', (array) ($selection['fields'] ?? [])));
+            $rows = $this->journal->fieldChangesAfter(new ObjectRef('post', $objectId), $at, $fields, self::MAX_CHANGES + 1);
+
+            if ($rows === []) {
+                throw new DomainError('su_nothing_after', 422, __('The item has not changed since this moment.', 'selective-undo'));
+            }
+
+            if (count($rows) > self::MAX_CHANGES) {
+                throw new DomainError('su_selection_too_large', 422, __('Too many changes since this moment. Choose a later moment.', 'selective-undo'));
             }
 
             return $rows;
@@ -250,10 +294,11 @@ final class BuildRestorePlan
      * @param array{object: ObjectRef, adapter_key: string, adapter_version: int, field: string, rows: list<array<string, mixed>>, change_ids: list<int>} $group
      * @param array<string, ObjectSnapshot|null> $snapshots
      * @param array<string, array<int, 'current'|'restored'>> $resolutions
+     * @param list<int>|null $hunks Undo only these hunks of the (single) change.
      *
      * @return PlanItemRow
      */
-    private function evaluateGroup(int $userId, array $group, array &$snapshots, array $resolutions = []): array
+    private function evaluateGroup(int $userId, array $group, array &$snapshots, array $resolutions = [], ?array $hunks = null): array
     {
         $object = $group['object'];
         $field = $group['field'];
@@ -309,6 +354,20 @@ final class BuildRestorePlan
                 $target = $this->blobs->loadVerified($targetBlobId, $chain->targetHash);
             } catch (InvalidPayload $e) {
                 $targetProblem = $e->reasonCode;
+            }
+
+            if ($hunks !== null && $target !== null) {
+                // Only some hunks: the target is the value after the change with them reverted.
+                $partial = $this->partialTarget($group['rows'][0], $target, $hunks);
+
+                if ($partial === null) {
+                    $target = null;
+                    $targetProblem = 'segments_unavailable';
+                } else {
+                    $target = $partial;
+                    $targetBlobId = $this->blobs->put($partial)['id'];
+                    $chain = new ResolvedChain($chain->changeIds, $chain->targetChangeId, $chain->expectedChangeId, $partial->hash(), $chain->expectedHash, $chain->hasInterveningChanges);
+                }
             }
         }
 
@@ -376,6 +435,21 @@ final class BuildRestorePlan
             'reason_code' => $decision->reasonCode,
             'warnings' => array_values(array_unique($finalWarnings)),
         ];
+    }
+
+    /**
+     * @param array<string, mixed> $row The change.
+     * @param list<int> $hunks
+     */
+    private function partialTarget(array $row, FieldValue $before, array $hunks): ?FieldValue
+    {
+        try {
+            $after = $this->blobs->loadVerified((int) $row['after_blob_id'], (string) $row['after_hash']);
+        } catch (InvalidPayload) {
+            return null;
+        }
+
+        return EditorMergePreview::partialRevert($after, $before, $hunks);
     }
 
     /**

@@ -62,7 +62,11 @@ final class RestApi
             'object_id' => ['type' => 'integer', 'minimum' => 1],
         ]);
         $this->route('/objects/post/(?P<id>\d+)/changes', 'GET', $view, [$this, 'objectTimeline'], ['cursor' => $cursor, 'limit' => $limit]);
-        $this->route('/changes/(?P<id>\d+)/diff', 'GET', $view, [$this, 'changeDiff'], ['offset' => $offset]);
+        $this->route('/changes/(?P<id>\d+)/diff', 'GET', $view, [$this, 'changeDiff'], [
+            'offset' => $offset,
+            'mode' => ['type' => 'string', 'enum' => ['lines', 'blocks'], 'default' => 'lines'],
+        ]);
+        $this->route('/objects/post/(?P<id>\d+)/blame', 'GET', $view, [$this, 'blame']);
         $this->route('/changes/(?P<id>\d+)/merge-preview', 'POST', $restore, [$this, 'mergePreview'], [
             'current' => ['type' => 'string', 'required' => true, 'maxLength' => 8388608],
             'resolutions' => ['type' => 'object', 'maxProperties' => 500, 'additionalProperties' => ['type' => 'string', 'enum' => ['current', 'restored']]],
@@ -76,11 +80,17 @@ final class RestApi
                 'required' => true,
                 'type' => 'object',
                 'properties' => [
-                    'type' => ['type' => 'string', 'enum' => ['changes', 'changeset'], 'required' => true],
+                    'type' => ['type' => 'string', 'enum' => ['changes', 'changeset', 'segments', 'as_of'], 'required' => true],
                     'change_ids' => ['type' => 'array', 'minItems' => 1, 'maxItems' => 500, 'uniqueItems' => true, 'items' => ['type' => 'integer', 'minimum' => 1]],
                     'changeset_id' => ['type' => 'string', 'format' => 'uuid'],
                     'fields' => ['type' => 'array', 'maxItems' => 50, 'items' => ['type' => 'string', 'pattern' => '^[A-Za-z0-9_:./-]{1,191}$']],
                     'object_ids' => ['type' => 'array', 'maxItems' => 500, 'items' => ['type' => 'integer', 'minimum' => 1]],
+                    // "segments": undo only some hunks of one change.
+                    'change_id' => ['type' => 'integer', 'minimum' => 1],
+                    'hunks' => ['type' => 'array', 'minItems' => 1, 'maxItems' => 500, 'uniqueItems' => true, 'items' => ['type' => 'integer', 'minimum' => 0]],
+                    // "as_of": an item back to its state at a moment.
+                    'object_id' => ['type' => 'integer', 'minimum' => 1],
+                    'at' => ['type' => 'string', 'format' => 'date-time'],
                     // Decisions per merge conflict: "post:<id>:<field>" => { "<conflict index>": "current"|"restored" }.
                     'resolutions' => [
                         'type' => 'object',
@@ -193,7 +203,17 @@ final class RestApi
 
     public function changeDiff(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
-        return $this->errors->run(fn () => $this->s->diffs()->change((int) $r['id'], get_current_user_id(), (int) $r->get_param('offset')));
+        return $this->errors->run(fn () => $r->get_param('mode') === 'blocks'
+            ? $this->s->diffs()->changeBlocks((int) $r['id'], get_current_user_id())
+            : $this->s->diffs()->change((int) $r['id'], get_current_user_id(), (int) $r->get_param('offset')));
+    }
+
+    /**
+     * Who last changed each top-level block of the post content.
+     */
+    public function blame(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
+    {
+        return $this->errors->run(fn () => $this->s->blame()->forPost((int) $r['id'], get_current_user_id()));
     }
 
     public function gaps(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
@@ -576,7 +596,8 @@ final class RestApi
      * @param array<mixed> $raw
      *
      * @return array{type: string, change_ids?: list<int>, changeset_id?: string, fields?: list<string>, object_ids?: list<int>,
-     *               resolutions?: array<string, array<int, 'current'|'restored'>>}
+     *               resolutions?: array<string, array<int, 'current'|'restored'>>, change_id?: int, hunks?: list<int>,
+     *               object_id?: int, at?: string}
      */
     private function selection(array $raw): array
     {
@@ -597,6 +618,22 @@ final class RestApi
 
         if (isset($raw['object_ids'])) {
             $selection['object_ids'] = $ints($raw['object_ids']);
+        }
+
+        if (isset($raw['change_id'])) {
+            $selection['change_id'] = (int) $raw['change_id'];
+        }
+
+        if (isset($raw['hunks'])) {
+            $selection['hunks'] = $ints($raw['hunks']);
+        }
+
+        if (isset($raw['object_id'])) {
+            $selection['object_id'] = (int) $raw['object_id'];
+        }
+
+        if (isset($raw['at'])) {
+            $selection['at'] = (string) $raw['at'];
         }
 
         if (isset($raw['resolutions']) && is_array($raw['resolutions'])) {

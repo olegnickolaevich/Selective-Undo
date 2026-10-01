@@ -2,6 +2,8 @@ import apiFetch, { type APIFetchOptions } from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 import type {
 	ApiErrorBody,
+	BlameResult,
+	BlockDiff,
 	ChangesetDetail,
 	ChangesetSummary,
 	ConflictSide,
@@ -105,6 +107,14 @@ export const api = {
 			{ cursor, limit },
 			signal
 		),
+	changeBlocks: ( changeId: number, signal?: AbortSignal ) =>
+		get< BlockDiff >(
+			`/changes/${ changeId }/diff`,
+			{ mode: 'blocks' },
+			signal
+		),
+	blame: ( postId: number, signal?: AbortSignal ) =>
+		get< BlameResult >( `/objects/post/${ postId }/blame`, {}, signal ),
 	changeDiff: ( changeId: number, offset = 0, signal?: AbortSignal ) =>
 		get< DiffChunk >( `/changes/${ changeId }/diff`, { offset }, signal ),
 	recentChangesets: ( within: number, objectId?: number ) =>

@@ -202,4 +202,59 @@ final class JournalReader
             'changeset' => (string) $row['uuid'],
         ];
     }
+
+    /**
+     * Field changes (update and restore) of an object after a moment, oldest first.
+     *
+     * @param list<string> $fields Only these fields; empty = all.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public function fieldChangesAfter(ObjectRef $object, string $afterUtc, array $fields, int $limit): array
+    {
+        $sql = 'SELECT ' . self::CHANGE_COLUMNS . " FROM {$this->t->changes} c
+             WHERE c.object_type = %s AND c.object_id = %d AND c.event IN ('update', 'restore') AND c.created_at > %s";
+        $params = [$object->type, $object->id, $afterUtc];
+
+        if ($fields !== []) {
+            $sql .= ' AND c.field_key IN (' . implode(', ', array_fill(0, count($fields), '%s')) . ')';
+            array_push($params, ...$fields);
+        }
+
+        $params[] = $limit;
+
+        return array_values((array) $this->db->get_results($this->db->prepare($sql . ' ORDER BY c.id LIMIT %d', ...$params), ARRAY_A));
+    }
+
+    /**
+     * IDs and hashes of the changes of one field of an object, newest first, for
+     * walking the history backwards (values are loaded one change at a time).
+     *
+     * @return list<array{id: int, before_blob_id: int|null, after_blob_id: int|null, before_hash: string|null, after_hash: string|null}>
+     */
+    public function fieldChangesNewestFirst(ObjectRef $object, string $field, int $limit): array
+    {
+        $rows = (array) $this->db->get_results($this->db->prepare(
+            "SELECT id, before_blob_id, after_blob_id, before_hash, after_hash FROM {$this->t->changes}
+             WHERE object_type = %s AND object_id = %d AND field_key = %s AND event IN ('update', 'restore')
+             ORDER BY id DESC LIMIT %d",
+            $object->type,
+            $object->id,
+            $field,
+            $limit
+        ), ARRAY_A);
+        $out = [];
+
+        foreach ($rows as $row) {
+            $out[] = [
+                'id' => (int) $row['id'],
+                'before_blob_id' => $row['before_blob_id'] === null ? null : (int) $row['before_blob_id'],
+                'after_blob_id' => $row['after_blob_id'] === null ? null : (int) $row['after_blob_id'],
+                'before_hash' => $row['before_hash'] === null ? null : (string) $row['before_hash'],
+                'after_hash' => $row['after_hash'] === null ? null : (string) $row['after_hash'],
+            ];
+        }
+
+        return $out;
+    }
 }

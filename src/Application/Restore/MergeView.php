@@ -76,6 +76,16 @@ final class MergeView
         }
 
         $selection = json_decode((string) $plan['selection_json'], true);
+
+        if (($selection['type'] ?? '') === 'segments') {
+            // Only some hunks of the change come back.
+            $restored = EditorMergePreview::partialRevert($base, $restored, array_values(array_map('intval', (array) ($selection['hunks'] ?? []))));
+
+            if ($restored === null) {
+                throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'selective-undo'));
+            }
+        }
+
         $key = $object->type . ':' . $object->id . ':' . $field;
         $resolutions = [];
 

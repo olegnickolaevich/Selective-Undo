@@ -1,4 +1,4 @@
-import { Button } from '@wordpress/components';
+import { Button, TextControl } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { api } from '../api/client';
@@ -15,6 +15,76 @@ import { exactDate, relativeDate } from '../lib/format';
 import { displayTitle, sourceLabel } from '../lib/labels';
 import { linkHandler, viewToUrl } from '../lib/router';
 import { ChangeRow, checkRestore } from './ChangesetPage';
+
+/**
+ * "2026-10-01T10:30" in the browser's time zone, for a datetime-local input.
+ * @param iso
+ */
+function localInput( iso: string ): string {
+	const d = new Date( iso );
+	const pad = ( n: number ) => String( n ).padStart( 2, '0' );
+	return `${ d.getFullYear() }-${ pad( d.getMonth() + 1 ) }-${ pad(
+		d.getDate()
+	) }T${ pad( d.getHours() ) }:${ pad( d.getMinutes() ) }`;
+}
+
+/**
+ * Back to the state at a moment: every field changed after it is restored to its
+ * value at that moment.
+ * @param root0
+ * @param root0.objectId
+ * @param root0.initial
+ */
+function AsOfForm( {
+	objectId,
+	initial,
+}: {
+	objectId: number;
+	initial: string;
+} ) {
+	const [ at, setAt ] = useState( initial );
+	const [ busy, setBusy ] = useState( false );
+	const [ error, setError ] = useState< unknown >( null );
+	const moment = new Date( at );
+
+	return (
+		<form
+			className="su-as-of"
+			onSubmit={ ( event ) => {
+				event.preventDefault();
+				if ( ! Number.isNaN( moment.getTime() ) ) {
+					void checkRestore(
+						{
+							type: 'as_of',
+							object_id: objectId,
+							at: moment.toISOString(),
+						},
+						setError,
+						setBusy
+					);
+				}
+			} }
+		>
+			<TextControl
+				__nextHasNoMarginBottom
+				type="datetime-local"
+				label={ __( 'Return to the state at', 'selective-undo' ) }
+				value={ at }
+				onChange={ setAt }
+			/>
+			<Button
+				variant="secondary"
+				type="submit"
+				isBusy={ busy }
+				disabled={ busy || Number.isNaN( moment.getTime() ) }
+				accessibleWhenDisabled
+			>
+				{ __( 'Check', 'selective-undo' ) }
+			</Button>
+			{ error !== null && <ErrorNotice error={ error } /> }
+		</form>
+	);
+}
 
 /**
  * History of one item. Several consecutive changes of the same field can be
@@ -184,6 +254,14 @@ export function ObjectPage( {
 						) }
 					</p>
 				</div>
+			) }
+			{ canRestore && items.length > 1 && (
+				<AsOfForm
+					objectId={ id }
+					initial={ localInput(
+						( items[ 1 ] ?? items[ 0 ] )!.created_at
+					) }
+				/>
 			) }
 		</section>
 	);

@@ -12,6 +12,7 @@ use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Application\Capture\RevisionImporter;
 use SelectiveUndo\Application\Capture\SourceDetector;
 use SelectiveUndo\Application\Health\HealthService;
+use SelectiveUndo\Application\History\BlameService;
 use SelectiveUndo\Application\History\DiffBuilder;
 use SelectiveUndo\Application\History\DiffService;
 use SelectiveUndo\Application\History\HistoryExport;
@@ -379,6 +380,11 @@ final class Services
     public function editorMergePreview(): EditorMergePreview
     {
         return $this->get(EditorMergePreview::class, fn () => new EditorMergePreview($this->journalReader(), $this->blobs(), $this->adapters()));
+    }
+
+    public function blame(): BlameService
+    {
+        return $this->get(BlameService::class, fn () => new BlameService($this->journalReader(), $this->blobs(), $this->adapters(), $this->objectPresenter()));
     }
 
     public function mergeView(): MergeView

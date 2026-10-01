@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Tests\Unit;
 
+use SelectiveUndo\Domain\Merge\Blame;
 use SelectiveUndo\Domain\Merge\BlockSegmenter;
 use SelectiveUndo\Domain\Merge\ContentMerger;
 use SelectiveUndo\Domain\Merge\KeyedMerger;
@@ -106,5 +107,33 @@ final class MergeEngineTest extends TestCase
 
         $this->assertSame(2, count($changes));
         $this->assertSame(self::doc([self::p('a2'), self::p('b'), self::p('c1')]), TwoWayDiff::partialRevert($after, $before, [1]));
+    }
+
+    public function testBlameAttributesEachBlockToTheChangeThatLastModifiedIt(): void
+    {
+        $v0 = self::doc([self::p('a'), self::p('b'), self::p('c')]);
+        $v1 = self::doc([self::p('a'), self::p('B!'), self::p('c')]);             // change 1 edits b
+        $v2 = self::doc([self::p('a'), self::p('B!'), self::p('c'), self::p('d')]); // change 2 adds d
+        $v3 = self::doc([self::p('A!'), self::p('B!'), self::p('c'), self::p('d')]); // change 3 edits a
+
+        $result = (new Blame())->attribute($v3, [
+            ['id' => 3, 'before' => $v2, 'after' => $v3],
+            ['id' => 2, 'before' => $v1, 'after' => $v2],
+            ['id' => 1, 'before' => $v0, 'after' => $v1],
+        ]);
+        $owners = [];
+
+        foreach ($result['segments'] as $i => $segment) {
+            if (trim($segment) !== '') {
+                $owners[] = $result['owners'][$i]['change'] ?? null;
+            }
+        }
+
+        $this->assertSame([3, 1, null, 2], $owners);
+        $this->assertTrue($result['complete']);
+
+        // A gap: the newest change does not start from the current text.
+        $gap = (new Blame())->attribute($v3, [['id' => 2, 'before' => $v1, 'after' => $v2]]);
+        $this->assertFalse($gap['complete']);
     }
 }

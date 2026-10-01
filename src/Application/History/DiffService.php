@@ -7,8 +7,10 @@ namespace SelectiveUndo\Application\History;
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
 
 use SelectiveUndo\Application\Restore\AdapterRegistry;
+use SelectiveUndo\Application\Restore\EditorMergePreview;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\DomainError;
+use SelectiveUndo\Domain\Merge\TwoWayDiff;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
@@ -57,6 +59,69 @@ final class DiffService
             $after,
             $offset
         );
+    }
+
+    /**
+     * One change as numbered hunks of blocks (or paragraphs of classic text). The
+     * hunk numbers are what "undo only this part" refers to.
+     *
+     * @return array{available: bool, hunks: list<array<string, mixed>>}
+     *
+     * @throws DomainError
+     */
+    public function changeBlocks(int $changeId, int $userId): array
+    {
+        $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
+
+        if ($row === null || !user_can($userId, 'sundo_view_object_history', (int) $row['object_id'], (string) $row['object_subtype'])) {
+            throw new DomainError('su_not_found', 404, __('This change no longer exists in the history.', 'selective-undo'));
+        }
+
+        $before = $this->value($row['before_blob_id'], $row['before_hash'])?->value;
+        $after = $this->value($row['after_blob_id'], $row['after_hash'])?->value;
+        $a = is_string($before) && is_string($after) ? EditorMergePreview::tokens($after, $before) : null;
+        $b = is_string($before) && is_string($after) ? EditorMergePreview::tokens($before, $after) : null;
+        $diff = $a !== null && $b !== null ? TwoWayDiff::hunks($a, $b) : null;
+
+        if ($diff === null) {
+            return ['available' => false, 'hunks' => []];
+        }
+
+        $hunks = [];
+
+        foreach ($diff as $hunk) {
+            $hunks[] = $hunk['kind'] === 'same'
+                ? ['kind' => 'same', 'blocks' => count(self::blocks($hunk['tokens']))]
+                : ['kind' => 'change', 'index' => $hunk['index'], 'before' => self::blocks($hunk['before']), 'after' => self::blocks($hunk['after'])];
+        }
+
+        return ['available' => true, 'hunks' => $hunks];
+    }
+
+    /**
+     * Blocks of a hunk without the blank text between them.
+     *
+     * @param list<string> $tokens
+     *
+     * @return list<array{name: string, text: string, html: string}>
+     */
+    private static function blocks(array $tokens): array
+    {
+        $out = [];
+
+        foreach ($tokens as $token) {
+            if (trim($token) === '') {
+                continue;
+            }
+
+            $out[] = [
+                'name' => preg_match('/^\s*<!--\s+wp:([a-z0-9_\/-]+)/', $token, $m) === 1 ? $m[1] : '',
+                'text' => trim(wp_strip_all_tags($token)),
+                'html' => $token,
+            ];
+        }
+
+        return $out;
     }
 
     /**

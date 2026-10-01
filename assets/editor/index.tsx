@@ -1,4 +1,5 @@
 import { useCommand } from '@wordpress/commands';
+import { ToggleControl } from '@wordpress/components';
 import { dispatch, select as selectFrom, useSelect } from '@wordpress/data';
 import {
 	PluginDocumentSettingPanel,
@@ -12,6 +13,7 @@ import { api } from '../admin/api/client';
 import type { TimelineItem } from '../admin/api/types';
 import { exactDate, relativeDate } from '../admin/lib/format';
 import { eventLabel } from '../admin/lib/labels';
+import { registerBlockHistory, setShowAuthors } from './block-history';
 import { EDITOR_FIELDS, UndoInEditorButton } from './undo-in-editor';
 import './editor.scss';
 
@@ -66,6 +68,7 @@ function HistoryPanel() {
 	const [ items, setItems ] = useState< TimelineItem[] | null >( null );
 	const [ failed, setFailed ] = useState( false );
 	const [ version, setVersion ] = useState( 0 );
+	const [ authors, setAuthors ] = useState( false );
 	const wasSaving = useRef( false );
 
 	// Reload after every save so the change just made is listed.
@@ -101,6 +104,23 @@ function HistoryPanel() {
 		callback: ( { close } ) => {
 			close();
 			showPanel();
+		},
+	} );
+
+	const toggleAuthors = ( value: boolean ) => {
+		setAuthors( value );
+		setShowAuthors( value );
+	};
+
+	useCommand( {
+		name: 'selective-undo/toggle-block-authors',
+		label: authors
+			? __( 'Hide who changed each block', 'selective-undo' )
+			: __( 'Show who changed each block', 'selective-undo' ),
+		icon: backup,
+		callback: ( { close } ) => {
+			close();
+			toggleAuthors( ! authors );
 		},
 	} );
 
@@ -169,6 +189,16 @@ function HistoryPanel() {
 			title={ __( 'Change history', 'selective-undo' ) }
 		>
 			{ body }
+			<ToggleControl
+				__nextHasNoMarginBottom
+				label={ __( 'Show who changed each block', 'selective-undo' ) }
+				help={ __(
+					'Marks every block with a stripe in the color of the person who last changed it. Select a block to see its change.',
+					'selective-undo'
+				) }
+				checked={ authors }
+				onChange={ toggleAuthors }
+			/>
 			<p>
 				<a href={ `${ config.historyUrl }&view=object&id=${ postId }` }>
 					{ __( 'Compare and undo changes', 'selective-undo' ) }
@@ -179,3 +209,4 @@ function HistoryPanel() {
 }
 
 registerPlugin( 'selective-undo', { render: HistoryPanel } );
+registerBlockHistory();

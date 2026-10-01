@@ -167,13 +167,20 @@ function ConflictModal( {
  * @param root0
  * @param root0.changeId
  * @param root0.field
+ * @param root0.hunks
+ * @param root0.label
  */
 export function UndoInEditorButton( {
 	changeId,
 	field,
+	hunks = [],
+	label = __( 'Undo in the editor', 'selective-undo' ),
 }: {
 	changeId: number;
 	field: string;
+	/** Only these parts of the change (a single block's edit). */
+	hunks?: number[];
+	label?: string;
 } ) {
 	const [ busy, setBusy ] = useState( false );
 	const [ conflicts, setConflicts ] = useState< Conflicts | null >( null );
@@ -186,7 +193,8 @@ export function UndoInEditorButton( {
 			const preview = await api.mergePreview(
 				changeId,
 				editorValue( field ),
-				resolutions
+				resolutions,
+				hunks
 			);
 			if ( preview.status === 'clean' && preview.value !== undefined ) {
 				apply( field, preview.value, changeId );
@@ -229,7 +237,7 @@ export function UndoInEditorButton( {
 				accessibleWhenDisabled
 				onClick={ () => run() }
 			>
-				{ __( 'Undo in the editor', 'selective-undo' ) }
+				{ label }
 			</Button>
 			{ conflicts && (
 				<ConflictModal

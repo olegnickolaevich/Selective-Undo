@@ -8,6 +8,7 @@ import type {
 	Overview,
 	PlanSelection,
 } from '../api/types';
+import { BlockDiffView } from '../components/BlockDiffView';
 import { DiffLoader } from '../components/DiffViewer';
 import { ErrorNotice, Loading, errorMessage } from '../components/Feedback';
 import { ObjectTitle } from '../components/ObjectTitle';
@@ -37,6 +38,8 @@ export function ChangeRow( {
 	selectable: boolean;
 } ) {
 	const [ open, setOpen ] = useState( false );
+	// Content changes are compared block by block, and single blocks can be undone.
+	const [ byBlocks, setByBlocks ] = useState( true );
 	const load = useCallback(
 		( offset: number, signal?: AbortSignal ) =>
 			api.changeDiff( change.id, offset, signal ),
@@ -44,6 +47,7 @@ export function ChangeRow( {
 	);
 	const isField = change.field !== '';
 	const label = isField ? change.field_label : eventLabel( change.event );
+	const blocks = change.field === 'post_content' && byBlocks;
 
 	return (
 		<li className="su-change">
@@ -82,7 +86,24 @@ export function ChangeRow( {
 			{ isField && ! change.restorable && (
 				<p className="su-muted">{ reasonText( change.reason_code ) }</p>
 			) }
-			{ open && <DiffLoader load={ load } /> }
+			{ open && change.field === 'post_content' && (
+				<Button
+					variant="link"
+					className="su-change__mode"
+					onClick={ () => setByBlocks( ! byBlocks ) }
+				>
+					{ byBlocks
+						? __( 'Compare line by line', 'selective-undo' )
+						: __( 'Compare block by block', 'selective-undo' ) }
+				</Button>
+			) }
+			{ open && blocks && (
+				<BlockDiffView
+					changeId={ change.id }
+					canUndo={ selectable && change.restorable }
+				/>
+			) }
+			{ open && ! blocks && <DiffLoader load={ load } /> }
 		</li>
 	);
 }
