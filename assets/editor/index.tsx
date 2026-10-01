@@ -1,10 +1,12 @@
-import { useSelect } from '@wordpress/data';
+import { useCommand } from '@wordpress/commands';
+import { dispatch, select as selectFrom, useSelect } from '@wordpress/data';
 import {
 	PluginDocumentSettingPanel,
 	store as editorStore,
 } from '@wordpress/editor';
 import { useEffect, useRef, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
+import { backup } from '@wordpress/icons';
 import { registerPlugin } from '@wordpress/plugins';
 import { api } from '../admin/api/client';
 import type { TimelineItem } from '../admin/api/types';
@@ -23,6 +25,20 @@ declare global {
 }
 
 const LIMIT = 5;
+const PANEL = 'selective-undo/selective-undo-history';
+
+/**
+ * Opens the document sidebar with the history panel expanded.
+ */
+function showPanel(): void {
+	const area = dispatch( 'core/interface' ) as {
+		enableComplementaryArea?: ( scope: string, id: string ) => void;
+	};
+	area.enableComplementaryArea?.( 'core', 'edit-post/document' );
+	if ( ! selectFrom( editorStore ).isEditorPanelOpened( PANEL ) ) {
+		dispatch( editorStore ).toggleEditorPanelOpened( PANEL );
+	}
+}
 
 function changeUrl( base: string, item: TimelineItem ): string {
 	return `${ base }&view=changeset&id=${ encodeURIComponent(
@@ -75,6 +91,16 @@ function HistoryPanel() {
 			} );
 		return () => controller.abort();
 	}, [ postId, version ] );
+
+	useCommand( {
+		name: 'selective-undo/show-item-history',
+		label: __( 'Show the change history of this item', 'selective-undo' ),
+		icon: backup,
+		callback: ( { close } ) => {
+			close();
+			showPanel();
+		},
+	} );
 
 	if ( ! config || ! postId ) {
 		return null;

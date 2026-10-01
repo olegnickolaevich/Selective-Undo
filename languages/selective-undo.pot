@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-01T16:21:51+00:00\n"
+"POT-Creation-Date: 2026-10-01T16:40:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -257,7 +257,7 @@ msgstr ""
 
 #: src/Application/History/DiffService.php:97
 #: src/Application/Restore/CreateRestoreJob.php:54
-#: src/Application/Restore/QuickUndo.php:55
+#: src/Application/Restore/QuickUndo.php:57
 #: src/Presentation/Rest/RestApi.php:285
 msgid "This preview does not exist."
 msgstr ""
@@ -730,6 +730,10 @@ msgstr ""
 #: build/editor.js:1
 #: build/index.js:3
 msgid "Changed"
+msgstr ""
+
+#: build/editor.js:1
+msgid "Show the change history of this item"
 msgstr ""
 
 #: build/editor.js:1

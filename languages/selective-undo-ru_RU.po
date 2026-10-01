@@ -11,8 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"POT-Creation-Date: 2026-10-01T16:21:51+00:00\n"
-"PO-Revision-Date: 2026-10-01 16:22+0000\n"
+"POT-Creation-Date: 2026-10-01T16:40:46+00:00\n"
+"PO-Revision-Date: 2026-10-01 16:40+0000\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
 
@@ -260,7 +260,7 @@ msgstr "Стало"
 
 #: src/Application/History/DiffService.php:97
 #: src/Application/Restore/CreateRestoreJob.php:54
-#: src/Application/Restore/QuickUndo.php:55
+#: src/Application/Restore/QuickUndo.php:57
 #: src/Presentation/Rest/RestApi.php:285
 msgid "This preview does not exist."
 msgstr "Такого предпросмотра нет."
@@ -737,6 +737,10 @@ msgstr "Восстановлено"
 #: build/index.js:3
 msgid "Changed"
 msgstr "Изменено"
+
+#: build/editor.js:1
+msgid "Show the change history of this item"
+msgstr "Показать журнал изменений этой записи"
 
 #: build/editor.js:1
 msgid "The history could not be loaded."

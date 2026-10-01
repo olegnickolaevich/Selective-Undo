@@ -2,13 +2,15 @@
 	'dependencies' => array(
 		'react-jsx-runtime',
 		'wp-api-fetch',
+		'wp-commands',
 		'wp-data',
 		'wp-date',
 		'wp-editor',
 		'wp-element',
 		'wp-i18n',
 		'wp-plugins',
+		'wp-primitives',
 		'wp-url'
 	),
-	'version' => '918ef947fbd5bd119f2c'
+	'version' => '14c1e6ed6e92ceb5808a'
 );
