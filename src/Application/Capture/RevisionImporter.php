@@ -17,6 +17,7 @@ use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
+use SelectiveUndo\Infrastructure\Storage\ObjectVersions;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostRow;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
@@ -29,10 +30,9 @@ use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
  * excerpt; each pair becomes one change set with the revision's author and time.
  * Only revisions inside the retention period are imported.
  *
- * Restore chains rely on an item's journal ids being chronological, so an item is
- * imported before its first recorded change: on the capture path (under a per-item
- * lock) or by the background pass. An item that already has recorded history is
- * never imported.
+ * Imported changes are numbered below the item's recorded history (object versions),
+ * so they come first in its history whenever the import runs: on the capture path or
+ * by the background pass, under a per-item lock.
  *
  * @phpstan-import-type ChangeRow from JournalRepository
  */
@@ -61,6 +61,7 @@ final class RevisionImporter
         private readonly CaptureState $state,
         private readonly EventLog $log,
         private readonly LockService $locks,
+        private readonly ObjectVersions $versions,
     ) {
     }
 
@@ -80,7 +81,7 @@ final class RevisionImporter
     }
 
     /**
-     * Capture path: import the item's revisions before its first recorded change.
+     * Capture path: import the item's revisions when its first change is recorded.
      * Never throws; a failure only means that the item has no imported history.
      */
     public function ensureImported(ObjectRef $object): void
@@ -225,7 +226,7 @@ final class RevisionImporter
                 $postId
             ), ARRAY_A);
 
-            if (!is_array($post) || !$this->policy->shouldCapture($postId, (string) $post['post_type']) || $this->hasHistory($postId)) {
+            if (!is_array($post) || !$this->policy->shouldCapture($postId, (string) $post['post_type'])) {
                 $this->settle($postId, 'skipped', 0);
 
                 return null;
@@ -249,14 +250,15 @@ final class RevisionImporter
     /**
      * @param list<array{actor: int, at: string, changes: array<string, array{0: FieldValue, 1: FieldValue}>}> $saves
      */
-    private function write(ObjectRef $object, array $saves): ?int
+    private function write(ObjectRef $object, array $saves): int
     {
         $suppress = $this->db->suppress_errors(true);
         $this->db->query('START TRANSACTION');
-        $changesetIds = [];
         $count = 0;
 
         try {
+            $seq = $this->versions->reserveBefore($object, array_sum(array_map(static fn (array $s): int => count($s['changes']), $saves)));
+
             foreach ($saves as $save) {
                 $changeset = $this->journal->createChangeset([
                     'kind' => ChangesetKind::Edit,
@@ -266,29 +268,11 @@ final class RevisionImporter
                     'request_uuid' => wp_generate_uuid4(),
                     'created_at' => $save['at'],
                 ]);
-                $changesetIds[] = $changeset['id'];
-                $rows = $this->rows($changeset['id'], $object, $save['changes'], $save['at']);
+                $rows = $this->rows($changeset['id'], $object, $save['changes'], $save['at'], $seq);
                 $this->journal->insertChanges($rows);
                 $this->journal->seal($changeset['id']);
                 $count += count($rows);
-            }
-
-            // A recorded change of this item that slipped in while the lock was not
-            // held (capture waits at most LOCK_WAIT_SECONDS) would break the order.
-            $foreign = (int) $this->db->get_var($this->db->prepare(
-                "SELECT COUNT(*) FROM {$this->t->changes}
-                 WHERE object_type = 'post' AND object_id = %d
-                   AND changeset_id NOT IN (" . implode(',', array_fill(0, count($changesetIds), '%d')) . ')
-                 LOCK IN SHARE MODE',
-                $object->id,
-                ...$changesetIds
-            ));
-
-            if ($foreign > 0) {
-                $this->db->query('ROLLBACK');
-                $this->settle($object->id, 'skipped', 0);
-
-                return null;
+                $seq += count($rows);
             }
 
             $this->settle($object->id, 'imported', $count);
@@ -354,10 +338,11 @@ final class RevisionImporter
 
     /**
      * @param array<string, array{0: FieldValue, 1: FieldValue}> $changes
+     * @param int $seq Object version of the first row.
      *
      * @return list<ChangeRow>
      */
-    private function rows(int $changesetId, ObjectRef $object, array $changes, string $at): array
+    private function rows(int $changesetId, ObjectRef $object, array $changes, string $at, int $seq): array
     {
         $rows = [];
 
@@ -382,6 +367,7 @@ final class RevisionImporter
                 'restorable' => $reason === null,
                 'reason_code' => $reason,
                 'created_at' => $at,
+                'object_seq' => $seq++,
             ];
         }
 
@@ -404,14 +390,6 @@ final class RevisionImporter
     {
         return $this->db->get_var($this->db->prepare(
             "SELECT object_id FROM {$this->t->revisionImports} WHERE object_type = 'post' AND object_id = %d",
-            $postId
-        )) !== null;
-    }
-
-    private function hasHistory(int $postId): bool
-    {
-        return $this->db->get_var($this->db->prepare(
-            "SELECT id FROM {$this->t->changes} WHERE object_type = 'post' AND object_id = %d LIMIT 1",
             $postId
         )) !== null;
     }

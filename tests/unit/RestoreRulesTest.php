@@ -39,8 +39,8 @@ final class RestoreRulesTest extends TestCase
     public function testChainFolding(): void
     {
         $r = new ChainResolver();
-        $c1 = new ChangeLink(10, $this->h('X'), $this->h('Y'), true);
-        $c2 = new ChangeLink(20, $this->h('Y'), $this->h('Z'), true);
+        $c1 = new ChangeLink(10, 10, $this->h('X'), $this->h('Y'), true);
+        $c2 = new ChangeLink(20, 20, $this->h('Y'), $this->h('Z'), true);
         $res = $r->resolve([$c2, $c1], [10, 20]);
         $this->assertInstanceOf(ResolvedChain::class, $res);
         $this->assertSame($this->h('X'), $res->targetHash);
@@ -54,16 +54,16 @@ final class RestoreRulesTest extends TestCase
     public function testChainProblems(): void
     {
         $r = new ChainResolver();
-        $c1 = new ChangeLink(10, $this->h('X'), $this->h('Y'), true);
-        $c3 = new ChangeLink(30, $this->h('W'), $this->h('V'), true);
+        $c1 = new ChangeLink(10, 10, $this->h('X'), $this->h('Y'), true);
+        $c3 = new ChangeLink(30, 30, $this->h('W'), $this->h('V'), true);
         $broken = $r->resolve([$c1, $c3], [10, 20, 30]);
         $this->assertInstanceOf(ChainProblem::class, $broken);
         $this->assertSame('chain_broken', $broken->reasonCode);
         $this->assertSame('duplicate_change', $r->resolve([$c1, $c1], [10])->reasonCode);
-        $this->assertSame('payload_not_stored', $r->resolve([new ChangeLink(5, 'a', 'b', false, 'payload_not_stored')], [5])->reasonCode);
+        $this->assertSame('payload_not_stored', $r->resolve([new ChangeLink(5, 5, 'a', 'b', false, 'payload_not_stored')], [5])->reasonCode);
         $this->assertSame('empty_selection', $r->resolve([], [])->reasonCode);
 
-        $withGap = $r->resolve([new ChangeLink(10, $this->h('X'), $this->h('Y'), true), new ChangeLink(20, $this->h('Y'), $this->h('W'), true)], [10, 15, 17, 20]);
+        $withGap = $r->resolve([new ChangeLink(10, 10, $this->h('X'), $this->h('Y'), true), new ChangeLink(20, 20, $this->h('Y'), $this->h('W'), true)], [10, 15, 17, 20]);
         $this->assertInstanceOf(ResolvedChain::class, $withGap);
         $this->assertTrue($withGap->hasInterveningChanges);
     }
@@ -71,7 +71,7 @@ final class RestoreRulesTest extends TestCase
     public function testPlanItemEvaluationOrder(): void
     {
         $ev = new PlanItemEvaluator(new ConflictDetector());
-        $chain = (new ChainResolver())->resolve([new ChangeLink(10, $this->h('X'), $this->h('Y'), true)], [10]);
+        $chain = (new ChainResolver())->resolve([new ChangeLink(10, 10, $this->h('X'), $this->h('Y'), true)], [10]);
         $facts = fn (array $o): ItemFacts => new ItemFacts(...array_merge([
             'supported' => true, 'objectExists' => true, 'authorized' => true, 'chain' => $chain,
             'targetPayloadProblem' => null, 'currentHash' => $this->h('Y'),

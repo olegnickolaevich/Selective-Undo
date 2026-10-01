@@ -16,8 +16,8 @@ final class ChainResolver
 {
     /**
      * @param list<ChangeLink> $selected          Selected changes of the field, any order.
-     * @param list<int>        $journalIdsInRange IDs of all journal changes of this field
-     *                                            within [min(selected), max(selected)].
+     * @param list<int>        $journalIdsInRange IDs of all journal changes of this field whose
+     *                                            object version is within those of the selection.
      */
     public function resolve(array $selected, array $journalIdsInRange): ResolvedChain|ChainProblem
     {
@@ -25,7 +25,8 @@ final class ChainResolver
             return new ChainProblem('empty_selection', []);
         }
 
-        usort($selected, static fn (ChangeLink $a, ChangeLink $b): int => $a->changeId <=> $b->changeId);
+        // The object's version order, not the row order (imported history has later ids).
+        usort($selected, static fn (ChangeLink $a, ChangeLink $b): int => $a->seq <=> $b->seq);
         $ids = array_map(static fn (ChangeLink $c): int => $c->changeId, $selected);
 
         if (count(array_unique($ids)) !== count($ids)) {

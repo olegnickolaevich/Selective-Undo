@@ -131,7 +131,7 @@ abstract class IntegrationTestCase extends TestCase
     {
         $t = $this->s->tables();
         $sql = $this->db->prepare(
-            "SELECT * FROM {$t->changes} WHERE object_type = 'post' AND object_id = %d ORDER BY id",
+            "SELECT * FROM {$t->changes} WHERE object_type = 'post' AND object_id = %d ORDER BY object_seq, id",
             $postId
         );
         $rows = (array) $this->db->get_results($sql, ARRAY_A);

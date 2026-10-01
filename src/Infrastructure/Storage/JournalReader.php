@@ -12,7 +12,7 @@ use SelectiveUndo\Infrastructure\Database\Tables;
  */
 final class JournalReader
 {
-    private const CHANGE_COLUMNS = 'c.id, c.changeset_id, c.sequence_no, c.event, c.object_type, c.object_subtype, c.object_id,
+    private const CHANGE_COLUMNS = 'c.id, c.changeset_id, c.sequence_no, c.object_seq, c.event, c.object_type, c.object_subtype, c.object_id,
         c.adapter_key, c.adapter_version, c.field_key, c.before_blob_id, c.after_blob_id, c.before_hash, c.after_hash,
         c.quality, c.restorable, c.reason_code, c.reverts_change_id, c.created_at';
 
@@ -89,32 +89,32 @@ final class JournalReader
     }
 
     /**
-     * IDs of all field changes of one field within an ID range (inclusive).
+     * IDs of all changes of one field within a range of object versions (inclusive).
      *
      * @return list<int>
      */
-    public function fieldChangeIdsInRange(ObjectRef $object, string $field, int $fromId, int $toId): array
+    public function fieldChangeIdsInSeqRange(ObjectRef $object, string $field, int $fromSeq, int $toSeq): array
     {
         return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare(
             "SELECT id FROM {$this->t->changes}
-             WHERE object_type = %s AND object_id = %d AND field_key = %s AND id BETWEEN %d AND %d",
+             WHERE object_type = %s AND object_id = %d AND field_key = %s AND object_seq BETWEEN %d AND %d",
             $object->type,
             $object->id,
             $field,
-            $fromId,
-            $toId
+            $fromSeq,
+            $toSeq
         ))));
     }
 
-    public function hasLaterFieldChanges(ObjectRef $object, string $field, int $afterId): bool
+    public function hasLaterFieldChanges(ObjectRef $object, string $field, int $afterSeq): bool
     {
         return $this->db->get_var($this->db->prepare(
             "SELECT id FROM {$this->t->changes}
-             WHERE object_type = %s AND object_id = %d AND field_key = %s AND id > %d LIMIT 1",
+             WHERE object_type = %s AND object_id = %d AND field_key = %s AND object_seq > %d LIMIT 1",
             $object->type,
             $object->id,
             $field,
-            $afterId
+            $afterSeq
         )) !== null;
     }
 
@@ -152,11 +152,9 @@ final class JournalReader
         $rows = $this->db->get_results($this->db->prepare(
             "SELECT c.id, c.object_id, c.field_key, c.event, c.created_at, cs.actor_user_id
              FROM {$this->t->changes} c JOIN {$this->t->changesets} cs ON cs.id = c.changeset_id
-             WHERE c.id IN (
-               SELECT MAX(id) FROM {$this->t->changes}
-               WHERE object_type = 'post' AND object_id IN (" . implode(', ', array_fill(0, count($postIds), '%d')) . ')
-               GROUP BY object_id
-             )',
+             WHERE c.object_type = 'post' AND c.object_id IN (" . implode(', ', array_fill(0, count($postIds), '%d')) . ")
+               AND c.object_seq = (SELECT MAX(l.object_seq) FROM {$this->t->changes} l
+                                   WHERE l.object_type = c.object_type AND l.object_id = c.object_id)",
             ...$postIds
         ), ARRAY_A);
         $out = [];
@@ -185,7 +183,7 @@ final class JournalReader
             "SELECT c.id, c.field_key, c.created_at, cs.actor_user_id, cs.uuid
              FROM {$this->t->changes} c JOIN {$this->t->changesets} cs ON cs.id = c.changeset_id
              WHERE c.object_type = %s AND c.object_id = %d AND c.field_key <> ''
-             ORDER BY c.id DESC LIMIT 1",
+             ORDER BY c.object_seq DESC LIMIT 1",
             $objectType,
             $objectId
         ), ARRAY_A);
@@ -204,7 +202,7 @@ final class JournalReader
     }
 
     /**
-     * Field changes (update and restore) of an object after a moment, oldest first.
+     * Field changes (update and restore) of an object after a moment, in history order.
      *
      * @param list<string> $fields Only these fields; empty = all.
      *
@@ -223,7 +221,7 @@ final class JournalReader
 
         $params[] = $limit;
 
-        return array_values((array) $this->db->get_results($this->db->prepare($sql . ' ORDER BY c.id LIMIT %d', ...$params), ARRAY_A));
+        return array_values((array) $this->db->get_results($this->db->prepare($sql . ' ORDER BY c.object_seq LIMIT %d', ...$params), ARRAY_A));
     }
 
     /**
@@ -237,7 +235,7 @@ final class JournalReader
         $rows = (array) $this->db->get_results($this->db->prepare(
             "SELECT id, before_blob_id, after_blob_id, before_hash, after_hash FROM {$this->t->changes}
              WHERE object_type = %s AND object_id = %d AND field_key = %s AND event IN ('update', 'restore')
-             ORDER BY id DESC LIMIT %d",
+             ORDER BY object_seq DESC LIMIT %d",
             $object->type,
             $object->id,
             $field,

@@ -21,6 +21,7 @@ final class RestoreJournal
     public function __construct(
         private readonly Tables $t,
         private readonly BlobStore $blobs,
+        private readonly ObjectVersions $versions,
     ) {
     }
 
@@ -54,14 +55,15 @@ final class RestoreJournal
         int $revertsChangeId,
     ): int {
         $beforeBlobId = $this->blobs->putTx($tx, $before);
+        $seq = $this->versions->reserveTx($tx, $object);
         $tx->write(
             "INSERT INTO `{$this->t->changes}`
-             (changeset_id, sequence_no, event, object_type, object_subtype, object_id, adapter_key, adapter_version, field_key,
+             (changeset_id, sequence_no, object_seq, event, object_type, object_subtype, object_id, adapter_key, adapter_version, field_key,
               before_blob_id, after_blob_id, before_hash, after_hash, quality, restorable, reason_code, reverts_change_id, created_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'verified', 1, NULL, ?, " . SqlTime::utc() . ")",
-            'iisssisisiissi',
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'verified', 1, NULL, ?, " . SqlTime::utc() . ")",
+            'iiisssisisiissi',
             [
-                $changesetId, $sequenceNo, ChangeEvent::Restore->value, $object->type, $object->subtype, $object->id,
+                $changesetId, $sequenceNo, $seq, ChangeEvent::Restore->value, $object->type, $object->subtype, $object->id,
                 $adapter->key(), $adapter->version(), $fieldKey, $beforeBlobId, $afterBlobId, $before->hash(), $afterHash,
                 $revertsChangeId,
             ]

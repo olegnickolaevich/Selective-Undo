@@ -57,6 +57,7 @@ use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
+use SelectiveUndo\Infrastructure\Storage\ObjectVersions;
 use SelectiveUndo\Infrastructure\Storage\Outbox;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
@@ -156,7 +157,12 @@ final class Services
 
     public function journal(): JournalRepository
     {
-        return $this->get(JournalRepository::class, fn () => new JournalRepository($this->db, $this->tables()));
+        return $this->get(JournalRepository::class, fn () => new JournalRepository($this->db, $this->tables(), $this->objectVersions()));
+    }
+
+    public function objectVersions(): ObjectVersions
+    {
+        return $this->get(ObjectVersions::class, fn () => new ObjectVersions($this->db, $this->tables()));
     }
 
     public function capture(): CaptureService
@@ -187,6 +193,7 @@ final class Services
             $this->captureState(),
             $this->eventLog(),
             $this->locks(),
+            $this->objectVersions(),
         ));
     }
 
@@ -285,7 +292,7 @@ final class Services
 
     public function restoreJournal(): RestoreJournal
     {
-        return $this->get(RestoreJournal::class, fn () => new RestoreJournal($this->tables(), $this->blobs()));
+        return $this->get(RestoreJournal::class, fn () => new RestoreJournal($this->tables(), $this->blobs(), $this->objectVersions()));
     }
 
     public function outbox(): Outbox

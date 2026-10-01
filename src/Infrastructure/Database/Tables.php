@@ -23,6 +23,7 @@ final readonly class Tables
     public string $eventLog;
     public string $revisionImports;
     public string $locks;
+    public string $objectVersions;
     public string $posts;
     public string $options;
 
@@ -43,6 +44,7 @@ final readonly class Tables
         $this->eventLog = $p . 'event_log';
         $this->revisionImports = $p . 'revision_imports';
         $this->locks = $p . 'locks';
+        $this->objectVersions = $p . 'object_versions';
         $this->posts = $postsTable;
         $this->options = $optionsTable;
     }
@@ -60,7 +62,7 @@ final readonly class Tables
         return [
             $this->operations, $this->changesets, $this->changes, $this->blobs, $this->gaps,
             $this->plans, $this->planItems, $this->planItemSources, $this->jobs, $this->jobItems,
-            $this->outbox, $this->eventLog, $this->revisionImports, $this->locks,
+            $this->outbox, $this->eventLog, $this->revisionImports, $this->locks, $this->objectVersions,
         ];
     }
 }

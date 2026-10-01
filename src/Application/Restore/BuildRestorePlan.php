@@ -230,7 +230,9 @@ final class BuildRestorePlan
         }
 
         foreach ($groups as &$group) {
-            sort($group['change_ids']);
+            // History order of the object: first = the change whose "before" is the target.
+            usort($group['rows'], static fn (array $a, array $b): int => [(int) $a['object_seq'], (int) $a['id']] <=> [(int) $b['object_seq'], (int) $b['id']]);
+            $group['change_ids'] = array_map(static fn (array $r): int => (int) $r['id'], $group['rows']);
             // Changes recorded by different adapter versions cannot be folded.
             $group['adapter_version'] = max(array_map(static fn (array $r): int => (int) $r['adapter_version'], $group['rows']));
         }
@@ -329,6 +331,7 @@ final class BuildRestorePlan
         $links = array_map(
             static fn (array $r): ChangeLink => new ChangeLink(
                 (int) $r['id'],
+                (int) $r['object_seq'],
                 (string) $r['before_hash'],
                 (string) $r['after_hash'],
                 (bool) (int) $r['restorable'] && $r['quality'] !== 'ambiguous' && $r['before_blob_id'] !== null,
@@ -336,10 +339,10 @@ final class BuildRestorePlan
             ),
             $group['rows']
         );
-        $ids = $group['change_ids'];
+        $rows = $group['rows'];
         $chain = $this->chains->resolve(
             $links,
-            $this->journal->fieldChangeIdsInRange($group['object'], $field, $ids[0], $ids[count($ids) - 1])
+            $this->journal->fieldChangeIdsInSeqRange($group['object'], $field, (int) $rows[0]['object_seq'], (int) $rows[count($rows) - 1]['object_seq'])
         );
 
         $target = null;
@@ -415,7 +418,9 @@ final class BuildRestorePlan
         $finalWarnings = $decision->warnings;
 
         if ($chain instanceof ResolvedChain && $decision->status === PlanItemStatus::Ready) {
-            if ($this->journal->hasLaterFieldChanges($group['object'], $field, $chain->expectedChangeId)) {
+            $lastRow = $this->rowById($group['rows'], $chain->expectedChangeId);
+
+            if ($this->journal->hasLaterFieldChanges($group['object'], $field, (int) $lastRow['object_seq'])) {
                 // The field changed after the selection and came back to the same value (ABA).
                 $finalWarnings[] = 'later_changes_exist';
             }

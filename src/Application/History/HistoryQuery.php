@@ -152,7 +152,7 @@ final class HistoryQuery
     public function objectTimeline(ObjectRef $object, int $userId, ?string $cursor, int $limit): array
     {
         $recorded = $this->db->get_var($this->db->prepare(
-            "SELECT object_subtype FROM {$this->t->changes} WHERE object_type = %s AND object_id = %d ORDER BY id DESC LIMIT 1",
+            "SELECT object_subtype FROM {$this->t->changes} WHERE object_type = %s AND object_id = %d ORDER BY object_seq DESC LIMIT 1",
             $object->type,
             $object->id
         ));
@@ -163,14 +163,17 @@ final class HistoryQuery
         }
 
         $limit = max(1, min(self::MAX_LIMIT, $limit));
-        $beforeId = $cursor !== null ? $this->decodeCursor($cursor) : PHP_INT_MAX;
+        [$beforeSeq, $beforeId] = $cursor !== null ? $this->decodeCursor($cursor) : [PHP_INT_MAX, PHP_INT_MAX];
+        // Newest version first (imported history has later row ids but earlier versions).
         $rows = (array) $this->db->get_results($this->db->prepare(
             "SELECT c.*, cs.uuid AS changeset_uuid, cs.kind, cs.source, cs.actor_user_id, cs.operation_id, cs.restore_job_id, cs.label
              FROM {$this->t->changes} c JOIN {$this->t->changesets} cs ON cs.id = c.changeset_id
-             WHERE c.object_type = %s AND c.object_id = %d AND c.id < %d
-             ORDER BY c.id DESC LIMIT %d",
+             WHERE c.object_type = %s AND c.object_id = %d AND (c.object_seq < %d OR (c.object_seq = %d AND c.id < %d))
+             ORDER BY c.object_seq DESC, c.id DESC LIMIT %d",
             $ref->type,
             $ref->id,
+            $beforeSeq,
+            $beforeSeq,
             $beforeId,
             $limit + 1
         ), ARRAY_A);
@@ -178,7 +181,8 @@ final class HistoryQuery
 
         if (count($rows) > $limit) {
             array_pop($rows);
-            $next = $this->encodeCursor((int) $rows[count($rows) - 1]['id']);
+            $last = $rows[count($rows) - 1];
+            $next = $this->encodeCursor((int) $last['object_seq'], (int) $last['id']);
         }
 
         $items = [];
@@ -450,9 +454,9 @@ final class HistoryQuery
         ))));
     }
 
-    private function encodeCursor(int $id): string
+    private function encodeCursor(int $seq, int $id): string
     {
-        return rtrim(strtr(base64_encode('c1:' . $id), '+/', '-_'), '=');
+        return rtrim(strtr(base64_encode('c2:' . $seq . '|' . $id), '+/', '-_'), '=');
     }
 
     private function encodeListCursor(string $createdAt, int $id): string
@@ -474,14 +478,17 @@ final class HistoryQuery
         return [$m[1], (int) $m[2]];
     }
 
-    private function decodeCursor(string $cursor): int
+    /**
+     * @return array{0: int, 1: int} object version and id of the last item shown
+     */
+    private function decodeCursor(string $cursor): array
     {
         $raw = base64_decode(strtr($cursor, '-_', '+/'), true);
 
-        if ($raw === false || !preg_match('/^c1:(\d{1,19})$/', $raw, $m)) {
+        if ($raw === false || !preg_match('/^c2:(-?\d{1,18})\|(\d{1,19})$/', $raw, $m)) {
             throw new DomainError('su_invalid_cursor', 400, __('Invalid page cursor.', 'selective-undo'));
         }
 
-        return (int) $m[1];
+        return [(int) $m[1], (int) $m[2]];
     }
 }

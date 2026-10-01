@@ -16,13 +16,14 @@ use SelectiveUndo\Infrastructure\Database\Tables;
  * @phpstan-type ChangeRow array{changeset_id: int, sequence_no: int, event: string, object: ObjectRef, adapter_key: string,
  *                               adapter_version: int, field_key: string, before_blob_id: int|null, after_blob_id: int|null,
  *                               before_hash: string|null, after_hash: string|null, quality: string, restorable: bool,
- *                               reason_code: string|null, reverts_change_id?: int|null, created_at?: string}
+ *                               reason_code: string|null, reverts_change_id?: int|null, created_at?: string, object_seq?: int}
  */
 final class JournalRepository
 {
     public function __construct(
         private readonly \wpdb $db,
         private readonly Tables $t,
+        private readonly ObjectVersions $versions,
     ) {
     }
 
@@ -60,7 +61,7 @@ final class JournalRepository
     }
 
     /**
-     * @param list<ChangeRow> $rows
+     * @param list<ChangeRow> $rows Rows without object_seq get the next numbers of their object, in row order.
      */
     public function insertChanges(array $rows): void
     {
@@ -70,15 +71,16 @@ final class JournalRepository
 
         $values = [];
         $now = gmdate('Y-m-d H:i:s');
+        $seqs = $this->numbers($rows);
 
-        foreach ($rows as $r) {
+        foreach ($rows as $i => $r) {
             $values[] = $this->db->prepare(
-                '(%d, %d, %s, %s, %s, %d, %s, %d, %s, ' . $this->nullable('%d', $r['before_blob_id']) . ', '
+                '(%d, %d, %d, %s, %s, %s, %d, %s, %d, %s, ' . $this->nullable('%d', $r['before_blob_id']) . ', '
                 . $this->nullable('%d', $r['after_blob_id']) . ', ' . $this->nullable('%s', $r['before_hash']) . ', '
                 . $this->nullable('%s', $r['after_hash']) . ', %s, %d, ' . $this->nullable('%s', $r['reason_code']) . ', '
                 . $this->nullable('%d', $r['reverts_change_id'] ?? null) . ', %s)',
                 ...array_values(array_filter([
-                    $r['changeset_id'], $r['sequence_no'], $r['event'], $r['object']->type, $r['object']->subtype,
+                    $r['changeset_id'], $r['sequence_no'], $seqs[$i], $r['event'], $r['object']->type, $r['object']->subtype,
                     $r['object']->id, $r['adapter_key'], $r['adapter_version'], $r['field_key'],
                     $r['before_blob_id'], $r['after_blob_id'], $r['before_hash'], $r['after_hash'],
                     $r['quality'], $r['restorable'] ? 1 : 0, $r['reason_code'], $r['reverts_change_id'] ?? null, $r['created_at'] ?? $now,
@@ -87,7 +89,7 @@ final class JournalRepository
         }
 
         $sql = "INSERT INTO {$this->t->changes}
-            (changeset_id, sequence_no, event, object_type, object_subtype, object_id, adapter_key, adapter_version,
+            (changeset_id, sequence_no, object_seq, event, object_type, object_subtype, object_id, adapter_key, adapter_version,
              field_key, before_blob_id, after_blob_id, before_hash, after_hash, quality, restorable, reason_code,
              reverts_change_id, created_at)
             VALUES " . implode(', ', $values);
@@ -95,6 +97,39 @@ final class JournalRepository
         if ($this->db->query($sql) === false) {
             throw new StorageError('change_insert_failed');
         }
+    }
+
+    /**
+     * @param list<ChangeRow> $rows
+     *
+     * @return list<int> object_seq of each row
+     */
+    private function numbers(array $rows): array
+    {
+        $counts = [];
+        $objects = [];
+
+        foreach ($rows as $r) {
+            if (!isset($r['object_seq'])) {
+                $key = $r['object']->key();
+                $counts[$key] = ($counts[$key] ?? 0) + 1;
+                $objects[$key] = $r['object'];
+            }
+        }
+
+        $next = [];
+
+        foreach ($counts as $key => $count) {
+            $next[$key] = $this->versions->reserve($objects[$key], $count);
+        }
+
+        $seqs = [];
+
+        foreach ($rows as $r) {
+            $seqs[] = $r['object_seq'] ?? $next[$r['object']->key()]++;
+        }
+
+        return $seqs;
     }
 
     /**
@@ -112,15 +147,13 @@ final class JournalRepository
             return $result;
         }
 
-        // Latest row per field. A plain IN over MAX(id) works on MySQL and SQLite alike
+        // Latest version per field. A correlated MAX works on MySQL and SQLite alike
         // (SQLite does not allow ORDER BY ... LIMIT inside UNION members).
         $rows = $this->db->get_results($this->db->prepare(
-            "SELECT field_key, after_hash, event FROM {$this->t->changes}
-             WHERE id IN (
-               SELECT MAX(id) FROM {$this->t->changes}
-               WHERE object_type = %s AND object_id = %d AND field_key IN (" . implode(', ', array_fill(0, count($fields), '%s')) . ')
-               GROUP BY field_key
-             )',
+            "SELECT c.field_key, c.after_hash, c.event FROM {$this->t->changes} c
+             WHERE c.object_type = %s AND c.object_id = %d AND c.field_key IN (" . implode(', ', array_fill(0, count($fields), '%s')) . ")
+               AND c.object_seq = (SELECT MAX(l.object_seq) FROM {$this->t->changes} l
+                                   WHERE l.object_type = c.object_type AND l.object_id = c.object_id AND l.field_key = c.field_key)",
             $object->type,
             $object->id,
             ...$fields
@@ -152,7 +185,7 @@ final class JournalRepository
             "SELECT id FROM {$this->t->changes}
              WHERE id IN (" . implode(', ', array_fill(0, count($changeIds), '%d')) . ')
                AND object_type = %s AND object_id = %d AND field_key = %s
-             ORDER BY id DESC LIMIT 1',
+             ORDER BY object_seq DESC LIMIT 1',
             ...[...$changeIds, $object->type, $object->id, $field]
         ));
 

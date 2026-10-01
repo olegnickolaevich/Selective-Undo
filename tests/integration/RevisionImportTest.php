@@ -50,6 +50,7 @@ final class RevisionImportTest extends IntegrationTestCase
         }
 
         $this->endRequest();
+        $this->setImport(true);
         update_option(RevisionImporter::SINCE_OPTION, $this->since);
         update_option(RevisionImporter::STATUS_OPTION, 'done');
     }
@@ -113,7 +114,7 @@ final class RevisionImportTest extends IntegrationTestCase
         $this->assertCount(2, $rows);
         $sources = $this->db->get_col($this->db->prepare(
             "SELECT cs.source FROM {$this->s->tables()->changes} c JOIN {$this->s->tables()->changesets} cs ON cs.id = c.changeset_id
-             WHERE c.object_id = %d ORDER BY c.id",
+             WHERE c.object_id = %d ORDER BY c.object_seq",
             $id
         ));
         $this->assertSame('revisions', $sources[0]);
@@ -124,18 +125,23 @@ final class RevisionImportTest extends IntegrationTestCase
         $this->assertSame(2, count($plan['items'][0]['change_ids']));
     }
 
-    public function testItemsWithRecordedHistoryAreNotImported(): void
+    public function testRevisionsImportedLaterGoBeforeTheRecordedHistory(): void
     {
-        $id = $this->createPost();
-        $this->created[] = $id;
-        wp_update_post(['ID' => $id, 'post_title' => 'Recorded']);
+        $this->setImport(false);
+        $id = $this->editBeforeRecording([['post_title' => 'Контакты v2']]);
+        wp_update_post(['ID' => $id, 'post_title' => 'Контакты v3']);
         $this->endRequest();
-        $this->pretendRecordingStartedAfter($id);
+        $this->setImport(true);
 
-        $result = $this->s->revisionImporter()->run(10.0);
-        $this->assertSame(0, $result['changes']);
-        $this->assertCount(1, $this->changes($id, 'update'));
-        $this->assertSame('skipped', $this->marker($id));
+        $this->assertSame(1, $this->s->revisionImporter()->run(10.0)['changes']);
+
+        // History order, not row order: the imported change has the larger id but comes first.
+        $rows = $this->changes($id, 'update');
+        $this->assertSame(['Контакты v2', 'Контакты v3'], array_map(fn (array $r): mixed => $this->blobValue((int) $r['after_blob_id'], $r['after_hash']), $rows));
+        $this->assertTrue((int) $rows[0]['id'] > (int) $rows[1]['id']);
+
+        $this->start($this->plan(['type' => 'changes', 'change_ids' => array_map('intval', array_column($rows, 'id'))]));
+        $this->assertSame('Контакты', get_post($id)->post_title);
     }
 
     /**
@@ -184,8 +190,18 @@ final class RevisionImportTest extends IntegrationTestCase
 
     private function setCapture(bool $enabled): void
     {
+        $this->setSetting('capture_enabled', $enabled);
+    }
+
+    private function setImport(bool $enabled): void
+    {
+        $this->setSetting('import_revisions', $enabled);
+    }
+
+    private function setSetting(string $key, bool $value): void
+    {
         $settings = get_option(Settings::OPTION);
-        $settings['capture_enabled'] = $enabled;
+        $settings[$key] = $value;
         update_option(Settings::OPTION, $settings);
         $this->s->settings()->flush();
     }

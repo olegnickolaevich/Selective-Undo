@@ -9,6 +9,7 @@ final readonly class ChangeLink
 {
     public function __construct(
         public int $changeId,
+        public int $seq,
         public string $beforeHash,
         public string $afterHash,
         public bool $restorable,
