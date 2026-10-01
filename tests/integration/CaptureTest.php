@@ -223,6 +223,20 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertSame($this->changes($a, 'update')[0]['before_blob_id'], $this->changes($b, 'update')[0]['before_blob_id']);
     }
 
+    public function testDraftSavesDoNotRecordTheDateWordPressMovesToNow(): void
+    {
+        $id = $this->createPost(['post_type' => 'post', 'post_status' => 'draft', 'post_content' => 'v0']);
+        // As if the draft was saved a while ago: the next save moves its floating date to now.
+        $this->db->update($this->db->posts, ['post_date' => '2020-01-01 00:00:00'], ['ID' => $id]);
+        clean_post_cache($id);
+
+        wp_update_post(['ID' => $id, 'post_content' => 'v1']);
+        $this->endRequest();
+
+        $this->assertNotSame('2020-01-01 00:00:00', get_post($id)->post_date);
+        $this->assertSame(['post_content'], array_column($this->changes($id, 'update'), 'field_key'));
+    }
+
     public function testAutosavesAreCoalescedIntoOneSession(): void
     {
         $id = $this->createPost(['post_type' => 'post', 'post_status' => 'draft', 'post_title' => 'Draft', 'post_content' => 'v0']);

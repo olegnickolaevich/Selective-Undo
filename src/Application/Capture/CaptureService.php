@@ -104,6 +104,11 @@ final class CaptureService implements CaptureSink
             }
         }
 
+        if ($before->postDateGmt === '0000-00-00 00:00:00' && $after->postDateGmt === '0000-00-00 00:00:00') {
+            // A draft without a chosen date: WordPress moves post_date to "now" on every save.
+            unset($changed['post_date']);
+        }
+
         if ($before->postStatus !== $after->postStatus && array_intersect([$before->postStatus, $after->postStatus], ['trash', 'auto-draft']) !== []) {
             // Moving to and from the trash is an event (and WordPress renames the slug
             // meanwhile); the trash itself is how WordPress undoes it.
