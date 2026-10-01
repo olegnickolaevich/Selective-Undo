@@ -321,3 +321,9 @@ export interface ApiErrorBody {
 		details?: Record< string, unknown >;
 	};
 }
+
+export interface QuickUndoResult {
+	status: 'restored' | 'needs_review' | 'nothing_to_undo';
+	plan_id: Uuid | null;
+	job?: RestoreJob;
+}

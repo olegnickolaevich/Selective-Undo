@@ -97,8 +97,17 @@ jobs:
           cache: npm
       - run: npm ci && npx playwright install --with-deps chromium
       - run: bin/test-env.sh up
-      - run: (bin/serve.sh > server.log 2>&1 &) && sleep 2
+      - name: Start the web server
+        run: |
+          (bin/serve.sh > server.log 2>&1 &)
+          for i in $(seq 1 30); do curl -sf -o /dev/null http://127.0.0.1:8899/wp-login.php && exit 0; sleep 1; done
+          exit 1
       - run: npx playwright test
+      - name: Server and WordPress logs
+        if: failure()
+        run: |
+          tail -n 80 server.log || true
+          tail -n 80 .work/debug.log || true
       - if: failure()
         uses: actions/upload-artifact@v4
         with:

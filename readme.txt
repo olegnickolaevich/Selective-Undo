@@ -22,6 +22,13 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 4. The preview shows what will be restored, what is already in the desired state and what needs attention. Nothing is written yet.
 5. Click **Restore**. Every value is checked again inside a database transaction right before it is written.
 
+**Undo right where the mistake happened**
+
+* After Quick Edit or bulk edit on the Posts and Pages screens, a notice offers **Undo**. Small, conflict-free changes are undone at once; anything else opens the preview first.
+* In the command palette (Ctrl+K / ⌘K): **Undo my last change**, **Selective Undo: change history** and **Selective Undo: restores**.
+* A **Last change** column on the Posts and Pages screens shows who changed each item and when.
+* On the site, the toolbar shows when the page was last changed, and **Show the latest change on this page** outlines the blocks that change edited. Only users who may see the history get these; visitors never do.
+
 **Safe by design**
 
 * **No silent overwrites.** If a field was changed again after the selected change, it is reported as a conflict and skipped. There is no "force" option.
@@ -55,7 +62,7 @@ On activation, only administrators can view the history and restore changes. Eac
 * WP-CLI: `wp selective-undo health`, `wp selective-undo maintenance`, `wp selective-undo queue`.
 * Actions and filters use the `selective_undo/` prefix, for example `selective_undo/object_restored` after an item is restored.
 
-The source code of the admin interface (React, TypeScript) is in `assets/admin`; the compiled files are in `build`. Development happens at [github.com/olegnickolaevich/Selective-Undo](https://github.com/olegnickolaevich/Selective-Undo), where you can also report bugs.
+The source code of the admin interface (React, TypeScript) is in `assets`; the compiled files are in `build`. Development happens at [github.com/olegnickolaevich/Selective-Undo](https://github.com/olegnickolaevich/Selective-Undo), where you can also report bugs.
 
 == Installation ==
 

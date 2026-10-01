@@ -23,6 +23,7 @@ use SelectiveUndo\Application\Restore\ExecuteRestoreJob;
 use SelectiveUndo\Application\Restore\JobView;
 use SelectiveUndo\Application\Restore\PlanView;
 use SelectiveUndo\Application\Restore\PostRestoreHandler;
+use SelectiveUndo\Application\Restore\QuickUndo;
 use SelectiveUndo\Application\Restore\RestoreObjectExecutor;
 use SelectiveUndo\Application\Restore\RestorePreconditions;
 use SelectiveUndo\Application\Restore\RestoreReadiness;
@@ -358,6 +359,18 @@ final class Services
             $this->readiness(),
             $this->requestContext(),
             $this->restoreJournal(),
+        ));
+    }
+
+    public function quickUndo(): QuickUndo
+    {
+        return $this->get(QuickUndo::class, fn () => new QuickUndo(
+            $this->buildPlan(),
+            $this->planView(),
+            $this->createJob(),
+            $this->executeJob(),
+            $this->jobView(),
+            $this->jobs(),
         ));
     }
 

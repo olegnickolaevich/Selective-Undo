@@ -44,9 +44,15 @@ final class Plugin
         $s->privacy()->register();
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RestApi(self::services()))->register());
 
+        if (!is_admin()) {
+            (new \SelectiveUndo\Presentation\Frontend\ChangeIndicator($s->journalReader(), $s->diffs(), $s->trackingPolicy(), $s->postFieldsAdapter()))->register();
+        }
+
         if (is_admin()) {
             (new \SelectiveUndo\Presentation\Admin\AdminPage($s->trackingPolicy()))->register();
             (new \SelectiveUndo\Presentation\Admin\EditorPanel($s->trackingPolicy()))->register();
+            (new \SelectiveUndo\Presentation\Admin\ListScreenIntegration($s->trackingPolicy(), $s->journalReader(), $s->postFieldsAdapter()))->register();
+            (new \SelectiveUndo\Presentation\Admin\CommandPalette())->register();
         }
 
         if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {

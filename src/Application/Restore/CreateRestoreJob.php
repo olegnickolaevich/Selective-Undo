@@ -165,6 +165,16 @@ final class CreateRestoreJob
     }
 
     /**
+     * The job already started with this request key, if any.
+     */
+    public function findByKey(int $userId, string $idempotencyKey): ?string
+    {
+        $existing = $this->jobs->findByIdempotency($userId, hash('sha256', strtolower($idempotencyKey), true));
+
+        return $existing !== null ? (string) $existing['uuid'] : null;
+    }
+
+    /**
      * @param array<string, mixed> $existing
      *
      * @return array{job_uuid: string, created: bool}

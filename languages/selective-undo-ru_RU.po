@@ -11,8 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"POT-Creation-Date: 2026-09-29T08:00:49+00:00\n"
-"PO-Revision-Date: 2026-09-29 08:00+0000\n"
+"POT-Creation-Date: 2026-10-01T16:21:51+00:00\n"
+"PO-Revision-Date: 2026-10-01 16:22+0000\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
 
@@ -258,26 +258,27 @@ msgstr "После восстановления"
 msgid "After"
 msgstr "Стало"
 
-#: src/Application/History/DiffService.php:72
+#: src/Application/History/DiffService.php:97
 #: src/Application/Restore/CreateRestoreJob.php:54
-#: src/Presentation/Rest/RestApi.php:242
+#: src/Application/Restore/QuickUndo.php:55
+#: src/Presentation/Rest/RestApi.php:285
 msgid "This preview does not exist."
 msgstr "Такого предпросмотра нет."
 
-#: src/Application/History/DiffService.php:78
+#: src/Application/History/DiffService.php:103
 msgid "Nothing to compare for this item."
 msgstr "Для этой записи нечего сравнивать."
 
-#: src/Application/History/DiffService.php:93
+#: src/Application/History/DiffService.php:118
 msgid "After the selected change"
 msgstr "После выбранного изменения"
 
-#: src/Application/History/DiffService.php:94
-#: src/Application/History/DiffService.php:103
+#: src/Application/History/DiffService.php:119
+#: src/Application/History/DiffService.php:128
 msgid "Current value"
 msgstr "Текущее значение"
 
-#: src/Application/History/DiffService.php:104
+#: src/Application/History/DiffService.php:129
 msgid "Will be restored"
 msgstr "Будет восстановлено"
 
@@ -338,46 +339,46 @@ msgid "Restoring is unavailable on this site right now. See Settings → Diagnos
 msgstr "Восстановление на этом сайте сейчас недоступно. См. Настройки → Диагностика."
 
 #: src/Application/Restore/CreateRestoreJob.php:131
-#: src/Application/Restore/CreateRestoreJob.php:198
+#: src/Application/Restore/CreateRestoreJob.php:210
 msgid "This preview has expired. Check the changes again."
 msgstr "Срок действия предпросмотра истёк. Проверьте изменения ещё раз."
 
 #: src/Application/Restore/CreateRestoreJob.php:144
-#: src/Application/Restore/CreateRestoreJob.php:190
+#: src/Application/Restore/CreateRestoreJob.php:202
 #: build/index.js:20
 msgid "This preview has already been used to start a restore."
 msgstr "Этот предпросмотр уже использован для запуска восстановления."
 
-#: src/Application/Restore/CreateRestoreJob.php:173
+#: src/Application/Restore/CreateRestoreJob.php:185
 msgid "This request key was already used for another restore."
 msgstr "Этот ключ запроса уже использован для другого восстановления."
 
-#: src/Application/Restore/CreateRestoreJob.php:202
+#: src/Application/Restore/CreateRestoreJob.php:214
 #: build/index.js:21
 msgid "Nothing in this preview can be restored."
 msgstr "В этом предпросмотре нечего восстанавливать."
 
-#: src/Application/Retention/PurgeService.php:65
+#: src/Application/Retention/PurgeService.php:67
 msgid "Type DELETE to confirm."
 msgstr "Для подтверждения введите DELETE."
 
-#: src/Application/Retention/PurgeService.php:145
+#: src/Application/Retention/PurgeService.php:147
 msgid "Choose an item."
 msgstr "Выберите запись."
 
-#: src/Application/Retention/PurgeService.php:148
+#: src/Application/Retention/PurgeService.php:150
 msgid "Choose a valid date."
 msgstr "Выберите корректную дату."
 
-#: src/Application/Retention/PurgeService.php:150
+#: src/Application/Retention/PurgeService.php:152
 msgid "Unknown deletion scope."
 msgstr "Неизвестная область удаления."
 
-#: src/Application/Retention/PurgeService.php:188
+#: src/Application/Retention/PurgeService.php:190
 msgid "The deletion preview is invalid. Preview again."
 msgstr "Предпросмотр удаления недействителен. Выполните его ещё раз."
 
-#: src/Application/Retention/PurgeService.php:194
+#: src/Application/Retention/PurgeService.php:196
 msgid "The deletion preview has expired. Preview again."
 msgstr "Срок действия предпросмотра удаления истёк. Выполните его ещё раз."
 
@@ -387,15 +388,15 @@ msgstr "Срок действия предпросмотра удаления и
 msgid "Deleted user #%d"
 msgstr "Удалённый пользователь #%d"
 
-#: src/Bootstrap/Plugin.php:79
+#: src/Bootstrap/Plugin.php:85
 msgid "Every five minutes (Selective Undo)"
 msgstr "Каждые пять минут (Selective Undo)"
 
-#: src/Bootstrap/Plugin.php:138
+#: src/Bootstrap/Plugin.php:144
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr "Selective Undo нельзя активировать для всей сети. Активируйте его на отдельных сайтах."
 
-#: src/Bootstrap/Plugin.php:139
+#: src/Bootstrap/Plugin.php:145
 msgid "Plugin activation"
 msgstr "Активация плагина"
 
@@ -494,6 +495,78 @@ msgstr "История изменений «%s»"
 msgid "Change history"
 msgstr "История изменений"
 
+#: src/Presentation/Admin/LastChangeColumn.php:43
+msgid "Last change"
+msgstr "Последнее изменение"
+
+#: src/Presentation/Admin/LastChangeColumn.php:58
+msgid "No recorded changes"
+msgstr "Записанных изменений нет"
+
+#: src/Presentation/Admin/LastChangeColumn.php:65
+#: build/editor.js:1
+#: build/index.js:16
+#: build/index.js:18
+#: build/index.js:19
+msgid "System"
+msgstr "Система"
+
+#. translators: %s: time difference, e.g. "2 hours".
+#: src/Presentation/Admin/LastChangeColumn.php:67
+#, php-format
+msgid "%s ago"
+msgstr "%s назад"
+
+#. translators: %s: time difference, e.g. "2 hours".
+#: src/Presentation/Frontend/ChangeIndicator.php:79
+#, php-format
+msgid "Changed %s ago"
+msgstr "Изменено %s назад"
+
+#: src/Presentation/Frontend/ChangeIndicator.php:87
+msgid "Show the latest change on this page"
+msgstr "Показать последнее изменение на странице"
+
+#: src/Presentation/Frontend/ChangeIndicator.php:93
+#: build/index.js:16
+msgid "History of this item"
+msgstr "История этой записи"
+
+#: src/Presentation/Frontend/ChangeIndicator.php:102
+msgid "Undo the latest change…"
+msgstr "Отменить последнее изменение…"
+
+#. translators: %s: field name, e.g. "Title".
+#: src/Presentation/Frontend/ChangeIndicator.php:236
+#, php-format
+msgid "This change edited the %s, which is not outlined on the page."
+msgstr "Это изменение затронуло поле «%s»; оно не подсвечивается на странице."
+
+#: src/Presentation/Frontend/ChangeIndicator.php:239
+msgid "This content is not made of blocks, so the changed parts cannot be outlined."
+msgstr "Это содержимое не состоит из блоков, поэтому изменённые части нельзя подсветить."
+
+#: src/Presentation/Frontend/ChangeIndicator.php:240
+msgid "The text written by this change is no longer on the page."
+msgstr "Текста, записанного этим изменением, на странице уже нет."
+
+#. translators: %d: number of outlined blocks.
+#: src/Presentation/Frontend/ChangeIndicator.php:243
+#, php-format
+msgid "%d block changed by this edit is outlined."
+msgid_plural "%d blocks changed by this edit are outlined."
+msgstr[0] "Обведён %d блок, изменённый этой правкой."
+msgstr[1] "Обведены %d блока, изменённые этой правкой."
+msgstr[2] "Обведено %d блоков, изменённых этой правкой."
+
+#: src/Presentation/Frontend/ChangeIndicator.php:249
+msgid "The content was changed again after this edit."
+msgstr "После этой правки содержимое менялось ещё раз."
+
+#: src/Presentation/Frontend/ChangeIndicator.php:260
+msgid "Hide"
+msgstr "Скрыть"
+
 #: src/Presentation/Rest/ErrorMapper.php:37
 msgid "The history storage is temporarily unavailable."
 msgstr "Хранилище истории временно недоступно."
@@ -502,35 +575,137 @@ msgstr "Хранилище истории временно недоступно.
 msgid "Something went wrong. The details were written to the Selective Undo diagnostics log."
 msgstr "Что-то пошло не так. Подробности записаны в журнал диагностики Selective Undo."
 
-#: src/Presentation/Rest/RestApi.php:299
-#: src/Presentation/Rest/RestApi.php:467
+#: src/Presentation/Rest/RestApi.php:342
+#: src/Presentation/Rest/RestApi.php:510
 msgid "This restore does not exist."
 msgstr "Такого восстановления нет."
 
-#: src/Presentation/Rest/RestApi.php:336
+#: src/Presentation/Rest/RestApi.php:379
 msgid "Only the author of a restore can continue it."
 msgstr "Продолжить восстановление может только тот, кто его запустил."
 
-#: src/Presentation/Rest/RestApi.php:449
+#: src/Presentation/Rest/RestApi.php:492
 msgid "View history"
 msgstr "Просмотр истории"
 
-#: src/Presentation/Rest/RestApi.php:450
+#: src/Presentation/Rest/RestApi.php:493
 msgid "Restore changes"
 msgstr "Восстановление изменений"
 
-#: src/Presentation/Rest/RestApi.php:451
+#: src/Presentation/Rest/RestApi.php:494
 msgid "Manage settings"
 msgstr "Управление настройками"
 
-#: src/Presentation/Rest/RestApi.php:452
+#: src/Presentation/Rest/RestApi.php:495
 #: build/index.js:25
 msgid "Delete history"
 msgstr "Удаление истории"
 
-#: src/Presentation/Rest/RestApi.php:453
+#: src/Presentation/Rest/RestApi.php:496
 msgid "Export history"
 msgstr "Экспорт истории"
+
+#: build/commands.js:1
+msgid "Selective Undo: change history"
+msgstr "Selective Undo: журнал изменений"
+
+#: build/commands.js:1
+msgid "Selective Undo: restores"
+msgstr "Selective Undo: восстановления"
+
+#: build/commands.js:1
+msgid "Undo my last change"
+msgstr "Отменить мою последнюю правку"
+
+#: build/commands.js:1
+msgid "You made no changes in the last 10 minutes."
+msgstr "За последние 10 минут ваших правок нет."
+
+#. translators: 1: changed fields, e.g. "Title", 2: post title.
+#: build/commands.js:2
+#: build/list.js:2
+#, js-format
+msgid "%1$s of “%2$s” changed."
+msgstr "Изменено: %1$s — «%2$s»."
+
+#. translators: %d: number of items.
+#: build/commands.js:3
+#: build/list.js:3
+#, js-format
+msgid "Changes of %d item saved."
+msgid_plural "Changes of %d items saved."
+msgstr[0] "Сохранены изменения %d записи."
+msgstr[1] "Сохранены изменения %d записей."
+msgstr[2] "Сохранены изменения %d записей."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Undo"
+msgstr "Отменить"
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Undone."
+msgstr "Отменено."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Partly undone."
+msgstr "Отменено частично."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Reload the page"
+msgstr "Обновить страницу"
+
+#: build/commands.js:3
+#: build/index.js:15
+#: build/list.js:3
+msgid "Details"
+msgstr "Подробнее"
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "The change was undone."
+msgstr "Изменение отменено."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "The change was partly undone."
+msgstr "Изменение отменено частично."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "There is nothing left to undo: the values are already back."
+msgstr "Отменять нечего: прежние значения уже на месте."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Some of these fields were changed again since. Review before undoing."
+msgstr "Некоторые из этих полей с тех пор снова менялись. Проверьте перед отменой."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Review undo"
+msgstr "Проверить отмену"
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Could not undo. Open the history to try again."
+msgstr "Не удалось отменить. Откройте журнал и попробуйте ещё раз."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Dismiss this notice."
+msgstr "Скрыть это уведомление."
+
+#: build/commands.js:3
+msgid "Your last change was undone. Reload the page to see it."
+msgstr "Ваша последняя правка отменена. Обновите страницу, чтобы увидеть результат."
+
+#: build/commands.js:3
+msgid "There is nothing left to undo."
+msgstr "Отменять нечего."
 
 #: build/editor.js:1
 #: build/index.js:3
@@ -576,13 +751,6 @@ msgstr "Загрузка…"
 #: build/index.js:18
 msgid "No changes recorded yet."
 msgstr "Изменений пока нет."
-
-#: build/editor.js:1
-#: build/index.js:16
-#: build/index.js:18
-#: build/index.js:19
-msgid "System"
-msgstr "Система"
 
 #: build/editor.js:1
 msgid "Compare and undo changes"
@@ -1082,10 +1250,6 @@ msgid "The history has gaps in the last 24 hours."
 msgstr "За последние 24 часа в истории есть пробелы."
 
 #: build/index.js:15
-msgid "Details"
-msgstr "Подробнее"
-
-#: build/index.js:15
 msgid "The history is almost at its size limit. The oldest history will be removed or recording will pause."
 msgstr "История почти достигла лимита объёма. Самая старая история будет удалена, или журнал приостановится."
 
@@ -1157,10 +1321,6 @@ msgstr "Загрузка сравнения…"
 #: build/index.js:16
 msgid "in trash"
 msgstr "в корзине"
-
-#: build/index.js:16
-msgid "History of this item"
-msgstr "История этой записи"
 
 #: build/index.js:16
 #: build/index.js:19

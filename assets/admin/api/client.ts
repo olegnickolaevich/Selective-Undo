@@ -13,6 +13,7 @@ import type {
 	Page,
 	PlanSelection,
 	PurgePreview,
+	QuickUndoResult,
 	RestoreJob,
 	RestorePlan,
 	Settings,
@@ -103,6 +104,15 @@ export const api = {
 		),
 	changeDiff: ( changeId: number, offset = 0, signal?: AbortSignal ) =>
 		get< DiffChunk >( `/changes/${ changeId }/diff`, { offset }, signal ),
+	recentChangesets: ( within: number, objectId?: number ) =>
+		get< Page< ChangesetSummary > >( '/me/recent-changesets', {
+			within,
+			object_id: objectId,
+		} ),
+	quickUndo: ( changesetId: Uuid, idempotencyKey: Uuid ) =>
+		post< QuickUndoResult >( `/changesets/${ changesetId }/undo`, {
+			idempotency_key: idempotencyKey,
+		} ),
 	createPlan: ( selection: PlanSelection ) =>
 		post< RestorePlan >( '/restore-plans', { selection } ),
 	plan: ( id: Uuid, signal?: AbortSignal ) =>

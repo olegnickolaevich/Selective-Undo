@@ -60,6 +60,31 @@ final class DiffService
     }
 
     /**
+     * Values before and after one change of a text field, for the front-end highlight.
+     * Null when the change is unknown, not visible to the user, or not text.
+     *
+     * @return array{object_id: int, field: string, before: string, after: string}|null
+     */
+    public function changeValues(int $changeId, int $userId): ?array
+    {
+        $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
+
+        if ($row === null || (string) $row['field_key'] === ''
+            || !user_can($userId, 'sundo_view_object_history', (int) $row['object_id'], (string) $row['object_subtype'])) {
+            return null;
+        }
+
+        $before = $this->value($row['before_blob_id'], $row['before_hash'])?->value;
+        $after = $this->value($row['after_blob_id'], $row['after_hash'])?->value;
+
+        if (!is_string($before) || !is_string($after)) {
+            return null;
+        }
+
+        return ['object_id' => (int) $row['object_id'], 'field' => (string) $row['field_key'], 'before' => $before, 'after' => $after];
+    }
+
+    /**
      * @param 'current_target'|'conflict' $view
      *
      * @return array<string, mixed>

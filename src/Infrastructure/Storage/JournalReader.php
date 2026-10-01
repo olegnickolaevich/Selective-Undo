@@ -135,4 +135,71 @@ final class JournalReader
             $sinceUtc
         )) !== null;
     }
+
+    /**
+     * The latest recorded change of each post, for list screens: one query for all rows.
+     *
+     * @param list<int> $postIds
+     *
+     * @return array<int, array{id: int, field_key: string, event: string, created_at: string, actor: int|null}>
+     */
+    public function latestChangeOfPosts(array $postIds): array
+    {
+        if ($postIds === []) {
+            return [];
+        }
+
+        $rows = $this->db->get_results($this->db->prepare(
+            "SELECT c.id, c.object_id, c.field_key, c.event, c.created_at, cs.actor_user_id
+             FROM {$this->t->changes} c JOIN {$this->t->changesets} cs ON cs.id = c.changeset_id
+             WHERE c.id IN (
+               SELECT MAX(id) FROM {$this->t->changes}
+               WHERE object_type = 'post' AND object_id IN (" . implode(', ', array_fill(0, count($postIds), '%d')) . ')
+               GROUP BY object_id
+             )',
+            ...$postIds
+        ), ARRAY_A);
+        $out = [];
+
+        foreach ((array) $rows as $row) {
+            $out[(int) $row['object_id']] = [
+                'id' => (int) $row['id'],
+                'field_key' => (string) $row['field_key'],
+                'event' => (string) $row['event'],
+                'created_at' => (string) $row['created_at'],
+                'actor' => $row['actor_user_id'] === null ? null : (int) $row['actor_user_id'],
+            ];
+        }
+
+        return $out;
+    }
+
+    /**
+     * The latest recorded change of a field of an object (not informational events).
+     *
+     * @return array{id: int, field_key: string, created_at: string, actor: int|null, changeset: string}|null
+     */
+    public function latestFieldChange(string $objectType, int $objectId): ?array
+    {
+        $row = $this->db->get_row($this->db->prepare(
+            "SELECT c.id, c.field_key, c.created_at, cs.actor_user_id, cs.uuid
+             FROM {$this->t->changes} c JOIN {$this->t->changesets} cs ON cs.id = c.changeset_id
+             WHERE c.object_type = %s AND c.object_id = %d AND c.field_key <> ''
+             ORDER BY c.id DESC LIMIT 1",
+            $objectType,
+            $objectId
+        ), ARRAY_A);
+
+        if (!is_array($row)) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $row['id'],
+            'field_key' => (string) $row['field_key'],
+            'created_at' => (string) $row['created_at'],
+            'actor' => $row['actor_user_id'] === null ? null : (int) $row['actor_user_id'],
+            'changeset' => (string) $row['uuid'],
+        ];
+    }
 }

@@ -54,6 +54,13 @@ final class RestApi
             'search' => ['type' => 'string', 'maxLength' => 100],
         ]);
         $this->route('/changesets/(?P<id>' . self::UUID . ')', 'GET', $view, [$this, 'getChangeset']);
+        $this->route('/changesets/(?P<id>' . self::UUID . ')/undo', 'POST', $restore, [$this, 'quickUndo'], [
+            'idempotency_key' => ['type' => 'string', 'required' => true, 'format' => 'uuid'],
+        ]);
+        $this->route('/me/recent-changesets', 'GET', $view, [$this, 'recentChangesets'], [
+            'within' => ['type' => 'integer', 'minimum' => 10, 'maximum' => 600, 'default' => 120],
+            'object_id' => ['type' => 'integer', 'minimum' => 1],
+        ]);
         $this->route('/objects/post/(?P<id>\d+)/changes', 'GET', $view, [$this, 'objectTimeline'], ['cursor' => $cursor, 'limit' => $limit]);
         $this->route('/changes/(?P<id>\d+)/diff', 'GET', $view, [$this, 'changeDiff'], ['offset' => $offset]);
         $this->route('/gaps', 'GET', $view, [$this, 'gaps'], ['limit' => $limit]);
@@ -232,6 +239,43 @@ final class RestApi
             $uuid = $this->s->buildPlan()->handle(get_current_user_id(), $this->selection((array) $r->get_param('selection')));
 
             return new \WP_REST_Response($this->s->planView()->forUser($uuid, get_current_user_id()), 201);
+        });
+    }
+
+    /**
+     * Undo of a whole operation without a preview when it is small and conflict free;
+     * otherwise the response points to the preview.
+     */
+    public function quickUndo(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
+    {
+        return $this->errors->run(fn () => $this->s->quickUndo()->handle(
+            get_current_user_id(),
+            (string) $r['id'],
+            (string) $r->get_param('idempotency_key')
+        ));
+    }
+
+    /**
+     * Operations of the current user in the last N seconds, for the "Undo" notice
+     * and the "Undo my last change" command. Only the viewer's own operations.
+     */
+    public function recentChangesets(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
+    {
+        return $this->errors->run(function () use ($r): array {
+            $filters = [
+                'actor' => get_current_user_id(),
+                'from' => gmdate('Y-m-d\\TH:i:s\\Z', time() - (int) $r->get_param('within')),
+            ];
+
+            if ($r->get_param('object_id')) {
+                $filters['object_id'] = (int) $r->get_param('object_id');
+            }
+
+            $page = $this->s->history()->list(get_current_user_id(), $filters, null, 5);
+            // Undoing an undo is done from the history, not from a notice.
+            $page['items'] = array_values(array_filter($page['items'], static fn (array $cs): bool => $cs['kind'] !== 'restore'));
+
+            return $page;
         });
     }
 

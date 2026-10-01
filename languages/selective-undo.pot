@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-29T08:00:49+00:00\n"
+"POT-Creation-Date: 2026-10-01T16:21:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -255,26 +255,27 @@ msgstr ""
 msgid "After"
 msgstr ""
 
-#: src/Application/History/DiffService.php:72
+#: src/Application/History/DiffService.php:97
 #: src/Application/Restore/CreateRestoreJob.php:54
-#: src/Presentation/Rest/RestApi.php:242
+#: src/Application/Restore/QuickUndo.php:55
+#: src/Presentation/Rest/RestApi.php:285
 msgid "This preview does not exist."
 msgstr ""
 
-#: src/Application/History/DiffService.php:78
+#: src/Application/History/DiffService.php:103
 msgid "Nothing to compare for this item."
 msgstr ""
 
-#: src/Application/History/DiffService.php:93
+#: src/Application/History/DiffService.php:118
 msgid "After the selected change"
 msgstr ""
 
-#: src/Application/History/DiffService.php:94
-#: src/Application/History/DiffService.php:103
+#: src/Application/History/DiffService.php:119
+#: src/Application/History/DiffService.php:128
 msgid "Current value"
 msgstr ""
 
-#: src/Application/History/DiffService.php:104
+#: src/Application/History/DiffService.php:129
 msgid "Will be restored"
 msgstr ""
 
@@ -334,46 +335,46 @@ msgid "Restoring is unavailable on this site right now. See Settings → Diagnos
 msgstr ""
 
 #: src/Application/Restore/CreateRestoreJob.php:131
-#: src/Application/Restore/CreateRestoreJob.php:198
+#: src/Application/Restore/CreateRestoreJob.php:210
 msgid "This preview has expired. Check the changes again."
 msgstr ""
 
 #: src/Application/Restore/CreateRestoreJob.php:144
-#: src/Application/Restore/CreateRestoreJob.php:190
+#: src/Application/Restore/CreateRestoreJob.php:202
 #: build/index.js:20
 msgid "This preview has already been used to start a restore."
 msgstr ""
 
-#: src/Application/Restore/CreateRestoreJob.php:173
+#: src/Application/Restore/CreateRestoreJob.php:185
 msgid "This request key was already used for another restore."
 msgstr ""
 
-#: src/Application/Restore/CreateRestoreJob.php:202
+#: src/Application/Restore/CreateRestoreJob.php:214
 #: build/index.js:21
 msgid "Nothing in this preview can be restored."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:65
+#: src/Application/Retention/PurgeService.php:67
 msgid "Type DELETE to confirm."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:145
+#: src/Application/Retention/PurgeService.php:147
 msgid "Choose an item."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:148
+#: src/Application/Retention/PurgeService.php:150
 msgid "Choose a valid date."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:150
+#: src/Application/Retention/PurgeService.php:152
 msgid "Unknown deletion scope."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:188
+#: src/Application/Retention/PurgeService.php:190
 msgid "The deletion preview is invalid. Preview again."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:194
+#: src/Application/Retention/PurgeService.php:196
 msgid "The deletion preview has expired. Preview again."
 msgstr ""
 
@@ -383,15 +384,15 @@ msgstr ""
 msgid "Deleted user #%d"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:79
+#: src/Bootstrap/Plugin.php:85
 msgid "Every five minutes (Selective Undo)"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:138
+#: src/Bootstrap/Plugin.php:144
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:139
+#: src/Bootstrap/Plugin.php:145
 msgid "Plugin activation"
 msgstr ""
 
@@ -490,6 +491,77 @@ msgstr ""
 msgid "Change history"
 msgstr ""
 
+#: src/Presentation/Admin/LastChangeColumn.php:43
+msgid "Last change"
+msgstr ""
+
+#: src/Presentation/Admin/LastChangeColumn.php:58
+msgid "No recorded changes"
+msgstr ""
+
+#: src/Presentation/Admin/LastChangeColumn.php:65
+#: build/editor.js:1
+#: build/index.js:16
+#: build/index.js:18
+#: build/index.js:19
+msgid "System"
+msgstr ""
+
+#. translators: %s: time difference, e.g. "2 hours".
+#: src/Presentation/Admin/LastChangeColumn.php:67
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#. translators: %s: time difference, e.g. "2 hours".
+#: src/Presentation/Frontend/ChangeIndicator.php:79
+#, php-format
+msgid "Changed %s ago"
+msgstr ""
+
+#: src/Presentation/Frontend/ChangeIndicator.php:87
+msgid "Show the latest change on this page"
+msgstr ""
+
+#: src/Presentation/Frontend/ChangeIndicator.php:93
+#: build/index.js:16
+msgid "History of this item"
+msgstr ""
+
+#: src/Presentation/Frontend/ChangeIndicator.php:102
+msgid "Undo the latest change…"
+msgstr ""
+
+#. translators: %s: field name, e.g. "Title".
+#: src/Presentation/Frontend/ChangeIndicator.php:236
+#, php-format
+msgid "This change edited the %s, which is not outlined on the page."
+msgstr ""
+
+#: src/Presentation/Frontend/ChangeIndicator.php:239
+msgid "This content is not made of blocks, so the changed parts cannot be outlined."
+msgstr ""
+
+#: src/Presentation/Frontend/ChangeIndicator.php:240
+msgid "The text written by this change is no longer on the page."
+msgstr ""
+
+#. translators: %d: number of outlined blocks.
+#: src/Presentation/Frontend/ChangeIndicator.php:243
+#, php-format
+msgid "%d block changed by this edit is outlined."
+msgid_plural "%d blocks changed by this edit are outlined."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Presentation/Frontend/ChangeIndicator.php:249
+msgid "The content was changed again after this edit."
+msgstr ""
+
+#: src/Presentation/Frontend/ChangeIndicator.php:260
+msgid "Hide"
+msgstr ""
+
 #: src/Presentation/Rest/ErrorMapper.php:37
 msgid "The history storage is temporarily unavailable."
 msgstr ""
@@ -498,34 +570,135 @@ msgstr ""
 msgid "Something went wrong. The details were written to the Selective Undo diagnostics log."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:299
-#: src/Presentation/Rest/RestApi.php:467
+#: src/Presentation/Rest/RestApi.php:342
+#: src/Presentation/Rest/RestApi.php:510
 msgid "This restore does not exist."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:336
+#: src/Presentation/Rest/RestApi.php:379
 msgid "Only the author of a restore can continue it."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:449
+#: src/Presentation/Rest/RestApi.php:492
 msgid "View history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:450
+#: src/Presentation/Rest/RestApi.php:493
 msgid "Restore changes"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:451
+#: src/Presentation/Rest/RestApi.php:494
 msgid "Manage settings"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:452
+#: src/Presentation/Rest/RestApi.php:495
 #: build/index.js:25
 msgid "Delete history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:453
+#: src/Presentation/Rest/RestApi.php:496
 msgid "Export history"
+msgstr ""
+
+#: build/commands.js:1
+msgid "Selective Undo: change history"
+msgstr ""
+
+#: build/commands.js:1
+msgid "Selective Undo: restores"
+msgstr ""
+
+#: build/commands.js:1
+msgid "Undo my last change"
+msgstr ""
+
+#: build/commands.js:1
+msgid "You made no changes in the last 10 minutes."
+msgstr ""
+
+#. translators: 1: changed fields, e.g. "Title", 2: post title.
+#: build/commands.js:2
+#: build/list.js:2
+#, js-format
+msgid "%1$s of “%2$s” changed."
+msgstr ""
+
+#. translators: %d: number of items.
+#: build/commands.js:3
+#: build/list.js:3
+#, js-format
+msgid "Changes of %d item saved."
+msgid_plural "Changes of %d items saved."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Undo"
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Undone."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Partly undone."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Reload the page"
+msgstr ""
+
+#: build/commands.js:3
+#: build/index.js:15
+#: build/list.js:3
+msgid "Details"
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "The change was undone."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "The change was partly undone."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "There is nothing left to undo: the values are already back."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Some of these fields were changed again since. Review before undoing."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Review undo"
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Could not undo. Open the history to try again."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Dismiss this notice."
+msgstr ""
+
+#: build/commands.js:3
+msgid "Your last change was undone. Reload the page to see it."
+msgstr ""
+
+#: build/commands.js:3
+msgid "There is nothing left to undo."
 msgstr ""
 
 #: build/editor.js:1
@@ -571,13 +744,6 @@ msgstr ""
 #: build/editor.js:1
 #: build/index.js:18
 msgid "No changes recorded yet."
-msgstr ""
-
-#: build/editor.js:1
-#: build/index.js:16
-#: build/index.js:18
-#: build/index.js:19
-msgid "System"
 msgstr ""
 
 #: build/editor.js:1
@@ -1074,10 +1240,6 @@ msgid "The history has gaps in the last 24 hours."
 msgstr ""
 
 #: build/index.js:15
-msgid "Details"
-msgstr ""
-
-#: build/index.js:15
 msgid "The history is almost at its size limit. The oldest history will be removed or recording will pause."
 msgstr ""
 
@@ -1147,10 +1309,6 @@ msgstr ""
 
 #: build/index.js:16
 msgid "in trash"
-msgstr ""
-
-#: build/index.js:16
-msgid "History of this item"
 msgstr ""
 
 #: build/index.js:16

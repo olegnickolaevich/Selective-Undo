@@ -15,15 +15,34 @@ final class RevisionImportTest extends IntegrationTestCase
     /** @var list<int> */
     private array $created = [];
 
+    private const TYPE = 'su_import_test';
+
     public function setUp(): void
     {
         parent::setUp();
         $this->since = get_option(RevisionImporter::SINCE_OPTION);
+        // Only this test's items are candidates, however much else the test site holds.
+        register_post_type(self::TYPE, ['public' => true, 'capability_type' => 'page', 'map_meta_cap' => true, 'supports' => ['title', 'editor', 'excerpt', 'revisions']]);
+        add_filter('selective_undo/tracked_post_types', [$this, 'trackOnlyTestType']);
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function trackOnlyTestType(): array
+    {
+        return [self::TYPE];
+    }
+
+    protected function createPost(array $args = []): int
+    {
+        return parent::createPost(['post_type' => self::TYPE] + $args);
     }
 
     public function tearDown(): void
     {
         parent::tearDown();
+        remove_filter('selective_undo/tracked_post_types', [$this, 'trackOnlyTestType']);
 
         // Their shifted revisions would be imported again by the next test.
         foreach ($this->created as $id) {
@@ -146,8 +165,7 @@ final class RevisionImportTest extends IntegrationTestCase
     }
 
     /**
-     * Moves the item's revisions five days back and starts recording right after
-     * them. Revisions of other pages on the test site stay after that moment.
+     * Moves the item's revisions five days back and starts recording right after them.
      */
     private function pretendRecordingStartedAfter(int $id): void
     {
