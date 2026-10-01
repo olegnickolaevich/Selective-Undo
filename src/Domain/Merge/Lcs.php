@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+/**
+ * Alignment of two token lists: Myers' O((N+M)·D) algorithm after trimming the
+ * common prefix and suffix.
+ */
 final class Lcs
 {
     /** Documents needing more edits than this are not aligned (merge falls back to the whole field). */

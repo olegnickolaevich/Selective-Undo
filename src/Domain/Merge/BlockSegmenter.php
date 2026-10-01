@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+/**
+ * Splits serialized block markup into top-level segments without reserializing,
+ * so the concatenation of the segments is byte-for-byte the input.
+ */
 final class BlockSegmenter
 {
     /** Same delimiter grammar as WP_Block_Parser::next_token(). */

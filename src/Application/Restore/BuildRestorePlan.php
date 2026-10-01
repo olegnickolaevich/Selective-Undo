@@ -9,8 +9,10 @@ namespace SelectiveUndo\Application\Restore;
 use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Domain\Contracts\MergeableAdapter;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
 use SelectiveUndo\Domain\DomainError;
+use SelectiveUndo\Domain\Merge\MergeStrategy;
 use SelectiveUndo\Domain\Restore\ChainResolver;
 use SelectiveUndo\Domain\Restore\ChangeLink;
 use SelectiveUndo\Domain\Restore\ItemFacts;
@@ -27,6 +29,12 @@ use SelectiveUndo\Infrastructure\Storage\PlanRepository;
  * Builds an immutable restore plan (the preview).
  *
  * The client sends change IDs only; targets always come from the server-side journal.
+ *
+ * @phpstan-type PlanItemRow array{object_type: string, object_subtype: string, object_id: int, adapter_key: string,
+ *               adapter_version: int, field_key: string, first_change_id: int, last_change_id: int,
+ *               chain_length: int, expected_hash: string|null, target_hash: string|null,
+ *               target_blob_id: int|null, status: string, reason_code: string|null, warnings: list<string>,
+ *               merge_state?: string|null}
  */
 final class BuildRestorePlan
 {
@@ -43,11 +51,14 @@ final class BuildRestorePlan
         private readonly ChainResolver $chains,
         private readonly PlanItemEvaluator $evaluator,
         private readonly RestorePreconditions $preconditions,
+        private readonly FieldMerger $merger = new FieldMerger(),
     ) {
     }
 
     /**
-     * @param array{type: string, change_ids?: list<int>, changeset_id?: string, fields?: list<string>, object_ids?: list<int>} $selection
+     * @param array{type: string, change_ids?: list<int>, changeset_id?: string, fields?: list<string>, object_ids?: list<int>,
+     *              resolutions?: array<string, array<int, 'current'|'restored'>>} $selection Resolutions: decisions per merge
+     *              conflict, keyed "<object type>:<object id>:<field>".
      *
      * @return string Plan UUID.
      *
@@ -68,7 +79,7 @@ final class BuildRestorePlan
 
         try {
             foreach ($groups as $group) {
-                $item = $this->evaluateGroup($userId, $group, $snapshots);
+                $item = $this->evaluateGroup($userId, $group, $snapshots, $selection['resolutions'] ?? []);
                 $this->plans->addItem($plan['id'], $item, $group['change_ids']);
                 $counts['item_count']++;
                 $counts['ready_count'] += $item['status'] === PlanItemStatus::Ready->value ? 1 : 0;
@@ -238,13 +249,11 @@ final class BuildRestorePlan
     /**
      * @param array{object: ObjectRef, adapter_key: string, adapter_version: int, field: string, rows: list<array<string, mixed>>, change_ids: list<int>} $group
      * @param array<string, ObjectSnapshot|null> $snapshots
+     * @param array<string, array<int, 'current'|'restored'>> $resolutions
      *
-     * @return array{object_type: string, object_subtype: string, object_id: int, adapter_key: string,
-     *               adapter_version: int, field_key: string, first_change_id: int, last_change_id: int,
-     *               chain_length: int, expected_hash: string|null, target_hash: string|null,
-     *               target_blob_id: int|null, status: string, reason_code: string|null, warnings: list<string>}
+     * @return PlanItemRow
      */
-    private function evaluateGroup(int $userId, array $group, array &$snapshots): array
+    private function evaluateGroup(int $userId, array $group, array &$snapshots, array $resolutions = []): array
     {
         $object = $group['object'];
         $field = $group['field'];
@@ -323,6 +332,27 @@ final class BuildRestorePlan
             unsupportedReason: $unsupportedReason,
         ));
 
+        if ($decision->status === PlanItemStatus::Conflict && $decision->reasonCode === 'current_value_changed'
+            && $chain instanceof ResolvedChain && $target !== null && $snapshot !== null
+            && $adapter instanceof MergeableAdapter && $adapter->mergeStrategy($field) !== MergeStrategy::Replace
+        ) {
+            $merged = $this->tryMerge(
+                $userId,
+                $adapter,
+                $object,
+                $field,
+                $group,
+                $chain,
+                $target,
+                $snapshot,
+                $resolutions[$object->type . ':' . $object->id . ':' . $field] ?? []
+            );
+
+            if ($merged !== null) {
+                return $merged;
+            }
+        }
+
         $finalWarnings = $decision->warnings;
 
         if ($chain instanceof ResolvedChain && $decision->status === PlanItemStatus::Ready) {
@@ -338,6 +368,28 @@ final class BuildRestorePlan
             }
         }
 
+        return $this->itemSkeleton($object, $group, $field) + [
+            'expected_hash' => $chain instanceof ResolvedChain ? $chain->expectedHash : null,
+            'target_hash' => $chain instanceof ResolvedChain ? $chain->targetHash : null,
+            'target_blob_id' => $chain instanceof ResolvedChain ? $targetBlobId : null,
+            'status' => $decision->status->value,
+            'reason_code' => $decision->reasonCode,
+            'warnings' => array_values(array_unique($finalWarnings)),
+        ];
+    }
+
+    /**
+     * The part of a plan item that does not depend on the evaluation.
+     *
+     * @param array{adapter_key: string, adapter_version: int, change_ids: list<int>} $group
+     *
+     * @return array{object_type: string, object_subtype: string, object_id: int, adapter_key: string,
+     *               adapter_version: int, field_key: string, first_change_id: int, last_change_id: int, chain_length: int}
+     */
+    private function itemSkeleton(ObjectRef $object, array $group, string $field): array
+    {
+        $ids = $group['change_ids'];
+
         return [
             'object_type' => $object->type,
             'object_subtype' => $object->subtype,
@@ -348,13 +400,115 @@ final class BuildRestorePlan
             'first_change_id' => $ids[0],
             'last_change_id' => $ids[count($ids) - 1],
             'chain_length' => count($ids),
-            'expected_hash' => $chain instanceof ResolvedChain ? $chain->expectedHash : null,
-            'target_hash' => $chain instanceof ResolvedChain ? $chain->targetHash : null,
-            'target_blob_id' => $chain instanceof ResolvedChain ? $targetBlobId : null,
-            'status' => $decision->status->value,
-            'reason_code' => $decision->reasonCode,
-            'warnings' => array_values(array_unique($finalWarnings)),
         ];
+    }
+
+    /**
+     * The field changed again after the selected changes: undo only their effect and
+     * keep the later edits of other parts. Base is the value after the last selected
+     * change, "restored" the target of the chain, "current" the value now.
+     *
+     * @param array{adapter_key: string, adapter_version: int, change_ids: list<int>, rows: list<array<string, mixed>>} $group
+     * @param array<int, 'current'|'restored'> $resolutions
+     *
+     * @return PlanItemRow|null A plan item, or null to keep the plain conflict.
+     */
+    private function tryMerge(
+        int $userId,
+        AdapterInterface&MergeableAdapter $adapter,
+        ObjectRef $object,
+        string $field,
+        array $group,
+        ResolvedChain $chain,
+        FieldValue $target,
+        ObjectSnapshot $snapshot,
+        array $resolutions,
+    ): ?array {
+        $expectedRow = $this->rowById($group['rows'], $chain->expectedChangeId);
+
+        try {
+            $base = $this->blobs->loadVerified((int) $expectedRow['after_blob_id'], $chain->expectedHash);
+        } catch (InvalidPayload) {
+            return null;
+        }
+
+        $strategy = $adapter->mergeStrategy($field);
+        $current = $snapshot->field($field);
+        $outcome = $this->merger->undo($strategy, $base, $current, $target, $resolutions);
+        $item = $this->itemSkeleton($object, $group, $field) + ['warnings' => [], 'merge_state' => null];
+        $merged = $outcome->value;
+
+        if ($merged === null) {
+            // Not mergeable (too different, wrong type): the plain conflict stays.
+            return null;
+        }
+
+        if (!$outcome->isClean()) {
+            return [
+                'status' => PlanItemStatus::Conflict->value,
+                'reason_code' => 'merge_conflict',
+                'expected_hash' => $current->hash(),
+                'target_hash' => null,
+                'target_blob_id' => null,
+                'merge_state' => self::mergeState($strategy, $outcome->conflicts, count($resolutions)),
+            ] + $item;
+        }
+
+        if ($merged->equals($current)) {
+            return [
+                'status' => PlanItemStatus::AlreadyRestored->value,
+                'reason_code' => null,
+                'expected_hash' => $current->hash(),
+                'target_hash' => $current->hash(),
+                'target_blob_id' => null,
+            ] + $item;
+        }
+
+        // The merged value is a new target: it passes the same checks (kses, site rules).
+        $blocking = $this->blockingReasons($adapter, $userId, $object, $field, $snapshot, $merged);
+
+        if ($blocking !== []) {
+            return [
+                'status' => PlanItemStatus::Blocked->value,
+                'reason_code' => $blocking[0],
+                'expected_hash' => $current->hash(),
+                'target_hash' => $merged->hash(),
+                'target_blob_id' => null,
+            ] + $item;
+        }
+
+        return [
+            'status' => PlanItemStatus::Ready->value,
+            'reason_code' => null,
+            'expected_hash' => $current->hash(),
+            'target_hash' => $merged->hash(),
+            'target_blob_id' => $this->blobs->put($merged)['id'],
+            'warnings' => array_values(array_unique([
+                ...$adapter->warnings($snapshot, [$field], $userId),
+                $resolutions === [] ? 'merged_with_later_changes' : 'merge_conflicts_resolved',
+            ])),
+            'merge_state' => self::mergeState($strategy, [], count($resolutions)),
+        ] + $item;
+    }
+
+    /**
+     * Stored with the plan item. Conflict texts are not stored: they are recomputed
+     * on request from the journal, and the hashes prove they did not change.
+     *
+     * @param list<array{index: int, label: string, current: string, restored: string}> $conflicts
+     */
+    private static function mergeState(MergeStrategy $strategy, array $conflicts, int $resolved): string
+    {
+        return (string) wp_json_encode([
+            'strategy' => $strategy->value,
+            'conflicts' => array_map(static fn (array $c): array => [
+                'index' => $c['index'],
+                'label' => $c['label'],
+                'current' => hash('sha256', $c['current']),
+                'restored' => hash('sha256', $c['restored']),
+            ], $conflicts),
+            'resolved' => $resolved,
+        ]);
     }
 
     /**

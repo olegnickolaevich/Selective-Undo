@@ -5,6 +5,7 @@ import { speak } from '@wordpress/a11y';
 import { ApiError, api } from '../api/client';
 import type { PlanItem, RestorePlan, Uuid } from '../api/types';
 import { DiffLoader } from '../components/DiffViewer';
+import { MergeConflicts } from '../components/MergeConflicts';
 import { ErrorNotice, Loading, errorMessage } from '../components/Feedback';
 import { ObjectTitle } from '../components/ObjectTitle';
 import { StatusBadge } from '../components/StatusBadge';
@@ -22,15 +23,16 @@ import {
 import { navigate } from '../lib/router';
 
 function Item( { plan, item }: { plan: RestorePlan; item: PlanItem } ) {
-	const [ view, setView ] = useState< null | 'current_target' | 'conflict' >(
-		null
-	);
+	const [ view, setView ] = useState<
+		null | 'current_target' | 'conflict' | 'choose'
+	>( null );
+	const conflicts = item.merge?.conflicts.length ?? 0;
 	const load = useCallback(
 		( offset: number, signal?: AbortSignal ) =>
 			api.planItemDiff(
 				plan.id,
 				item.id,
-				view ?? 'current_target',
+				view === 'conflict' ? 'conflict' : 'current_target',
 				offset,
 				signal
 			),
@@ -92,6 +94,29 @@ function Item( { plan, item }: { plan: RestorePlan; item: PlanItem } ) {
 							'selective-undo'
 						) }
 					</Button>
+					{ item.reason_code === 'merge_conflict' &&
+						conflicts > 0 && (
+							<Button
+								variant="link"
+								aria-expanded={ view === 'choose' }
+								onClick={ () =>
+									setView(
+										view === 'choose' ? null : 'choose'
+									)
+								}
+							>
+								{ sprintf(
+									/* translators: %d: number of parts changed twice. */
+									_n(
+										'Choose what to keep (%d part)',
+										'Choose what to keep (%d parts)',
+										conflicts,
+										'selective-undo'
+									),
+									conflicts
+								) }
+							</Button>
+						) }
 					{ item.status === 'conflict' && (
 						<Button
 							variant="link"
@@ -107,7 +132,12 @@ function Item( { plan, item }: { plan: RestorePlan; item: PlanItem } ) {
 					) }
 				</div>
 			) }
-			{ view && <DiffLoader load={ load } /> }
+			{ view === 'choose' && (
+				<MergeConflicts plan={ plan } item={ item } />
+			) }
+			{ ( view === 'current_target' || view === 'conflict' ) && (
+				<DiffLoader load={ load } />
+			) }
 		</li>
 	);
 }

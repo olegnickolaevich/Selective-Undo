@@ -8,6 +8,7 @@ import type {
 	Gap,
 	HealthCheck,
 	JobItem,
+	MergeConflictText,
 	ObjectTimeline,
 	Overview,
 	Page,
@@ -117,6 +118,12 @@ export const api = {
 		post< RestorePlan >( '/restore-plans', { selection } ),
 	plan: ( id: Uuid, signal?: AbortSignal ) =>
 		get< RestorePlan >( `/restore-plans/${ id }`, {}, signal ),
+	planItemConflicts: ( planId: Uuid, itemId: number, signal?: AbortSignal ) =>
+		get< { items: MergeConflictText[] } >(
+			`/restore-plans/${ planId }/items/${ itemId }/conflicts`,
+			{},
+			signal
+		),
 	planItemDiff: (
 		planId: Uuid,
 		itemId: number,

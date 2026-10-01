@@ -21,6 +21,7 @@ use SelectiveUndo\Application\Restore\BuildRestorePlan;
 use SelectiveUndo\Application\Restore\CreateRestoreJob;
 use SelectiveUndo\Application\Restore\ExecuteRestoreJob;
 use SelectiveUndo\Application\Restore\JobView;
+use SelectiveUndo\Application\Restore\MergeView;
 use SelectiveUndo\Application\Restore\PlanView;
 use SelectiveUndo\Application\Restore\PostRestoreHandler;
 use SelectiveUndo\Application\Restore\QuickUndo;
@@ -372,6 +373,11 @@ final class Services
             $this->jobView(),
             $this->jobs(),
         ));
+    }
+
+    public function mergeView(): MergeView
+    {
+        return $this->get(MergeView::class, fn () => new MergeView($this->plans(), $this->journalReader(), $this->blobs(), $this->adapters()));
     }
 
     public function objectPresenter(): ObjectPresenter

@@ -18,6 +18,10 @@ export function reasonText( code: string | null ): string {
 	}
 
 	const map: Record< string, string > = {
+		merge_conflict: __(
+			'Some parts were changed again after this change. Choose what to keep for them.',
+			'selective-undo'
+		),
 		current_value_changed: __(
 			'This field was changed again after the selected change. It is skipped so that the newer version is not lost.',
 			'selective-undo'
@@ -158,6 +162,14 @@ export function warningText( code: string ): string {
 		),
 		later_changes_exist: __(
 			'This field was changed later and then returned to the same value.',
+			'selective-undo'
+		),
+		merged_with_later_changes: __(
+			'The field was changed again later. Only this change is undone; the later edits of other parts are kept.',
+			'selective-undo'
+		),
+		merge_conflicts_resolved: __(
+			'Your choices for the parts changed twice are applied; the other later edits are kept.',
 			'selective-undo'
 		),
 		post_locked: __(

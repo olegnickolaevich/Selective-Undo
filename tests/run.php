@@ -47,6 +47,8 @@ if ($suite === 'integration' || $suite === 'all') {
     $_SERVER['REQUEST_URI'] = '/';
     $_SERVER['SERVER_NAME'] = '127.0.0.1';
     require $site . '/wp-load.php';
+    // Like the first admin request after a plugin update: bring the schema up to date.
+    SelectiveUndo\Bootstrap\Plugin::services()->schema()->migrate();
     require_once __DIR__ . '/lib/IntegrationTestCase.php';
     echo "\nIntegration tests (WordPress " . get_bloginfo('version') . ")\n";
     $runner->runDirectory(__DIR__ . '/integration');

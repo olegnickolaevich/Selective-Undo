@@ -148,6 +148,25 @@ export interface PlanItem {
 	status: PlanItemStatus;
 	reason_code: string | null;
 	warnings: string[];
+	merge: PlanItemMerge | null;
+}
+
+/** Undo of a change that keeps later edits of other parts of the field. */
+export interface PlanItemMerge {
+	strategy: 'segments' | 'set' | 'keys';
+	conflicts: Array< { index: number; label: string } >;
+	resolved: number;
+}
+
+export type ConflictSide = 'current' | 'restored';
+
+export interface MergeConflictText {
+	index: number;
+	label: string;
+	current_html: string;
+	restored_html: string;
+	current_text: string;
+	restored_text: string;
 }
 
 export interface PlanSummary {
@@ -162,14 +181,18 @@ export interface PlanSummary {
 	forbidden: number;
 }
 
-export type PlanSelection =
+/** Decisions per merge conflict, keyed "<object type>:<object id>:<field>". */
+export type Resolutions = Record< string, Record< number, ConflictSide > >;
+
+export type PlanSelection = (
 	| { type: 'changes'; change_ids: number[] }
 	| {
 			type: 'changeset';
 			changeset_id: Uuid;
 			fields?: string[];
 			object_ids?: number[];
-	  };
+	  }
+) & { resolutions?: Resolutions };
 
 export interface RestorePlan {
 	id: Uuid;

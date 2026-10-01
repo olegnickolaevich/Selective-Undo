@@ -9,9 +9,11 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterCapabilities;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Domain\Contracts\MergeableAdapter;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 use SelectiveUndo\Domain\Contracts\WallClock;
+use SelectiveUndo\Domain\Merge\MergeStrategy;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 
@@ -20,7 +22,7 @@ use SelectiveUndo\Infrastructure\Database\StorageError;
  * request data. Writes go through a direct, whitelisted UPDATE:
  * wp_update_post() would run arbitrary save hooks inside the restore.
  */
-final class PostFieldsAdapter implements AdapterInterface
+final class PostFieldsAdapter implements AdapterInterface, MergeableAdapter
 {
     public const KEY = 'core/post-fields';
     public const VERSION = 1;
@@ -78,6 +80,12 @@ final class PostFieldsAdapter implements AdapterInterface
             'menu_order' => _x('Order', 'post menu order field', 'selective-undo'),
             default => $fieldKey,
         };
+    }
+
+    /** Content is undone block by block; the other fields as a whole. */
+    public function mergeStrategy(string $fieldKey): MergeStrategy
+    {
+        return $fieldKey === 'post_content' ? MergeStrategy::Segments : MergeStrategy::Replace;
     }
 
     public function capabilities(): AdapterCapabilities

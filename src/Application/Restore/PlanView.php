@@ -63,6 +63,7 @@ final class PlanView
                 'status' => (string) $row['status'],
                 'reason_code' => $row['reason_code'] === null ? null : (string) $row['reason_code'],
                 'warnings' => $row['warnings'] === '' ? [] : explode(',', (string) $row['warnings']),
+                'merge' => self::merge($row['merge_state'] ?? null),
             ];
         }
 
@@ -79,6 +80,29 @@ final class PlanView
             'job_id' => $job !== null ? (string) $job['uuid'] : null,
             // IDs only: lets the UI build a fresh preview when this one expires.
             'selection' => json_decode((string) $plan['selection_json'], true),
+        ];
+    }
+
+    /**
+     * Merge details for the preview: strategy and the conflicts still to decide.
+     *
+     * @return array{strategy: string, conflicts: list<array{index: int, label: string}>, resolved: int}|null
+     */
+    private static function merge(mixed $state): ?array
+    {
+        $data = is_string($state) && $state !== '' ? json_decode($state, true) : null;
+
+        if (!is_array($data)) {
+            return null;
+        }
+
+        return [
+            'strategy' => (string) ($data['strategy'] ?? ''),
+            'conflicts' => array_map(
+                static fn (array $c): array => ['index' => (int) ($c['index'] ?? 0), 'label' => (string) ($c['label'] ?? '')],
+                array_values(array_filter((array) ($data['conflicts'] ?? []), 'is_array'))
+            ),
+            'resolved' => (int) ($data['resolved'] ?? 0),
         ];
     }
 }

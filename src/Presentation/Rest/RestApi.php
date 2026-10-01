@@ -76,11 +76,22 @@ final class RestApi
                     'changeset_id' => ['type' => 'string', 'format' => 'uuid'],
                     'fields' => ['type' => 'array', 'maxItems' => 50, 'items' => ['type' => 'string', 'pattern' => '^[A-Za-z0-9_:./-]{1,191}$']],
                     'object_ids' => ['type' => 'array', 'maxItems' => 500, 'items' => ['type' => 'integer', 'minimum' => 1]],
+                    // Decisions per merge conflict: "post:<id>:<field>" => { "<conflict index>": "current"|"restored" }.
+                    'resolutions' => [
+                        'type' => 'object',
+                        'maxProperties' => 50,
+                        'additionalProperties' => [
+                            'type' => 'object',
+                            'maxProperties' => 500,
+                            'additionalProperties' => ['type' => 'string', 'enum' => ['current', 'restored']],
+                        ],
+                    ],
                 ],
                 'additionalProperties' => false,
             ],
         ]);
         $this->route('/restore-plans/(?P<id>' . self::UUID . ')', 'GET', $restore, [$this, 'getPlan']);
+        $this->route('/restore-plans/(?P<id>' . self::UUID . ')/items/(?P<item>\d+)/conflicts', 'GET', $restore, [$this, 'planItemConflicts']);
         $this->route('/restore-plans/(?P<id>' . self::UUID . ')/items/(?P<item>\d+)/diff', 'GET', $restore, [$this, 'planItemDiff'], [
             'view' => ['type' => 'string', 'enum' => ['current_target', 'conflict'], 'default' => 'current_target'],
             'offset' => $offset,
@@ -283,6 +294,14 @@ final class RestApi
     {
         return $this->errors->run(fn () => $this->s->planView()->forUser((string) $r['id'], get_current_user_id())
             ?? throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'selective-undo')));
+    }
+
+    /**
+     * Both sides of each part that was changed again after the change being undone.
+     */
+    public function planItemConflicts(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
+    {
+        return $this->errors->run(fn () => ['items' => $this->s->mergeView()->conflicts((string) $r['id'], (int) $r['item'], get_current_user_id())]);
     }
 
     public function planItemDiff(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
@@ -529,7 +548,8 @@ final class RestApi
      *
      * @param array<mixed> $raw
      *
-     * @return array{type: string, change_ids?: list<int>, changeset_id?: string, fields?: list<string>, object_ids?: list<int>}
+     * @return array{type: string, change_ids?: list<int>, changeset_id?: string, fields?: list<string>, object_ids?: list<int>,
+     *               resolutions?: array<string, array<int, 'current'|'restored'>>}
      */
     private function selection(array $raw): array
     {
@@ -550,6 +570,16 @@ final class RestApi
 
         if (isset($raw['object_ids'])) {
             $selection['object_ids'] = $ints($raw['object_ids']);
+        }
+
+        if (isset($raw['resolutions']) && is_array($raw['resolutions'])) {
+            $selection['resolutions'] = [];
+
+            foreach ($raw['resolutions'] as $key => $sides) {
+                foreach ((array) $sides as $index => $side) {
+                    $selection['resolutions'][(string) $key][(int) $index] = $side === 'restored' ? 'restored' : 'current';
+                }
+            }
         }
 
         return $selection;
