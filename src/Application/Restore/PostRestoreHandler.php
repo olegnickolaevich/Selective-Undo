@@ -24,15 +24,21 @@ final class PostRestoreHandler
      */
     public function __invoke(array $payload): void
     {
-        $object = new ObjectRef((string) ($payload['object_type'] ?? ''), (int) ($payload['object_id'] ?? 0));
-        $fields = array_values(array_map('strval', (array) ($payload['fields'] ?? [])));
-        $adapter = $this->adapters->find((string) ($payload['adapter_key'] ?? ''));
+        $object = new ObjectRef((string) ($payload['object_type'] ?? ''), (int) ($payload['object_id'] ?? 0), (string) ($payload['object_subtype'] ?? ''));
+        // Events written before 2.1 name one adapter.
+        $byAdapter = isset($payload['adapters']) && is_array($payload['adapters'])
+            ? $payload['adapters']
+            : [(string) ($payload['adapter_key'] ?? '') => $payload['fields'] ?? []];
 
-        if ($adapter === null) {
-            throw new \RuntimeException('adapter_unavailable');
+        foreach ($byAdapter as $key => $fields) {
+            $adapter = $this->adapters->find((string) $key);
+
+            if ($adapter === null) {
+                throw new \RuntimeException('adapter_unavailable');
+            }
+
+            $adapter->afterCommit($object, array_values(array_map('strval', (array) $fields)));
         }
-
-        $adapter->afterCommit($object, $fields);
 
         if ($object->type === 'post' && $this->settings->createRevisionAfterRestore()) {
             $post = get_post($object->id);
@@ -46,7 +52,8 @@ final class PostRestoreHandler
          * Fires after an object was restored and caches were invalidated.
          * May fire more than once for the same event: deduplicate by event_id.
          *
-         * @param array<string, mixed> $payload event_id, job_id, object_type, object_id, adapter_key, fields, actor_user_id.
+         * @param array<string, mixed> $payload event_id, job_id, object_type, object_id, object_subtype,
+         *                                    adapters (adapter key => fields), fields, actor_user_id.
          */
         do_action('selective_undo/object_restored', $payload);
     }

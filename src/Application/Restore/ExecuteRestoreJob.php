@@ -61,7 +61,7 @@ final class ExecuteRestoreJob
                 }
 
                 try {
-                    $this->executor->restoreObject($lease, $next['object'], $next['adapter_key']);
+                    $this->executor->restoreObject($lease, $next['object']);
                 } catch (LeaseLost) {
                     return false;
                 } catch (\Throwable $e) {

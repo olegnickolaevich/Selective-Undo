@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Presentation\Admin;
 
-use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 
@@ -22,7 +22,7 @@ final class LastChangeColumn
     public function __construct(
         private readonly string $postType,
         private readonly JournalReader $reader,
-        private readonly AdapterInterface $adapter,
+        private readonly AdapterRegistry $adapters,
     ) {
     }
 
@@ -68,7 +68,7 @@ final class LastChangeColumn
         ];
 
         if ($row['field_key'] !== '') {
-            $parts[] = $this->adapter->fieldLabel($row['field_key']);
+            $parts[] = $this->adapters->fieldLabel($row['field_key']);
         }
 
         printf(

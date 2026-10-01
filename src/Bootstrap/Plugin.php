@@ -34,6 +34,8 @@ final class Plugin
 
         $s->capabilities()->register();
         $s->observer()->register();
+        // Adapters of integrations are registered by then (selective_undo/register_adapters).
+        add_action('init', static fn () => self::services()->adapters()->registerCapture(self::services()->capture()), 20);
 
         add_action('admin_init', [self::class, 'maybeMigrate']);
 
@@ -46,13 +48,13 @@ final class Plugin
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RevertIntentField(self::services()->trackingPolicy(), self::services()->requestContext()))->register());
 
         if (!is_admin()) {
-            (new \SelectiveUndo\Presentation\Frontend\ChangeIndicator($s->journalReader(), $s->diffs(), $s->trackingPolicy(), $s->postFieldsAdapter()))->register();
+            (new \SelectiveUndo\Presentation\Frontend\ChangeIndicator($s->journalReader(), $s->diffs(), $s->trackingPolicy(), $s->adapters()))->register();
         }
 
         if (is_admin()) {
             (new \SelectiveUndo\Presentation\Admin\AdminPage($s->trackingPolicy()))->register();
             (new \SelectiveUndo\Presentation\Admin\EditorPanel($s->trackingPolicy()))->register();
-            (new \SelectiveUndo\Presentation\Admin\ListScreenIntegration($s->trackingPolicy(), $s->journalReader(), $s->postFieldsAdapter()))->register();
+            (new \SelectiveUndo\Presentation\Admin\ListScreenIntegration($s->trackingPolicy(), $s->journalReader(), $s->adapters()))->register();
             (new \SelectiveUndo\Presentation\Admin\CommandPalette())->register();
         }
 

@@ -38,7 +38,7 @@ final class Outbox
     }
 
     /**
-     * @param array<string, scalar|list<scalar>|null> $payload IDs and codes only.
+     * @param array<string, scalar|list<scalar>|array<string, list<string>>|null> $payload IDs, codes and field keys only.
      */
     public function enqueue(RestoreTransaction $tx, string $topic, ?int $jobId, ?ObjectRef $object, array $payload): string
     {

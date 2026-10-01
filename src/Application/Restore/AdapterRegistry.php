@@ -7,6 +7,8 @@ namespace SelectiveUndo\Application\Restore;
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
 
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Domain\Contracts\CaptureSink;
+use SelectiveUndo\Domain\Contracts\CapturingAdapter;
 
 /**
  * Registry of adapters. Core adapters are registered first, then integrations
@@ -14,9 +16,21 @@ use SelectiveUndo\Domain\Contracts\AdapterInterface;
  */
 final class AdapterRegistry
 {
+    /**
+     * Restore order within one object's transaction, which is also the lock order:
+     * the post row is created first, then its fields, meta and terms. Others: 100.
+     */
+    private const PRIORITY = [
+        'core/post-deletion' => 5,
+        'core/post-fields' => 10,
+        'core/post-meta' => 20,
+        'core/terms' => 30,
+    ];
+
     /** @var array<string, AdapterInterface> */
     private array $adapters = [];
     private bool $initialized = false;
+    private bool $capturing = false;
 
     /**
      * @param \Closure(self): void $registerCore
@@ -55,6 +69,52 @@ final class AdapterRegistry
         $this->initialize();
 
         return $this->adapters;
+    }
+
+    /**
+     * Translated label of a field key of any adapter ("Title", "Featured image", "Tags").
+     */
+    public function fieldLabel(string $field, ?string $adapterKey = null): string
+    {
+        $adapter = $adapterKey !== null ? $this->find($adapterKey) : null;
+
+        if ($adapter !== null) {
+            return $adapter->fieldLabel($field);
+        }
+
+        foreach ($this->all() as $candidate) {
+            $label = $candidate->fieldLabel($field);
+
+            if ($label !== $field) {
+                return $label;
+            }
+        }
+
+        return $field;
+    }
+
+    public function priority(string $key): int
+    {
+        return self::PRIORITY[$key] ?? 100;
+    }
+
+    /**
+     * Lets every capturing adapter hook into WordPress. Once per request, after
+     * integrations had the chance to register their adapters.
+     */
+    public function registerCapture(CaptureSink $sink): void
+    {
+        if ($this->capturing) {
+            return;
+        }
+
+        $this->capturing = true;
+
+        foreach ($this->all() as $adapter) {
+            if ($adapter instanceof CapturingAdapter) {
+                $adapter->registerCapture($sink);
+            }
+        }
     }
 
     private function initialize(): void

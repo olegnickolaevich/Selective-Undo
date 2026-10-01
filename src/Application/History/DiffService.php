@@ -9,6 +9,7 @@ namespace SelectiveUndo\Application\History;
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Restore\EditorMergePreview;
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Domain\Contracts\PresentsValues;
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Domain\Merge\TwoWayDiff;
 use SelectiveUndo\Domain\Value\FieldValue;
@@ -48,8 +49,11 @@ final class DiffService
             throw new DomainError('su_invalid_selection', 400, __('Informational events have no values to compare.', 'selective-undo'));
         }
 
-        $before = $this->value($row['before_blob_id'], $row['before_hash']);
-        $after = $this->value($row['after_blob_id'], $row['after_hash']);
+        $object = new ObjectRef((string) $row['object_type'], (int) $row['object_id'], (string) $row['object_subtype']);
+        $adapterKey = (string) $row['adapter_key'];
+        $field = (string) $row['field_key'];
+        $before = $this->shown($adapterKey, $object, $field, $this->value($row['before_blob_id'], $row['before_hash']));
+        $after = $this->shown($adapterKey, $object, $field, $this->value($row['after_blob_id'], $row['after_hash']));
         $isRestore = $row['event'] === 'restore';
 
         return $this->result(
@@ -172,14 +176,16 @@ final class DiffService
         }
 
         $object = new ObjectRef((string) $item['object_type'], (int) $item['object_id'], (string) $item['object_subtype']);
-        $adapter = $this->adapters->find((string) $item['adapter_key']);
+        $adapterKey = (string) $item['adapter_key'];
+        $field = (string) $item['field_key'];
+        $adapter = $this->adapters->find($adapterKey);
         $snapshot = $adapter?->read($object);
-        $current = $snapshot?->field((string) $item['field_key']) ?? FieldValue::missing();
-        $target = $this->value($item['target_blob_id'], $item['target_hash']);
+        $current = $this->shown($adapterKey, $object, $field, $snapshot?->field($field) ?? FieldValue::missing());
+        $target = $this->shown($adapterKey, $object, $field, $this->value($item['target_blob_id'], $item['target_hash']));
 
         if ($view === 'conflict') {
             $last = $this->journal->changesByIds([(int) $item['last_change_id']])[(int) $item['last_change_id']] ?? null;
-            $expected = $last !== null ? $this->value($last['after_blob_id'], $last['after_hash']) : null;
+            $expected = $last !== null ? $this->shown($adapterKey, $object, $field, $this->value($last['after_blob_id'], $last['after_hash'])) : null;
 
             return $this->result(
                 'conflict',
@@ -199,6 +205,21 @@ final class DiffService
             $target,
             $offset
         );
+    }
+
+    /**
+     * What a comparison shows for a stored value: term names instead of term IDs,
+     * a file name instead of an attachment ID. Never used to compare values.
+     */
+    private function shown(string $adapterKey, ObjectRef $object, string $field, ?FieldValue $value): ?FieldValue
+    {
+        $adapter = $this->adapters->find($adapterKey);
+
+        if ($value === null || !$adapter instanceof PresentsValues) {
+            return $value;
+        }
+
+        return FieldValue::of($adapter->present($object, $field, $value));
     }
 
     private function value(mixed $blobId, mixed $hash): ?FieldValue

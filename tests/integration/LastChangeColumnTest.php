@@ -28,7 +28,7 @@ final class LastChangeColumnTest extends IntegrationTestCase
         $previous = $wp_query;
         $wp_query = new \WP_Query();
         $wp_query->posts = array_map('get_post', $ids);
-        $column = new LastChangeColumn('page', $this->s->journalReader(), $this->s->postFieldsAdapter());
+        $column = new LastChangeColumn('page', $this->s->journalReader(), $this->s->adapters());
         $queries = 0;
         $count = function (string $sql) use (&$queries): string {
             $queries += str_contains($sql, $this->s->tables()->changes) ? 1 : 0;

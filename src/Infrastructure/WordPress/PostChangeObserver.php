@@ -46,9 +46,14 @@ final class PostChangeObserver
         add_action('pre_post_update', [$this, 'onPreUpdate'], PHP_INT_MAX, 2);
         add_action('clean_post_cache', [$this, 'onCleanPostCache'], PHP_INT_MIN, 1);
         add_action('post_updated', [$this, 'onPostUpdated'], PHP_INT_MAX, 3);
+        // Media: wp_insert_post() fires this instead of post_updated for attachments.
+        add_action('attachment_updated', [$this, 'onPostUpdated'], PHP_INT_MAX, 3);
+        add_filter('wp_insert_post_data', [$this, 'onInsertPostData'], PHP_INT_MAX, 4);
         add_action('wp_insert_post', [$this, 'onInsertPost'], PHP_INT_MAX, 3);
         add_action('trashed_post', [$this, 'onTrashed'], PHP_INT_MAX, 1);
         add_action('untrashed_post', [$this, 'onUntrashed'], PHP_INT_MAX, 1);
+        add_action('before_delete_post', [$this->request, 'enterPostLifecycle'], PHP_INT_MIN, 0);
+        add_action('delete_attachment', [$this->request, 'enterPostLifecycle'], PHP_INT_MIN, 0);
         add_action('deleted_post', [$this, 'onDeleted'], PHP_INT_MAX, 2);
         add_action('shutdown', [$this, 'onShutdown'], 0);
         add_action('shutdown', [$this->capture, 'sealRequestChangesets'], 5);
@@ -67,7 +72,7 @@ final class PostChangeObserver
             }
 
             if (count($this->frames[$postId] ?? []) >= self::MAX_FRAMES_PER_POST) {
-                $this->capture->recordGap('nesting_too_deep', $postId);
+                $this->capture->recordGap('nesting_too_deep', new ObjectRef('post', $postId));
 
                 return;
             }
@@ -128,15 +133,34 @@ final class PostChangeObserver
             if (!PostRow::fromPost($postBefore)->sameTrackedValues($frame->before)) {
                 // WordPress built the save on a stale object cache. B was read from the
                 // database and is correct; record a diagnostic signal.
-                $this->capture->recordGap('stale_object_cache', $frame->postId);
+                $this->capture->recordGap('stale_object_cache', new ObjectRef('post', $frame->postId));
             }
 
             $this->capture->recordPostUpdate($frame, $after, $quality);
         });
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    public function onInsertPostData(mixed $data, mixed $postarr = [], mixed $unsanitized = [], mixed $update = false): mixed
+    {
+        // Paired with onInsertPost(), which fires after the terms and meta of the new post are set.
+        if ($update === false) {
+            $this->request->enterPostLifecycle();
+        }
+
+        return $data;
+    }
+
     public function onInsertPost(int|string $postId, \WP_Post $post, bool $update): void
     {
+        if (!$update) {
+            $this->request->leavePostLifecycle();
+        }
+
         if ($update || $post->post_status === 'auto-draft') {
             return;
         }
@@ -164,6 +188,8 @@ final class PostChangeObserver
 
     public function onDeleted(int|string $postId, mixed $post = null): void
     {
+        $this->request->leavePostLifecycle();
+
         if ($post instanceof \WP_Post) {
             $this->event(ChangeEvent::Deleted, $post);
         }

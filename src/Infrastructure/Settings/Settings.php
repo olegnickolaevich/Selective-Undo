@@ -15,9 +15,9 @@ final class Settings
 {
     public const OPTION = 'selective_undo_settings';
 
-    /** Post types that are never tracked: attachments, internals, FSE entities, orders. */
+    /** Post types that are never tracked: internals, FSE entities, orders. */
     public const ALWAYS_EXCLUDED_POST_TYPES = [
-        'attachment', 'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'oembed_cache',
+        'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'oembed_cache',
         'user_request', 'wp_block', 'wp_template', 'wp_template_part', 'wp_global_styles', 'wp_navigation',
         'wp_font_family', 'wp_font_face', 'shop_order', 'shop_order_refund', 'shop_coupon', 'shop_subscription',
         'shop_order_placehold',
@@ -39,7 +39,7 @@ final class Settings
     {
         return [
             'capture_enabled' => true,
-            'tracked_post_types' => ['post', 'page'],
+            'tracked_post_types' => ['post', 'page', 'attachment'],
             'retention_days' => self::DEFAULT_RETENTION_DAYS,
             'quota_mb' => 256,
             'evict_oldest_on_quota' => true,

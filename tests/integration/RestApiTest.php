@@ -168,7 +168,8 @@ final class RestApiTest extends IntegrationTestCase
         $this->assertSame(365, $settings['limits']['retention_max_days']);
         $names = array_column($settings['post_types'], 'name');
         $this->assertContains('post', $names);
-        $this->assertNotContains('attachment', $names);
+        $this->assertContains('attachment', $names, 'media can be tracked');
+        $this->assertNotContains('wp_navigation', $names);
         $this->assertTrue($settings['roles']['administrator']['caps']['sundo_manage_settings']);
 
         [$status, $error] = $this->call('PATCH', '/settings', ['settings' => ['retention_days' => 366]]);

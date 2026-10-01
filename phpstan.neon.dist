@@ -8,6 +8,7 @@ parameters:
     - uninstall.php
   scanFiles:
     - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+    - tests/stubs/integrations.php
   bootstrapFiles:
     - tests/phpstan-bootstrap.php
   treatPhpDocTypesAsCertain: false

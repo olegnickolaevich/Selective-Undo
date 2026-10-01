@@ -71,7 +71,7 @@ final class HealthPrivacyTest extends IntegrationTestCase
     {
         $settings = $this->s->settings();
         $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['retention_days' => 366]));
-        $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['tracked_post_types' => ['attachment']]));
+        $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['tracked_post_types' => ['revision']]));
         $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['unknown' => 1]));
         $next = $settings->update(['retention_days' => 3, 'tracked_post_types' => ['post']]);
         $this->assertSame(3, $next['retention_days']);

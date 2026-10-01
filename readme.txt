@@ -16,7 +16,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 
 **How it works**
 
-1. Selective Undo records changes of the title, content, excerpt and order of posts, pages and the custom post types you choose, whatever made them: the block editor, Quick Edit, bulk edit, the REST API, WP-CLI, XML-RPC or another plugin.
+1. Selective Undo records changes of the title, content, excerpt, order, featured image, categories, tags and SEO fields of posts, pages, media and the custom post types you choose, whatever made them: the block editor, Quick Edit, bulk edit, the REST API, WP-CLI, XML-RPC or another plugin.
 2. Open **Change history** from the row actions on the Posts or Pages screen, from the **Change history** panel in the block editor sidebar, or go to **Selective Undo → History**.
 3. Compare before and after, select the changes to undo and click **Check restore**.
 4. The preview shows what will be restored, what is already in the desired state and what needs attention. Nothing is written yet.
@@ -38,7 +38,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 **Safe by design**
 
 * **No silent overwrites.** If a field was changed again after the selected change, it is reported as a conflict and skipped. There is no "force" option.
-* **One field, one decision.** Restoring the title does not touch the content, status, slug, author, dates, custom fields or comments.
+* **One field, one decision.** Restoring the title does not touch the content, the featured image, the tags or anything else.
 * **Restores are undoable.** Every restore is recorded like any other change, so it can be undone the same way.
 * **Safe to retry.** Clicking twice, a lost connection or a reloaded page never runs the same restore twice.
 * **Transactional.** Each item is restored in a short database transaction on a dedicated connection, with row locks and a final comparison. A failure leaves the item unchanged.
@@ -46,8 +46,10 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 
 **What Selective Undo covers**
 
-* Existing posts, pages and the custom post types you choose (those with an admin screen).
-* Fields: title, content, excerpt and menu order.
+* Existing posts, pages, media and the custom post types you choose (those with an admin screen).
+* Fields: title, content, excerpt and menu order; the featured image; categories, tags and the other taxonomies of the post type; the alternative text, caption and description of media.
+* SEO fields of Yoast SEO, Rank Math and SEOPress (title, meta description, focus keyphrase, canonical URL, indexing) and the fields of ACF field groups, when those plugins are active. Developers add other custom fields with the `selective_undo/meta_fields` filter.
+* Undoing a tag or category change keeps the terms added or removed later.
 * History for as long as you choose (30 days by default, up to a year), limited by a size limit (256 MB by default) with automatic removal of the oldest history.
 * A head start: title, content and excerpt changes saved in WordPress revisions during the retention period before activation are imported, so they can be undone too.
 * Restore changes of several items at once (up to 50 per restore).
@@ -56,7 +58,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 
 **What is not recorded or restored**
 
-Deleted items, creation of new items, status, slug, author, dates, custom fields and metadata, comments, users, settings, media files, orders and payments. Emails, webhooks and other effects outside the database are never undone.
+Deleted items, creation of new items, status, slug, author, dates, other custom fields and metadata, comments, users, settings, media files themselves, orders and payments. Emails, webhooks and other effects outside the database are never undone.
 
 **Permissions**
 

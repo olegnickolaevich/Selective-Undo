@@ -8,6 +8,8 @@ use SelectiveUndo\Domain\Change\CaptureQuality;
 use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Change\ChangesetKind;
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Domain\Contracts\CaptureSink;
 use SelectiveUndo\Domain\Contracts\WallClock;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
@@ -22,10 +24,12 @@ use SelectiveUndo\Infrastructure\WordPress\PostRow;
 /**
  * Writes captured changes to the journal. Every write is a short autocommit
  * statement on the WordPress connection so that nothing is lost between requests.
+ * Post fields come from capture frames (PostChangeObserver); other adapters report
+ * their changes through the CaptureSink interface.
  *
  * @phpstan-import-type ChangeRow from JournalRepository
  */
-final class CaptureService
+final class CaptureService implements CaptureSink
 {
     /** Idle window after which an autosave session is sealed. */
     public const AUTOSAVE_WINDOW_SECONDS = 600;
@@ -44,9 +48,31 @@ final class CaptureService
     ) {
     }
 
+    /** Writes made by a restore's own post-processing are not new history. */
     public function isActive(): bool
     {
-        return $this->state->isActive();
+        return $this->state->isActive() && !$this->request->isRestoring();
+    }
+
+    public function record(AdapterInterface $adapter, ObjectRef $object, array $changes, CaptureQuality $quality): void
+    {
+        if (!$this->isActive() || $changes === []) {
+            return;
+        }
+
+        $this->quietly(function () use ($adapter, $object, $changes, $quality): void {
+            try {
+                $this->revisions->ensureImported($object);
+                $this->checkContinuity($object, $changes);
+                $this->journal->insertChanges(
+                    $this->buildRows($this->currentChangesetId(), $this->request->reserveSequence(), $object, $changes, $quality, $adapter)
+                );
+            } catch (\Throwable $e) {
+                // Called from WordPress hooks: a journal error must never break the save.
+                $this->log->exception('capture_failed', $e, $object->id);
+                $this->gaps->object('capture_failed', $object);
+            }
+        });
     }
 
     public function recordPostUpdate(CaptureFrame $frame, PostRow $after, CaptureQuality $quality): void
@@ -134,9 +160,9 @@ final class CaptureService
      *
      * @param array<string, scalar> $details
      */
-    public function recordGap(string $reason, int $postId, array $details = []): void
+    public function recordGap(string $reason, ObjectRef $object, array $details = []): void
     {
-        $this->gaps->object($reason, new ObjectRef('post', $postId), $details);
+        $this->gaps->object($reason, $object, $details);
     }
 
     public function reportFailure(int $postId, \Throwable $e): void
@@ -279,7 +305,7 @@ final class CaptureService
      *
      * @return list<ChangeRow>
      */
-    private function buildRows(int $changesetId, int $sequence, ObjectRef $object, array $changed, CaptureQuality $quality): array
+    private function buildRows(int $changesetId, int $sequence, ObjectRef $object, array $changed, CaptureQuality $quality, ?AdapterInterface $adapter = null): array
     {
         $rows = [];
 
@@ -298,8 +324,8 @@ final class CaptureService
                 'sequence_no' => $sequence,
                 'event' => ChangeEvent::Update->value,
                 'object' => $object,
-                'adapter_key' => PostFieldsAdapter::KEY,
-                'adapter_version' => PostFieldsAdapter::VERSION,
+                'adapter_key' => $adapter?->key() ?? PostFieldsAdapter::KEY,
+                'adapter_version' => $adapter?->version() ?? PostFieldsAdapter::VERSION,
                 'field_key' => $field,
                 'before_blob_id' => $beforeBlob,
                 'after_blob_id' => $afterBlob,

@@ -309,14 +309,15 @@ final class BuildRestorePlan
 
         if ($adapter === null) {
             $unsupportedReason = 'adapter_unavailable';
-        } elseif ($adapter->version() !== $group['adapter_version']) {
+        } elseif (!$adapter->acceptsVersion($group['adapter_version'])) {
             $unsupportedReason = 'adapter_version_mismatch';
         }
 
         $snapshot = null;
 
         if ($adapter !== null) {
-            $snapshot = $snapshots[$object->key()] ??= $adapter->read($object);
+            // Each adapter sees the object through its own snapshot (post row, meta, terms).
+            $snapshot = $snapshots[$object->key() . '|' . $adapter->key()] ??= $adapter->read($object);
 
             if ($snapshot !== null) {
                 // The current post type decides support (a post may have changed type).

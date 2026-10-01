@@ -86,6 +86,22 @@ export function reasonText( code: string | null ): string {
 			'The stored value has an unexpected type.',
 			'selective-undo'
 		),
+		meta_not_allowed: __(
+			'You are not allowed to edit this custom field.',
+			'selective-undo'
+		),
+		attachment_missing: __(
+			'The image no longer exists in the media library.',
+			'selective-undo'
+		),
+		terms_not_allowed: __(
+			'You are not allowed to assign terms of this taxonomy.',
+			'selective-undo'
+		),
+		term_missing: __(
+			'A category or tag that was assigned then has been deleted.',
+			'selective-undo'
+		),
 		target_unavailable: __(
 			'The stored value could not be read.',
 			'selective-undo'

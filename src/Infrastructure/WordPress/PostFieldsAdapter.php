@@ -64,6 +64,11 @@ final class PostFieldsAdapter implements AdapterInterface, MergeableAdapter
         return self::VERSION;
     }
 
+    public function acceptsVersion(int $version): bool
+    {
+        return $version === self::VERSION;
+    }
+
     public function supports(ObjectRef $object, string $fieldKey): bool
     {
         return $object->type === 'post'

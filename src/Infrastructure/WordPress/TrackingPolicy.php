@@ -15,6 +15,14 @@ final class TrackingPolicy
     {
     }
 
+    /**
+     * @return list<string>
+     */
+    public function trackedPostTypes(): array
+    {
+        return $this->settings->trackedPostTypes();
+    }
+
     public function isTrackedPostType(string $postType): bool
     {
         return $postType !== '' && in_array($postType, $this->settings->trackedPostTypes(), true);

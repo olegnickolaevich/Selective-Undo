@@ -350,15 +350,7 @@ final class HistoryQuery
 
     private function fieldLabel(string $field): string
     {
-        foreach ($this->adapters->all() as $adapter) {
-            $label = $adapter->fieldLabel($field);
-
-            if ($label !== $field) {
-                return $label;
-            }
-        }
-
-        return $field;
+        return $this->adapters->fieldLabel($field);
     }
 
     /**

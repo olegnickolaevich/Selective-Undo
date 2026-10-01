@@ -11,6 +11,11 @@ use SelectiveUndo\Domain\Value\FieldValue;
  * An adapter knows how to read, validate, write and post-process one kind of data.
  * Whether an item may be restored is decided by the application layer
  * (PlanItemEvaluator), not by the adapter.
+ *
+ * All adapters of one object are restored in one transaction, in the order of
+ * AdapterRegistry::priority(); lockAndRead() must lock only the adapter's own rows.
+ *
+ * @api
  */
 interface AdapterInterface
 {
@@ -18,6 +23,9 @@ interface AdapterInterface
 
     /** Version of the value format. Any normalisation change requires a new version. */
     public function version(): int;
+
+    /** Whether values recorded by format version $version can be restored by this adapter. */
+    public function acceptsVersion(int $version): bool;
 
     public function capabilities(): AdapterCapabilities;
 

@@ -58,6 +58,10 @@ use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
 use SelectiveUndo\Infrastructure\Storage\ObjectVersions;
+use SelectiveUndo\Infrastructure\WordPress\MetaFieldRegistry;
+use SelectiveUndo\Infrastructure\WordPress\ObjectLock;
+use SelectiveUndo\Infrastructure\WordPress\PostMetaAdapter;
+use SelectiveUndo\Infrastructure\WordPress\TermsAdapter;
 use SelectiveUndo\Infrastructure\Storage\Outbox;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
@@ -238,10 +242,42 @@ final class Services
         ));
     }
 
+    public function postMetaAdapter(): PostMetaAdapter
+    {
+        return $this->get(PostMetaAdapter::class, fn () => new PostMetaAdapter(
+            $this->db,
+            $this->metaFields(),
+            $this->trackingPolicy(),
+            $this->requestContext(),
+            $this->cacheInvalidator(),
+        ));
+    }
+
+    public function metaFields(): MetaFieldRegistry
+    {
+        return $this->get(MetaFieldRegistry::class, static fn () => new MetaFieldRegistry());
+    }
+
+    public function termsAdapter(): TermsAdapter
+    {
+        return $this->get(TermsAdapter::class, fn () => new TermsAdapter(
+            $this->db,
+            $this->trackingPolicy(),
+            $this->requestContext(),
+            $this->cacheInvalidator(),
+            $this->journalReader(),
+            $this->blobs(),
+        ));
+    }
+
     public function adapters(): AdapterRegistry
     {
         return $this->get(AdapterRegistry::class, fn () => new AdapterRegistry(
-            fn (AdapterRegistry $registry) => $registry->register($this->postFieldsAdapter())
+            function (AdapterRegistry $registry): void {
+                $registry->register($this->postFieldsAdapter());
+                $registry->register($this->postMetaAdapter());
+                $registry->register($this->termsAdapter());
+            }
         ));
     }
 
@@ -334,6 +370,7 @@ final class Services
             $this->outbox(),
             new ConflictDetector(),
             $this->preconditions(),
+            new ObjectLock($this->db->posts),
         ));
     }
 

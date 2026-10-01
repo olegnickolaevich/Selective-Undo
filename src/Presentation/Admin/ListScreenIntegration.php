@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Presentation\Admin;
 
-use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
@@ -20,7 +20,7 @@ final class ListScreenIntegration
     public function __construct(
         private readonly TrackingPolicy $policy,
         private readonly JournalReader $reader,
-        private readonly AdapterInterface $postFields,
+        private readonly AdapterRegistry $adapters,
     ) {
     }
 
@@ -38,7 +38,7 @@ final class ListScreenIntegration
             return;
         }
 
-        (new LastChangeColumn($type, $this->reader, $this->postFields))->register();
+        (new LastChangeColumn($type, $this->reader, $this->adapters))->register();
 
         add_action('admin_enqueue_scripts', static function (): void {
             if (!Assets::enqueueScript(self::HANDLE, 'list', ['jquery'])) {

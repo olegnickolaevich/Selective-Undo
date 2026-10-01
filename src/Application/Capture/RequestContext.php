@@ -23,6 +23,10 @@ final class RequestContext
     /** @var array<int, list<int>> post ID => change IDs the user undid in the editor */
     private array $revertIntent = [];
 
+    private int $restoring = 0;
+
+    private int $lifecycle = 0;
+
     public function __construct(private readonly SourceDetector $detector)
     {
     }
@@ -88,6 +92,51 @@ final class RequestContext
         return $this->changesets;
     }
 
+    /**
+     * Runs a restore's post-processing (hooks other plugins listen to): the writes
+     * it causes are not recorded as new history.
+     *
+     * @template T
+     *
+     * @param callable(): T $fn
+     *
+     * @return T
+     */
+    public function whileRestoring(callable $fn): mixed
+    {
+        $this->restoring++;
+
+        try {
+            return $fn();
+        } finally {
+            $this->restoring--;
+        }
+    }
+
+    public function isRestoring(): bool
+    {
+        return $this->restoring > 0;
+    }
+
+    /**
+     * Inside the creation or the permanent deletion of a post: the terms and meta it
+     * sets or removes are part of that event, not edits.
+     */
+    public function enterPostLifecycle(): void
+    {
+        $this->lifecycle++;
+    }
+
+    public function leavePostLifecycle(): void
+    {
+        $this->lifecycle = max(0, $this->lifecycle - 1);
+    }
+
+    public function inPostLifecycle(): bool
+    {
+        return $this->lifecycle > 0;
+    }
+
     /** Starts a new logical request (WP-CLI loops, tests). */
     public function reset(): void
     {
@@ -97,6 +146,7 @@ final class RequestContext
         $this->operation = null;
         $this->changesets = [];
         $this->revertIntent = [];
+        $this->lifecycle = 0;
     }
 
     /**

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-01T21:17:27+00:00\n"
+"POT-Creation-Date: 2026-10-01T21:47:42+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -235,55 +235,55 @@ msgstr ""
 msgid "This item does not exist or you cannot see its history."
 msgstr ""
 
-#: src/Application/History/DiffService.php:44
-#: src/Application/History/DiffService.php:78
+#: src/Application/History/DiffService.php:45
+#: src/Application/History/DiffService.php:82
 #: src/Application/Restore/EditorMergePreview.php:52
 msgid "This change no longer exists in the history."
 msgstr ""
 
-#: src/Application/History/DiffService.php:48
+#: src/Application/History/DiffService.php:49
 msgid "Informational events have no values to compare."
 msgstr ""
 
-#: src/Application/History/DiffService.php:57
+#: src/Application/History/DiffService.php:61
 msgid "Before restore"
 msgstr ""
 
-#: src/Application/History/DiffService.php:57
+#: src/Application/History/DiffService.php:61
 #: build/index.js:16
 msgid "Before"
 msgstr ""
 
-#: src/Application/History/DiffService.php:58
+#: src/Application/History/DiffService.php:62
 msgid "After restore"
 msgstr ""
 
-#: src/Application/History/DiffService.php:58
+#: src/Application/History/DiffService.php:62
 #: build/index.js:16
 msgid "After"
 msgstr ""
 
-#: src/Application/History/DiffService.php:165
+#: src/Application/History/DiffService.php:169
 #: src/Application/Restore/CreateRestoreJob.php:54
 #: src/Application/Restore/QuickUndo.php:57
 #: src/Presentation/Rest/RestApi.php:343
 msgid "This preview does not exist."
 msgstr ""
 
-#: src/Application/History/DiffService.php:171
+#: src/Application/History/DiffService.php:175
 msgid "Nothing to compare for this item."
 msgstr ""
 
-#: src/Application/History/DiffService.php:186
+#: src/Application/History/DiffService.php:192
 msgid "After the selected change"
 msgstr ""
 
-#: src/Application/History/DiffService.php:187
-#: src/Application/History/DiffService.php:196
+#: src/Application/History/DiffService.php:193
+#: src/Application/History/DiffService.php:202
 msgid "Current value"
 msgstr ""
 
-#: src/Application/History/DiffService.php:197
+#: src/Application/History/DiffService.php:203
 msgid "Will be restored"
 msgstr ""
 
@@ -297,8 +297,8 @@ msgstr ""
 msgid "You are not allowed to view the history of this item."
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:475
-#: src/Application/History/HistoryQuery.php:489
+#: src/Application/History/HistoryQuery.php:467
+#: src/Application/History/HistoryQuery.php:481
 msgid "Invalid page cursor."
 msgstr ""
 
@@ -424,15 +424,15 @@ msgstr ""
 msgid "Deleted user #%d"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:86
+#: src/Bootstrap/Plugin.php:88
 msgid "Every five minutes (Selective Undo)"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:145
+#: src/Bootstrap/Plugin.php:147
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:146
+#: src/Bootstrap/Plugin.php:148
 msgid "Plugin activation"
 msgstr ""
 
@@ -440,19 +440,63 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:77
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:94
+msgid "SEO"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:98
+msgid "Alternative text"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:100
+msgid "Featured image"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:104
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:112
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:120
+msgid "SEO title"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:105
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:113
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:121
+msgid "Meta description"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:106
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:114
+msgid "Focus keyphrase"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:107
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:116
+msgid "Canonical URL"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:108
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:115
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:122
+msgid "Search engine indexing"
+msgstr ""
+
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:144
+msgid "Custom fields"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:82
 msgid "Title"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:78
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:83
 msgid "Content"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:79
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:84
 msgid "Excerpt"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:80
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:85
 msgctxt "post menu order field"
 msgid "Order"
 msgstr ""
@@ -983,6 +1027,22 @@ msgstr ""
 
 #: build/index.js:2
 msgid "The stored value has an unexpected type."
+msgstr ""
+
+#: build/index.js:2
+msgid "You are not allowed to edit this custom field."
+msgstr ""
+
+#: build/index.js:2
+msgid "The image no longer exists in the media library."
+msgstr ""
+
+#: build/index.js:2
+msgid "You are not allowed to assign terms of this taxonomy."
+msgstr ""
+
+#: build/index.js:2
+msgid "A category or tag that was assigned then has been deleted."
 msgstr ""
 
 #: build/index.js:2

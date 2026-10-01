@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Presentation\Frontend;
 
 use SelectiveUndo\Application\History\DiffService;
-use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Domain\Merge\BlockSegmenter;
 use SelectiveUndo\Domain\Merge\Lcs;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
@@ -40,7 +40,7 @@ final class ChangeIndicator
         private readonly JournalReader $reader,
         private readonly DiffService $diffs,
         private readonly TrackingPolicy $policy,
-        private readonly AdapterInterface $postFields,
+        private readonly AdapterRegistry $adapters,
     ) {
     }
 
@@ -234,7 +234,7 @@ final class ChangeIndicator
             $this->field !== 'post_content' => sprintf(
                 /* translators: %s: field name, e.g. "Title". */
                 __('This change edited the %s, which is not outlined on the page.', 'selective-undo'),
-                $this->postFields->fieldLabel($this->field)
+                $this->adapters->fieldLabel($this->field)
             ),
             !$this->hasBlocks => __('This content is not made of blocks, so the changed parts cannot be outlined.', 'selective-undo'),
             $count === 0 => __('The text written by this change is no longer on the page.', 'selective-undo'),
