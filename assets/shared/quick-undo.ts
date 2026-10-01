@@ -98,11 +98,23 @@ export function settle(
 		return;
 	}
 
-	text.append(
-		__(
+	const reasons: Record< string, string > = {
+		changed_again: __(
 			'Some of these fields were changed again since. Review before undoing.',
 			'selective-undo'
-		) + ' ',
+		),
+		blocked: __(
+			'Some of these fields cannot be undone as they are. Review before undoing.',
+			'selective-undo'
+		),
+		too_large: __(
+			'This change is too large to undo without a preview. Review before undoing.',
+			'selective-undo'
+		),
+	};
+
+	text.append(
+		( reasons[ result.reason ?? '' ] ?? reasons.changed_again ) + ' ',
 		link(
 			result.plan_id
 				? previewUrl( config, result.plan_id )

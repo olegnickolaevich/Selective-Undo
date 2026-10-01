@@ -15,6 +15,7 @@ use SelectiveUndo\Domain\Contracts\CaptureSink;
 use SelectiveUndo\Domain\Contracts\CapturingAdapter;
 use SelectiveUndo\Domain\Contracts\DescribesFields;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
+use SelectiveUndo\Domain\Contracts\PresentsImages;
 use SelectiveUndo\Domain\Contracts\PresentsValues;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 use SelectiveUndo\Domain\Value\FieldValue;
@@ -26,7 +27,7 @@ use SelectiveUndo\Infrastructure\Database\StorageError;
  * order) for several rows, missing when there is none. They are stored and written
  * back byte for byte; nothing is ever unserialized on the restore path.
  */
-final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, PresentsValues
+final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, PresentsValues, PresentsImages
 {
     public const KEY = 'core/post-meta';
     public const VERSION = 1;
@@ -80,6 +81,10 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
 
     public function fieldLabel(string $fieldKey): string
     {
+        if (!str_starts_with($fieldKey, 'meta:')) {
+            return $fieldKey;
+        }
+
         $key = substr($fieldKey, 5);
 
         foreach ($this->policy->trackedPostTypes() as $type) {
@@ -289,7 +294,7 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
 
         $rows = self::toRows($value) ?? [];
 
-        if (substr($fieldKey, 5) === '_thumbnail_id') {
+        if ($this->isAttachment($object, $fieldKey)) {
             return implode("\n", array_map(static function (string $id): string {
                 $file = get_attached_file((int) $id);
 
@@ -308,6 +313,26 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
 
             return $data === false && $raw !== 'b:0;' ? $raw : (string) wp_json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         }, $rows));
+    }
+
+    public function imageUrl(ObjectRef $object, string $fieldKey, FieldValue $value): ?string
+    {
+        $rows = self::toRows($value) ?? [];
+
+        if (count($rows) !== 1 || !ctype_digit($rows[0]) || !$this->isAttachment($object, $fieldKey) || !wp_attachment_is_image((int) $rows[0])) {
+            return null;
+        }
+
+        $url = wp_get_attachment_image_url((int) $rows[0], 'thumbnail');
+
+        return is_string($url) ? $url : null;
+    }
+
+    private function isAttachment(ObjectRef $object, string $fieldKey): bool
+    {
+        $key = substr($fieldKey, 5);
+
+        return $key === '_thumbnail_id' || $this->registry->definition($object->subtype, $key)?->valueType === 'attachment';
     }
 
     private function watched(int $postId, string $key): bool

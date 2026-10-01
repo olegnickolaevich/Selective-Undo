@@ -137,11 +137,13 @@ final class JournalReader
     }
 
     /**
-     * The latest recorded change of each post, for list screens: one query for all rows.
+     * The latest recorded change of each post, for list screens, with all fields that
+     * save changed (a Quick Edit can change the title and the author at once). One
+     * query for all rows: the rows of each post's latest change set.
      *
      * @param list<int> $postIds
      *
-     * @return array<int, array{id: int, field_key: string, event: string, created_at: string, actor: int|null}>
+     * @return array<int, array{id: int, field_key: string, fields: list<string>, event: string, created_at: string, actor: int|null}>
      */
     public function latestChangeOfPosts(array $postIds): array
     {
@@ -153,16 +155,28 @@ final class JournalReader
             "SELECT c.id, c.object_id, c.field_key, c.event, c.created_at, cs.actor_user_id
              FROM {$this->t->changes} c JOIN {$this->t->changesets} cs ON cs.id = c.changeset_id
              WHERE c.object_type = 'post' AND c.object_id IN (" . implode(', ', array_fill(0, count($postIds), '%d')) . ")
-               AND c.object_seq = (SELECT MAX(l.object_seq) FROM {$this->t->changes} l
-                                   WHERE l.object_type = c.object_type AND l.object_id = c.object_id)",
+               AND c.changeset_id = (SELECT l.changeset_id FROM {$this->t->changes} l
+                                     WHERE l.object_type = c.object_type AND l.object_id = c.object_id
+                                     ORDER BY l.object_seq DESC LIMIT 1)
+             ORDER BY c.object_seq",
             ...$postIds
         ), ARRAY_A);
         $out = [];
 
         foreach ((array) $rows as $row) {
-            $out[(int) $row['object_id']] = [
+            $id = (int) $row['object_id'];
+            $field = (string) $row['field_key'];
+            // Rows come in history order: the last one is the latest change.
+            $fields = $out[$id]['fields'] ?? [];
+
+            if ($field !== '' && !in_array($field, $fields, true)) {
+                $fields[] = $field;
+            }
+
+            $out[$id] = [
                 'id' => (int) $row['id'],
-                'field_key' => (string) $row['field_key'],
+                'field_key' => $field,
+                'fields' => $fields,
                 'event' => (string) $row['event'],
                 'created_at' => (string) $row['created_at'],
                 'actor' => $row['actor_user_id'] === null ? null : (int) $row['actor_user_id'],

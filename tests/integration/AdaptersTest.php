@@ -37,6 +37,10 @@ final class AdaptersTest extends IntegrationTestCase
         sort($fields);
         $this->assertSame(['meta:_thumbnail_id', 'post_title', 'tax:post_tag'], $fields);
 
+        $labels = array_column($this->s->history()->list(1, [], null, 1)['items'][0]['fields'], 'label');
+        sort($labels);
+        $this->assertSame(['Featured image', 'Tags', 'Title'], $labels);
+
         $diff = $this->s->diffs()->change($this->changeOf($id, 'tax:post_tag'), 1, 0);
         $this->assertSame([['op' => 'delete', 'text' => $red], ['op' => 'insert', 'text' => $blue]], $diff['lines'], 'term names, not IDs');
 

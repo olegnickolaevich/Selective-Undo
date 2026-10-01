@@ -19,8 +19,7 @@ final class PostRowReader
     {
         $row = $this->db->get_row(
             $this->db->prepare(
-                'SELECT ID, post_type, post_status, post_title, post_content, post_excerpt, menu_order
-                 FROM %i WHERE ID = %d',
+                'SELECT ' . PostRow::COLUMNS . ' FROM %i WHERE ID = %d',
                 $this->db->posts,
                 $postId
             ),

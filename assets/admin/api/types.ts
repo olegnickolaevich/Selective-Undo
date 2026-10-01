@@ -137,6 +137,8 @@ export interface DiffChunk {
 	truncated: boolean;
 	next_offset: number | null;
 	total_lines: number;
+	/** Previews of media library images the values refer to (a featured image). */
+	images?: { left: string | null; right: string | null };
 }
 
 export interface PlanItem {
@@ -350,6 +352,8 @@ export interface ApiErrorBody {
 export interface QuickUndoResult {
 	status: 'restored' | 'needs_review' | 'nothing_to_undo';
 	plan_id: Uuid | null;
+	/** Why the undo needs a preview first. */
+	reason?: 'changed_again' | 'blocked' | 'too_large';
 	job?: RestoreJob;
 }
 

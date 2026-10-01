@@ -53,6 +53,17 @@ final class RequestContext
         return ++$this->sequence;
     }
 
+    /** Continues numbering after rows already in a change set this request joins. */
+    public function continueSequenceAfter(int $sequence): void
+    {
+        $this->sequence = max($this->sequence, $sequence);
+    }
+
+    public function isMetaBoxSave(): bool
+    {
+        return $this->detector->isMetaBoxSave();
+    }
+
     /**
      * @return array{id: int, uuid: string, depth: int}|null
      */

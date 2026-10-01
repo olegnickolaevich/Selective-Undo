@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-01T21:47:42+00:00\n"
+"POT-Creation-Date: 2026-10-01T22:41:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -235,55 +235,55 @@ msgstr ""
 msgid "This item does not exist or you cannot see its history."
 msgstr ""
 
-#: src/Application/History/DiffService.php:45
-#: src/Application/History/DiffService.php:82
+#: src/Application/History/DiffService.php:46
+#: src/Application/History/DiffService.php:83
 #: src/Application/Restore/EditorMergePreview.php:52
 msgid "This change no longer exists in the history."
 msgstr ""
 
-#: src/Application/History/DiffService.php:49
+#: src/Application/History/DiffService.php:50
 msgid "Informational events have no values to compare."
 msgstr ""
 
-#: src/Application/History/DiffService.php:61
+#: src/Application/History/DiffService.php:62
 msgid "Before restore"
 msgstr ""
 
-#: src/Application/History/DiffService.php:61
+#: src/Application/History/DiffService.php:62
 #: build/index.js:16
 msgid "Before"
 msgstr ""
 
-#: src/Application/History/DiffService.php:62
+#: src/Application/History/DiffService.php:63
 msgid "After restore"
 msgstr ""
 
-#: src/Application/History/DiffService.php:62
+#: src/Application/History/DiffService.php:63
 #: build/index.js:16
 msgid "After"
 msgstr ""
 
-#: src/Application/History/DiffService.php:169
+#: src/Application/History/DiffService.php:170
 #: src/Application/Restore/CreateRestoreJob.php:54
 #: src/Application/Restore/QuickUndo.php:57
 #: src/Presentation/Rest/RestApi.php:343
 msgid "This preview does not exist."
 msgstr ""
 
-#: src/Application/History/DiffService.php:175
+#: src/Application/History/DiffService.php:176
 msgid "Nothing to compare for this item."
 msgstr ""
 
-#: src/Application/History/DiffService.php:192
+#: src/Application/History/DiffService.php:195
 msgid "After the selected change"
 msgstr ""
 
-#: src/Application/History/DiffService.php:193
-#: src/Application/History/DiffService.php:202
+#: src/Application/History/DiffService.php:196
+#: src/Application/History/DiffService.php:205
 msgid "Current value"
 msgstr ""
 
-#: src/Application/History/DiffService.php:203
+#: src/Application/History/DiffService.php:206
 msgid "Will be restored"
 msgstr ""
 
@@ -484,21 +484,59 @@ msgstr ""
 msgid "Custom fields"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:82
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:91
 msgid "Title"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:83
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:92
 msgid "Content"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:84
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:93
 msgid "Excerpt"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:85
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:94
 msgctxt "post menu order field"
 msgid "Order"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:95
+msgid "Slug"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:96
+msgid "Status"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
+msgid "Publish date"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
+#: build/index.js:19
+#: build/index.js:21
+msgid "Author"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:99
+msgid "Parent"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:100
+msgid "Comments"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:101
+msgid "Pingbacks and trackbacks"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:423
+msgid "Open"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:423
+msgid "Closed"
 msgstr ""
 
 #: src/Infrastructure/WordPress/PrivacyIntegration.php:39
@@ -599,6 +637,12 @@ msgstr ""
 #: src/Presentation/Admin/LastChangeColumn.php:67
 #, php-format
 msgid "%s ago"
+msgstr ""
+
+#. translators: 1: two field names, e.g. "Title, Author", 2: number of other changed fields.
+#: src/Presentation/Admin/LastChangeColumn.php:74
+#, php-format
+msgid "%1$s and %2$d more"
 msgstr ""
 
 #. translators: %s: time difference, e.g. "2 hours".
@@ -764,6 +808,16 @@ msgstr ""
 #: build/commands.js:3
 #: build/list.js:3
 msgid "Some of these fields were changed again since. Review before undoing."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Some of these fields cannot be undone as they are. Review before undoing."
+msgstr ""
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "This change is too large to undo without a preview. Review before undoing."
 msgstr ""
 
 #: build/commands.js:3
@@ -1046,6 +1100,30 @@ msgid "A category or tag that was assigned then has been deleted."
 msgstr ""
 
 #: build/index.js:2
+msgid "Another item uses this slug now."
+msgstr ""
+
+#: build/index.js:2
+msgid "This status cannot be restored. Use the trash to bring back trashed items."
+msgstr ""
+
+#: build/index.js:2
+msgid "You are not allowed to publish this item."
+msgstr ""
+
+#: build/index.js:2
+msgid "The previous author no longer exists or cannot edit this content type."
+msgstr ""
+
+#: build/index.js:2
+msgid "You are not allowed to change the author of items written by others."
+msgstr ""
+
+#: build/index.js:2
+msgid "The previous parent no longer exists or is now a child of this item."
+msgstr ""
+
+#: build/index.js:2
 msgid "The stored value could not be read."
 msgstr ""
 
@@ -1308,15 +1386,7 @@ msgid "fields you did not select"
 msgstr ""
 
 #: build/index.js:11
-msgid "status and publication dates"
-msgstr ""
-
-#: build/index.js:11
-msgid "slug and author"
-msgstr ""
-
-#: build/index.js:11
-msgid "custom fields and metadata"
+msgid "custom fields that are not recorded"
 msgstr ""
 
 #: build/index.js:11
@@ -1537,6 +1607,10 @@ msgid "This value contains binary data and cannot be shown as text."
 msgstr ""
 
 #: build/index.js:19
+msgid "No image"
+msgstr ""
+
+#: build/index.js:19
 msgid "Both values are empty."
 msgstr ""
 
@@ -1579,11 +1653,6 @@ msgstr ""
 
 #: build/index.js:19
 msgid "Compare block by block"
-msgstr ""
-
-#: build/index.js:19
-#: build/index.js:21
-msgid "Author"
 msgstr ""
 
 #: build/index.js:19
@@ -1878,6 +1947,10 @@ msgstr ""
 
 #: build/index.js:24
 msgid "Someone is editing this item right now. If they save their open editor, the restored value will be overwritten."
+msgstr ""
+
+#: build/index.js:24
+msgid "Restoring the status changes who can see this item on the site."
 msgstr ""
 
 #: build/index.js:24

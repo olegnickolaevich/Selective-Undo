@@ -31,7 +31,7 @@ final class QuickUndo
     }
 
     /**
-     * @return array{status: 'restored'|'needs_review'|'nothing_to_undo', plan_id: string|null, job?: array<string, mixed>}
+     * @return array{status: 'restored'|'needs_review'|'nothing_to_undo', plan_id: string|null, reason?: 'changed_again'|'blocked'|'too_large', job?: array<string, mixed>}
      *
      * @throws DomainError
      */
@@ -65,8 +65,15 @@ final class QuickUndo
             return ['status' => 'nothing_to_undo', 'plan_id' => $planUuid];
         }
 
-        if ($blocking > 0 || $s['objects'] > (int) ($limits['objects'] ?? 0) || $s['fields'] > (int) ($limits['fields'] ?? 0)) {
-            return ['status' => 'needs_review', 'plan_id' => $planUuid];
+        $reason = match (true) {
+            $s['conflicts'] > 0 => 'changed_again',
+            $blocking > 0 => 'blocked',
+            $s['objects'] > (int) ($limits['objects'] ?? 0) || $s['fields'] > (int) ($limits['fields'] ?? 0) => 'too_large',
+            default => null,
+        };
+
+        if ($reason !== null) {
+            return ['status' => 'needs_review', 'plan_id' => $planUuid, 'reason' => $reason];
         }
 
         try {

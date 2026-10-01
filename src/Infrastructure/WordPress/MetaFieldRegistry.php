@@ -97,7 +97,7 @@ final class MetaFieldRegistry
         if ($postType === 'attachment') {
             $fields[] = new FieldDefinition('meta:_wp_attachment_image_alt', __('Alternative text', 'selective-undo'), 'text');
         } elseif (post_type_supports($postType, 'thumbnail')) {
-            $fields[] = new FieldDefinition('meta:_thumbnail_id', __('Featured image', 'selective-undo'), 'int');
+            $fields[] = new FieldDefinition('meta:_thumbnail_id', __('Featured image', 'selective-undo'), 'attachment');
         }
 
         if (defined('WPSEO_VERSION')) {
@@ -151,7 +151,11 @@ final class MetaFieldRegistry
                 }
 
                 $label = (string) ($field['label'] ?? '') !== '' ? (string) $field['label'] : (string) $field['name'];
-                $type = in_array($field['type'], ['wysiwyg', 'textarea'], true) ? 'html' : 'text';
+                $type = match ($field['type']) {
+                    'wysiwyg', 'textarea' => 'html',
+                    'image' => 'attachment',
+                    default => 'text',
+                };
                 $fields[] = new FieldDefinition('meta:' . $field['name'], $label, $type, group: $group);
             }
         }

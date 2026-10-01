@@ -58,4 +58,16 @@ final class SourceDetector
 
         return Source::Unknown;
     }
+
+    /**
+     * The block editor's second request of a save: the classic meta boxes (ACF and
+     * other fields) are posted right after the REST request that saved the post.
+     */
+    public function isMetaBoxSave(): bool
+    {
+        global $pagenow;
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- classification only.
+        return is_admin() && $pagenow === 'post.php' && isset($_GET['meta-box-loader']);
+    }
 }

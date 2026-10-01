@@ -9,6 +9,7 @@ namespace SelectiveUndo\Application\History;
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Restore\EditorMergePreview;
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Domain\Contracts\PresentsImages;
 use SelectiveUndo\Domain\Contracts\PresentsValues;
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Domain\Merge\TwoWayDiff;
@@ -52,18 +53,18 @@ final class DiffService
         $object = new ObjectRef((string) $row['object_type'], (int) $row['object_id'], (string) $row['object_subtype']);
         $adapterKey = (string) $row['adapter_key'];
         $field = (string) $row['field_key'];
-        $before = $this->shown($adapterKey, $object, $field, $this->value($row['before_blob_id'], $row['before_hash']));
-        $after = $this->shown($adapterKey, $object, $field, $this->value($row['after_blob_id'], $row['after_hash']));
+        $rawBefore = $this->value($row['before_blob_id'], $row['before_hash']);
+        $rawAfter = $this->value($row['after_blob_id'], $row['after_hash']);
         $isRestore = $row['event'] === 'restore';
 
         return $this->result(
             'before_after',
             $isRestore ? __('Before restore', 'selective-undo') : __('Before', 'selective-undo'),
             $isRestore ? __('After restore', 'selective-undo') : __('After', 'selective-undo'),
-            $before,
-            $after,
+            $this->shown($adapterKey, $object, $field, $rawBefore),
+            $this->shown($adapterKey, $object, $field, $rawAfter),
             $offset
-        );
+        ) + $this->images($adapterKey, $object, $field, $rawBefore, $rawAfter);
     }
 
     /**
@@ -180,8 +181,10 @@ final class DiffService
         $field = (string) $item['field_key'];
         $adapter = $this->adapters->find($adapterKey);
         $snapshot = $adapter?->read($object);
-        $current = $this->shown($adapterKey, $object, $field, $snapshot?->field($field) ?? FieldValue::missing());
-        $target = $this->shown($adapterKey, $object, $field, $this->value($item['target_blob_id'], $item['target_hash']));
+        $rawCurrent = $snapshot?->field($field) ?? FieldValue::missing();
+        $rawTarget = $this->value($item['target_blob_id'], $item['target_hash']);
+        $current = $this->shown($adapterKey, $object, $field, $rawCurrent);
+        $target = $this->shown($adapterKey, $object, $field, $rawTarget);
 
         if ($view === 'conflict') {
             $last = $this->journal->changesByIds([(int) $item['last_change_id']])[(int) $item['last_change_id']] ?? null;
@@ -204,7 +207,7 @@ final class DiffService
             $current,
             $target,
             $offset
-        );
+        ) + $this->images($adapterKey, $object, $field, $rawCurrent, $rawTarget);
     }
 
     /**
@@ -220,6 +223,27 @@ final class DiffService
         }
 
         return FieldValue::of($adapter->present($object, $field, $value));
+    }
+
+    /**
+     * Previews of media library images the two values refer to (a featured image).
+     *
+     * @return array{images?: array{left: string|null, right: string|null}}
+     */
+    private function images(string $adapterKey, ObjectRef $object, string $field, ?FieldValue $left, ?FieldValue $right): array
+    {
+        $adapter = $this->adapters->find($adapterKey);
+
+        if (!$adapter instanceof PresentsImages) {
+            return [];
+        }
+
+        $images = [
+            'left' => $left !== null ? $adapter->imageUrl($object, $field, $left) : null,
+            'right' => $right !== null ? $adapter->imageUrl($object, $field, $right) : null,
+        ];
+
+        return $images['left'] === null && $images['right'] === null ? [] : ['images' => $images];
     }
 
     private function value(mixed $blobId, mixed $hash): ?FieldValue

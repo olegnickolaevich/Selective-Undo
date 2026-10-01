@@ -16,7 +16,7 @@ use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 final class PlanView
 {
     /** Data categories a restore of post fields never touches. */
-    public const UNTOUCHED = ['unselected_fields', 'status_and_dates', 'slug_and_author', 'metadata', 'comments', 'users', 'new_items'];
+    public const UNTOUCHED = ['unselected_fields', 'unrecorded_metadata', 'comments', 'users', 'new_items'];
 
     public function __construct(
         private readonly PlanRepository $plans,

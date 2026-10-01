@@ -90,9 +90,9 @@ final class TermsAdapter implements AdapterInterface, MergeableAdapter, Capturin
 
     public function fieldLabel(string $fieldKey): string
     {
-        $taxonomy = get_taxonomy(substr($fieldKey, 4));
+        $taxonomy = str_starts_with($fieldKey, 'tax:') ? get_taxonomy(substr($fieldKey, 4)) : false;
 
-        return $taxonomy instanceof \WP_Taxonomy ? (string) $taxonomy->labels->name : substr($fieldKey, 4);
+        return $taxonomy instanceof \WP_Taxonomy ? (string) $taxonomy->labels->name : $fieldKey;
     }
 
     public function fields(ObjectRef $object): array

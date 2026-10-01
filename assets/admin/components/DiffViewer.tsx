@@ -6,7 +6,8 @@ import { ErrorNotice, Loading } from './Feedback';
 
 /**
  * Historical content is untrusted data. Only text nodes are rendered: no
- * dangerouslySetInnerHTML, no previews, no blocks or shortcodes executed.
+ * dangerouslySetInnerHTML, no blocks or shortcodes executed. The only previews are
+ * images of the site's own media library, by URLs the server resolved.
  * @param root0
  * @param root0.line
  */
@@ -89,6 +90,29 @@ export function DiffViewer( {
 					+ { chunk.right_label }
 				</span>
 			</figcaption>
+			{ chunk.images && (
+				<div className="su-diff__images">
+					{ (
+						[
+							[ chunk.images.left, chunk.left_label, 'delete' ],
+							[ chunk.images.right, chunk.right_label, 'insert' ],
+						] as const
+					 ).map( ( [ url, label, tone ] ) => (
+						<div
+							key={ tone }
+							className={ `su-diff__image su-diff__image--${ tone }` }
+						>
+							{ url ? (
+								<img src={ url } alt={ label } />
+							) : (
+								<span className="su-muted">
+									{ __( 'No image', 'selective-undo' ) }
+								</span>
+							) }
+						</div>
+					) ) }
+				</div>
+			) }
 			{ chunk.lines.length === 0 ? (
 				<p className="su-muted">
 					{ __( 'Both values are empty.', 'selective-undo' ) }

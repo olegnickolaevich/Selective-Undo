@@ -16,7 +16,7 @@ final class LastChangeColumn
 {
     public const COLUMN = 'selective_undo_last_change';
 
-    /** @var array<int, array{id: int, field_key: string, event: string, created_at: string, actor: int|null}>|null */
+    /** @var array<int, array{id: int, field_key: string, fields: list<string>, event: string, created_at: string, actor: int|null}>|null */
     private ?array $latest = null;
 
     public function __construct(
@@ -67,8 +67,15 @@ final class LastChangeColumn
             sprintf(__('%s ago', 'selective-undo'), human_time_diff((int) strtotime($row['created_at'] . ' UTC'))),
         ];
 
-        if ($row['field_key'] !== '') {
-            $parts[] = $this->adapters->fieldLabel($row['field_key']);
+        $labels = array_map(fn (string $field): string => $this->adapters->fieldLabel($field), $row['fields']);
+
+        if (count($labels) > 2) {
+            /* translators: 1: two field names, e.g. "Title, Author", 2: number of other changed fields. */
+            $labels = [sprintf(__('%1$s and %2$d more', 'selective-undo'), implode(', ', array_slice($labels, 0, 2)), count($labels) - 2)];
+        }
+
+        if ($labels !== []) {
+            $parts[] = implode(', ', $labels);
         }
 
         printf(
@@ -79,7 +86,7 @@ final class LastChangeColumn
     }
 
     /**
-     * @return array<int, array{id: int, field_key: string, event: string, created_at: string, actor: int|null}>
+     * @return array<int, array{id: int, field_key: string, fields: list<string>, event: string, created_at: string, actor: int|null}>
      */
     private function load(): array
     {

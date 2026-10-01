@@ -192,6 +192,37 @@ final class JournalRepository
         return $id === null ? null : (int) $id;
     }
 
+    /**
+     * The latest change set of a user from a given source that touched the object
+     * since a moment.
+     */
+    public function findRecentChangeset(int $actor, ObjectRef $object, string $source, string $sinceUtc): ?int
+    {
+        $id = $this->db->get_var($this->db->prepare(
+            "SELECT cs.id FROM {$this->t->changesets} cs
+             WHERE cs.actor_user_id = %d AND cs.source = %s AND cs.kind = 'edit' AND cs.created_at >= %s
+               AND EXISTS (SELECT 1 FROM {$this->t->changes} c
+                           WHERE c.changeset_id = cs.id AND c.object_type = %s AND c.object_id = %d)
+             ORDER BY cs.id DESC LIMIT 1",
+            $actor,
+            $source,
+            $sinceUtc,
+            $object->type,
+            $object->id
+        ));
+
+        return $id === null ? null : (int) $id;
+    }
+
+    /** Opens a sealed change set again to add rows; sealing recomputes its summary. */
+    public function reopen(int $changesetId): void
+    {
+        $this->db->query($this->db->prepare(
+            "UPDATE {$this->t->changesets} SET status = 'open', updated_at = " . SqlTime::utc() . " WHERE id = %d",
+            $changesetId
+        ));
+    }
+
     public function findOpenAutosaveChangeset(int $actor, ObjectRef $object, string $sinceUtc): ?int
     {
         $id = $this->db->get_var($this->db->prepare(

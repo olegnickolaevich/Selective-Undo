@@ -11,8 +11,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru_RU\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"POT-Creation-Date: 2026-10-01T21:47:42+00:00\n"
-"PO-Revision-Date: 2026-10-01 21:47+0000\n"
+"POT-Creation-Date: 2026-10-01T22:41:02+00:00\n"
+"PO-Revision-Date: 2026-10-01 22:41+0000\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
 
@@ -238,55 +238,55 @@ msgstr "Установлен drop-in db.php. Восстановление исп
 msgid "This item does not exist or you cannot see its history."
 msgstr "Этот объект не существует, или у вас нет доступа к его истории."
 
-#: src/Application/History/DiffService.php:45
-#: src/Application/History/DiffService.php:82
+#: src/Application/History/DiffService.php:46
+#: src/Application/History/DiffService.php:83
 #: src/Application/Restore/EditorMergePreview.php:52
 msgid "This change no longer exists in the history."
 msgstr "Этого изменения больше нет в истории."
 
-#: src/Application/History/DiffService.php:49
+#: src/Application/History/DiffService.php:50
 msgid "Informational events have no values to compare."
 msgstr "У информационных событий нет значений для сравнения."
 
-#: src/Application/History/DiffService.php:61
+#: src/Application/History/DiffService.php:62
 msgid "Before restore"
 msgstr "До восстановления"
 
-#: src/Application/History/DiffService.php:61
+#: src/Application/History/DiffService.php:62
 #: build/index.js:16
 msgid "Before"
 msgstr "Было"
 
-#: src/Application/History/DiffService.php:62
+#: src/Application/History/DiffService.php:63
 msgid "After restore"
 msgstr "После восстановления"
 
-#: src/Application/History/DiffService.php:62
+#: src/Application/History/DiffService.php:63
 #: build/index.js:16
 msgid "After"
 msgstr "Стало"
 
-#: src/Application/History/DiffService.php:169
+#: src/Application/History/DiffService.php:170
 #: src/Application/Restore/CreateRestoreJob.php:54
 #: src/Application/Restore/QuickUndo.php:57
 #: src/Presentation/Rest/RestApi.php:343
 msgid "This preview does not exist."
 msgstr "Такого предпросмотра нет."
 
-#: src/Application/History/DiffService.php:175
+#: src/Application/History/DiffService.php:176
 msgid "Nothing to compare for this item."
 msgstr "Для этой записи нечего сравнивать."
 
-#: src/Application/History/DiffService.php:192
+#: src/Application/History/DiffService.php:195
 msgid "After the selected change"
 msgstr "После выбранного изменения"
 
-#: src/Application/History/DiffService.php:193
-#: src/Application/History/DiffService.php:202
+#: src/Application/History/DiffService.php:196
+#: src/Application/History/DiffService.php:205
 msgid "Current value"
 msgstr "Текущее значение"
 
-#: src/Application/History/DiffService.php:203
+#: src/Application/History/DiffService.php:206
 msgid "Will be restored"
 msgstr "Будет восстановлено"
 
@@ -488,22 +488,60 @@ msgstr "Индексация поисковиками"
 msgid "Custom fields"
 msgstr "Произвольные поля"
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:82
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:91
 msgid "Title"
 msgstr "Заголовок"
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:83
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:92
 msgid "Content"
 msgstr "Содержимое"
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:84
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:93
 msgid "Excerpt"
 msgstr "Отрывок"
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:85
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:94
 msgctxt "post menu order field"
 msgid "Order"
 msgstr "Порядок"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:95
+msgid "Slug"
+msgstr "Ярлык"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:96
+msgid "Status"
+msgstr "Статус"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
+msgid "Publish date"
+msgstr "Дата публикации"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
+#: build/index.js:19
+#: build/index.js:21
+msgid "Author"
+msgstr "Автор"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:99
+msgid "Parent"
+msgstr "Родитель"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:100
+msgid "Comments"
+msgstr "Комментарии"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:101
+msgid "Pingbacks and trackbacks"
+msgstr "Уведомления и обратные ссылки"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:423
+msgid "Open"
+msgstr "Открыты"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:423
+msgid "Closed"
+msgstr "Закрыты"
 
 #: src/Infrastructure/WordPress/PrivacyIntegration.php:39
 #: src/Infrastructure/WordPress/PrivacyIntegration.php:54
@@ -604,6 +642,12 @@ msgstr "Система"
 #, php-format
 msgid "%s ago"
 msgstr "%s назад"
+
+#. translators: 1: two field names, e.g. "Title, Author", 2: number of other changed fields.
+#: src/Presentation/Admin/LastChangeColumn.php:74
+#, php-format
+msgid "%1$s and %2$d more"
+msgstr "%1$s и ещё %2$d"
 
 #. translators: %s: time difference, e.g. "2 hours".
 #: src/Presentation/Frontend/ChangeIndicator.php:79
@@ -771,6 +815,16 @@ msgstr "Отменять нечего: прежние значения уже н
 #: build/list.js:3
 msgid "Some of these fields were changed again since. Review before undoing."
 msgstr "Некоторые из этих полей с тех пор снова менялись. Проверьте перед отменой."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "Some of these fields cannot be undone as they are. Review before undoing."
+msgstr "Некоторые из этих полей нельзя отменить как есть. Проверьте перед отменой."
+
+#: build/commands.js:3
+#: build/list.js:3
+msgid "This change is too large to undo without a preview. Review before undoing."
+msgstr "Это изменение слишком большое для отмены без предпросмотра. Проверьте перед отменой."
 
 #: build/commands.js:3
 #: build/list.js:3
@@ -1053,6 +1107,30 @@ msgid "A category or tag that was assigned then has been deleted."
 msgstr "Рубрика или метка, назначенная тогда, уже удалена."
 
 #: build/index.js:2
+msgid "Another item uses this slug now."
+msgstr "Этот ярлык теперь занят другой записью."
+
+#: build/index.js:2
+msgid "This status cannot be restored. Use the trash to bring back trashed items."
+msgstr "Этот статус нельзя восстановить. Удалённые в корзину записи возвращаются из корзины."
+
+#: build/index.js:2
+msgid "You are not allowed to publish this item."
+msgstr "У вас нет прав на публикацию этой записи."
+
+#: build/index.js:2
+msgid "The previous author no longer exists or cannot edit this content type."
+msgstr "Прежнего автора больше нет, или он не может редактировать этот тип записей."
+
+#: build/index.js:2
+msgid "You are not allowed to change the author of items written by others."
+msgstr "У вас нет прав менять автора чужих записей."
+
+#: build/index.js:2
+msgid "The previous parent no longer exists or is now a child of this item."
+msgstr "Прежнего родителя больше нет, или теперь он вложен в эту запись."
+
+#: build/index.js:2
 msgid "The stored value could not be read."
 msgstr "Не удалось прочитать сохранённое значение."
 
@@ -1316,16 +1394,8 @@ msgid "fields you did not select"
 msgstr "поля, которые вы не выбрали"
 
 #: build/index.js:11
-msgid "status and publication dates"
-msgstr "статус и даты публикации"
-
-#: build/index.js:11
-msgid "slug and author"
-msgstr "ярлык и автор"
-
-#: build/index.js:11
-msgid "custom fields and metadata"
-msgstr "произвольные поля и метаданные"
+msgid "custom fields that are not recorded"
+msgstr "произвольные поля, которые не записываются"
 
 #: build/index.js:11
 msgid "comments"
@@ -1550,6 +1620,10 @@ msgid "This value contains binary data and cannot be shown as text."
 msgstr "Это значение содержит двоичные данные и не может быть показано как текст."
 
 #: build/index.js:19
+msgid "No image"
+msgstr "Нет изображения"
+
+#: build/index.js:19
 msgid "Both values are empty."
 msgstr "Оба значения пустые."
 
@@ -1593,11 +1667,6 @@ msgstr "Сравнить по строкам"
 #: build/index.js:19
 msgid "Compare block by block"
 msgstr "Сравнить по блокам"
-
-#: build/index.js:19
-#: build/index.js:21
-msgid "Author"
-msgstr "Автор"
 
 #: build/index.js:19
 #: build/index.js:21
@@ -1896,6 +1965,10 @@ msgstr "Ваш выбор для частей, изменённых дважды
 #: build/index.js:24
 msgid "Someone is editing this item right now. If they save their open editor, the restored value will be overwritten."
 msgstr "Эту запись сейчас кто-то редактирует. Если он сохранит открытый редактор, восстановленное значение будет перезаписано."
+
+#: build/index.js:24
+msgid "Restoring the status changes who can see this item on the site."
+msgstr "Восстановление статуса изменит, кто видит эту запись на сайте."
 
 #: build/index.js:24
 msgid "This page is built with a page builder. Restoring the content may not change what visitors see."

@@ -102,6 +102,27 @@ export function reasonText( code: string | null ): string {
 			'A category or tag that was assigned then has been deleted.',
 			'selective-undo'
 		),
+		slug_taken: __( 'Another item uses this slug now.', 'selective-undo' ),
+		status_not_restorable: __(
+			'This status cannot be restored. Use the trash to bring back trashed items.',
+			'selective-undo'
+		),
+		publish_not_allowed: __(
+			'You are not allowed to publish this item.',
+			'selective-undo'
+		),
+		author_invalid: __(
+			'The previous author no longer exists or cannot edit this content type.',
+			'selective-undo'
+		),
+		author_not_allowed: __(
+			'You are not allowed to change the author of items written by others.',
+			'selective-undo'
+		),
+		parent_invalid: __(
+			'The previous parent no longer exists or is now a child of this item.',
+			'selective-undo'
+		),
 		target_unavailable: __(
 			'The stored value could not be read.',
 			'selective-undo'
@@ -190,6 +211,10 @@ export function warningText( code: string ): string {
 		),
 		post_locked: __(
 			'Someone is editing this item right now. If they save their open editor, the restored value will be overwritten.',
+			'selective-undo'
+		),
+		status_change_visible: __(
+			'Restoring the status changes who can see this item on the site.',
 			'selective-undo'
 		),
 		page_builder_detected: __(
@@ -467,12 +492,10 @@ export function groupingLabel(
 export function untouchedLabel( code: string ): string {
 	const map: Record< string, string > = {
 		unselected_fields: __( 'fields you did not select', 'selective-undo' ),
-		status_and_dates: __(
-			'status and publication dates',
+		unrecorded_metadata: __(
+			'custom fields that are not recorded',
 			'selective-undo'
 		),
-		slug_and_author: __( 'slug and author', 'selective-undo' ),
-		metadata: __( 'custom fields and metadata', 'selective-undo' ),
 		comments: __( 'comments', 'selective-undo' ),
 		users: __( 'users', 'selective-undo' ),
 		new_items: __( 'items created later', 'selective-undo' ),

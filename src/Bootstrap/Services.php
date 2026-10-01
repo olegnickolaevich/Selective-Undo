@@ -239,6 +239,7 @@ final class Services
             $this->clock(),
             $this->postRowReader(),
             $this->cacheInvalidator(),
+            $this->db->postmeta,
         ));
     }
 

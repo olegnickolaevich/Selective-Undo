@@ -65,7 +65,7 @@ final class CaptureService implements CaptureSink
                 $this->revisions->ensureImported($object);
                 $this->checkContinuity($object, $changes);
                 $this->journal->insertChanges(
-                    $this->buildRows($this->currentChangesetId(), $this->request->reserveSequence(), $object, $changes, $quality, $adapter)
+                    $this->buildRows($this->currentChangesetId($object), $this->request->reserveSequence(), $object, $changes, $quality, $adapter)
                 );
             } catch (\Throwable $e) {
                 // Called from WordPress hooks: a journal error must never break the save.
@@ -104,6 +104,12 @@ final class CaptureService implements CaptureSink
             }
         }
 
+        if ($before->postStatus !== $after->postStatus && array_intersect([$before->postStatus, $after->postStatus], ['trash', 'auto-draft']) !== []) {
+            // Moving to and from the trash is an event (and WordPress renames the slug
+            // meanwhile); the trash itself is how WordPress undoes it.
+            unset($changed['post_status'], $changed['post_name']);
+        }
+
         if ($changed === []) {
             return;
         }
@@ -123,7 +129,7 @@ final class CaptureService implements CaptureSink
             }
 
             $this->checkContinuity($object, $changed);
-            $changesetId = $this->currentChangesetId();
+            $changesetId = $this->currentChangesetId($object);
             $this->journal->insertChanges($this->buildRows($changesetId, $frame->sequence, $object, $changed, $quality));
         });
     }
@@ -137,7 +143,7 @@ final class CaptureService implements CaptureSink
         $this->quietly(function () use ($event, $object, $sequence): void {
             $this->revisions->ensureImported($object);
             $this->journal->insertChanges([[
-                'changeset_id' => $this->currentChangesetId(),
+                'changeset_id' => $this->currentChangesetId($object),
                 'sequence_no' => $sequence ?? $this->request->reserveSequence(),
                 'event' => $event->value,
                 'object' => $object,
@@ -186,7 +192,7 @@ final class CaptureService implements CaptureSink
         }
     }
 
-    public function currentChangesetId(): int
+    public function currentChangesetId(?ObjectRef $object = null): int
     {
         $operation = $this->request->operation();
         $key = $operation === null ? 'edit' : 'operation:' . $operation['id'];
@@ -194,6 +200,21 @@ final class CaptureService implements CaptureSink
 
         if ($id !== null) {
             return $id;
+        }
+
+        $actor = get_current_user_id();
+
+        if ($operation === null && $object !== null && $actor > 0 && $this->request->isMetaBoxSave()) {
+            // One click on Save is two requests (REST, then meta boxes): one change set.
+            $joined = $this->journal->findRecentChangeset($actor, $object, Source::BlockEditor->value, $this->clock->utcMysql(-120));
+
+            if ($joined !== null) {
+                $this->journal->reopen($joined);
+                $this->request->continueSequenceAfter($this->journal->nextSequence($joined) - 1);
+                $this->request->rememberChangeset($key, $joined);
+
+                return $joined;
+            }
         }
 
         $created = $this->journal->createChangeset([
