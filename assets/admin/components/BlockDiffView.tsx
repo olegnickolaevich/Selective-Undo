@@ -7,16 +7,6 @@ import { useAsync } from '../hooks/useAsync';
 import { navigate } from '../lib/router';
 import { ErrorNotice, Loading } from './Feedback';
 
-/**
- * "core/heading" and "heading" both read as "heading".
- * @param block
- */
-function blockName( block: DiffBlock ): string {
-	return block.name === ''
-		? __( 'text', 'selective-undo' )
-		: block.name.replace( /^core\//, '' );
-}
-
 function Blocks( {
 	blocks,
 	title,
@@ -39,7 +29,7 @@ function Blocks( {
 				blocks.map( ( block, i ) => (
 					<div key={ i } className="su-block-diff__block">
 						<span className="su-block-diff__name">
-							{ blockName( block ) }
+							{ block.label }
 						</span>
 						{ html ? (
 							<pre className="su-block-diff__html">

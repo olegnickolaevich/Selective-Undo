@@ -38,6 +38,7 @@ final class PartialUndoTest extends IntegrationTestCase
         $parts = array_values(array_filter($blocks['hunks'], static fn (array $h): bool => $h['kind'] === 'change'));
         $this->assertSame(2, count($parts));
         $this->assertSame('5 new', $parts[1]['after'][0]['text']);
+        $this->assertSame('Paragraph', $parts[1]['after'][0]['label']);
 
         $job = $this->start($this->plan(['type' => 'segments', 'change_id' => $change, 'hunks' => [$parts[1]['index']]]));
         $this->assertSame('completed', $job['status']);

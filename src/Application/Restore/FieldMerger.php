@@ -10,6 +10,7 @@ use SelectiveUndo\Domain\Merge\MergeConflict;
 use SelectiveUndo\Domain\Merge\MergeStrategy;
 use SelectiveUndo\Domain\Merge\SetMerger;
 use SelectiveUndo\Domain\Value\FieldValue;
+use SelectiveUndo\Infrastructure\WordPress\BlockTitles;
 
 /**
  * Undo of one change of a field that changed again later: keeps the later edits of
@@ -70,11 +71,12 @@ final class FieldMerger
         $current = implode('', $conflict->current);
         $restored = implode('', $conflict->restored);
 
-        $label = self::label($current !== '' ? $current : $restored);
+        // Inner markup of a block (no block comment of its own) is named after that block.
+        $name = BlockTitles::nameOf($current !== '' ? $current : $restored);
 
         return [
             'index' => $conflict->index,
-            'label' => $label === 'text' && $conflict->block !== '' ? $conflict->block : $label,
+            'label' => BlockTitles::title($name === '' ? $conflict->block : $name),
             'current' => $current,
             'restored' => $restored,
         ];
@@ -122,11 +124,5 @@ final class FieldMerger
         }
 
         return true;
-    }
-
-    /** Block name of a segment ("paragraph", "core/heading"), or "text" for classic text. */
-    private static function label(string $segment): string
-    {
-        return preg_match('/^\s*<!--\s+wp:([a-z0-9_\/-]+)/', $segment, $m) === 1 ? $m[1] : 'text';
     }
 }

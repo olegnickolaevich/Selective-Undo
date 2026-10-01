@@ -16,6 +16,7 @@ use SelectiveUndo\Domain\Value\InvalidPayload;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
+use SelectiveUndo\Infrastructure\WordPress\BlockTitles;
 
 /**
  * Diffs for a journal change (before / after) and for plan items
@@ -103,7 +104,7 @@ final class DiffService
      *
      * @param list<string> $tokens
      *
-     * @return list<array{name: string, text: string, html: string}>
+     * @return list<array{name: string, label: string, text: string, html: string}>
      */
     private static function blocks(array $tokens): array
     {
@@ -114,8 +115,10 @@ final class DiffService
                 continue;
             }
 
+            $name = BlockTitles::nameOf($token);
             $out[] = [
-                'name' => preg_match('/^\s*<!--\s+wp:([a-z0-9_\/-]+)/', $token, $m) === 1 ? $m[1] : '',
+                'name' => $name,
+                'label' => BlockTitles::title($name),
                 'text' => trim(wp_strip_all_tags($token)),
                 'html' => $token,
             ];

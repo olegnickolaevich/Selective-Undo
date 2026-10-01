@@ -368,6 +368,8 @@ export interface EditorMergePreview {
 
 export interface DiffBlock {
 	name: string;
+	/** Translated block title ("Paragraph"), or the name of an unknown block. */
+	label: string;
 	text: string;
 	html: string;
 }

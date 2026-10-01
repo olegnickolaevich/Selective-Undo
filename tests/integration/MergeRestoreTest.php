@@ -62,7 +62,7 @@ final class MergeRestoreTest extends IntegrationTestCase
         $item = $this->planView($planId)['items'][0];
         $this->assertSame('conflict', $item['status']);
         $this->assertSame('merge_conflict', $item['reason_code']);
-        $this->assertSame([['index' => 0, 'label' => 'paragraph']], $item['merge']['conflicts']);
+        $this->assertSame([['index' => 0, 'label' => 'Paragraph']], $item['merge']['conflicts']);
 
         $texts = $this->s->mergeView()->conflicts($planId, $item['id'], 1);
         $this->assertSame('Two, broken and edited', $texts[0]['current_text']);

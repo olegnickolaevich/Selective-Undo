@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-01T17:35:57+00:00\n"
+"POT-Creation-Date: 2026-10-01T21:17:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -231,59 +231,59 @@ msgstr ""
 msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
 msgstr ""
 
-#: src/Application/History/BlameService.php:49
+#: src/Application/History/BlameService.php:50
 msgid "This item does not exist or you cannot see its history."
 msgstr ""
 
-#: src/Application/History/DiffService.php:43
-#: src/Application/History/DiffService.php:77
+#: src/Application/History/DiffService.php:44
+#: src/Application/History/DiffService.php:78
 #: src/Application/Restore/EditorMergePreview.php:52
 msgid "This change no longer exists in the history."
 msgstr ""
 
-#: src/Application/History/DiffService.php:47
+#: src/Application/History/DiffService.php:48
 msgid "Informational events have no values to compare."
 msgstr ""
 
-#: src/Application/History/DiffService.php:56
+#: src/Application/History/DiffService.php:57
 msgid "Before restore"
 msgstr ""
 
-#: src/Application/History/DiffService.php:56
+#: src/Application/History/DiffService.php:57
 #: build/index.js:16
 msgid "Before"
 msgstr ""
 
-#: src/Application/History/DiffService.php:57
+#: src/Application/History/DiffService.php:58
 msgid "After restore"
 msgstr ""
 
-#: src/Application/History/DiffService.php:57
+#: src/Application/History/DiffService.php:58
 #: build/index.js:16
 msgid "After"
 msgstr ""
 
-#: src/Application/History/DiffService.php:162
+#: src/Application/History/DiffService.php:165
 #: src/Application/Restore/CreateRestoreJob.php:54
 #: src/Application/Restore/QuickUndo.php:57
 #: src/Presentation/Rest/RestApi.php:343
 msgid "This preview does not exist."
 msgstr ""
 
-#: src/Application/History/DiffService.php:168
+#: src/Application/History/DiffService.php:171
 msgid "Nothing to compare for this item."
 msgstr ""
 
-#: src/Application/History/DiffService.php:183
+#: src/Application/History/DiffService.php:186
 msgid "After the selected change"
 msgstr ""
 
-#: src/Application/History/DiffService.php:184
-#: src/Application/History/DiffService.php:193
+#: src/Application/History/DiffService.php:187
+#: src/Application/History/DiffService.php:196
 msgid "Current value"
 msgstr ""
 
-#: src/Application/History/DiffService.php:194
+#: src/Application/History/DiffService.php:197
 msgid "Will be restored"
 msgstr ""
 
@@ -297,8 +297,8 @@ msgstr ""
 msgid "You are not allowed to view the history of this item."
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:471
-#: src/Application/History/HistoryQuery.php:482
+#: src/Application/History/HistoryQuery.php:475
+#: src/Application/History/HistoryQuery.php:489
 msgid "Invalid page cursor."
 msgstr ""
 
@@ -342,12 +342,12 @@ msgstr ""
 msgid "Unknown selection type."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:256
+#: src/Application/Restore/BuildRestorePlan.php:258
 msgid "You are not allowed to view the history of some of the selected items."
 msgstr ""
 
 #. translators: %d: maximum number of items in one restore.
-#: src/Application/Restore/BuildRestorePlan.php:280
+#: src/Application/Restore/BuildRestorePlan.php:282
 #, php-format
 msgid "One restore can include changes of at most %d item. Select fewer items and restore them in several steps."
 msgid_plural "One restore can include changes of at most %d items. Select fewer items and restore them in several steps."
@@ -434,6 +434,10 @@ msgstr ""
 
 #: src/Bootstrap/Plugin.php:146
 msgid "Plugin activation"
+msgstr ""
+
+#: src/Infrastructure/WordPress/BlockTitles.php:19
+msgid "Text"
 msgstr ""
 
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:77
@@ -1404,10 +1408,6 @@ msgstr ""
 
 #: build/index.js:15
 msgid "Selective Undo sections"
-msgstr ""
-
-#: build/index.js:15
-msgid "text"
 msgstr ""
 
 #: build/index.js:15

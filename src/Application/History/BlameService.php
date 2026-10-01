@@ -16,6 +16,7 @@ use SelectiveUndo\Domain\Value\InvalidPayload;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
+use SelectiveUndo\Infrastructure\WordPress\BlockTitles;
 
 /**
  * Who last changed each top-level block of a post's content. The result is cached
@@ -141,7 +142,7 @@ final class BlameService
 
             $blocks[] = [
                 'index' => $index++,
-                'name' => preg_match('/^\s*<!--\s+wp:([a-z0-9_\/-]+)/', $segment, $m) === 1 ? $m[1] : '',
+                'name' => BlockTitles::nameOf($segment),
                 'change' => $change,
             ];
         }
