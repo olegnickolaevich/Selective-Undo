@@ -9,7 +9,8 @@
  *   php tests/playground/smoke.php <wordpress-dir> restore
  *
  * In Playground (tests/playground/ci-blueprint.json) each phase is a runPHP step that
- * defines SU_SMOKE_PHASE and requires this file. Prints "SMOKE OK <phase>" on success.
+ * defines SU_SMOKE_PHASE and requires this file. Prints "SMOKE OK <phase>" on success;
+ * the restore phase also writes it to tests/playground/.smoke-result.
  */
 
 declare(strict_types=1);
@@ -88,3 +89,5 @@ get_post($id)->post_title === 'Smoke original' || $fail('title was not restored:
 ($overview['restore_mode'] ?? '') === 'compat' || $fail('compatibility mode is not reported');
 
 echo "SMOKE OK restore\n";
+// The CLI does not always print runPHP output: CI checks this file instead.
+file_put_contents(__DIR__ . '/.smoke-result', "SMOKE OK restore\n");

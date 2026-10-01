@@ -5,3 +5,4 @@
 .DS_Store
 /dist/
 /composer.lock
+/tests/playground/.smoke-result

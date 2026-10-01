@@ -125,9 +125,15 @@ jobs:
         with:
           build-dir: dist/selective-undo
           include-experimental: true
+      # The Playground CLI needs a newer Node than the build.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
       - name: Playground smoke test (SQLite)
         run: |
           npx --yes @wp-playground/cli@latest run-blueprint \
+            --php=8.2 \
             --blueprint=tests/playground/ci-blueprint.json \
-            --mount=dist/selective-undo:/wordpress/wp-content/plugins/selective-undo \
-            --mount=tests/playground:/smoke
+            --mount="$GITHUB_WORKSPACE/dist/selective-undo:/wordpress/wp-content/plugins/selective-undo" \
+            --mount="$GITHUB_WORKSPACE/tests/playground:/smoke"
+          grep -q 'SMOKE OK restore' tests/playground/.smoke-result
