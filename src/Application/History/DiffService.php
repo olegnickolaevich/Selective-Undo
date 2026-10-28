@@ -133,10 +133,11 @@ final class DiffService
     }
 
     /**
-     * Values before and after one change of a text field, for the front-end highlight.
-     * Null when the change is unknown, not visible to the user, or not text.
+     * Values before and after one change, for the front-end highlight. A value that is
+     * not text (missing, a list) is null. Null when the change is unknown or not visible
+     * to the user.
      *
-     * @return array{object_id: int, field: string, before: string, after: string}|null
+     * @return array{object_id: int, field: string, before: string|null, after: string|null}|null
      */
     public function changeValues(int $changeId, int $userId): ?array
     {
@@ -150,11 +151,12 @@ final class DiffService
         $before = $this->value($row['before_blob_id'], $row['before_hash'])?->value;
         $after = $this->value($row['after_blob_id'], $row['after_hash'])?->value;
 
-        if (!is_string($before) || !is_string($after)) {
-            return null;
-        }
-
-        return ['object_id' => (int) $row['object_id'], 'field' => (string) $row['field_key'], 'before' => $before, 'after' => $after];
+        return [
+            'object_id' => (int) $row['object_id'],
+            'field' => (string) $row['field_key'],
+            'before' => is_string($before) ? $before : null,
+            'after' => is_string($after) ? $after : null,
+        ];
     }
 
     /**

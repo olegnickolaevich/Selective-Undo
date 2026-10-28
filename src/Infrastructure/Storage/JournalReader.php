@@ -188,6 +188,8 @@ final class JournalReader
 
     /**
      * The latest recorded change of a field of an object (not informational events).
+     * When the latest change set also changed the content, that change is returned:
+     * it is the one that can be shown on the page.
      *
      * @return array{id: int, field_key: string, created_at: string, actor: int|null, changeset: string}|null
      */
@@ -204,6 +206,22 @@ final class JournalReader
 
         if (!is_array($row)) {
             return null;
+        }
+
+        if ($row['field_key'] !== 'post_content') {
+            $content = $this->db->get_var($this->db->prepare(
+                "SELECT c.id FROM {$this->t->changes} c JOIN {$this->t->changesets} cs ON cs.id = c.changeset_id
+                 WHERE cs.uuid = %s AND c.object_type = %s AND c.object_id = %d AND c.field_key = 'post_content'
+                 ORDER BY c.object_seq DESC LIMIT 1",
+                $row['uuid'],
+                $objectType,
+                $objectId
+            ));
+
+            if ($content !== null) {
+                $row['id'] = $content;
+                $row['field_key'] = 'post_content';
+            }
         }
 
         return [

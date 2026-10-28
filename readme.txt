@@ -58,7 +58,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 
 **What is not recorded or restored**
 
-Deleted items, creation of new items, moving to and from the trash (use the trash for that), other custom fields and metadata, comments, users, settings, media files themselves, orders and payments. Emails, webhooks and other effects outside the database are never undone.
+Deleted items, creation of new items, moving to and from the trash (use the trash for that), other custom fields and metadata (including ACF repeater, group, flexible content, clone and password fields), comments, users, settings, media files themselves, orders and payments. Emails, webhooks and other effects outside the database are never undone.
 
 **Permissions**
 
@@ -141,3 +141,11 @@ The plugin adds a suggested paragraph to the privacy policy guide and registers 
 
 = 1.0.0 =
 * Initial release.
+* Records changes of posts, pages, media and chosen custom post types from any source: the block editor, Quick Edit, bulk edit, the REST API, WP-CLI, XML-RPC and other plugins.
+* Fields: title, content, excerpt, slug, status, publish date, author, parent, order, discussion settings, featured image, categories, tags and other taxonomies, media alternative text, caption and description.
+* SEO fields of Yoast SEO, Rank Math and SEOPress, and ACF fields; other custom fields through the `selective_undo/meta_fields` filter.
+* Undo of one block of the content while keeping later edits of other blocks, with conflicts shown instead of overwritten.
+* Undo in the block editor, block history ("who changed this block"), and "Return to the state at" for an item.
+* Quick undo after Quick Edit and bulk edit, command palette commands, a Last change column, and the latest change outlined on the site for users with access.
+* One click on Save in the block editor is one entry in the history, including meta boxes and fields that plugins save through their own requests.
+* Works on MySQL, MariaDB and SQLite (WordPress Playground).

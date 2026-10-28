@@ -107,7 +107,7 @@ function RecordingTab( {
 				<legend>{ __( 'Content types', 'selective-undo' ) }</legend>
 				<p className="su-muted">
 					{ __(
-						'Title, content, excerpt and order of existing items are recorded.',
+						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields.',
 						'selective-undo'
 					) }
 				</p>

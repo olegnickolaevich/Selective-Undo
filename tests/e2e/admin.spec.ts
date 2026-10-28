@@ -5,7 +5,7 @@ import { expect, test, type Page } from '@playwright/test';
 const ROOT = process.cwd() + '/';
 
 function wp( ...args: string[] ): string {
-	return execFileSync( ROOT + 'bin/test-env.sh', [ 'wp', ...args ], { encoding: 'utf8' } ).trim();
+	return execFileSync( 'bash', [ ROOT + 'bin/test-env.sh', 'wp', ...args ], { encoding: 'utf8' } ).trim();
 }
 
 async function login( page: Page, user = 'admin' ) {
@@ -125,7 +125,7 @@ test( 'editors without permission do not see the plugin', async ( { page } ) => 
 } );
 
 test( 'interface follows the user language from an installed language pack', async ( { page } ) => {
-	execFileSync( ROOT + 'bin/i18n.sh', [ 'install-test-site' ], { encoding: 'utf8' } );
+	execFileSync( 'bash', [ ROOT + 'bin/i18n.sh', 'install-test-site' ], { encoding: 'utf8' } );
 	const title = `Контакты ${ RUN }`;
 	const id = wp( 'post', 'create', '--post_type=page', '--post_status=publish', `--post_title=${ title }`, '--porcelain' );
 	wp( 'post', 'update', id, `--post_title=${ title }!` );
@@ -149,4 +149,35 @@ test( 'interface follows the user language from an installed language pack', asy
 	} finally {
 		wp( 'user', 'meta', 'delete', 'admin', 'locale' );
 	}
+} );
+
+test.describe( 'return to a moment', () => {
+	// The browser is five hours ahead of the site (UTC): the history shows site times,
+	// so the moment is typed and read in the site's time zone.
+	test.use( { timezoneId: 'Asia/Yekaterinburg' } );
+
+	test( 'the moment is the site time shown in the history', async ( { page } ) => {
+		const title = `Moment ${ RUN }`;
+		const id = wp( 'post', 'create', '--post_type=page', '--post_status=publish', `--post_title=${ title } v1`, '--porcelain' );
+		wp( 'post', 'update', id, `--post_title=${ title } v2` );
+		wp( 'post', 'update', id, `--post_title=${ title } v3` );
+		// Creation three hours ago, v2 two hours ago, v3 one hour ago.
+		wp( 'eval', `global $wpdb;
+			foreach ( $wpdb->get_results( "SELECT id, changeset_id, object_seq FROM {$wpdb->prefix}sundo_changes WHERE object_id = ${ id }" ) as $c ) {
+				$at = gmdate( 'Y-m-d H:i:s', time() - ( 4 - (int) $c->object_seq ) * HOUR_IN_SECONDS );
+				$wpdb->update( "{$wpdb->prefix}sundo_changes", [ 'created_at' => $at ], [ 'id' => $c->id ] );
+				$wpdb->update( "{$wpdb->prefix}sundo_changesets", [ 'created_at' => $at ], [ 'id' => $c->changeset_id ] );
+			}` );
+
+		await login( page );
+		await page.goto( `/wp-admin/admin.php?page=selective-undo&view=object&id=${ id }` );
+		// Ninety minutes ago in UTC, the site's time zone: between v2 and v3.
+		const moment = new Date( Date.now() - 90 * 60_000 ).toISOString().slice( 0, 16 );
+		await page.getByLabel( 'Return to the state at' ).fill( moment );
+		await page.getByRole( 'button', { name: 'Check', exact: true } ).click();
+		await page.getByRole( 'button', { name: 'Restore 1 field' } ).click();
+		await expect( page.locator( '#wpbody-content' ) ).toContainText( 'Restore completed' );
+
+		expect( wp( 'post', 'get', id, '--field=post_title' ) ).toBe( `${ title } v2` );
+	} );
 } );

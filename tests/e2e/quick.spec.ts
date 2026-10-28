@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test';
 const ROOT = process.cwd() + '/';
 
 function wp( ...args: string[] ): string {
-	return execFileSync( ROOT + 'bin/test-env.sh', [ 'wp', ...args ], { encoding: 'utf8' } ).trim();
+	return execFileSync( 'bash', [ ROOT + 'bin/test-env.sh', 'wp', ...args ], { encoding: 'utf8' } ).trim();
 }
 
 async function login( page: Page ) {

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-01T22:41:02+00:00\n"
+"POT-Creation-Date: 2026-10-02T16:49:05+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -263,27 +263,27 @@ msgstr ""
 msgid "After"
 msgstr ""
 
-#: src/Application/History/DiffService.php:170
+#: src/Application/History/DiffService.php:172
 #: src/Application/Restore/CreateRestoreJob.php:54
 #: src/Application/Restore/QuickUndo.php:57
 #: src/Presentation/Rest/RestApi.php:343
 msgid "This preview does not exist."
 msgstr ""
 
-#: src/Application/History/DiffService.php:176
+#: src/Application/History/DiffService.php:178
 msgid "Nothing to compare for this item."
 msgstr ""
 
-#: src/Application/History/DiffService.php:195
+#: src/Application/History/DiffService.php:197
 msgid "After the selected change"
 msgstr ""
 
-#: src/Application/History/DiffService.php:196
-#: src/Application/History/DiffService.php:205
+#: src/Application/History/DiffService.php:198
+#: src/Application/History/DiffService.php:207
 msgid "Current value"
 msgstr ""
 
-#: src/Application/History/DiffService.php:206
+#: src/Application/History/DiffService.php:208
 msgid "Will be restored"
 msgstr ""
 
@@ -440,15 +440,11 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:94
-msgid "SEO"
-msgstr ""
-
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:98
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:97
 msgid "Alternative text"
 msgstr ""
 
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:100
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:99
 msgid "Featured image"
 msgstr ""
 
@@ -484,58 +480,66 @@ msgstr ""
 msgid "Custom fields"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:91
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:93
 msgid "Title"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:92
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:94
 msgid "Content"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:93
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:95
 msgid "Excerpt"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:94
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:96
 msgctxt "post menu order field"
 msgid "Order"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:95
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
 msgid "Slug"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:96
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
 msgid "Status"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:99
 msgid "Publish date"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:100
 #: build/index.js:19
 #: build/index.js:21
 msgid "Author"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:99
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:101
 msgid "Parent"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:100
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:102
 msgid "Comments"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:101
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:103
 msgid "Pingbacks and trackbacks"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:423
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:118
+msgid "Caption"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:119
+msgid "Description"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:445
 msgid "Open"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:423
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:445
 msgid "Closed"
 msgstr ""
 
@@ -617,15 +621,15 @@ msgstr ""
 msgid "Change history"
 msgstr ""
 
-#: src/Presentation/Admin/LastChangeColumn.php:43
+#: src/Presentation/Admin/LastChangeColumn.php:44
 msgid "Last change"
 msgstr ""
 
-#: src/Presentation/Admin/LastChangeColumn.php:58
+#: src/Presentation/Admin/LastChangeColumn.php:59
 msgid "No recorded changes"
 msgstr ""
 
-#: src/Presentation/Admin/LastChangeColumn.php:65
+#: src/Presentation/Admin/LastChangeColumn.php:66
 #: build/editor.js:2
 #: build/index.js:19
 #: build/index.js:21
@@ -634,13 +638,13 @@ msgid "System"
 msgstr ""
 
 #. translators: %s: time difference, e.g. "2 hours".
-#: src/Presentation/Admin/LastChangeColumn.php:67
+#: src/Presentation/Admin/LastChangeColumn.php:68
 #, php-format
 msgid "%s ago"
 msgstr ""
 
 #. translators: 1: two field names, e.g. "Title, Author", 2: number of other changed fields.
-#: src/Presentation/Admin/LastChangeColumn.php:74
+#: src/Presentation/Admin/LastChangeColumn.php:76
 #, php-format
 msgid "%1$s and %2$d more"
 msgstr ""
@@ -2082,7 +2086,7 @@ msgid "Content types"
 msgstr ""
 
 #: build/index.js:29
-msgid "Title, content, excerpt and order of existing items are recorded."
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields."
 msgstr ""
 
 #: build/index.js:29

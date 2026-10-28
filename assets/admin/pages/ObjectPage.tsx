@@ -1,4 +1,5 @@
 import { Button, TextControl } from '@wordpress/components';
+import { date, getDate } from '@wordpress/date';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import { api } from '../api/client';
@@ -17,15 +18,12 @@ import { linkHandler, viewToUrl } from '../lib/router';
 import { ChangeRow, checkRestore } from './ChangesetPage';
 
 /**
- * "2026-10-01T10:30" in the browser's time zone, for a datetime-local input.
+ * "2026-10-01T10:30" in the site's time zone, for a datetime-local input. The
+ * history shows times in the site's time zone, so the input uses it too.
  * @param iso
  */
-function localInput( iso: string ): string {
-	const d = new Date( iso );
-	const pad = ( n: number ) => String( n ).padStart( 2, '0' );
-	return `${ d.getFullYear() }-${ pad( d.getMonth() + 1 ) }-${ pad(
-		d.getDate()
-	) }T${ pad( d.getHours() ) }:${ pad( d.getMinutes() ) }`;
+function siteInput( iso: string ): string {
+	return date( 'Y-m-d\\TH:i', iso );
 }
 
 /**
@@ -45,7 +43,7 @@ function AsOfForm( {
 	const [ at, setAt ] = useState( initial );
 	const [ busy, setBusy ] = useState( false );
 	const [ error, setError ] = useState< unknown >( null );
-	const moment = new Date( at );
+	const moment = getDate( at );
 
 	return (
 		<form
@@ -258,7 +256,7 @@ export function ObjectPage( {
 			{ canRestore && items.length > 1 && (
 				<AsOfForm
 					objectId={ id }
-					initial={ localInput(
+					initial={ siteInput(
 						( items[ 1 ] ?? items[ 0 ] )!.created_at
 					) }
 				/>

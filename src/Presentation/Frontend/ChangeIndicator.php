@@ -126,7 +126,7 @@ final class ChangeIndicator
         $this->postId = $post->ID;
         $this->field = $values['field'];
 
-        if ($values['field'] === 'post_content') {
+        if ($values['field'] === 'post_content' && $values['before'] !== null && $values['after'] !== null) {
             $this->locate($values['before'], $values['after'], (string) $post->post_content);
         }
 
