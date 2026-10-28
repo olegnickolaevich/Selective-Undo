@@ -171,27 +171,29 @@ export function ObjectPage( {
 				/>
 			) : (
 				<ol className="su-timeline">
-					{ items.map( ( item ) => {
+					{ groupBySave( items ).map( ( group ) => {
+						const first = group[ 0 ];
 						const view = {
 							name: 'changeset' as const,
-							id: item.changeset.id,
+							id: first.changeset.id,
 						};
 						return (
-							<li key={ item.id } className="su-timeline__item">
+							<li key={ first.id } className="su-timeline__item">
 								<p className="su-timeline__meta">
 									<time
-										dateTime={ item.created_at }
-										title={ exactDate( item.created_at ) }
+										dateTime={ first.created_at }
+										title={ exactDate( first.created_at ) }
 									>
-										{ relativeDate( item.created_at ) }
+										{ relativeDate( first.created_at ) }
 									</time>{ ' ' }
 									·{ ' ' }
-									{ item.changeset.actor?.name ??
+									{ first.changeset.actor?.name ??
 										__(
 											'System',
 											'selective-undo'
 										) }{ ' ' }
-									· { sourceLabel( item.changeset.source ) } ·{ ' ' }
+									· { sourceLabel( first.changeset.source ) }{ ' ' }
+									·{ ' ' }
 									<a
 										href={ viewToUrl( view ) }
 										onClick={ linkHandler( view ) }
@@ -203,23 +205,27 @@ export function ObjectPage( {
 									</a>
 								</p>
 								<ul className="su-changes">
-									<ChangeRow
-										change={ item }
-										selectable={ canRestore }
-										selected={ selected.includes(
-											item.id
-										) }
-										onToggle={ ( checked ) =>
-											setSelected( ( prev ) =>
-												checked
-													? [ ...prev, item.id ]
-													: prev.filter(
-															( x ) =>
-																x !== item.id
-														)
-											)
-										}
-									/>
+									{ group.map( ( item ) => (
+										<ChangeRow
+											key={ item.id }
+											change={ item }
+											selectable={ canRestore }
+											selected={ selected.includes(
+												item.id
+											) }
+											onToggle={ ( checked ) =>
+												setSelected( ( prev ) =>
+													checked
+														? [ ...prev, item.id ]
+														: prev.filter(
+																( x ) =>
+																	x !==
+																	item.id
+															)
+												)
+											}
+										/>
+									) ) }
 								</ul>
 							</li>
 						);
@@ -263,4 +269,24 @@ export function ObjectPage( {
 			) }
 		</section>
 	);
+}
+
+type SaveGroup = [ TimelineItem, ...TimelineItem[] ];
+
+/**
+ * Consecutive changes of one save (one change set) are shown under one heading.
+ *
+ * @param items Timeline, newest first.
+ */
+function groupBySave( items: TimelineItem[] ): SaveGroup[] {
+	const groups: SaveGroup[] = [];
+	for ( const item of items ) {
+		const last = groups[ groups.length - 1 ];
+		if ( last && last[ 0 ].changeset.id === item.changeset.id ) {
+			last.push( item );
+		} else {
+			groups.push( [ item ] );
+		}
+	}
+	return groups;
 }

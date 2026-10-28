@@ -97,6 +97,8 @@ test( 'one Save in the block editor, meta boxes and plugin requests included, is
 	await expect.poll( () => wp( 'post', 'meta', 'get', id, 'su_e2e_rest' ) ).toBe( 'second' );
 
 	await page.goto( `/wp-admin/admin.php?page=selective-undo&view=object&id=${ id }` );
+	// The item's history shows the save once, with its three fields.
+	await expect( page.locator( '.su-timeline__item' ).first().getByRole( 'checkbox' ) ).toHaveCount( 3 );
 	await page.getByRole( 'link', { name: 'Whole operation' } ).first().click();
 	const fields = page.locator( '.su-app, #wpbody-content' ).first();
 	await expect( fields ).toContainText( 'Title' );
