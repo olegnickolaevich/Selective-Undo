@@ -23,5 +23,9 @@ enum Source: string
     case Revisions = 'revisions';
     /** A save from the block editor after "Undo in the editor". */
     case EditorUndo = 'editor_undo';
+    /** A GraphQL request (WPGraphQL). */
+    case GraphQl = 'graphql';
+    /** Changed outside WordPress (direct SQL, search-replace), found by the reconciliation check. */
+    case External = 'external';
     case Unknown = 'unknown';
 }

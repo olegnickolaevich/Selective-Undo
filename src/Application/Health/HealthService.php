@@ -56,7 +56,7 @@ final class HealthService
         $gaps = (int) $this->db->get_var(
             "SELECT COUNT(*) FROM {$this->t->gaps}
              WHERE (ended_at IS NULL OR ended_at > " . SqlTime::utc(-DAY_IN_SECONDS) . ")
-               AND reason IN ('external_write_detected', 'capture_failed', 'payload_not_stored', 'nesting_too_deep', 'quota_exceeded', 'schema_outdated', 'capture_disabled', 'circuit_open', 'site_moved')"
+               AND reason IN ('external_write_detected', 'capture_failed', 'payload_not_stored', 'nesting_too_deep', 'quota_exceeded', 'schema_outdated', 'capture_disabled', 'circuit_open', 'site_moved', 'database_restored')"
         );
 
         return [
@@ -76,6 +76,7 @@ final class HealthService
             'gaps_last_24h' => $gaps,
             'tracked_post_types' => $this->settings->trackedPostTypes(),
             'site_moved' => $this->site->isMoved(),
+            'site_moved_reason' => $this->site->reason(),
         ];
     }
 
@@ -156,7 +157,9 @@ final class HealthService
                 'site_moved',
                 'warning',
                 __('Copied history', 'selective-undo'),
-                __('The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it.', 'selective-undo')
+                $this->site->reason() === SiteFingerprint::RESTORED_REASON
+                    ? __('Most items with history changed at once: the database seems to have been restored from a backup. Keep the history to record the differences as changes made outside WordPress, or clear it.', 'selective-undo')
+                    : __('The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it.', 'selective-undo')
             );
         }
 

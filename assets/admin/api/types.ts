@@ -269,6 +269,7 @@ export interface Overview {
 	gaps_last_24h: number;
 	tracked_post_types: string[];
 	site_moved: boolean;
+	site_moved_reason: 'site_moved' | 'database_restored' | null;
 	user: {
 		id: number;
 		can: {

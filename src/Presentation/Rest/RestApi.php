@@ -134,6 +134,7 @@ final class RestApi
         ]);
         $this->route('/health', 'GET', $manage, [$this, 'health']);
         $this->route('/diagnostics', 'GET', $manage, [$this, 'diagnostics']);
+        $this->route('/diagnostics/reconcile', 'POST', $manage, [$this, 'reconcile']);
         $this->route('/site/fingerprint', 'POST', $manage, [$this, 'siteFingerprint'], [
             'action' => ['type' => 'string', 'required' => true, 'enum' => ['keep']],
         ]);
@@ -159,6 +160,16 @@ final class RestApi
             $this->s->siteFingerprint()->accept();
 
             return ['ok' => true];
+        });
+    }
+
+    /** "Check now": a full comparison of the history with the database, in the background. */
+    public function reconcile(): \WP_REST_Response|\WP_Error
+    {
+        return $this->errors->run(static function (): array {
+            \SelectiveUndo\Bootstrap\Plugin::scheduleReconcile();
+
+            return ['queued' => true];
         });
     }
 

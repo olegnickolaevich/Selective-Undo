@@ -14,6 +14,7 @@ use SelectiveUndo\Application\Capture\GapRecorder;
 final class SiteFingerprint
 {
     public const GAP_REASON = 'site_moved';
+    public const RESTORED_REASON = 'database_restored';
     private const OPTION = 'selective_undo_site_fingerprint';
     private const MOVED_OPTION = 'selective_undo_site_moved';
     private const CHECKED_TRANSIENT = 'selective_undo_fingerprint_checked';
@@ -41,6 +42,7 @@ final class SiteFingerprint
 
         if (!hash_equals($stored, $this->current()) && !$this->isMoved()) {
             update_option(self::MOVED_OPTION, time(), false);
+            update_option(self::MOVED_OPTION . '_reason', self::GAP_REASON, false);
             $this->gaps->openGlobal(self::GAP_REASON);
         }
     }
@@ -50,12 +52,38 @@ final class SiteFingerprint
         return (int) get_option(self::MOVED_OPTION, 0) > 0;
     }
 
+    /** Why the history may not match this database: site_moved or database_restored. */
+    public function reason(): ?string
+    {
+        if (!$this->isMoved()) {
+            return null;
+        }
+
+        return get_option(self::MOVED_OPTION . '_reason') === self::RESTORED_REASON ? self::RESTORED_REASON : self::GAP_REASON;
+    }
+
+    /**
+     * The reconciliation check found most items changed at once: the database was most
+     * likely restored from a backup. Same choice as for a copy: keep or clear (FR-8.7.3).
+     */
+    public function flagRestoredBackup(): void
+    {
+        if (!$this->isMoved()) {
+            update_option(self::MOVED_OPTION, time(), false);
+            update_option(self::MOVED_OPTION . '_reason', self::RESTORED_REASON, false);
+        }
+
+        $this->gaps->openGlobal(self::RESTORED_REASON);
+    }
+
     /** The history belongs to this site from now on ("Keep history", or after clearing it). */
     public function accept(): void
     {
         update_option(self::OPTION, $this->current(), false);
         delete_option(self::MOVED_OPTION);
+        delete_option(self::MOVED_OPTION . '_reason');
         $this->gaps->closeGlobal(self::GAP_REASON);
+        $this->gaps->closeGlobal(self::RESTORED_REASON);
     }
 
     public function current(): string

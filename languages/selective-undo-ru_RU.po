@@ -49,102 +49,102 @@ msgstr "https://github.com/olegnickolaevich"
 msgid "Selective Undo requires PHP 8.2 or newer. The plugin is inactive."
 msgstr "Для Selective Undo нужен PHP 8.2 или новее. Плагин не работает."
 
-#: src/Application/Health/HealthService.php:96
+#: src/Application/Health/HealthService.php:97
 msgid "Database schema"
 msgstr "Схема базы данных"
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:98
+#: src/Application/Health/HealthService.php:99
 #, php-format
 msgid "Version %d, all tables present."
 msgstr "Версия %d, все таблицы на месте."
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:99
+#: src/Application/Health/HealthService.php:100
 msgid "The schema is outdated. Open any admin page to run the update."
 msgstr "Схема устарела. Откройте любую страницу админки, чтобы запустить обновление."
 
-#: src/Application/Health/HealthService.php:108
+#: src/Application/Health/HealthService.php:109
 msgid "Transactional tables"
 msgstr "Транзакционные таблицы"
 
-#: src/Application/Health/HealthService.php:110
+#: src/Application/Health/HealthService.php:111
 msgid "Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked."
 msgstr "Для восстановления таблицы записей и истории должны быть InnoDB. Журнал изменений ведётся, восстановление заблокировано."
 
-#: src/Application/Health/HealthService.php:111
+#: src/Application/Health/HealthService.php:112
 msgid "The site uses SQLite. Restores run in transactions of the SQLite database."
 msgstr "Сайт работает на SQLite. Восстановление выполняется в транзакциях базы SQLite."
 
-#: src/Application/Health/HealthService.php:112
+#: src/Application/Health/HealthService.php:113
 msgid "Posts and history tables use InnoDB."
 msgstr "Таблицы записей и истории используют InnoDB."
 
-#: src/Application/Health/HealthService.php:121
+#: src/Application/Health/HealthService.php:122
 msgid "Compatibility mode"
 msgstr "Режим совместимости"
 
-#: src/Application/Health/HealthService.php:122
+#: src/Application/Health/HealthService.php:123
 msgid "Restores use the WordPress database connection instead of a dedicated one, because the site runs on SQLite or SELECTIVE_UNDO_COMPAT_MODE is set. Every restored value is read back and checked before it is saved, but protection against a dropped connection in the middle of a restore is weaker. This mode is meant for demos and hosts that allow only one database connection."
 msgstr "Восстановление использует соединение WordPress с базой данных вместо отдельного, потому что сайт работает на SQLite или задана константа SELECTIVE_UNDO_COMPAT_MODE. Каждое восстановленное значение перечитывается и проверяется до сохранения, но защита от обрыва соединения посреди восстановления слабее. Этот режим предназначен для демо и хостингов, где разрешено только одно соединение с базой."
 
-#: src/Application/Health/HealthService.php:130
+#: src/Application/Health/HealthService.php:131
 msgid "Restore connection"
 msgstr "Соединение для восстановления"
 
-#: src/Application/Health/HealthService.php:133
+#: src/Application/Health/HealthService.php:134
 msgid "Restores use the WordPress database connection (compatibility mode)."
 msgstr "Восстановление использует соединение WordPress с базой данных (режим совместимости)."
 
-#: src/Application/Health/HealthService.php:134
+#: src/Application/Health/HealthService.php:135
 msgid "A dedicated transactional connection to the primary database works and reaches the same database."
 msgstr "Отдельное транзакционное соединение с основной базой данных работает и подключается к той же базе."
 
 #. translators: %s: error code.
-#: src/Application/Health/HealthService.php:135
+#: src/Application/Health/HealthService.php:136
 #, php-format
 msgid "The dedicated database connection failed (%s). Restoring is blocked."
 msgstr "Отдельное соединение с базой данных не удалось (%s). Восстановление заблокировано."
 
-#: src/Application/Health/HealthService.php:143
+#: src/Application/Health/HealthService.php:144
 #: build/index.js:11
 msgid "Recording"
 msgstr "Журнал изменений"
 
-#: src/Application/Health/HealthService.php:145
+#: src/Application/Health/HealthService.php:146
 msgid "Changes of tracked content are being recorded."
 msgstr "Изменения отслеживаемого контента записываются в журнал."
 
-#: src/Application/Health/HealthService.php:146
+#: src/Application/Health/HealthService.php:147
 msgid "Recording is turned off in the settings."
 msgstr "Журнал изменений выключен в настройках."
 
-#: src/Application/Health/HealthService.php:147
+#: src/Application/Health/HealthService.php:148
 msgid "Recording is paused: the history size limit is reached."
 msgstr "Журнал изменений приостановлен: достигнут лимит объёма истории."
 
-#: src/Application/Health/HealthService.php:148
+#: src/Application/Health/HealthService.php:149
 msgid "Recording is paused until the database update finishes."
 msgstr "Журнал изменений приостановлен до завершения обновления базы данных."
 
-#: src/Application/Health/HealthService.php:150
+#: src/Application/Health/HealthService.php:151
 msgid "Recording is paused."
 msgstr "Журнал изменений приостановлен."
 
-#: src/Application/Health/HealthService.php:167
+#: src/Application/Health/HealthService.php:170
 msgid "Earlier changes"
 msgstr "Более ранние изменения"
 
-#: src/Application/Health/HealthService.php:169
+#: src/Application/Health/HealthService.php:172
 msgid "Importing WordPress revisions is turned off in the settings."
 msgstr "Импорт редакций WordPress выключен в настройках."
 
-#: src/Application/Health/HealthService.php:170
+#: src/Application/Health/HealthService.php:173
 msgid "Changes saved in WordPress revisions before recording started are being imported."
 msgstr "Изменения, сохранённые в редакциях WordPress до начала записи, импортируются."
 
 #. translators: 1: number of changes, 2: number of items.
-#: src/Application/Health/HealthService.php:173
+#: src/Application/Health/HealthService.php:176
 #, php-format
 msgid "%1$d change from WordPress revisions of %2$d item was imported."
 msgid_plural "%1$d changes from WordPress revisions of %2$d items were imported."
@@ -152,83 +152,83 @@ msgstr[0] "Импортировано %1$d изменение из редакц�
 msgstr[1] "Импортировано %1$d изменения из редакций WordPress для записей: %2$d."
 msgstr[2] "Импортировано %1$d изменений из редакций WordPress для записей: %2$d."
 
-#: src/Application/Health/HealthService.php:190
+#: src/Application/Health/HealthService.php:193
 msgid "History size"
 msgstr "Объём истории"
 
 #. translators: 1: used size, 2: limit.
-#: src/Application/Health/HealthService.php:193
+#: src/Application/Health/HealthService.php:196
 #, php-format
 msgid "%1$s of %2$s used."
 msgstr "Занято %1$s из %2$s."
 
-#: src/Application/Health/HealthService.php:203
+#: src/Application/Health/HealthService.php:206
 msgid "Largest recorded value"
 msgstr "Самое большое сохраняемое значение"
 
 #. translators: %s: size.
-#: src/Application/Health/HealthService.php:206
+#: src/Application/Health/HealthService.php:209
 #, php-format
 msgid "Values up to %s are stored. Larger values are listed but cannot be restored."
 msgstr "Сохраняются значения до %s. Более крупные видны в истории, но восстановить их нельзя."
 
-#: src/Application/Health/HealthService.php:217
+#: src/Application/Health/HealthService.php:220
 msgid "Background tasks"
 msgstr "Фоновые задачи"
 
-#: src/Application/Health/HealthService.php:219
+#: src/Application/Health/HealthService.php:222
 msgid "Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job."
 msgstr "Фоновое обслуживание не запускалось больше двух часов. Для редко посещаемых сайтов настройте системный cron."
 
-#: src/Application/Health/HealthService.php:221
+#: src/Application/Health/HealthService.php:224
 msgid "WP-Cron is disabled; make sure a system cron job calls wp-cron.php."
 msgstr "WP-Cron отключён. Убедитесь, что системный cron вызывает wp-cron.php."
 
-#: src/Application/Health/HealthService.php:224
+#: src/Application/Health/HealthService.php:227
 msgid "Maintenance runs through WP-Cron."
 msgstr "Обслуживание выполняется через WP-Cron."
 
-#: src/Application/Health/HealthService.php:231
+#: src/Application/Health/HealthService.php:234
 msgid "Page cache"
 msgstr "Кэш страниц"
 
-#: src/Application/Health/HealthService.php:233
+#: src/Application/Health/HealthService.php:236
 msgid "No page cache without an integration was detected."
 msgstr "Кэш страниц без поддерживаемой интеграции не обнаружен."
 
-#: src/Application/Health/HealthService.php:234
+#: src/Application/Health/HealthService.php:237
 msgid "A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version."
 msgstr "Активен кэш страниц без известной интеграции. Если после восстановления посетители видят старую версию, очистите кэш страниц вручную."
 
-#: src/Application/Health/HealthService.php:240
+#: src/Application/Health/HealthService.php:243
 msgid "Object cache"
 msgstr "Объектный кэш"
 
-#: src/Application/Health/HealthService.php:242
+#: src/Application/Health/HealthService.php:245
 msgid "A persistent object cache is used; restored posts are purged from it."
 msgstr "Используется постоянный объектный кэш; восстановленные записи из него удаляются."
 
-#: src/Application/Health/HealthService.php:243
+#: src/Application/Health/HealthService.php:246
 msgid "No persistent object cache."
 msgstr "Постоянного объектного кэша нет."
 
-#: src/Application/Health/HealthService.php:250
+#: src/Application/Health/HealthService.php:253
 msgid "Database drop-in"
 msgstr "Drop-in базы данных"
 
-#: src/Application/Health/HealthService.php:252
+#: src/Application/Health/HealthService.php:255
 msgid "None."
 msgstr "Нет."
 
-#: src/Application/Health/HealthService.php:253
+#: src/Application/Health/HealthService.php:256
 msgid "The SQLite database drop-in is installed."
 msgstr "Установлен drop-in базы данных SQLite."
 
-#: src/Application/Health/HealthService.php:254
+#: src/Application/Health/HealthService.php:257
 msgid "A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode)."
 msgstr "Установлен drop-in db.php. Восстановление использует соединение WordPress с базой данных (режим совместимости)."
 
-#: src/Application/Health/HealthService.php:255
+#: src/Application/Health/HealthService.php:258
 msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
 msgstr "Установлен drop-in db.php. Восстановление использует отдельное соединение с основной базой данных."
 
@@ -267,7 +267,7 @@ msgstr "Стало"
 #: src/Application/History/DiffService.php:172
 #: src/Application/Restore/CreateRestoreJob.php:56
 #: src/Application/Restore/QuickUndo.php:57
-#: src/Presentation/Rest/RestApi.php:359
+#: src/Presentation/Rest/RestApi.php:370
 msgid "This preview does not exist."
 msgstr "Такого предпросмотра нет."
 
@@ -426,15 +426,15 @@ msgstr "Срок действия предпросмотра удаления и
 msgid "Deleted user #%d"
 msgstr "Удалённый пользователь #%d"
 
-#: src/Bootstrap/Plugin.php:93
+#: src/Bootstrap/Plugin.php:101
 msgid "Every five minutes (Selective Undo)"
 msgstr "Каждые пять минут (Selective Undo)"
 
-#: src/Bootstrap/Plugin.php:162
+#: src/Bootstrap/Plugin.php:200
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr "Selective Undo нельзя активировать для всей сети. Активируйте его на отдельных сайтах."
 
-#: src/Bootstrap/Plugin.php:163
+#: src/Bootstrap/Plugin.php:201
 msgid "Plugin activation"
 msgstr "Активация плагина"
 
@@ -701,33 +701,33 @@ msgstr "Хранилище истории временно недоступно.
 msgid "Something went wrong. The details were written to the Selective Undo diagnostics log."
 msgstr "Что-то пошло не так. Подробности записаны в журнал диагностики Selective Undo."
 
-#: src/Presentation/Rest/RestApi.php:424
-#: src/Presentation/Rest/RestApi.php:592
+#: src/Presentation/Rest/RestApi.php:435
+#: src/Presentation/Rest/RestApi.php:603
 msgid "This restore does not exist."
 msgstr "Такого восстановления нет."
 
-#: src/Presentation/Rest/RestApi.php:461
+#: src/Presentation/Rest/RestApi.php:472
 msgid "Only the author of a restore can continue it."
 msgstr "Продолжить восстановление может только тот, кто его запустил."
 
-#: src/Presentation/Rest/RestApi.php:574
+#: src/Presentation/Rest/RestApi.php:585
 msgid "View history"
 msgstr "Просмотр истории"
 
-#: src/Presentation/Rest/RestApi.php:575
+#: src/Presentation/Rest/RestApi.php:586
 msgid "Restore changes"
 msgstr "Восстановление изменений"
 
-#: src/Presentation/Rest/RestApi.php:576
+#: src/Presentation/Rest/RestApi.php:587
 msgid "Manage settings"
 msgstr "Управление настройками"
 
-#: src/Presentation/Rest/RestApi.php:577
+#: src/Presentation/Rest/RestApi.php:588
 #: build/index.js:30
 msgid "Delete history"
 msgstr "Удаление истории"
 
-#: src/Presentation/Rest/RestApi.php:578
+#: src/Presentation/Rest/RestApi.php:589
 msgid "Export history"
 msgstr "Экспорт истории"
 
@@ -2361,11 +2361,11 @@ msgstr "Описание"
 msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields."
 msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields."
 
-#: src/Application/Health/HealthService.php:223
+#: src/Application/Health/HealthService.php:226
 msgid "Maintenance runs through WP-Cron; restores and imports run through Action Scheduler."
 msgstr "Обслуживание выполняется через WP-Cron; восстановления и импорт — через Action Scheduler."
 
-#: src/Application/Health/HealthService.php:149
+#: src/Application/Health/HealthService.php:150
 msgid "Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors."
 msgstr "Запись истории временно приостановлена: запись в журнал несколько раз завершилась ошибкой или шла слишком медленно. Она возобновится сама; ошибки — в журнале событий."
 
@@ -2373,11 +2373,11 @@ msgstr "Запись истории временно приостановлен�
 msgid "Recording was paused because writing the history failed repeatedly or was too slow."
 msgstr "Запись истории была приостановлена: запись в журнал несколько раз завершилась ошибкой или шла слишком медленно."
 
-#: src/Application/Health/HealthService.php:158
+#: src/Application/Health/HealthService.php:159
 msgid "Copied history"
 msgstr "Скопированная история"
 
-#: src/Application/Health/HealthService.php:159
+#: src/Application/Health/HealthService.php:162
 msgid "The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it."
 msgstr "История скопирована с другого сайта (другой адрес или база данных). Оставьте её, если этот сайт заменил тот, или очистите."
 
@@ -2396,3 +2396,39 @@ msgstr "Очистить историю"
 #: build/index.js:26
 msgid "The history was copied from another site. Check that these values belong to this site before restoring."
 msgstr "История скопирована с другого сайта. Перед восстановлением убедитесь, что эти значения относятся к этому сайту."
+
+#: src/Application/Capture/ReconciliationScanner.php:129
+msgid "Changes made outside WordPress (found by the check)"
+msgstr "Изменения в обход WordPress (обнаружены при проверке)"
+
+#: src/Application/Health/HealthService.php:161
+msgid "Most items with history changed at once: the database seems to have been restored from a backup. Keep the history to record the differences as changes made outside WordPress, or clear it."
+msgstr "Большинство записей с историей изменились разом: похоже, база данных была восстановлена из копии. Оставьте историю, чтобы записать расхождения как изменения в обход WordPress, или очистите её."
+
+#: build/index.js:3
+msgid "GraphQL"
+msgstr "GraphQL"
+
+#: build/index.js:3
+msgid "Outside WordPress"
+msgstr "В обход WordPress"
+
+#: build/index.js:11
+msgid "The database seems to have been restored from a backup: most items with history changed at once."
+msgstr "Похоже, база данных была восстановлена из копии: большинство записей с историей изменились разом."
+
+#: build/index.js:36
+msgid "The history was copied from another site."
+msgstr "История скопирована с другого сайта."
+
+#: build/index.js:36
+msgid "The database seems to have been restored from a backup."
+msgstr "Похоже, база данных была восстановлена из копии."
+
+#: build/index.js:37
+msgid "Check started; changes made outside WordPress will appear in the history"
+msgstr "Проверка запущена; изменения в обход WordPress появятся в истории"
+
+#: build/index.js:37
+msgid "Check for changes made outside WordPress"
+msgstr "Проверить изменения в обход WordPress"

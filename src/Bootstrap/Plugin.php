@@ -44,6 +44,14 @@ final class Plugin
         add_action(\SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, [self::class, 'runJob']);
         add_action(self::QUEUE_HOOK, [self::class, 'processQueue']);
         add_action(self::IMPORT_HOOK, [self::class, 'continueImport']);
+        add_action(\SelectiveUndo\Application\Capture\ReconciliationScanner::HOOK, [self::class, 'continueReconcile']);
+        // A full check after bulk changes that bypass WordPress or arrive in bulk (FR-8.4.3).
+        add_action('upgrader_process_complete', [self::class, 'scheduleReconcile']);
+        add_action('import_end', [self::class, 'scheduleReconcile']);
+
+        if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {
+            \WP_CLI::add_hook('after_invoke:search-replace', [self::class, 'scheduleReconcile']);
+        }
         add_action(\SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK, [self::class, 'runMaintenance']);
         $s->privacy()->register();
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RestApi(self::services()))->register());
@@ -115,6 +123,36 @@ final class Plugin
 
         $s->outbox()->dispatchDue();
         self::importRevisions(15.0);
+        self::reconcile(10.0);
+    }
+
+    /**
+     * Compares items with history against the database and records what changed
+     * outside WordPress. Each heartbeat checks the next batch; a full pass goes on
+     * through the queue until it reaches the end.
+     */
+    public static function reconcile(float $budgetSeconds): bool
+    {
+        try {
+            return self::services()->reconciliation()->run($budgetSeconds)['done_cycle'];
+        } catch (\Throwable $e) {
+            self::services()->eventLog()->exception('reconcile_failed', $e);
+
+            return true;
+        }
+    }
+
+    public static function scheduleReconcile(): void
+    {
+        self::services()->reconciliation()->restart();
+        self::services()->queue()->enqueue(\SelectiveUndo\Application\Capture\ReconciliationScanner::HOOK, [], 5);
+    }
+
+    public static function continueReconcile(): void
+    {
+        if (!self::reconcile(15.0)) {
+            self::services()->queue()->enqueue(\SelectiveUndo\Application\Capture\ReconciliationScanner::HOOK, [], 5);
+        }
     }
 
     /**
@@ -203,7 +241,7 @@ final class Plugin
     {
         $queue = self::services()->queue();
 
-        foreach (['sundo_hourly_maintenance', self::QUEUE_HOOK, \SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, self::IMPORT_HOOK] as $hook) {
+        foreach (['sundo_hourly_maintenance', self::QUEUE_HOOK, \SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, self::IMPORT_HOOK, \SelectiveUndo\Application\Capture\ReconciliationScanner::HOOK] as $hook) {
             wp_unschedule_hook($hook);
             $queue->clear($hook);
         }

@@ -23,6 +23,49 @@ final class JournalReader
     }
 
     /**
+     * IDs of objects with recorded field history, after $afterId, in ID order.
+     *
+     * @return list<int>
+     */
+    public function objectsWithHistoryAfter(string $objectType, int $afterId, int $limit): array
+    {
+        return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare(
+            "SELECT DISTINCT object_id FROM {$this->t->changes}
+             WHERE object_type = %s AND object_id > %d AND field_key <> ''
+             ORDER BY object_id LIMIT %d",
+            $objectType,
+            $afterId,
+            $limit
+        ))));
+    }
+
+    /**
+     * The latest recorded value of each field of an object, when it is stored.
+     *
+     * @return array<string, array{adapter: string, blob_id: int, hash: string}>
+     */
+    public function latestStoredValues(ObjectRef $object): array
+    {
+        $rows = (array) $this->db->get_results($this->db->prepare(
+            "SELECT c.field_key, c.adapter_key, c.after_blob_id, c.after_hash FROM {$this->t->changes} c
+             WHERE c.object_type = %s AND c.object_id = %d AND c.field_key <> ''
+               AND c.object_seq = (SELECT MAX(l.object_seq) FROM {$this->t->changes} l
+                                   WHERE l.object_type = c.object_type AND l.object_id = c.object_id AND l.field_key = c.field_key)",
+            $object->type,
+            $object->id
+        ), ARRAY_A);
+        $out = [];
+
+        foreach ($rows as $row) {
+            if ($row['after_blob_id'] !== null && $row['after_hash'] !== null) {
+                $out[(string) $row['field_key']] = ['adapter' => (string) $row['adapter_key'], 'blob_id' => (int) $row['after_blob_id'], 'hash' => (string) $row['after_hash']];
+            }
+        }
+
+        return $out;
+    }
+
+    /**
      * @param list<int> $ids
      *
      * @return array<int, array<string, mixed>> id => row

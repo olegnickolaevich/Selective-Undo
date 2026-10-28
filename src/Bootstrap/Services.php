@@ -7,6 +7,7 @@ namespace SelectiveUndo\Bootstrap;
 use SelectiveUndo\Application\Capture\CaptureCircuitBreaker;
 use SelectiveUndo\Application\Capture\CaptureService;
 use SelectiveUndo\Application\Capture\ChangesetEvents;
+use SelectiveUndo\Application\Capture\ReconciliationScanner;
 use SelectiveUndo\Application\Capture\CaptureState;
 use SelectiveUndo\Application\Capture\GapRecorder;
 use SelectiveUndo\Application\Capture\OperationManager;
@@ -536,6 +537,20 @@ final class Services
     public function purge(): PurgeService
     {
         return $this->get(PurgeService::class, fn () => new PurgeService($this->db, $this->tables(), $this->retention(), $this->blobCollector(), $this->eventLog(), $this->siteFingerprint()));
+    }
+
+    public function reconciliation(): ReconciliationScanner
+    {
+        return $this->get(ReconciliationScanner::class, fn () => new ReconciliationScanner(
+            $this->journalReader(),
+            $this->blobs(),
+            $this->adapters(),
+            $this->capture(),
+            $this->requestContext(),
+            $this->operations(),
+            $this->siteFingerprint(),
+            $this->trackingPolicy(),
+        ));
     }
 
     public function siteFingerprint(): SiteFingerprint

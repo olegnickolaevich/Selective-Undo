@@ -28,6 +28,14 @@ final class SourceDetector
             return Source::XmlRpc;
         }
 
+        if ((function_exists('is_graphql_request') && is_graphql_request()) || (defined('GRAPHQL_REQUEST') && GRAPHQL_REQUEST)) {
+            if (function_exists('rest_get_authenticated_app_password') && rest_get_authenticated_app_password() !== null) {
+                return Source::AppPassword;
+            }
+
+            return Source::GraphQl;
+        }
+
         if (defined('REST_REQUEST') && REST_REQUEST) {
             if (function_exists('rest_get_authenticated_app_password') && rest_get_authenticated_app_password() !== null) {
                 return Source::AppPassword;

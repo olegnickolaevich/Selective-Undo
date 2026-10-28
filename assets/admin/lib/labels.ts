@@ -355,6 +355,8 @@ export function sourceLabel( source: string ): string {
 		restore: __( 'Selective Undo', 'selective-undo' ),
 		revisions: __( 'WordPress revisions', 'selective-undo' ),
 		editor_undo: __( 'Undo in the editor', 'selective-undo' ),
+		graphql: __( 'GraphQL', 'selective-undo' ),
+		external: __( 'Outside WordPress', 'selective-undo' ),
 	};
 
 	return map[ source ] ?? __( 'Other', 'selective-undo' );
@@ -536,6 +538,14 @@ export function gapReasonText( reason: string ): string {
 		),
 		capture_disabled: __(
 			'Recording was turned off in the settings.',
+			'selective-undo'
+		),
+		site_moved: __(
+			'The history was copied from another site.',
+			'selective-undo'
+		),
+		database_restored: __(
+			'The database seems to have been restored from a backup.',
 			'selective-undo'
 		),
 		circuit_open: __(

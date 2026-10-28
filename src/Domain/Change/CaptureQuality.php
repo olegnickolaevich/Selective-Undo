@@ -12,11 +12,13 @@ enum CaptureQuality: string
     case Observed = 'observed';
     /** Inconsistent observation: automatic restore is not allowed. */
     case Ambiguous = 'ambiguous';
+    /** Found by comparing the database with the history: the value was changed outside WordPress. */
+    case Reconciled = 'reconciled';
 
     public function rank(): int
     {
         return match ($this) {
-            self::Verified => 0,
+            self::Verified, self::Reconciled => 0,
             self::Observed => 1,
             self::Ambiguous => 2,
         };

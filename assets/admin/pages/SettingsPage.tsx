@@ -692,6 +692,7 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 		[]
 	);
 	const [ error, setError ] = useState< unknown >( null );
+	const [ queued, setQueued ] = useState( false );
 
 	return (
 		<>
@@ -783,6 +784,29 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 						'Download diagnostics (no content)',
 						'selective-undo'
 					) }
+				</Button>
+				<Button
+					variant="secondary"
+					disabled={ queued }
+					accessibleWhenDisabled
+					onClick={ async () => {
+						try {
+							await api.reconcileNow();
+							setQueued( true );
+						} catch ( e: unknown ) {
+							setError( e );
+						}
+					} }
+				>
+					{ queued
+						? __(
+								'Check started; changes made outside WordPress will appear in the history',
+								'selective-undo'
+							)
+						: __(
+								'Check for changes made outside WordPress',
+								'selective-undo'
+							) }
 				</Button>
 				{ overview?.user.can.export && (
 					<Button

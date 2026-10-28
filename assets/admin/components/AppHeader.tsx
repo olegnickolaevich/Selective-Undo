@@ -25,9 +25,16 @@ function captureText( capture: Overview[ 'capture' ] ): string {
  * The history was copied with the database from another site: keep it, or clear it
  * through the two-step deletion.
  * @param root0
+ * @param root0.restored
  * @param root0.onKept
  */
-function SiteMovedNotice( { onKept }: { onKept: () => void } ) {
+function SiteMovedNotice( {
+	restored,
+	onKept,
+}: {
+	restored: boolean;
+	onKept: () => void;
+} ) {
 	const [ busy, setBusy ] = useState( false );
 	const [ error, setError ] = useState< unknown >( null );
 	// The two-step "Delete history" form is on the Storage tab.
@@ -36,10 +43,15 @@ function SiteMovedNotice( { onKept }: { onKept: () => void } ) {
 	return (
 		<Notice status="warning" isDismissible={ false }>
 			<p>
-				{ __(
-					'The history was copied from another site. It may list changes made there.',
-					'selective-undo'
-				) }
+				{ restored
+					? __(
+							'The database seems to have been restored from a backup: most items with history changed at once.',
+							'selective-undo'
+						)
+					: __(
+							'The history was copied from another site. It may list changes made there.',
+							'selective-undo'
+						) }
 			</p>
 			<p className="su-notice-actions">
 				<Button
@@ -172,7 +184,12 @@ export function AppHeader( {
 				</dl>
 			) }
 			{ overview?.site_moved && overview.user.can.manage_settings && (
-				<SiteMovedNotice onKept={ onChanged } />
+				<SiteMovedNotice
+					restored={
+						overview.site_moved_reason === 'database_restored'
+					}
+					onKept={ onChanged }
+				/>
 			) }
 			{ overview && overview.restore_blockers.length > 0 && (
 				<Notice status="error" isDismissible={ false }>
