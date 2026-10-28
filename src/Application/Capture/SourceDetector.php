@@ -70,4 +70,16 @@ final class SourceDetector
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- classification only.
         return is_admin() && $pagenow === 'post.php' && isset($_GET['meta-box-loader']);
     }
+
+    /**
+     * The token the block editor sends with every request of one click on Save:
+     * the post itself, fields that plugins save through their own endpoints, meta boxes.
+     */
+    public function saveToken(): ?string
+    {
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- validated as a UUID below.
+        $raw = isset($_SERVER['HTTP_X_SELECTIVE_UNDO_SAVE']) ? wp_unslash((string) $_SERVER['HTTP_X_SELECTIVE_UNDO_SAVE']) : '';
+
+        return is_string($raw) && wp_is_uuid($raw) ? strtolower($raw) : null;
+    }
 }

@@ -64,6 +64,11 @@ final class RequestContext
         return $this->detector->isMetaBoxSave();
     }
 
+    public function saveToken(): ?string
+    {
+        return $this->detector->saveToken();
+    }
+
     /**
      * @return array{id: int, uuid: string, depth: int}|null
      */

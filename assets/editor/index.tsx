@@ -14,6 +14,7 @@ import type { TimelineItem } from '../admin/api/types';
 import { exactDate, relativeDate } from '../admin/lib/format';
 import { eventLabel } from '../admin/lib/labels';
 import { registerBlockHistory, setShowAuthors } from './block-history';
+import { registerSaveToken } from './save-token';
 import { EDITOR_FIELDS, UndoInEditorButton } from './undo-in-editor';
 import './editor.scss';
 
@@ -210,3 +211,4 @@ function HistoryPanel() {
 
 registerPlugin( 'selective-undo', { render: HistoryPanel } );
 registerBlockHistory();
+registerSaveToken();

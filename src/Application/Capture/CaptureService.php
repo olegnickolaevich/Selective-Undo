@@ -10,6 +10,7 @@ use SelectiveUndo\Domain\Change\ChangesetKind;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
 use SelectiveUndo\Domain\Contracts\CaptureSink;
+use SelectiveUndo\Domain\Contracts\LockService;
 use SelectiveUndo\Domain\Contracts\WallClock;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
@@ -34,6 +35,9 @@ final class CaptureService implements CaptureSink
     /** Idle window after which an autosave session is sealed. */
     public const AUTOSAVE_WINDOW_SECONDS = 600;
 
+    /** Positions left free for the rows of a concurrent request of the same save. */
+    private const JOINED_SEQUENCE_GAP = 1000;
+
     public function __construct(
         private readonly \wpdb $db,
         private readonly JournalRepository $journal,
@@ -45,6 +49,7 @@ final class CaptureService implements CaptureSink
         private readonly EventLog $log,
         private readonly WallClock $clock,
         private readonly RevisionImporter $revisions,
+        private readonly LockService $locks,
     ) {
     }
 
@@ -208,6 +213,11 @@ final class CaptureService implements CaptureSink
         }
 
         $actor = get_current_user_id();
+        $token = $operation === null && $actor > 0 ? $this->request->saveToken() : null;
+
+        if ($token !== null) {
+            return $this->changesetForSave($key, $actor, $token);
+        }
 
         if ($operation === null && $object !== null && $actor > 0 && $this->request->isMetaBoxSave()) {
             // One click on Save is two requests (REST, then meta boxes): one change set.
@@ -233,6 +243,48 @@ final class CaptureService implements CaptureSink
         $this->request->rememberChangeset($key, $created['id']);
 
         return $created['id'];
+    }
+
+    /**
+     * The requests of one click on Save in the block editor share its token and one
+     * change set. They may run at the same time (plugins save their fields through
+     * their own endpoints while the post is being saved), so the change set is found
+     * or created under a lock, and the token is kept as the change set's request UUID.
+     */
+    private function changesetForSave(string $key, int $actor, string $token): int
+    {
+        $lock = 'save_' . md5($token);
+        $locked = $this->locks->acquire($lock, 5);
+
+        try {
+            $joined = $this->journal->findChangesetByRequest($actor, $token, $this->clock->utcMysql(-120));
+
+            if ($joined !== null) {
+                $this->journal->reopen($joined);
+                // Another request of this save may still be writing: number after a gap
+                // so that the rows of the two requests never take the same position.
+                $this->request->continueSequenceAfter($this->journal->nextSequence($joined) + self::JOINED_SEQUENCE_GAP);
+                $this->request->rememberChangeset($key, $joined);
+
+                return $joined;
+            }
+
+            $created = $this->journal->createChangeset([
+                'kind' => ChangesetKind::Edit,
+                'source' => $this->request->source()->value,
+                'grouping' => 'request',
+                'actor' => $actor,
+                'request_uuid' => $token,
+                'operation_id' => null,
+            ]);
+            $this->request->rememberChangeset($key, $created['id']);
+
+            return $created['id'];
+        } finally {
+            if ($locked) {
+                $this->locks->release($lock);
+            }
+        }
     }
 
     /**

@@ -182,6 +182,7 @@ final class Services
             $this->eventLog(),
             $this->clock(),
             $this->revisionImporter(),
+            $this->locks(),
         ));
     }
 

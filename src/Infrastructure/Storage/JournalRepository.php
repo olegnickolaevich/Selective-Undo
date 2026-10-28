@@ -214,6 +214,21 @@ final class JournalRepository
         return $id === null ? null : (int) $id;
     }
 
+    /** The edit change set an earlier request with the same request UUID (save token) opened. */
+    public function findChangesetByRequest(int $actor, string $requestUuid, string $sinceUtc): ?int
+    {
+        $id = $this->db->get_var($this->db->prepare(
+            "SELECT id FROM {$this->t->changesets}
+             WHERE actor_user_id = %d AND request_uuid = %s AND kind = 'edit' AND created_at >= %s
+             ORDER BY id DESC LIMIT 1",
+            $actor,
+            $requestUuid,
+            $sinceUtc
+        ));
+
+        return $id === null ? null : (int) $id;
+    }
+
     /** Opens a sealed change set again to add rows; sealing recomputes its summary. */
     public function reopen(int $changesetId): void
     {
