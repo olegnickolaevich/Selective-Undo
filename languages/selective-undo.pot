@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-28T16:34:55+05:00\n"
+"POT-Creation-Date: 2026-10-28T16:53:15+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -49,193 +49,201 @@ msgstr ""
 msgid "Selective Undo requires PHP 8.2 or newer. The plugin is inactive."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:93
+#: src/Application/Health/HealthService.php:96
 msgid "Database schema"
 msgstr ""
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:95
+#: src/Application/Health/HealthService.php:98
 #, php-format
 msgid "Version %d, all tables present."
 msgstr ""
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:96
+#: src/Application/Health/HealthService.php:99
 msgid "The schema is outdated. Open any admin page to run the update."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:105
+#: src/Application/Health/HealthService.php:108
 msgid "Transactional tables"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:107
+#: src/Application/Health/HealthService.php:110
 msgid "Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:108
+#: src/Application/Health/HealthService.php:111
 msgid "The site uses SQLite. Restores run in transactions of the SQLite database."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:109
+#: src/Application/Health/HealthService.php:112
 msgid "Posts and history tables use InnoDB."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:118
+#: src/Application/Health/HealthService.php:121
 msgid "Compatibility mode"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:119
+#: src/Application/Health/HealthService.php:122
 msgid "Restores use the WordPress database connection instead of a dedicated one, because the site runs on SQLite or SELECTIVE_UNDO_COMPAT_MODE is set. Every restored value is read back and checked before it is saved, but protection against a dropped connection in the middle of a restore is weaker. This mode is meant for demos and hosts that allow only one database connection."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:127
+#: src/Application/Health/HealthService.php:130
 msgid "Restore connection"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:130
+#: src/Application/Health/HealthService.php:133
 msgid "Restores use the WordPress database connection (compatibility mode)."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:131
+#: src/Application/Health/HealthService.php:134
 msgid "A dedicated transactional connection to the primary database works and reaches the same database."
 msgstr ""
 
 #. translators: %s: error code.
-#: src/Application/Health/HealthService.php:132
+#: src/Application/Health/HealthService.php:135
 #, php-format
 msgid "The dedicated database connection failed (%s). Restoring is blocked."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:140
+#: src/Application/Health/HealthService.php:143
 #: build/index.js:11
 msgid "Recording"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:142
+#: src/Application/Health/HealthService.php:145
 msgid "Changes of tracked content are being recorded."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:143
+#: src/Application/Health/HealthService.php:146
 msgid "Recording is turned off in the settings."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:144
+#: src/Application/Health/HealthService.php:147
 msgid "Recording is paused: the history size limit is reached."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:145
+#: src/Application/Health/HealthService.php:148
 msgid "Recording is paused until the database update finishes."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:146
+#: src/Application/Health/HealthService.php:149
 msgid "Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:147
+#: src/Application/Health/HealthService.php:150
 msgid "Recording is paused."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:155
+#: src/Application/Health/HealthService.php:158
+msgid "Copied history"
+msgstr ""
+
+#: src/Application/Health/HealthService.php:159
+msgid "The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:167
 msgid "Earlier changes"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:157
+#: src/Application/Health/HealthService.php:169
 msgid "Importing WordPress revisions is turned off in the settings."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:158
+#: src/Application/Health/HealthService.php:170
 msgid "Changes saved in WordPress revisions before recording started are being imported."
 msgstr ""
 
 #. translators: 1: number of changes, 2: number of items.
-#: src/Application/Health/HealthService.php:161
+#: src/Application/Health/HealthService.php:173
 #, php-format
 msgid "%1$d change from WordPress revisions of %2$d item was imported."
 msgid_plural "%1$d changes from WordPress revisions of %2$d items were imported."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Application/Health/HealthService.php:178
+#: src/Application/Health/HealthService.php:190
 msgid "History size"
 msgstr ""
 
 #. translators: 1: used size, 2: limit.
-#: src/Application/Health/HealthService.php:181
+#: src/Application/Health/HealthService.php:193
 #, php-format
 msgid "%1$s of %2$s used."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:191
+#: src/Application/Health/HealthService.php:203
 msgid "Largest recorded value"
 msgstr ""
 
 #. translators: %s: size.
-#: src/Application/Health/HealthService.php:194
+#: src/Application/Health/HealthService.php:206
 #, php-format
 msgid "Values up to %s are stored. Larger values are listed but cannot be restored."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:205
+#: src/Application/Health/HealthService.php:217
 msgid "Background tasks"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:207
+#: src/Application/Health/HealthService.php:219
 msgid "Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:209
+#: src/Application/Health/HealthService.php:221
 msgid "WP-Cron is disabled; make sure a system cron job calls wp-cron.php."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:211
+#: src/Application/Health/HealthService.php:223
 msgid "Maintenance runs through WP-Cron; restores and imports run through Action Scheduler."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:212
+#: src/Application/Health/HealthService.php:224
 msgid "Maintenance runs through WP-Cron."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:219
+#: src/Application/Health/HealthService.php:231
 msgid "Page cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:221
+#: src/Application/Health/HealthService.php:233
 msgid "No page cache without an integration was detected."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:222
+#: src/Application/Health/HealthService.php:234
 msgid "A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:228
+#: src/Application/Health/HealthService.php:240
 msgid "Object cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:230
+#: src/Application/Health/HealthService.php:242
 msgid "A persistent object cache is used; restored posts are purged from it."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:231
+#: src/Application/Health/HealthService.php:243
 msgid "No persistent object cache."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:238
+#: src/Application/Health/HealthService.php:250
 msgid "Database drop-in"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:240
+#: src/Application/Health/HealthService.php:252
 msgid "None."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:241
+#: src/Application/Health/HealthService.php:253
 msgid "The SQLite database drop-in is installed."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:242
+#: src/Application/Health/HealthService.php:254
 msgid "A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode)."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:243
+#: src/Application/Health/HealthService.php:255
 msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
 msgstr ""
 
@@ -274,7 +282,7 @@ msgstr ""
 #: src/Application/History/DiffService.php:172
 #: src/Application/Restore/CreateRestoreJob.php:56
 #: src/Application/Restore/QuickUndo.php:57
-#: src/Presentation/Rest/RestApi.php:343
+#: src/Presentation/Rest/RestApi.php:359
 msgid "This preview does not exist."
 msgstr ""
 
@@ -402,27 +410,27 @@ msgstr ""
 msgid "The content changed after this preview. Check the restore again."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:67
+#: src/Application/Retention/PurgeService.php:69
 msgid "Type DELETE to confirm."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:147
+#: src/Application/Retention/PurgeService.php:154
 msgid "Choose an item."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:150
+#: src/Application/Retention/PurgeService.php:157
 msgid "Choose a valid date."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:152
+#: src/Application/Retention/PurgeService.php:159
 msgid "Unknown deletion scope."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:190
+#: src/Application/Retention/PurgeService.php:197
 msgid "The deletion preview is invalid. Preview again."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:196
+#: src/Application/Retention/PurgeService.php:203
 msgid "The deletion preview has expired. Preview again."
 msgstr ""
 
@@ -432,15 +440,15 @@ msgstr ""
 msgid "Deleted user #%d"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:92
+#: src/Bootstrap/Plugin.php:93
 msgid "Every five minutes (Selective Undo)"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:161
+#: src/Bootstrap/Plugin.php:162
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:162
+#: src/Bootstrap/Plugin.php:163
 msgid "Plugin activation"
 msgstr ""
 
@@ -714,33 +722,33 @@ msgstr ""
 msgid "Something went wrong. The details were written to the Selective Undo diagnostics log."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:408
-#: src/Presentation/Rest/RestApi.php:576
+#: src/Presentation/Rest/RestApi.php:424
+#: src/Presentation/Rest/RestApi.php:592
 msgid "This restore does not exist."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:445
+#: src/Presentation/Rest/RestApi.php:461
 msgid "Only the author of a restore can continue it."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:558
+#: src/Presentation/Rest/RestApi.php:574
 msgid "View history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:559
+#: src/Presentation/Rest/RestApi.php:575
 msgid "Restore changes"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:560
+#: src/Presentation/Rest/RestApi.php:576
 msgid "Manage settings"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:561
+#: src/Presentation/Rest/RestApi.php:577
 #: build/index.js:30
 msgid "Delete history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:562
+#: src/Presentation/Rest/RestApi.php:578
 msgid "Export history"
 msgstr ""
 
@@ -985,6 +993,7 @@ msgid "The history could not be loaded."
 msgstr ""
 
 #: build/editor.js:2
+#: build/index.js:1
 #: build/index.js:15
 #: build/index.js:22
 msgid "Loading…"
@@ -1001,6 +1010,22 @@ msgstr ""
 
 #: build/editor.js:2
 msgid "Compare and undo changes"
+msgstr ""
+
+#: build/index.js:1
+msgid "The server could not be reached. Check your connection and try again."
+msgstr ""
+
+#: build/index.js:1
+msgid "Something went wrong. Try again."
+msgstr ""
+
+#: build/index.js:1
+msgid "Try again"
+msgstr ""
+
+#: build/index.js:1
+msgid "Show more"
 msgstr ""
 
 #: build/index.js:1
@@ -1450,6 +1475,18 @@ msgid "the PHP mysqli extension is missing"
 msgstr ""
 
 #: build/index.js:11
+msgid "The history was copied from another site. It may list changes made there."
+msgstr ""
+
+#: build/index.js:11
+msgid "Keep history"
+msgstr ""
+
+#: build/index.js:11
+msgid "Clear history"
+msgstr ""
+
+#: build/index.js:11
 msgid "Change history and safe restore"
 msgstr ""
 
@@ -1530,22 +1567,6 @@ msgstr ""
 
 #: build/index.js:15
 msgid "The history uses more than 80% of its size limit."
-msgstr ""
-
-#: build/index.js:15
-msgid "The server could not be reached. Check your connection and try again."
-msgstr ""
-
-#: build/index.js:15
-msgid "Something went wrong. Try again."
-msgstr ""
-
-#: build/index.js:15
-msgid "Try again"
-msgstr ""
-
-#: build/index.js:15
-msgid "Show more"
 msgstr ""
 
 #: build/index.js:15
@@ -2029,6 +2050,10 @@ msgstr ""
 #: build/index.js:26
 #: build/index.js:27
 msgid "Need attention"
+msgstr ""
+
+#: build/index.js:26
+msgid "The history was copied from another site. Check that these values belong to this site before restoring."
 msgstr ""
 
 #: build/index.js:26

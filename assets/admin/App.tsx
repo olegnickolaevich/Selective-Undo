@@ -37,7 +37,10 @@ export function App() {
 	return (
 		<div className="su-app">
 			<div className="su-shell">
-				<AppHeader overview={ overview } />
+				<AppHeader
+					overview={ overview }
+					onChanged={ refreshOverview }
+				/>
 				<Navigation
 					view={ view }
 					canManage={ overview?.user.can.manage_settings ?? false }

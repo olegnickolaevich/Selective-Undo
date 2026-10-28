@@ -6,6 +6,7 @@ namespace SelectiveUndo\Application\Retention;
 
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
 
+use SelectiveUndo\Application\Support\SiteFingerprint;
 use SelectiveUndo\Application\Support\Time;
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\Database\Tables;
@@ -29,6 +30,7 @@ final class PurgeService
         private readonly RetentionService $retention,
         private readonly BlobCollector $blobs,
         private readonly EventLog $log,
+        private readonly SiteFingerprint $site,
     ) {
     }
 
@@ -93,6 +95,11 @@ final class PurgeService
 
         $this->blobs->collect(max(1.0, $budgetSeconds - (microtime(true) - $started)), 0);
         $this->retention->refreshStats();
+
+        if ($criteria['scope'] === 'all' && !$remaining) {
+            $this->site->accept(); // "Clear history" after a copy from another site
+        }
+
         $this->log->log('info', 'history_purged', [
             'scope' => $criteria['scope'],
             'changesets' => $deletedChangesets,

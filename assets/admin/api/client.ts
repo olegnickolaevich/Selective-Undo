@@ -92,6 +92,8 @@ const post = < T >( path: string, data: unknown, method = 'POST' ) =>
 export const api = {
 	overview: ( signal?: AbortSignal ) =>
 		get< Overview >( '/overview', {}, signal ),
+	keepSiteHistory: () =>
+		post< { ok: boolean } >( '/site/fingerprint', { action: 'keep' } ),
 	changesets: ( query: Query, signal?: AbortSignal ) =>
 		get< Page< ChangesetSummary > >( '/changesets', query, signal ),
 	changeset: ( id: Uuid, signal?: AbortSignal ) =>

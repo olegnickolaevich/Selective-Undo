@@ -38,6 +38,7 @@ final class Plugin
         add_action('init', static fn () => self::services()->adapters()->registerCapture(self::services()->capture()), 20);
 
         add_action('admin_init', [self::class, 'maybeMigrate']);
+        add_action('admin_init', static fn () => self::services()->siteFingerprint()->check(), 20);
 
         add_filter('cron_schedules', [self::class, 'cronSchedules']);
         add_action(\SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, [self::class, 'runJob']);
@@ -177,6 +178,7 @@ final class Plugin
         }
 
         self::scheduleEvents();
+        $s->siteFingerprint()->check(true);
 
         // Most sites have few recent revisions: import them right away so that the
         // history is not empty on the first visit; the queue finishes the rest.

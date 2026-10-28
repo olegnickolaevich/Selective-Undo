@@ -356,6 +356,14 @@ export function PreviewPage( { id }: { id: string } ) {
 			<ViewHeading>
 				{ __( 'Check restore', 'selective-undo' ) }
 			</ViewHeading>
+			{ plan.site_moved && (
+				<Notice status="warning" isDismissible={ false }>
+					{ __(
+						'The history was copied from another site. Check that these values belong to this site before restoring.',
+						'selective-undo'
+					) }
+				</Notice>
+			) }
 			<p>
 				{ __( 'Will be processed:', 'selective-undo' ) }{ ' ' }
 				{ itemsCount( s.objects ) } · { fieldsCount( s.fields ) }

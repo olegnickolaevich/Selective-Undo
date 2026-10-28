@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\Restore;
 
 use SelectiveUndo\Application\Support\ObjectPresenter;
+use SelectiveUndo\Application\Support\SiteFingerprint;
 use SelectiveUndo\Application\Support\Time;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
@@ -23,6 +24,7 @@ final class PlanView
         private readonly JobRepository $jobs,
         private readonly AdapterRegistry $adapters,
         private readonly ObjectPresenter $objects,
+        private readonly SiteFingerprint $site,
     ) {
     }
 
@@ -78,6 +80,8 @@ final class PlanView
             'untouched' => self::UNTOUCHED,
             'items' => $items,
             'job_id' => $job !== null ? (string) $job['uuid'] : null,
+            // The history may come from another site until an administrator decides (FR-8.7.2).
+            'site_moved' => $this->site->isMoved(),
             // IDs only: lets the UI build a fresh preview when this one expires.
             'selection' => json_decode((string) $plan['selection_json'], true),
         ];

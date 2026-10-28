@@ -208,6 +208,7 @@ export interface RestorePlan {
 	items: PlanItem[];
 	job_id: Uuid | null;
 	selection: PlanSelection | null;
+	site_moved: boolean;
 }
 
 export interface JobCounters {
@@ -267,6 +268,7 @@ export interface Overview {
 	oldest_event_at: IsoDateTime | null;
 	gaps_last_24h: number;
 	tracked_post_types: string[];
+	site_moved: boolean;
 	user: {
 		id: number;
 		can: {

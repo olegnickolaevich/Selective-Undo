@@ -29,6 +29,7 @@ abstract class IntegrationTestCase extends TestCase
         delete_option('selective_undo_circuit');
         wp_cache_delete('selective_undo_circuit', 'selective_undo');
         $this->s->circuitBreaker()->reset();
+        delete_option('selective_undo_site_moved');
         $this->s->settings()->flush();
         $this->s->requestContext()->reset();
         delete_transient('selective_undo_restore_ready');

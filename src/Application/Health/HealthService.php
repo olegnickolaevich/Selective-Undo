@@ -9,6 +9,7 @@ use SelectiveUndo\Application\Capture\RevisionImporter;
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Restore\RestoreReadiness;
 use SelectiveUndo\Application\Retention\RetentionService;
+use SelectiveUndo\Application\Support\SiteFingerprint;
 use SelectiveUndo\Application\Support\Time;
 use SelectiveUndo\Bootstrap\Plugin;
 use SelectiveUndo\Domain\Contracts\TransactionRunner;
@@ -40,6 +41,7 @@ final class HealthService
         private readonly AdapterRegistry $adapters,
         private readonly RevisionImporter $revisions,
         private readonly JobQueue $queue,
+        private readonly SiteFingerprint $site,
     ) {
     }
 
@@ -54,7 +56,7 @@ final class HealthService
         $gaps = (int) $this->db->get_var(
             "SELECT COUNT(*) FROM {$this->t->gaps}
              WHERE (ended_at IS NULL OR ended_at > " . SqlTime::utc(-DAY_IN_SECONDS) . ")
-               AND reason IN ('external_write_detected', 'capture_failed', 'payload_not_stored', 'nesting_too_deep', 'quota_exceeded', 'schema_outdated', 'capture_disabled', 'circuit_open')"
+               AND reason IN ('external_write_detected', 'capture_failed', 'payload_not_stored', 'nesting_too_deep', 'quota_exceeded', 'schema_outdated', 'capture_disabled', 'circuit_open', 'site_moved')"
         );
 
         return [
@@ -73,6 +75,7 @@ final class HealthService
             'oldest_event_at' => Time::iso($stats['oldest_event_at']),
             'gaps_last_24h' => $gaps,
             'tracked_post_types' => $this->settings->trackedPostTypes(),
+            'site_moved' => $this->site->isMoved(),
         ];
     }
 
@@ -147,6 +150,15 @@ final class HealthService
                 default => __('Recording is paused.', 'selective-undo'),
             }
         );
+
+        if ($this->site->isMoved()) {
+            $add(
+                'site_moved',
+                'warning',
+                __('Copied history', 'selective-undo'),
+                __('The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it.', 'selective-undo')
+            );
+        }
 
         $import = $this->revisions->status();
         $add(

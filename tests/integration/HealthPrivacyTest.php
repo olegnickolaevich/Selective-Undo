@@ -8,6 +8,36 @@ use SelectiveUndo\Tests\IntegrationTestCase;
 
 final class HealthPrivacyTest extends IntegrationTestCase
 {
+    public function testHistoryCopiedFromAnotherSiteIsReportedUntilKept(): void
+    {
+        $site = $this->s->siteFingerprint();
+        $site->accept();
+        $id = $this->createPost();
+        wp_update_post(['ID' => $id, 'post_title' => 'Two']);
+        $this->endRequest();
+
+        // The database now serves another address, as on a staging copy.
+        add_filter('home_url', $staging = static fn (string $url): string => str_replace('://', '://staging.', $url));
+
+        try {
+            $site->check(true);
+        } finally {
+            remove_filter('home_url', $staging);
+        }
+
+        $this->assertTrue($this->s->health()->overview()['site_moved']);
+        $this->assertSame('warning', array_column($this->s->health()->checks(), null, 'id')['site_moved']['status']);
+        $gap = $this->db->get_row("SELECT * FROM {$this->s->tables()->gaps} WHERE reason = 'site_moved'", ARRAY_A);
+        $this->assertNull($gap['ended_at']);
+        // Restoring stays possible, with a warning in the preview.
+        $this->assertTrue($this->planView($this->plan(['type' => 'changes', 'change_ids' => array_map('intval', array_column($this->changes($id, 'update'), 'id'))]))['site_moved']);
+
+        $site->accept(); // "Keep history"
+
+        $this->assertFalse($this->s->health()->overview()['site_moved']);
+        $this->assertNotNull($this->db->get_var("SELECT ended_at FROM {$this->s->tables()->gaps} WHERE reason = 'site_moved'"));
+    }
+
     public function testHealthyEnvironmentHasNoRestoreBlockers(): void
     {
         $checks = $this->s->health()->checks();

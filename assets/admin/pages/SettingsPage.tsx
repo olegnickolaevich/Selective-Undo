@@ -201,7 +201,13 @@ function RecordingTab( {
 	);
 }
 
-function PurgeForm( { canPurge }: { canPurge: boolean } ) {
+function PurgeForm( {
+	canPurge,
+	onPurged,
+}: {
+	canPurge: boolean;
+	onPurged: () => void;
+} ) {
 	const [ scope, setScope ] = useState< 'object' | 'before' | 'all' >(
 		'object'
 	);
@@ -247,6 +253,8 @@ function PurgeForm( { canPurge }: { canPurge: boolean } ) {
 		setBusy( true );
 		try {
 			const r = await api.purge( preview.token, confirmation );
+			// Storage figures and notices in the header change.
+			onPurged();
 			const message = sprintf(
 				/* translators: %d: number of deleted changes. */
 				_n(
@@ -416,10 +424,12 @@ function RetentionTab( {
 	payload,
 	overview,
 	onSave,
+	onPurged,
 }: {
 	payload: SettingsPayload;
 	overview: Overview | null;
 	onSave: ( s: Partial< Settings > ) => Promise< void >;
+	onPurged: () => void;
 } ) {
 	const [ draft, setDraft ] = useState( payload.settings );
 	const [ busy, setBusy ] = useState( false );
@@ -551,6 +561,7 @@ function RetentionTab( {
 			/>
 			<PurgeForm
 				canPurge={ overview?.user.can.manage_retention ?? false }
+				onPurged={ onPurged }
 			/>
 		</>
 	);
@@ -935,6 +946,7 @@ export function SettingsPage( {
 					payload={ payload }
 					overview={ overview }
 					onSave={ ( s ) => save( s ) }
+					onPurged={ onChanged }
 				/>
 			) }
 			{ payload && current === 'access' && (

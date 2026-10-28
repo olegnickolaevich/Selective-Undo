@@ -1,6 +1,9 @@
-import { Notice } from '@wordpress/components';
+import { Button, Notice } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import { __, _n, _x, sprintf } from '@wordpress/i18n';
+import { api } from '../api/client';
 import type { Overview } from '../api/types';
+import { ErrorNotice } from './Feedback';
 import { exactDate, formatBytes } from '../lib/format';
 import { blockerText } from '../lib/labels';
 import { linkHandler, viewToUrl } from '../lib/router';
@@ -19,11 +22,68 @@ function captureText( capture: Overview[ 'capture' ] ): string {
 }
 
 /**
+ * The history was copied with the database from another site: keep it, or clear it
+ * through the two-step deletion.
+ * @param root0
+ * @param root0.onKept
+ */
+function SiteMovedNotice( { onKept }: { onKept: () => void } ) {
+	const [ busy, setBusy ] = useState( false );
+	const [ error, setError ] = useState< unknown >( null );
+	// The two-step "Delete history" form is on the Storage tab.
+	const removal = { name: 'settings' as const, tab: 'retention' };
+
+	return (
+		<Notice status="warning" isDismissible={ false }>
+			<p>
+				{ __(
+					'The history was copied from another site. It may list changes made there.',
+					'selective-undo'
+				) }
+			</p>
+			<p className="su-notice-actions">
+				<Button
+					variant="primary"
+					isBusy={ busy }
+					disabled={ busy }
+					accessibleWhenDisabled
+					onClick={ () => {
+						setBusy( true );
+						setError( null );
+						api.keepSiteHistory()
+							.then( onKept )
+							.catch( setError )
+							.finally( () => setBusy( false ) );
+					} }
+				>
+					{ __( 'Keep history', 'selective-undo' ) }
+				</Button>{ ' ' }
+				<Button
+					variant="secondary"
+					href={ viewToUrl( removal ) }
+					onClick={ linkHandler( removal ) }
+				>
+					{ __( 'Clear history', 'selective-undo' ) }
+				</Button>
+			</p>
+			{ error !== null && <ErrorNotice error={ error } /> }
+		</Notice>
+	);
+}
+
+/**
  * Never shows a green "everything is protected" when something is degraded.
  * @param root0
  * @param root0.overview
+ * @param root0.onChanged
  */
-export function AppHeader( { overview }: { overview: Overview | null } ) {
+export function AppHeader( {
+	overview,
+	onChanged,
+}: {
+	overview: Overview | null;
+	onChanged: () => void;
+} ) {
 	const diagnostics = { name: 'settings' as const, tab: 'diagnostics' };
 
 	return (
@@ -110,6 +170,9 @@ export function AppHeader( { overview }: { overview: Overview | null } ) {
 						</div>
 					) }
 				</dl>
+			) }
+			{ overview?.site_moved && overview.user.can.manage_settings && (
+				<SiteMovedNotice onKept={ onChanged } />
 			) }
 			{ overview && overview.restore_blockers.length > 0 && (
 				<Notice status="error" isDismissible={ false }>

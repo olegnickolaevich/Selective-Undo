@@ -36,6 +36,7 @@ use SelectiveUndo\Application\Retention\BlobCollector;
 use SelectiveUndo\Application\Retention\PurgeService;
 use SelectiveUndo\Application\Retention\RetentionService;
 use SelectiveUndo\Application\Support\ObjectPresenter;
+use SelectiveUndo\Application\Support\SiteFingerprint;
 use SelectiveUndo\Bootstrap\Plugin;
 use SelectiveUndo\Domain\Contracts\LockService;
 use SelectiveUndo\Domain\Contracts\TransactionRunner;
@@ -490,7 +491,7 @@ final class Services
 
     public function planView(): PlanView
     {
-        return $this->get(PlanView::class, fn () => new PlanView($this->plans(), $this->jobs(), $this->adapters(), $this->objectPresenter()));
+        return $this->get(PlanView::class, fn () => new PlanView($this->plans(), $this->jobs(), $this->adapters(), $this->objectPresenter(), $this->siteFingerprint()));
     }
 
     public function jobView(): JobView
@@ -534,7 +535,12 @@ final class Services
 
     public function purge(): PurgeService
     {
-        return $this->get(PurgeService::class, fn () => new PurgeService($this->db, $this->tables(), $this->retention(), $this->blobCollector(), $this->eventLog()));
+        return $this->get(PurgeService::class, fn () => new PurgeService($this->db, $this->tables(), $this->retention(), $this->blobCollector(), $this->eventLog(), $this->siteFingerprint()));
+    }
+
+    public function siteFingerprint(): SiteFingerprint
+    {
+        return $this->get(SiteFingerprint::class, fn () => new SiteFingerprint($this->db, $this->gaps()));
     }
 
     public function health(): HealthService
@@ -552,6 +558,7 @@ final class Services
             $this->adapters(),
             $this->revisionImporter(),
             $this->queue(),
+            $this->siteFingerprint(),
         ));
     }
 

@@ -134,6 +134,9 @@ final class RestApi
         ]);
         $this->route('/health', 'GET', $manage, [$this, 'health']);
         $this->route('/diagnostics', 'GET', $manage, [$this, 'diagnostics']);
+        $this->route('/site/fingerprint', 'POST', $manage, [$this, 'siteFingerprint'], [
+            'action' => ['type' => 'string', 'required' => true, 'enum' => ['keep']],
+        ]);
         $this->route('/history/export', 'GET', $export, [$this, 'exportHistory']);
         $this->route('/history/purge-preview', 'POST', $retention, [$this, 'purgePreview'], [
             'scope' => ['required' => true, 'type' => 'string', 'enum' => ['object', 'before', 'all']],
@@ -144,6 +147,19 @@ final class RestApi
             'token' => ['required' => true, 'type' => 'string', 'maxLength' => 2048],
             'confirmation' => ['required' => true, 'type' => 'string', 'maxLength' => 32],
         ]);
+    }
+
+    /**
+     * "Keep history" after the history was copied from another site. Clearing it goes
+     * through the two-step deletion, which accepts this site when everything is deleted.
+     */
+    public function siteFingerprint(): \WP_REST_Response|\WP_Error
+    {
+        return $this->errors->run(function (): array {
+            $this->s->siteFingerprint()->accept();
+
+            return ['ok' => true];
+        });
     }
 
     public function overview(): \WP_REST_Response|\WP_Error
