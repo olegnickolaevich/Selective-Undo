@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Bootstrap;
 
+use SelectiveUndo\Application\Capture\CaptureCircuitBreaker;
 use SelectiveUndo\Application\Capture\CaptureService;
+use SelectiveUndo\Application\Capture\ChangesetEvents;
 use SelectiveUndo\Application\Capture\CaptureState;
 use SelectiveUndo\Application\Capture\GapRecorder;
 use SelectiveUndo\Application\Capture\OperationManager;
@@ -176,7 +178,12 @@ final class Services
 
     public function captureState(): CaptureState
     {
-        return $this->get(CaptureState::class, fn () => new CaptureState($this->settings(), $this->schema(), $this->gaps()));
+        return $this->get(CaptureState::class, fn () => new CaptureState($this->settings(), $this->schema(), $this->gaps(), $this->circuitBreaker()));
+    }
+
+    public function circuitBreaker(): CaptureCircuitBreaker
+    {
+        return $this->get(CaptureCircuitBreaker::class, fn () => new CaptureCircuitBreaker($this->gaps()));
     }
 
     public function blobs(): BlobStore
@@ -186,7 +193,17 @@ final class Services
 
     public function journal(): JournalRepository
     {
-        return $this->get(JournalRepository::class, fn () => new JournalRepository($this->db, $this->tables(), $this->objectVersions()));
+        return $this->get(JournalRepository::class, function (): JournalRepository {
+            $journal = new JournalRepository($this->db, $this->tables(), $this->objectVersions());
+            $journal->onSealed(fn (int $id) => $this->changesetEvents()->published($id));
+
+            return $journal;
+        });
+    }
+
+    public function changesetEvents(): ChangesetEvents
+    {
+        return $this->get(ChangesetEvents::class, fn () => new ChangesetEvents($this->db, $this->tables(), $this->outbox(), $this->eventLog()));
     }
 
     public function objectVersions(): ObjectVersions
@@ -208,6 +225,7 @@ final class Services
             $this->clock(),
             $this->revisionImporter(),
             $this->locks(),
+            $this->circuitBreaker(),
         ));
     }
 

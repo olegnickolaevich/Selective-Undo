@@ -25,6 +25,10 @@ abstract class IntegrationTestCase extends TestCase
         $this->truncateJournal();
         update_option(Settings::OPTION, $this->s->settings()->defaults());
         delete_option(CaptureState::OPTION);
+        // Tests that break recording on purpose must not pause it for the next ones.
+        delete_option('selective_undo_circuit');
+        wp_cache_delete('selective_undo_circuit', 'selective_undo');
+        $this->s->circuitBreaker()->reset();
         $this->s->settings()->flush();
         $this->s->requestContext()->reset();
         delete_transient('selective_undo_restore_ready');

@@ -19,7 +19,7 @@ final class Outbox
     public const MAX_ATTEMPTS = 10;
     private const LOCK_SECONDS = 60;
 
-    /** @var array<string, callable(array<string, mixed>): void> */
+    /** @var array<string, list<callable(array<string, mixed>): void>> */
     private array $handlers = [];
 
     public function __construct(
@@ -34,7 +34,42 @@ final class Outbox
      */
     public function on(string $topic, callable $handler): void
     {
-        $this->handlers[$topic] = $handler;
+        $this->handlers[$topic][] = $handler;
+    }
+
+    public function off(string $topic, callable $handler): void
+    {
+        $this->handlers[$topic] = array_values(array_filter($this->handlers[$topic] ?? [], static fn (callable $h): bool => $h !== $handler));
+    }
+
+    public function hasHandlers(string $topic): bool
+    {
+        return ($this->handlers[$topic] ?? []) !== [];
+    }
+
+    /**
+     * Queues an event from the capture path: one insert on the WordPress connection.
+     *
+     * @param array<string, mixed> $payload IDs, codes and field keys only.
+     */
+    public function enqueueNow(string $topic, ?int $jobId, ?ObjectRef $object, array $payload): string
+    {
+        $uuid = wp_generate_uuid4();
+        $payload['event_id'] = $uuid;
+        $now = gmdate('Y-m-d H:i:s');
+        $this->db->insert($this->t->outbox, [
+            'event_uuid' => $uuid,
+            'topic' => $topic,
+            'job_id' => $jobId,
+            'object_type' => $object?->type,
+            'object_id' => $object?->id,
+            'payload_json' => (string) wp_json_encode($payload),
+            'status' => 'pending',
+            'available_at' => $now,
+            'created_at' => $now,
+        ]);
+
+        return $uuid;
     }
 
     /**
@@ -115,15 +150,17 @@ final class Outbox
             return;
         }
 
-        $handler = $this->handlers[(string) $row['topic']] ?? null;
+        $handlers = $this->handlers[(string) $row['topic']] ?? [];
         $payload = json_decode((string) $row['payload_json'], true);
 
         try {
-            if ($handler === null) {
+            if ($handlers === []) {
                 throw new \RuntimeException('no_handler');
             }
 
-            $handler(is_array($payload) ? $payload : []);
+            foreach ($handlers as $handler) {
+                $handler(is_array($payload) ? $payload : []);
+            }
             $this->db->query($this->db->prepare(
                 "UPDATE {$this->t->outbox} SET status = 'done', done_at = " . SqlTime::utc() . ", locked_until = NULL, last_error_code = NULL WHERE id = %d",
                 $id

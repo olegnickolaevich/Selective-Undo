@@ -20,6 +20,9 @@ use SelectiveUndo\Infrastructure\Database\Tables;
  */
 final class JournalRepository
 {
+    /** @var (\Closure(int): void)|null */
+    private ?\Closure $onSealed = null;
+
     public function __construct(
         private readonly \wpdb $db,
         private readonly Tables $t,
@@ -361,7 +364,7 @@ final class JournalRepository
             $changesetId
         ));
 
-        $this->db->query($this->db->prepare(
+        $sealed = $this->db->query($this->db->prepare(
             "UPDATE {$this->t->changesets}
              SET status = 'sealed', sealed_at = " . SqlTime::utc() . ", updated_at = " . SqlTime::utc() . ",
                  change_count = %d, object_count = %d, quality = %s, summary_json = %s
@@ -376,6 +379,21 @@ final class JournalRepository
             ]),
             $changesetId
         ));
+
+        if ($sealed === 1 && $this->onSealed !== null) {
+            ($this->onSealed)($changesetId);
+        }
+    }
+
+    /**
+     * Called with the change set ID each time a change set is sealed. A change set that
+     * a later request of the same save reopens is sealed, and reported, again.
+     *
+     * @param callable(int): void $listener
+     */
+    public function onSealed(callable $listener): void
+    {
+        $this->onSealed = $listener(...);
     }
 
     /**

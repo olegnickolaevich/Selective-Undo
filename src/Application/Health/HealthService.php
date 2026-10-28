@@ -54,7 +54,7 @@ final class HealthService
         $gaps = (int) $this->db->get_var(
             "SELECT COUNT(*) FROM {$this->t->gaps}
              WHERE (ended_at IS NULL OR ended_at > " . SqlTime::utc(-DAY_IN_SECONDS) . ")
-               AND reason IN ('external_write_detected', 'capture_failed', 'payload_not_stored', 'nesting_too_deep', 'quota_exceeded', 'schema_outdated', 'capture_disabled')"
+               AND reason IN ('external_write_detected', 'capture_failed', 'payload_not_stored', 'nesting_too_deep', 'quota_exceeded', 'schema_outdated', 'capture_disabled', 'circuit_open')"
         );
 
         return [
@@ -143,6 +143,7 @@ final class HealthService
                 'capture_disabled' => __('Recording is turned off in the settings.', 'selective-undo'),
                 'quota_exceeded' => __('Recording is paused: the history size limit is reached.', 'selective-undo'),
                 'schema_outdated' => __('Recording is paused until the database update finishes.', 'selective-undo'),
+                'circuit_open' => __('Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors.', 'selective-undo'),
                 default => __('Recording is paused.', 'selective-undo'),
             }
         );

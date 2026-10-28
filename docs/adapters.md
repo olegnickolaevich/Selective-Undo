@@ -169,3 +169,32 @@ list the versions you can still restore in `acceptsVersion()`.
 
 The built-in adapters in `src/Infrastructure/WordPress/` (`PostMetaAdapter`, `TermsAdapter`)
 are complete examples of recording, locking, writing and cache invalidation.
+
+## 3. Listening to recorded changes
+
+Each time a change set (one save, one request, one restore) is recorded, Selective Undo fires
+an action with its summary. The summary holds IDs and metadata only, never field values:
+
+```php
+add_action( 'selective_undo/changeset_recorded', function ( array $summary ): void {
+	// uuid, kind (edit, restore, ...), source (block_editor, quick_edit, rest, wp_cli, ...),
+	// actor (user ID or null), objects (["post:123"]), fields (["post_title"]), change_count
+} );
+```
+
+The action runs in the request that saved, so keep it fast. For slow work (notifications,
+calls to other services), register a background handler instead. It is called later from
+WP-Cron or Action Scheduler, at least once per change set; a handler that throws is retried.
+
+```php
+add_action( 'plugins_loaded', function (): void {
+	if ( function_exists( 'selective_undo' ) ) {
+		selective_undo()->onChangesetRecorded( function ( array $summary ): void {
+			// Same summary as the action.
+		} );
+	}
+} );
+```
+
+When a later request of the same save adds to a change set (meta boxes, plugin fields), the
+change set is reported again with the complete summary; use `uuid` to recognize it.

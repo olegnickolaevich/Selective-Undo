@@ -50,6 +50,7 @@ final class CaptureService implements CaptureSink
         private readonly WallClock $clock,
         private readonly RevisionImporter $revisions,
         private readonly LockService $locks,
+        private readonly CaptureCircuitBreaker $breaker,
     ) {
     }
 
@@ -439,11 +440,19 @@ final class CaptureService implements CaptureSink
     private function quietly(callable $fn): void
     {
         $suppress = $this->db->suppress_errors(true);
+        $started = $this->breaker->shouldSample() ? microtime(true) : null;
 
         try {
             $fn();
+        } catch (\Throwable $e) {
+            // Failures pause recording when they repeat (I-14); the caller records the gap.
+            $this->breaker->failure();
+
+            throw $e;
         } finally {
             $this->db->suppress_errors($suppress);
         }
+
+        $this->breaker->success($started === null ? null : (microtime(true) - $started) * 1000);
     }
 }

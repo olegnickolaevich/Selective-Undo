@@ -127,24 +127,24 @@ msgstr "Журнал изменений приостановлен: достиг
 msgid "Recording is paused until the database update finishes."
 msgstr "Журнал изменений приостановлен до завершения обновления базы данных."
 
-#: src/Application/Health/HealthService.php:146
+#: src/Application/Health/HealthService.php:147
 msgid "Recording is paused."
 msgstr "Журнал изменений приостановлен."
 
-#: src/Application/Health/HealthService.php:154
+#: src/Application/Health/HealthService.php:155
 msgid "Earlier changes"
 msgstr "Более ранние изменения"
 
-#: src/Application/Health/HealthService.php:156
+#: src/Application/Health/HealthService.php:157
 msgid "Importing WordPress revisions is turned off in the settings."
 msgstr "Импорт редакций WordPress выключен в настройках."
 
-#: src/Application/Health/HealthService.php:157
+#: src/Application/Health/HealthService.php:158
 msgid "Changes saved in WordPress revisions before recording started are being imported."
 msgstr "Изменения, сохранённые в редакциях WordPress до начала записи, импортируются."
 
 #. translators: 1: number of changes, 2: number of items.
-#: src/Application/Health/HealthService.php:160
+#: src/Application/Health/HealthService.php:161
 #, php-format
 msgid "%1$d change from WordPress revisions of %2$d item was imported."
 msgid_plural "%1$d changes from WordPress revisions of %2$d items were imported."
@@ -152,83 +152,83 @@ msgstr[0] "Импортировано %1$d изменение из редакц�
 msgstr[1] "Импортировано %1$d изменения из редакций WordPress для записей: %2$d."
 msgstr[2] "Импортировано %1$d изменений из редакций WordPress для записей: %2$d."
 
-#: src/Application/Health/HealthService.php:177
+#: src/Application/Health/HealthService.php:178
 msgid "History size"
 msgstr "Объём истории"
 
 #. translators: 1: used size, 2: limit.
-#: src/Application/Health/HealthService.php:180
+#: src/Application/Health/HealthService.php:181
 #, php-format
 msgid "%1$s of %2$s used."
 msgstr "Занято %1$s из %2$s."
 
-#: src/Application/Health/HealthService.php:190
+#: src/Application/Health/HealthService.php:191
 msgid "Largest recorded value"
 msgstr "Самое большое сохраняемое значение"
 
 #. translators: %s: size.
-#: src/Application/Health/HealthService.php:193
+#: src/Application/Health/HealthService.php:194
 #, php-format
 msgid "Values up to %s are stored. Larger values are listed but cannot be restored."
 msgstr "Сохраняются значения до %s. Более крупные видны в истории, но восстановить их нельзя."
 
-#: src/Application/Health/HealthService.php:204
+#: src/Application/Health/HealthService.php:205
 msgid "Background tasks"
 msgstr "Фоновые задачи"
 
-#: src/Application/Health/HealthService.php:206
+#: src/Application/Health/HealthService.php:207
 msgid "Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job."
 msgstr "Фоновое обслуживание не запускалось больше двух часов. Для редко посещаемых сайтов настройте системный cron."
 
-#: src/Application/Health/HealthService.php:208
+#: src/Application/Health/HealthService.php:209
 msgid "WP-Cron is disabled; make sure a system cron job calls wp-cron.php."
 msgstr "WP-Cron отключён. Убедитесь, что системный cron вызывает wp-cron.php."
 
-#: src/Application/Health/HealthService.php:211
+#: src/Application/Health/HealthService.php:212
 msgid "Maintenance runs through WP-Cron."
 msgstr "Обслуживание выполняется через WP-Cron."
 
-#: src/Application/Health/HealthService.php:218
+#: src/Application/Health/HealthService.php:219
 msgid "Page cache"
 msgstr "Кэш страниц"
 
-#: src/Application/Health/HealthService.php:220
+#: src/Application/Health/HealthService.php:221
 msgid "No page cache without an integration was detected."
 msgstr "Кэш страниц без поддерживаемой интеграции не обнаружен."
 
-#: src/Application/Health/HealthService.php:221
+#: src/Application/Health/HealthService.php:222
 msgid "A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version."
 msgstr "Активен кэш страниц без известной интеграции. Если после восстановления посетители видят старую версию, очистите кэш страниц вручную."
 
-#: src/Application/Health/HealthService.php:227
+#: src/Application/Health/HealthService.php:228
 msgid "Object cache"
 msgstr "Объектный кэш"
 
-#: src/Application/Health/HealthService.php:229
+#: src/Application/Health/HealthService.php:230
 msgid "A persistent object cache is used; restored posts are purged from it."
 msgstr "Используется постоянный объектный кэш; восстановленные записи из него удаляются."
 
-#: src/Application/Health/HealthService.php:230
+#: src/Application/Health/HealthService.php:231
 msgid "No persistent object cache."
 msgstr "Постоянного объектного кэша нет."
 
-#: src/Application/Health/HealthService.php:237
+#: src/Application/Health/HealthService.php:238
 msgid "Database drop-in"
 msgstr "Drop-in базы данных"
 
-#: src/Application/Health/HealthService.php:239
+#: src/Application/Health/HealthService.php:240
 msgid "None."
 msgstr "Нет."
 
-#: src/Application/Health/HealthService.php:240
+#: src/Application/Health/HealthService.php:241
 msgid "The SQLite database drop-in is installed."
 msgstr "Установлен drop-in базы данных SQLite."
 
-#: src/Application/Health/HealthService.php:241
+#: src/Application/Health/HealthService.php:242
 msgid "A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode)."
 msgstr "Установлен drop-in db.php. Восстановление использует соединение WordPress с базой данных (режим совместимости)."
 
-#: src/Application/Health/HealthService.php:242
+#: src/Application/Health/HealthService.php:243
 msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
 msgstr "Установлен drop-in db.php. Восстановление использует отдельное соединение с основной базой данных."
 
@@ -2360,6 +2360,14 @@ msgstr "Описание"
 msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields."
 msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields."
 
-#: src/Application/Health/HealthService.php:210
+#: src/Application/Health/HealthService.php:211
 msgid "Maintenance runs through WP-Cron; restores and imports run through Action Scheduler."
 msgstr "Обслуживание выполняется через WP-Cron; восстановления и импорт — через Action Scheduler."
+
+#: src/Application/Health/HealthService.php:146
+msgid "Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors."
+msgstr "Запись истории временно приостановлена: запись в журнал несколько раз завершилась ошибкой или шла слишком медленно. Она возобновится сама; ошибки — в журнале событий."
+
+#: build/index.js:36
+msgid "Recording was paused because writing the history failed repeatedly or was too slow."
+msgstr "Запись истории была приостановлена: запись в журнал несколько раз завершилась ошибкой или шла слишком медленно."

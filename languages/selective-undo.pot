@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-28T16:01:09+05:00\n"
+"POT-Creation-Date: 2026-10-28T16:34:55+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -128,110 +128,114 @@ msgid "Recording is paused until the database update finishes."
 msgstr ""
 
 #: src/Application/Health/HealthService.php:146
+msgid "Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors."
+msgstr ""
+
+#: src/Application/Health/HealthService.php:147
 msgid "Recording is paused."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:154
+#: src/Application/Health/HealthService.php:155
 msgid "Earlier changes"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:156
+#: src/Application/Health/HealthService.php:157
 msgid "Importing WordPress revisions is turned off in the settings."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:157
+#: src/Application/Health/HealthService.php:158
 msgid "Changes saved in WordPress revisions before recording started are being imported."
 msgstr ""
 
 #. translators: 1: number of changes, 2: number of items.
-#: src/Application/Health/HealthService.php:160
+#: src/Application/Health/HealthService.php:161
 #, php-format
 msgid "%1$d change from WordPress revisions of %2$d item was imported."
 msgid_plural "%1$d changes from WordPress revisions of %2$d items were imported."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Application/Health/HealthService.php:177
+#: src/Application/Health/HealthService.php:178
 msgid "History size"
 msgstr ""
 
 #. translators: 1: used size, 2: limit.
-#: src/Application/Health/HealthService.php:180
+#: src/Application/Health/HealthService.php:181
 #, php-format
 msgid "%1$s of %2$s used."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:190
+#: src/Application/Health/HealthService.php:191
 msgid "Largest recorded value"
 msgstr ""
 
 #. translators: %s: size.
-#: src/Application/Health/HealthService.php:193
+#: src/Application/Health/HealthService.php:194
 #, php-format
 msgid "Values up to %s are stored. Larger values are listed but cannot be restored."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:204
+#: src/Application/Health/HealthService.php:205
 msgid "Background tasks"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:206
+#: src/Application/Health/HealthService.php:207
 msgid "Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:208
+#: src/Application/Health/HealthService.php:209
 msgid "WP-Cron is disabled; make sure a system cron job calls wp-cron.php."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:210
+#: src/Application/Health/HealthService.php:211
 msgid "Maintenance runs through WP-Cron; restores and imports run through Action Scheduler."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:211
+#: src/Application/Health/HealthService.php:212
 msgid "Maintenance runs through WP-Cron."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:218
+#: src/Application/Health/HealthService.php:219
 msgid "Page cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:220
+#: src/Application/Health/HealthService.php:221
 msgid "No page cache without an integration was detected."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:221
+#: src/Application/Health/HealthService.php:222
 msgid "A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:227
+#: src/Application/Health/HealthService.php:228
 msgid "Object cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:229
+#: src/Application/Health/HealthService.php:230
 msgid "A persistent object cache is used; restored posts are purged from it."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:230
+#: src/Application/Health/HealthService.php:231
 msgid "No persistent object cache."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:237
+#: src/Application/Health/HealthService.php:238
 msgid "Database drop-in"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:239
+#: src/Application/Health/HealthService.php:240
 msgid "None."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:240
+#: src/Application/Health/HealthService.php:241
 msgid "The SQLite database drop-in is installed."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:241
+#: src/Application/Health/HealthService.php:242
 msgid "A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode)."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:242
+#: src/Application/Health/HealthService.php:243
 msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
 msgstr ""
 
@@ -2304,6 +2308,10 @@ msgstr ""
 
 #: build/index.js:36
 msgid "Recording was turned off in the settings."
+msgstr ""
+
+#: build/index.js:36
+msgid "Recording was paused because writing the history failed repeatedly or was too slow."
 msgstr ""
 
 #. translators: %s: date.

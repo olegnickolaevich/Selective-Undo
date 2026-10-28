@@ -18,12 +18,13 @@ final class CaptureState
         private readonly Settings $settings,
         private readonly SchemaManager $schema,
         private readonly GapRecorder $gaps,
+        private readonly CaptureCircuitBreaker $breaker,
     ) {
     }
 
     public function isActive(): bool
     {
-        return $this->settings->captureEnabled() && $this->schema->isCurrent() && $this->pausedReason() === null;
+        return $this->settings->captureEnabled() && $this->schema->isCurrent() && $this->pausedReason() === null && !$this->breaker->blocks();
     }
 
     /**
@@ -40,6 +41,10 @@ final class CaptureState
         }
 
         $stored = $this->stored();
+
+        if ($stored['reason'] === null && $this->breaker->blocks()) {
+            return ['state' => 'paused', 'reason' => CaptureCircuitBreaker::GAP_REASON, 'since' => $this->breaker->openSince()];
+        }
 
         return $stored['reason'] === null
             ? ['state' => 'active', 'reason' => null, 'since' => null]

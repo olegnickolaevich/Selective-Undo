@@ -273,6 +273,49 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertSame('sealed', $autosave[0]['status']);
     }
 
+    public function testRecordedChangesetsArePublishedWithoutValues(): void
+    {
+        $id = $this->createPost();
+        $this->endRequest();
+        $published = [];
+        add_action('selective_undo/changeset_recorded', $listener = static function (array $summary) use (&$published): void {
+            $published[] = $summary;
+        });
+        $outboxRows = fn (): int => (int) $this->db->get_var("SELECT COUNT(*) FROM {$this->s->tables()->outbox} WHERE topic = 'changeset_recorded'");
+        $before = $outboxRows();
+
+        try {
+            wp_update_post(['ID' => $id, 'post_title' => 'Secret title']);
+            $this->endRequest();
+        } finally {
+            remove_action('selective_undo/changeset_recorded', $listener);
+        }
+
+        $this->assertCount(1, $published);
+        $this->assertSame(["post:{$id}"], $published[0]['objects']);
+        $this->assertSame(['post_title'], $published[0]['fields']);
+        $this->assertFalse(str_contains((string) wp_json_encode($published), 'Secret'), 'no values in the summary');
+        $this->assertSame($before, $outboxRows(), 'nothing is queued without background handlers');
+
+        // A background handler receives the change set from the outbox.
+        $delivered = [];
+        $handler = static function (array $summary) use (&$delivered): void {
+            $delivered[] = $summary['uuid'];
+        };
+        selective_undo()->onChangesetRecorded($handler);
+
+        try {
+            wp_update_post(['ID' => $id, 'post_title' => 'Another title']);
+            $this->endRequest();
+            $this->s->outbox()->dispatchDue();
+        } finally {
+            $this->s->outbox()->off('changeset_recorded', $handler);
+        }
+
+        $changesets = $this->changesets();
+        $this->assertSame([(string) end($changesets)['uuid']], $delivered);
+    }
+
     public function testOperationApiGroupsAcrossRequests(): void
     {
         $a = $this->createPost();
@@ -314,6 +357,41 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertSame($id, $result);
         $this->assertSame('Saved anyway', get_post($id)->post_title);
         $this->assertTrue(count($this->gapRows('capture_failed')) >= 1);
+    }
+
+    public function testRepeatedFailuresPauseRecordingUntilATrialSucceeds(): void
+    {
+        $id = $this->createPost();
+        $changes = $this->s->tables()->changes;
+        $break = static fn (string $sql): string => preg_match('/^\s*INSERT INTO `?' . $changes . '`?\s/', $sql) ? 'INSERT INTO sundo_missing_table VALUES (1)' : $sql;
+        add_filter('query', $break);
+
+        try {
+            for ($i = 1; $i <= 5; $i++) {
+                wp_update_post(['ID' => $id, 'post_title' => "Broken {$i}"]);
+                $this->endRequest();
+            }
+        } finally {
+            remove_filter('query', $break);
+        }
+
+        // Five failures within five minutes: recording pauses, the gap says why.
+        $this->assertSame('circuit_open', $this->s->captureState()->describe()['reason']);
+        $this->assertCount(1, $this->gapRows('circuit_open'));
+        wp_update_post(['ID' => $id, 'post_title' => 'While paused']);
+        $this->endRequest();
+        $this->assertSame([], $this->changes($id, 'update'));
+
+        // After the cooldown a write goes through as a trial and recording resumes.
+        $state = get_option('selective_undo_circuit');
+        update_option('selective_undo_circuit', ['open_until' => time() - 1] + $state, false);
+        $this->s->circuitBreaker()->reset();
+        wp_update_post(['ID' => $id, 'post_title' => 'Recorded again']);
+        $this->endRequest();
+
+        $this->assertCount(1, $this->changes($id, 'update'));
+        $this->assertSame('active', $this->s->captureState()->describe()['state']);
+        $this->assertNotNull($this->gapRows('circuit_open')[0]['ended_at']);
     }
 
     /**

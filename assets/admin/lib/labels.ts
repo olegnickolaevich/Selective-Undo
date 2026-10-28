@@ -538,6 +538,10 @@ export function gapReasonText( reason: string ): string {
 			'Recording was turned off in the settings.',
 			'selective-undo'
 		),
+		circuit_open: __(
+			'Recording was paused because writing the history failed repeatedly or was too slow.',
+			'selective-undo'
+		),
 	};
 
 	return map[ reason ] ?? reason;
