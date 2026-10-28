@@ -76,6 +76,8 @@ use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
 use SelectiveUndo\Infrastructure\WordPress\CapabilityManager;
 use SelectiveUndo\Infrastructure\WordPress\PostChangeObserver;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
+use SelectiveUndo\Infrastructure\Integrations\AioseoAdapter;
+use SelectiveUndo\Infrastructure\Integrations\ElementorAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostRowReader;
 use SelectiveUndo\Infrastructure\WordPress\PrivacyIntegration;
 use SelectiveUndo\Infrastructure\WordPress\SystemClock;
@@ -324,6 +326,24 @@ final class Services
                 $registry->register($this->postFieldsAdapter());
                 $registry->register($this->postMetaAdapter());
                 $registry->register($this->termsAdapter());
+
+                if (AioseoAdapter::available()) {
+                    $registry->register($this->get(AioseoAdapter::class, fn () => new AioseoAdapter(
+                        $this->db,
+                        $this->trackingPolicy(),
+                        $this->requestContext(),
+                        $this->cacheInvalidator(),
+                    )));
+                }
+
+                if (ElementorAdapter::available()) {
+                    $registry->register($this->get(ElementorAdapter::class, fn () => new ElementorAdapter(
+                        $this->db,
+                        $this->trackingPolicy(),
+                        $this->requestContext(),
+                        $this->cacheInvalidator(),
+                    )));
+                }
             }
         ));
     }

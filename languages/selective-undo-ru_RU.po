@@ -450,23 +450,27 @@ msgstr "Альтернативный текст"
 msgid "Featured image"
 msgstr "Миниатюра"
 
+#: src/Infrastructure/Integrations/AioseoAdapter.php:426
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:107
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:115
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:123
 msgid "SEO title"
 msgstr "SEO-заголовок"
 
+#: src/Infrastructure/Integrations/AioseoAdapter.php:427
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:108
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:116
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:124
 msgid "Meta description"
 msgstr "Мета-описание"
 
+#: src/Infrastructure/Integrations/AioseoAdapter.php:428
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:109
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:117
 msgid "Focus keyphrase"
 msgstr "Ключевая фраза"
 
+#: src/Infrastructure/Integrations/AioseoAdapter.php:429
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:110
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:119
 msgid "Canonical URL"
@@ -2397,7 +2401,7 @@ msgstr "Очистить историю"
 msgid "The history was copied from another site. Check that these values belong to this site before restoring."
 msgstr "История скопирована с другого сайта. Перед восстановлением убедитесь, что эти значения относятся к этому сайту."
 
-#: src/Application/Capture/ReconciliationScanner.php:129
+#: src/Application/Capture/ReconciliationScanner.php:133
 msgid "Changes made outside WordPress (found by the check)"
 msgstr "Изменения в обход WordPress (обнаружены при проверке)"
 
@@ -2432,3 +2436,49 @@ msgstr "Проверка запущена; изменения в обход Word
 #: build/index.js:37
 msgid "Check for changes made outside WordPress"
 msgstr "Проверить изменения в обход WordPress"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:293
+msgid "Yes"
+msgstr "Да"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:293
+msgid "No"
+msgstr "Нет"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:430
+msgid "Social title"
+msgstr "Заголовок для соцсетей"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:431
+msgid "Social description"
+msgstr "Описание для соцсетей"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:432
+msgid "X (Twitter) title"
+msgstr "Заголовок для X (Twitter)"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:433
+msgid "X (Twitter) description"
+msgstr "Описание для X (Twitter)"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:434
+msgid "Default robots settings"
+msgstr "Настройки роботов по умолчанию"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:435
+msgid "Hide from search engines (noindex)"
+msgstr "Скрыть от поисковых систем (noindex)"
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:436
+msgid "Do not follow links (nofollow)"
+msgstr "Не переходить по ссылкам (nofollow)"
+
+#: src/Infrastructure/Integrations/ElementorAdapter.php:111
+#: src/Infrastructure/Integrations/ElementorAdapter.php:120
+msgid "Layout"
+msgstr "Макет"
+
+#: src/Infrastructure/Integrations/ElementorAdapter.php:112
+#: src/Infrastructure/Integrations/ElementorAdapter.php:121
+msgid "Page settings"
+msgstr "Настройки страницы"

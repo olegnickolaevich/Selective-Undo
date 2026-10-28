@@ -48,7 +48,8 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 
 * Existing posts, pages, media and the custom post types you choose (those with an admin screen).
 * Fields: title, content, excerpt, slug, status, publish date, author, parent, order and discussion settings; the featured image; categories, tags and the other taxonomies of the post type; the alternative text, caption and description of media.
-* SEO fields of Yoast SEO, Rank Math and SEOPress (title, meta description, focus keyphrase, canonical URL, indexing) and the fields of ACF field groups, when those plugins are active. Developers add other custom fields with the `selective_undo/meta_fields` filter.
+* SEO fields of Yoast SEO, Rank Math, SEOPress and All in One SEO (title, meta description, focus keyphrase, canonical URL, indexing) and the fields of ACF field groups, when those plugins are active.
+* Elementor layouts: undo of one widget edit keeps later edits of other widgets and of other settings of the same widget; the page's CSS is rebuilt after a restore. Developers add other custom fields with the `selective_undo/meta_fields` filter.
 * Undoing a tag or category change keeps the terms added or removed later.
 * History for as long as you choose (30 days by default, up to a year), limited by a size limit (256 MB by default) with automatic removal of the oldest history.
 * A head start: title, content and excerpt changes saved in WordPress revisions during the retention period before activation are imported, so they can be undone too.
@@ -101,7 +102,7 @@ Yes. A restore is recorded in the history like any other change. Open it and cli
 
 = Does it work with page builders? =
 
-Selective Undo restores the `post_content` field. When a page builder stores the layout elsewhere, the preview warns that restoring the content may not change what visitors see.
+Elementor layouts are recorded and restored element by element: undoing one widget edit keeps later edits of other widgets, and the page's CSS and text copy are rebuilt after a restore. For other page builders (Bricks, Divi, Beaver Builder) Selective Undo restores the `post_content` field, and the preview warns that restoring the content may not change what visitors see.
 
 = How much space does the history use? =
 
@@ -143,7 +144,8 @@ The plugin adds a suggested paragraph to the privacy policy guide and registers 
 * Initial release.
 * Records changes of posts, pages, media and chosen custom post types from any source: the block editor, Quick Edit, bulk edit, the REST API, WP-CLI, XML-RPC and other plugins.
 * Fields: title, content, excerpt, slug, status, publish date, author, parent, order, discussion settings, featured image, categories, tags and other taxonomies, media alternative text, caption and description.
-* SEO fields of Yoast SEO, Rank Math and SEOPress, and ACF fields; other custom fields through the `selective_undo/meta_fields` filter.
+* SEO fields of Yoast SEO, Rank Math, SEOPress and All in One SEO, and ACF fields; other custom fields through the `selective_undo/meta_fields` filter.
+* Elementor layouts, undone widget by widget.
 * Undo of one block of the content while keeping later edits of other blocks, with conflicts shown instead of overwritten.
 * Undo in the block editor, block history ("who changed this block"), and "Return to the state at" for an item.
 * Quick undo after Quick Edit and bulk edit, command palette commands, a Last change column, and the latest change outlined on the site for users with access.

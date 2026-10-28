@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-28T17:07:45+05:00\n"
+"POT-Creation-Date: 2026-10-29T03:31:03+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Selective Undo requires PHP 8.2 or newer. The plugin is inactive."
 msgstr ""
 
-#: src/Application/Capture/ReconciliationScanner.php:129
+#: src/Application/Capture/ReconciliationScanner.php:133
 msgid "Changes made outside WordPress (found by the check)"
 msgstr ""
 
@@ -460,6 +460,78 @@ msgstr ""
 msgid "Plugin activation"
 msgstr ""
 
+#: src/Infrastructure/Integrations/AioseoAdapter.php:293
+msgid "Yes"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:293
+msgid "No"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:426
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:107
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:115
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:123
+msgid "SEO title"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:427
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:108
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:116
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:124
+msgid "Meta description"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:428
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:109
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:117
+msgid "Focus keyphrase"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:429
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:110
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:119
+msgid "Canonical URL"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:430
+msgid "Social title"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:431
+msgid "Social description"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:432
+msgid "X (Twitter) title"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:433
+msgid "X (Twitter) description"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:434
+msgid "Default robots settings"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:435
+msgid "Hide from search engines (noindex)"
+msgstr ""
+
+#: src/Infrastructure/Integrations/AioseoAdapter.php:436
+msgid "Do not follow links (nofollow)"
+msgstr ""
+
+#: src/Infrastructure/Integrations/ElementorAdapter.php:111
+#: src/Infrastructure/Integrations/ElementorAdapter.php:120
+msgid "Layout"
+msgstr ""
+
+#: src/Infrastructure/Integrations/ElementorAdapter.php:112
+#: src/Infrastructure/Integrations/ElementorAdapter.php:121
+msgid "Page settings"
+msgstr ""
+
 #: src/Infrastructure/WordPress/BlockTitles.php:19
 msgid "Text"
 msgstr ""
@@ -470,28 +542,6 @@ msgstr ""
 
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:102
 msgid "Featured image"
-msgstr ""
-
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:107
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:115
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:123
-msgid "SEO title"
-msgstr ""
-
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:108
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:116
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:124
-msgid "Meta description"
-msgstr ""
-
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:109
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:117
-msgid "Focus keyphrase"
-msgstr ""
-
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:110
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:119
-msgid "Canonical URL"
 msgstr ""
 
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:111

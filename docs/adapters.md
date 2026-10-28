@@ -170,6 +170,14 @@ list the versions you can still restore in `acceptsVersion()`.
 The built-in adapters in `src/Infrastructure/WordPress/` (`PostMetaAdapter`, `TermsAdapter`)
 are complete examples of recording, locking, writing and cache invalidation.
 
+The integrations in `src/Infrastructure/Integrations/` show two harder cases:
+
+- `AioseoAdapter`: data in another plugin's own table, written without hooks of its own; the
+  writes are observed on the `query` filter and the row is compared before and after.
+- `ElementorAdapter`: a JSON tree stored as one meta value, kept as a map keyed by element ID
+  (`ElementorTree`) so that the `keys` merge strategy undoes one element edit and keeps later
+  edits of other elements; derived caches are removed after a restore.
+
 ## 3. Listening to recorded changes
 
 Each time a change set (one save, one request, one restore) is recorded, Selective Undo fires
