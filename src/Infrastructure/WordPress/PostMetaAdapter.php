@@ -26,6 +26,10 @@ use SelectiveUndo\Infrastructure\Database\StorageError;
  * raw meta_value strings: one string for a single row, a list of strings (meta_id
  * order) for several rows, missing when there is none. They are stored and written
  * back byte for byte; nothing is ever unserialized on the restore path.
+ *
+ * One empty row is the same value as no row: get_post_meta() returns "" for both,
+ * and plugins that save all their fields on every save (SEO plugins in Quick Edit)
+ * would otherwise record a change of every untouched field.
  */
 final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, PresentsValues, PresentsImages
 {
@@ -364,7 +368,7 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
     {
         return match (count($rows)) {
             0 => FieldValue::missing(),
-            1 => FieldValue::of($rows[0]),
+            1 => $rows[0] === '' ? FieldValue::missing() : FieldValue::of($rows[0]),
             default => FieldValue::of($rows),
         };
     }

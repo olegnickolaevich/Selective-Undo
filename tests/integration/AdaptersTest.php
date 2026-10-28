@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Tests\Integration;
 
+use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\FieldDefinition;
 use SelectiveUndo\Tests\IntegrationTestCase;
 
@@ -79,6 +80,9 @@ final class AdaptersTest extends IntegrationTestCase
         $this->s->metaFields()->flush();
         $id = $this->createPost(['post_type' => 'post']);
 
+        // Plugins that save all their fields write "" for the untouched ones: no change.
+        update_post_meta($id, 'price', '');
+        $this->endRequest();
         update_post_meta($id, 'price', '10');
         update_post_meta($id, 'views', '999');
         $this->endRequest();
@@ -104,6 +108,9 @@ final class AdaptersTest extends IntegrationTestCase
         wp_update_post(['ID' => $id, 'post_excerpt' => 'New caption']);
         update_post_meta($id, '_wp_attachment_image_alt', 'A dog');
         $this->endRequest();
+
+        // Named as on the media screens.
+        $this->assertSame('Caption', $this->s->adapters()->fieldLabel('post_excerpt', null, new ObjectRef('post', $id, 'attachment')));
 
         $job = $this->start($this->plan(['type' => 'changeset', 'changeset_id' => (string) $this->changesets()[0]['uuid']]));
         $this->assertSame('completed', $job['status']);

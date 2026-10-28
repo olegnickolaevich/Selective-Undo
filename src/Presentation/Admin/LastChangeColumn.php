@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Presentation\Admin;
 
 use SelectiveUndo\Application\Restore\AdapterRegistry;
+use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 
@@ -67,7 +68,8 @@ final class LastChangeColumn
             sprintf(__('%s ago', 'selective-undo'), human_time_diff((int) strtotime($row['created_at'] . ' UTC'))),
         ];
 
-        $labels = array_map(fn (string $field): string => $this->adapters->fieldLabel($field), $row['fields']);
+        $object = new ObjectRef('post', $postId, (string) get_post_type($postId));
+        $labels = array_map(fn (string $field): string => $this->adapters->fieldLabel($field, null, $object), $row['fields']);
 
         if (count($labels) > 2) {
             /* translators: 1: two field names, e.g. "Title, Author", 2: number of other changed fields. */

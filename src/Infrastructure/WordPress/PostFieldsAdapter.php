@@ -9,6 +9,8 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterCapabilities;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
+use SelectiveUndo\Domain\Contracts\DescribesFields;
+use SelectiveUndo\Domain\Contracts\FieldDefinition;
 use SelectiveUndo\Domain\Contracts\MergeableAdapter;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
 use SelectiveUndo\Domain\Contracts\PresentsValues;
@@ -23,7 +25,7 @@ use SelectiveUndo\Infrastructure\Database\StorageError;
  * request data. Writes go through a direct, whitelisted UPDATE:
  * wp_update_post() would run arbitrary save hooks inside the restore.
  */
-final class PostFieldsAdapter implements AdapterInterface, MergeableAdapter, PresentsValues
+final class PostFieldsAdapter implements AdapterInterface, DescribesFields, MergeableAdapter, PresentsValues
 {
     public const KEY = 'core/post-fields';
     /** 2: slug, status, date, author, parent and discussion; the format of version 1 fields is unchanged. */
@@ -101,6 +103,26 @@ final class PostFieldsAdapter implements AdapterInterface, MergeableAdapter, Pre
             'ping_status' => __('Pingbacks and trackbacks', 'selective-undo'),
             default => $fieldKey,
         };
+    }
+
+    /**
+     * The fields with the names the item's own screens use: for a media file the
+     * excerpt is its caption and the content its description.
+     */
+    public function fields(ObjectRef $object): array
+    {
+        $fields = [];
+
+        foreach (self::FIELDS as $field) {
+            $label = match (true) {
+                $object->subtype === 'attachment' && $field === 'post_excerpt' => __('Caption', 'selective-undo'),
+                $object->subtype === 'attachment' && $field === 'post_content' => __('Description', 'selective-undo'),
+                default => $this->fieldLabel($field),
+            };
+            $fields[] = new FieldDefinition($field, $label, in_array($field, self::INT_FIELDS, true) ? 'int' : 'text', $this->mergeStrategy($field));
+        }
+
+        return $fields;
     }
 
     /** Content is undone block by block; the other fields as a whole. */

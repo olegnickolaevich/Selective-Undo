@@ -58,7 +58,7 @@ final class PlanView
                 'id' => (int) $row['id'],
                 'object' => $this->objects->describe(new ObjectRef((string) $row['object_type'], (int) $row['object_id'], (string) $row['object_subtype']), $userId),
                 'field' => (string) $row['field_key'],
-                'field_label' => $adapter !== null ? $adapter->fieldLabel((string) $row['field_key']) : (string) $row['field_key'],
+                'field_label' => $this->adapters->fieldLabel((string) $row['field_key'], (string) $row['adapter_key'], new ObjectRef((string) $row['object_type'], (int) $row['object_id'], (string) $row['object_subtype'])),
                 'change_ids' => $sources[(int) $row['id']] ?? [],
                 'status' => (string) $row['status'],
                 'reason_code' => $row['reason_code'] === null ? null : (string) $row['reason_code'],

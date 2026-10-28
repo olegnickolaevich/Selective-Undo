@@ -101,7 +101,7 @@ final class JobView
                 'id' => (int) $row['id'],
                 'object' => $this->objects->describe(new ObjectRef((string) $row['object_type'], (int) $row['object_id'], (string) $row['object_subtype']), $userId),
                 'field' => (string) $row['field_key'],
-                'field_label' => $adapter !== null ? $adapter->fieldLabel((string) $row['field_key']) : (string) $row['field_key'],
+                'field_label' => $this->adapters->fieldLabel((string) $row['field_key'], (string) $row['adapter_key'], new ObjectRef((string) $row['object_type'], (int) $row['object_id'], (string) $row['object_subtype'])),
                 'status' => (string) $row['status'],
                 'reason_code' => $row['reason_code'] === null ? ($row['error_code'] === null ? null : (string) $row['error_code']) : (string) $row['reason_code'],
                 'result_change_id' => $row['result_change_id'] === null ? null : (int) $row['result_change_id'],

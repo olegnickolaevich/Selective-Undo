@@ -216,7 +216,7 @@ final class HistoryQuery
             'id' => (int) $change['id'],
             'event' => (string) $change['event'],
             'field' => $field,
-            'field_label' => $field === '' ? '' : ($adapter !== null ? $adapter->fieldLabel($field) : $field),
+            'field_label' => $field === '' ? '' : $this->adapters->fieldLabel($field, (string) $change['adapter_key'], new ObjectRef((string) $change['object_type'], (int) $change['object_id'], (string) $change['object_subtype'])),
             'restorable' => (bool) (int) $change['restorable'],
             'reason_code' => $change['reason_code'] === null ? null : (string) $change['reason_code'],
             'quality' => (string) $change['quality'],
@@ -307,7 +307,7 @@ final class HistoryQuery
         $fields = [];
 
         foreach ($details['fields'] as $field) {
-            $fields[] = ['key' => $field, 'label' => $this->fieldLabel($field)];
+            $fields[] = ['key' => $field, 'label' => $this->fieldLabel($field, count($visible) === 1 ? $visible[0] : null)];
         }
 
         return [
@@ -348,9 +348,9 @@ final class HistoryQuery
         return '';
     }
 
-    private function fieldLabel(string $field): string
+    private function fieldLabel(string $field, ?ObjectRef $object = null): string
     {
-        return $this->adapters->fieldLabel($field);
+        return $this->adapters->fieldLabel($field, null, $object);
     }
 
     /**

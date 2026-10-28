@@ -21,9 +21,12 @@ final class MetaFieldRegistry
         '_wp_attached_file', '_wp_attachment_metadata', '_wp_attachment_backup_sizes',
     ];
 
-    /** ACF field types whose value is stored under the field name itself. */
+    /**
+     * ACF field types whose value is stored under the field name itself. Password
+     * fields are left out: history would keep and show the passwords.
+     */
     private const ACF_SIMPLE_TYPES = [
-        'text', 'textarea', 'number', 'range', 'email', 'url', 'password', 'wysiwyg', 'oembed', 'image', 'file',
+        'text', 'textarea', 'number', 'range', 'email', 'url', 'wysiwyg', 'oembed', 'image', 'file',
         'gallery', 'select', 'checkbox', 'radio', 'button_group', 'true_false', 'link', 'post_object', 'page_link',
         'relationship', 'taxonomy', 'user', 'date_picker', 'date_time_picker', 'time_picker', 'color_picker',
     ];
@@ -91,7 +94,6 @@ final class MetaFieldRegistry
      */
     private function collect(string $postType): array
     {
-        $seo = __('SEO', 'selective-undo');
         $fields = [];
 
         if ($postType === 'attachment') {
@@ -100,26 +102,27 @@ final class MetaFieldRegistry
             $fields[] = new FieldDefinition('meta:_thumbnail_id', __('Featured image', 'selective-undo'), 'attachment');
         }
 
+        // Several SEO plugins may be active at once: the group names the plugin.
         if (defined('WPSEO_VERSION')) {
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_title', __('SEO title', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_metadesc', __('Meta description', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_focuskw', __('Focus keyphrase', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_canonical', __('Canonical URL', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_meta-robots-noindex', __('Search engine indexing', 'selective-undo'), 'text', group: $seo);
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_title', __('SEO title', 'selective-undo'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_metadesc', __('Meta description', 'selective-undo'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_focuskw', __('Focus keyphrase', 'selective-undo'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_canonical', __('Canonical URL', 'selective-undo'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_meta-robots-noindex', __('Search engine indexing', 'selective-undo'), 'text', group: 'Yoast SEO');
         }
 
         if (class_exists('RankMath')) {
-            $fields[] = new FieldDefinition('meta:rank_math_title', __('SEO title', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:rank_math_description', __('Meta description', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:rank_math_focus_keyword', __('Focus keyphrase', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:rank_math_robots', __('Search engine indexing', 'selective-undo'), 'raw', group: $seo);
-            $fields[] = new FieldDefinition('meta:rank_math_canonical_url', __('Canonical URL', 'selective-undo'), 'text', group: $seo);
+            $fields[] = new FieldDefinition('meta:rank_math_title', __('SEO title', 'selective-undo'), 'text', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_description', __('Meta description', 'selective-undo'), 'text', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_focus_keyword', __('Focus keyphrase', 'selective-undo'), 'text', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_robots', __('Search engine indexing', 'selective-undo'), 'raw', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_canonical_url', __('Canonical URL', 'selective-undo'), 'text', group: 'Rank Math');
         }
 
         if (defined('SEOPRESS_VERSION')) {
-            $fields[] = new FieldDefinition('meta:_seopress_titles_title', __('SEO title', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:_seopress_titles_desc', __('Meta description', 'selective-undo'), 'text', group: $seo);
-            $fields[] = new FieldDefinition('meta:_seopress_robots_index', __('Search engine indexing', 'selective-undo'), 'text', group: $seo);
+            $fields[] = new FieldDefinition('meta:_seopress_titles_title', __('SEO title', 'selective-undo'), 'text', group: 'SEOPress');
+            $fields[] = new FieldDefinition('meta:_seopress_titles_desc', __('Meta description', 'selective-undo'), 'text', group: 'SEOPress');
+            $fields[] = new FieldDefinition('meta:_seopress_robots_index', __('Search engine indexing', 'selective-undo'), 'text', group: 'SEOPress');
         }
 
         if (function_exists('acf_get_field_groups') && function_exists('acf_get_fields')) {

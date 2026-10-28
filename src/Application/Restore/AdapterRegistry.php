@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Restore;
 
+use SelectiveUndo\Domain\Change\ObjectRef;
 // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
 
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
 use SelectiveUndo\Domain\Contracts\CaptureSink;
 use SelectiveUndo\Domain\Contracts\CapturingAdapter;
+use SelectiveUndo\Domain\Contracts\DescribesFields;
 
 /**
  * Registry of adapters. Core adapters are registered first, then integrations
@@ -73,10 +75,26 @@ final class AdapterRegistry
 
     /**
      * Translated label of a field key of any adapter ("Title", "Featured image", "Tags").
+     * With the object, the label is the one its adapter describes for that kind of item
+     * (a media file's excerpt is its "Caption").
      */
-    public function fieldLabel(string $field, ?string $adapterKey = null): string
+    public function fieldLabel(string $field, ?string $adapterKey = null, ?ObjectRef $object = null): string
     {
         $adapter = $adapterKey !== null ? $this->find($adapterKey) : null;
+
+        if ($object !== null) {
+            foreach ($adapter !== null ? [$adapter] : $this->all() as $candidate) {
+                if (!$candidate instanceof DescribesFields) {
+                    continue;
+                }
+
+                foreach ($candidate->fields($object) as $definition) {
+                    if ($definition->key === $field) {
+                        return $definition->group !== null ? $definition->group . ': ' . $definition->label : $definition->label;
+                    }
+                }
+            }
+        }
 
         if ($adapter !== null) {
             return $adapter->fieldLabel($field);
