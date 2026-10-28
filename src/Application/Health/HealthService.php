@@ -17,6 +17,7 @@ use SelectiveUndo\Infrastructure\Database\DbInfo;
 use SelectiveUndo\Infrastructure\Database\SchemaManager;
 use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
+use SelectiveUndo\Infrastructure\Queue\JobQueue;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
 
@@ -38,6 +39,7 @@ final class HealthService
         private readonly CacheInvalidator $caches,
         private readonly AdapterRegistry $adapters,
         private readonly RevisionImporter $revisions,
+        private readonly JobQueue $queue,
     ) {
     }
 
@@ -204,7 +206,9 @@ final class HealthService
                 ? __('Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job.', 'selective-undo')
                 : ($cronDisabled
                     ? __('WP-Cron is disabled; make sure a system cron job calls wp-cron.php.', 'selective-undo')
-                    : __('Maintenance runs through WP-Cron.', 'selective-undo'))
+                    : ($this->queue->name() === 'action-scheduler'
+                        ? __('Maintenance runs through WP-Cron; restores and imports run through Action Scheduler.', 'selective-undo')
+                        : __('Maintenance runs through WP-Cron.', 'selective-undo')))
         );
 
         $pageCaches = $this->caches->unsupportedPageCaches();

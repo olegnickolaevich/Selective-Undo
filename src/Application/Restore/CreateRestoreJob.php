@@ -13,6 +13,7 @@ use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\Database\DbError;
 use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
+use SelectiveUndo\Infrastructure\Queue\JobQueue;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
@@ -38,6 +39,7 @@ final class CreateRestoreJob
         private readonly RestoreReadiness $readiness,
         private readonly RequestContext $request,
         private readonly RestoreJournal $journal,
+        private readonly JobQueue $queue,
     ) {
     }
 
@@ -158,7 +160,7 @@ final class CreateRestoreJob
         if (is_array($job) && $job['mode'] === 'inline') {
             $this->executor->run($jobId);
         } else {
-            wp_schedule_single_event(time(), ExecuteRestoreJob::CRON_HOOK, [$jobId]);
+            $this->queue->enqueue(ExecuteRestoreJob::CRON_HOOK, [$jobId]);
         }
 
         return ['job_uuid' => (string) ($job['uuid'] ?? ''), 'created' => true];

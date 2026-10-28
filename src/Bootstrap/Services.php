@@ -52,6 +52,9 @@ use SelectiveUndo\Infrastructure\Database\TableLockService;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Database\WpdbTransactionRunner;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
+use SelectiveUndo\Infrastructure\Queue\ActionSchedulerQueue;
+use SelectiveUndo\Infrastructure\Queue\JobQueue;
+use SelectiveUndo\Infrastructure\Queue\WpCronQueue;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
@@ -105,6 +108,28 @@ final class Services
     public function schema(): SchemaManager
     {
         return $this->get(SchemaManager::class, fn () => new SchemaManager($this->db, $this->tables(), $this->locks()));
+    }
+
+    /**
+     * The background queue: Action Scheduler when a plugin provides it, WP-Cron otherwise.
+     * Chosen once Action Scheduler had its chance to load (init).
+     */
+    public function queue(): JobQueue
+    {
+        if (!did_action('init')) {
+            return new WpCronQueue();
+        }
+
+        return $this->get(JobQueue::class, static function (): JobQueue {
+            /**
+             * Whether background tasks use Action Scheduler when it is available.
+             *
+             * @param bool $use
+             */
+            $use = (bool) apply_filters('selective_undo/use_action_scheduler', true);
+
+            return $use && ActionSchedulerQueue::available() ? new ActionSchedulerQueue() : new WpCronQueue();
+        });
     }
 
     public function locks(): LockService
@@ -384,6 +409,7 @@ final class Services
             $this->journal(),
             new JobOutcome(),
             $this->eventLog(),
+            $this->queue(),
         ));
     }
 
@@ -408,6 +434,7 @@ final class Services
             $this->readiness(),
             $this->requestContext(),
             $this->restoreJournal(),
+            $this->queue(),
         ));
     }
 
@@ -506,6 +533,7 @@ final class Services
             $this->cacheInvalidator(),
             $this->adapters(),
             $this->revisionImporter(),
+            $this->queue(),
         ));
     }
 

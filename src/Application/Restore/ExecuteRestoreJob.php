@@ -6,6 +6,7 @@ namespace SelectiveUndo\Application\Restore;
 
 use SelectiveUndo\Domain\Restore\JobOutcome;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
+use SelectiveUndo\Infrastructure\Queue\JobQueue;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
 
@@ -23,6 +24,7 @@ final class ExecuteRestoreJob
         private readonly JournalRepository $journal,
         private readonly JobOutcome $outcome,
         private readonly EventLog $log,
+        private readonly JobQueue $queue,
     ) {
     }
 
@@ -91,9 +93,7 @@ final class ExecuteRestoreJob
         $status = $this->outcome->resolve($counters, $cancelRequested);
 
         if ($status === null) {
-            if (!wp_next_scheduled(self::CRON_HOOK, [$lease->jobId])) {
-                wp_schedule_single_event(time() + 5, self::CRON_HOOK, [$lease->jobId]);
-            }
+            $this->queue->enqueue(self::CRON_HOOK, [$lease->jobId], 5);
 
             return false;
         }

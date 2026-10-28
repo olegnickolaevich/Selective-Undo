@@ -42,6 +42,7 @@ final class Plugin
         add_filter('cron_schedules', [self::class, 'cronSchedules']);
         add_action(\SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, [self::class, 'runJob']);
         add_action(self::QUEUE_HOOK, [self::class, 'processQueue']);
+        add_action(self::IMPORT_HOOK, [self::class, 'continueImport']);
         add_action(\SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK, [self::class, 'runMaintenance']);
         $s->privacy()->register();
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RestApi(self::services()))->register());
@@ -75,6 +76,9 @@ final class Plugin
     }
 
     public const QUEUE_HOOK = 'sundo_process_queue';
+
+    /** Continues the import of WordPress revisions until it is done. */
+    public const IMPORT_HOOK = 'sundo_import_revisions';
 
     /**
      * @param array<string, array{interval: int, display: string}> $schedules
@@ -113,15 +117,25 @@ final class Plugin
     }
 
     /**
-     * Continues importing WordPress revisions saved before recording started.
+     * Continues importing WordPress revisions saved before recording started. What
+     * does not fit in the time budget goes on in the background queue.
      */
     public static function importRevisions(float $budgetSeconds): void
     {
         try {
-            self::services()->revisionImporter()->run($budgetSeconds);
+            $result = self::services()->revisionImporter()->run($budgetSeconds);
+
+            if (!$result['done'] && $result['handled'] > 0) {
+                self::services()->queue()->enqueue(self::IMPORT_HOOK, [], 10);
+            }
         } catch (\Throwable $e) {
             self::services()->eventLog()->exception('revision_import_failed', $e);
         }
+    }
+
+    public static function continueImport(): void
+    {
+        self::importRevisions(15.0);
     }
 
     public static function maybeMigrate(): void
@@ -185,8 +199,11 @@ final class Plugin
 
     public static function deactivate(): void
     {
-        foreach (['sundo_hourly_maintenance', self::QUEUE_HOOK, 'sundo_run_job'] as $hook) {
+        $queue = self::services()->queue();
+
+        foreach (['sundo_hourly_maintenance', self::QUEUE_HOOK, \SelectiveUndo\Application\Restore\ExecuteRestoreJob::CRON_HOOK, self::IMPORT_HOOK] as $hook) {
             wp_unschedule_hook($hook);
+            $queue->clear($hook);
         }
     }
 }

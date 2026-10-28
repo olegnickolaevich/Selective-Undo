@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Tests\Integration;
 
+use SelectiveUndo\Application\Restore\ExecuteRestoreJob;
 use SelectiveUndo\Domain\DomainError;
+use SelectiveUndo\Infrastructure\Queue\ActionSchedulerQueue;
 use SelectiveUndo\Tests\IntegrationTestCase;
 
 /**
@@ -432,6 +434,40 @@ final class RestoreTest extends IntegrationTestCase
         $this->assertTrue($this->s->executeJob()->run((int) $jobRow['id']));
         $this->assertSame('cancelled', $this->s->jobView()->forUser($job['id'], 1)['status']);
         $this->assertSame('Two', get_post($id)->post_title);
+    }
+
+    public function testQueuedJobRunsFromTheBackgroundQueue(): void
+    {
+        $id = $this->createPost();
+        wp_update_post(['ID' => $id, 'post_title' => 'Two']);
+        $this->endRequest();
+        add_filter('selective_undo/max_objects_per_plan', $max = static fn (): int => 100);
+
+        try {
+            $planId = $this->plan(['type' => 'changes', 'change_ids' => $this->updateIds($id)]);
+            // Force the queued path.
+            $this->db->query("UPDATE {$this->s->tables()->plans} SET object_count = 999 WHERE uuid = '{$planId}'");
+            $job = $this->start($planId);
+        } finally {
+            remove_filter('selective_undo/max_objects_per_plan', $max);
+        }
+
+        $this->assertSame('queued', $job['status']);
+        $jobId = (int) $this->s->jobs()->findByUuid($job['id'])['id'];
+        $queue = $this->s->queue();
+        $this->assertTrue($queue->isScheduled(ExecuteRestoreJob::CRON_HOOK, [$jobId]));
+
+        if ($queue instanceof ActionSchedulerQueue) {
+            // Action Scheduler runs the stored call (its runner limits a batch to 30 s of the process).
+            $actions = as_get_scheduled_actions(['hook' => ExecuteRestoreJob::CRON_HOOK, 'args' => [$jobId], 'status' => \ActionScheduler_Store::STATUS_PENDING], 'ids');
+            $this->assertCount(1, $actions);
+            \ActionScheduler::runner()->process_action((int) reset($actions), 'test');
+        } else {
+            do_action(ExecuteRestoreJob::CRON_HOOK, $jobId); // what WP-Cron does
+        }
+
+        $this->assertSame('completed', $this->s->jobView()->forUser($job['id'], 1)['status']);
+        $this->assertSame('Контакты', get_post($id)->post_title);
     }
 
     public function testWrongDatabaseBlocksRestore(): void

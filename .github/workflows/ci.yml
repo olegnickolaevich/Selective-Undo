@@ -58,7 +58,8 @@ jobs:
         include:
           - { name: 'WP 6.8, PHP 8.2, MySQL 8.0', wp: 'wordpress:6.8-php8.2-apache', php: '8.2', db: 'mysql:8.0', engine: mysql, prefix: 'wp_' }
           - { name: 'WP latest, PHP 8.4, MySQL 8.4', wp: 'wordpress:latest', php: '8.4', db: 'mysql:8.4', engine: mysql, prefix: 'su9_' }
-          - { name: 'WP latest, PHP 8.3, MariaDB 10.11', wp: 'wordpress:latest', php: '8.3', db: 'mariadb:10.11', engine: mysql, prefix: 'wp_' }
+          # Action Scheduler as on WooCommerce stores: background tasks run through it.
+          - { name: 'WP latest, PHP 8.3, MariaDB 10.11, Action Scheduler', wp: 'wordpress:latest', php: '8.3', db: 'mariadb:10.11', engine: mysql, prefix: 'wp_', plugins: 'action-scheduler' }
           - { name: 'WP latest, PHP 8.4, MySQL 8.4, compatibility mode', wp: 'wordpress:latest', php: '8.4', db: 'mysql:8.4', engine: mysql, prefix: 'wp_', compat: '1' }
           - { name: 'WP latest, PHP 8.3, SQLite', wp: 'wordpress:latest', php: '8.3', db: '', engine: sqlite, prefix: 'wp_' }
     steps:
@@ -75,6 +76,9 @@ jobs:
           SU_DB_ENGINE: ${{ matrix.engine }}
           SU_TABLE_PREFIX: ${{ matrix.prefix }}
         run: bin/test-env.sh up
+      - name: Plugins of the site
+        if: matrix.plugins
+        run: bin/test-env.sh wp plugin install ${{ matrix.plugins }} --activate
       - name: Unit and integration tests
         env:
           SU_COMPAT_MODE: ${{ matrix.compat }}

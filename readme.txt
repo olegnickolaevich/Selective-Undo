@@ -148,4 +148,5 @@ The plugin adds a suggested paragraph to the privacy policy guide and registers 
 * Undo in the block editor, block history ("who changed this block"), and "Return to the state at" for an item.
 * Quick undo after Quick Edit and bulk edit, command palette commands, a Last change column, and the latest change outlined on the site for users with access.
 * One click on Save in the block editor is one entry in the history, including meta boxes and fields that plugins save through their own requests.
+* Background restores and imports run through Action Scheduler when a plugin provides it (WooCommerce and others), through WP-Cron otherwise.
 * Works on MySQL, MariaDB and SQLite (WordPress Playground).
