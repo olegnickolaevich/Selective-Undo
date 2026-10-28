@@ -87,6 +87,113 @@ final class BlobStore
     }
 
     /**
+     * Stores the values of one capture with as few statements as the size limit of a
+     * query allows: one write instead of one per value. Each commit on the capture
+     * path costs a disk flush, which dominates the time a save spends on history.
+     *
+     * @param list<FieldValue> $values
+     *
+     * @return list<int|InvalidPayload> Blob ID of each value, or why it was not stored.
+     *
+     * @throws StorageError
+     */
+    public function putMany(array $values): array
+    {
+        if (DbDialect::isSqlite()) {
+            return array_map(function (FieldValue $value): int|InvalidPayload {
+                try {
+                    return $this->put($value)['id'];
+                } catch (InvalidPayload $e) {
+                    return $e;
+                }
+            }, $values);
+        }
+
+        $codec = $this->codec();
+        $results = [];
+        $rows = [];
+
+        foreach ($values as $i => $value) {
+            try {
+                $row = $codec->pack($value);
+                $rows[$row['content_hash']] = $row;
+                $results[$i] = $row['content_hash'];
+            } catch (InvalidPayload $e) {
+                $results[$i] = $e;
+            }
+        }
+
+        $ids = [];
+        // Escaping can double binary payloads in the SQL text.
+        $budget = max(1 << 20, intdiv($this->dbInfo->maxAllowedPacket(), 3));
+        $chunk = [];
+        $bytes = 0;
+
+        foreach ($rows as $row) {
+            if ($chunk !== [] && $bytes + $row['stored_bytes'] > $budget) {
+                $ids += $this->upsertChunk($chunk);
+                [$chunk, $bytes] = [[], 0];
+            }
+
+            $chunk[] = $row;
+            $bytes += $row['stored_bytes'];
+        }
+
+        if ($chunk !== []) {
+            $ids += $this->upsertChunk($chunk);
+        }
+
+        $out = [];
+
+        foreach ($results as $r) {
+            $out[] = $r instanceof InvalidPayload ? $r : ($ids[$r] ?? throw new StorageError('blob_insert_failed'));
+        }
+
+        return $out;
+    }
+
+    /**
+     * @param non-empty-list<array{content_hash: string, encoding: string, payload: string, uncompressed_bytes: int, stored_bytes: int}> $rows
+     *
+     * @return array<string, int> content hash => blob ID
+     */
+    private function upsertChunk(array $rows): array
+    {
+        $now = SqlTime::utc();
+        $values = array_map(fn (array $r): string => (string) $this->db->prepare(
+            "(%s, %s, %s, %d, %d, {$now}, {$now})",
+            $r['content_hash'],
+            $r['encoding'],
+            $r['payload'],
+            $r['uncompressed_bytes'],
+            $r['stored_bytes']
+        ), $rows);
+
+        // Tables with binary columns bypass wpdb's charset stripping, so raw bytes are safe here.
+        $ok = $this->db->query(
+            "INSERT INTO {$this->t->blobs} (content_hash, encoding, payload, uncompressed_bytes, stored_bytes, created_at, last_seen_at)
+             VALUES " . implode(', ', $values) . "
+             ON DUPLICATE KEY UPDATE last_seen_at = {$now}"
+        );
+        $found = $ok === false ? null : $this->db->get_results($this->db->prepare(
+            "SELECT id, content_hash FROM {$this->t->blobs} WHERE content_hash IN (" . implode(', ', array_fill(0, count($rows), '%s')) . ')',
+            ...array_column($rows, 'content_hash')
+        ), ARRAY_A);
+
+        if (!is_array($found) || count($found) !== count($rows)) {
+            throw new StorageError('blob_insert_failed');
+        }
+
+        $ids = [];
+
+        foreach ($found as $row) {
+            $ids[(string) $row['content_hash']] = (int) $row['id'];
+        }
+
+        return $ids;
+    }
+
+    /**
      * Stores a value inside a restore transaction.
      *
      * @throws InvalidPayload

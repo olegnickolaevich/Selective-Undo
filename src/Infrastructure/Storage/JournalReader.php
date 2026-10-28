@@ -66,6 +66,32 @@ final class JournalReader
     }
 
     /**
+     * Statuses of posts in one query, without loading their content.
+     *
+     * @param list<int> $ids
+     *
+     * @return array<int, string> id => status; deleted posts are left out
+     */
+    public function postStatuses(array $ids): array
+    {
+        if ($ids === []) {
+            return [];
+        }
+
+        $statuses = [];
+        $rows = (array) $this->db->get_results($this->db->prepare(
+            "SELECT ID, post_status FROM {$this->db->posts} WHERE ID IN (" . implode(',', array_fill(0, count($ids), '%d')) . ')',
+            ...$ids
+        ), ARRAY_A);
+
+        foreach ($rows as $row) {
+            $statuses[(int) $row['ID']] = (string) $row['post_status'];
+        }
+
+        return $statuses;
+    }
+
+    /**
      * @param list<int> $ids
      *
      * @return array<int, array<string, mixed>> id => row

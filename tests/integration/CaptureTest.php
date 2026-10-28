@@ -213,6 +213,22 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertCount(1, $this->gapRows('payload_not_stored'));
     }
 
+    public function testValuesOfOneSaveAreStoredTogetherAndStayWithTheirFields(): void
+    {
+        $this->s->settings()->update(['max_value_kb' => 16]);
+        $id = $this->createPost(['post_title' => 'Alpha', 'post_excerpt' => 'Beta']);
+        // The two fields swap values (two distinct values, four uses); the content is too large.
+        wp_update_post(['ID' => $id, 'post_title' => 'Beta', 'post_excerpt' => 'Alpha', 'post_content' => str_repeat('x', 40000)]);
+        $this->endRequest();
+
+        $rows = array_column($this->changes($id, 'update'), null, 'field_key');
+        $value = fn (string $field, string $side): mixed => $this->blobValue((int) $rows[$field][$side . '_blob_id'], (string) $rows[$field][$side . '_hash']);
+        $this->assertSame(['Alpha', 'Beta', 'Beta', 'Alpha'], [$value('post_title', 'before'), $value('post_title', 'after'), $value('post_excerpt', 'before'), $value('post_excerpt', 'after')]);
+        $this->assertSame($rows['post_title']['before_blob_id'], $rows['post_excerpt']['after_blob_id']);
+        $this->assertSame('payload_not_stored', $rows['post_content']['reason_code']);
+        $this->assertSame('1', (string) $rows['post_title']['restorable']);
+    }
+
     public function testDeduplicatesIdenticalValues(): void
     {
         $a = $this->createPost(['post_title' => 'Same']);

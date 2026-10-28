@@ -1,0 +1,37 @@
+name: Load check
+
+# Specification §12.2 on a Linux runner: a journal of 1 million changes over 100 000
+# items, then the timings of the history, plans, saves and reconciliation. Runs when
+# the load scripts change or on demand; the numbers are reported as notices.
+on:
+  push:
+    branches: [main]
+    paths: ['tests/load/**', '.github/workflows/load.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  load:
+    name: Load check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      SU_TEST_SITE: ${{ github.workspace }}/.work/load-site
+      SU_DB_NAME: wpload
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mysqli
+          coverage: none
+      - name: Test site
+        run: bin/test-env.sh up
+      - name: Journal of 1 million changes
+        run: bin/test-env.sh wp eval-file tests/load/seed.php 100000 10
+      - name: Timings
+        run: |
+          bin/test-env.sh wp eval-file tests/load/bench.php 300 2>/dev/null | tee bench.txt
+          sed 's/^/::notice title=Load check::/' bench.txt

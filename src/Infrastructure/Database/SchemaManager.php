@@ -10,6 +10,7 @@ use SelectiveUndo\Infrastructure\Database\Migrations\Migration002;
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration003;
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration004;
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration005;
+use SelectiveUndo\Infrastructure\Database\Migrations\Migration006;
 
 /**
  * The schema version is stored separately from the plugin version. Migrations run
@@ -18,7 +19,7 @@ use SelectiveUndo\Infrastructure\Database\Migrations\Migration005;
  */
 final class SchemaManager
 {
-    public const VERSION = 5;
+    public const VERSION = 6;
     public const OPTION = 'selective_undo_schema_version';
 
     public function __construct(
@@ -145,6 +146,7 @@ final class SchemaManager
             3 => new Migration003(),
             4 => new Migration004(),
             5 => new Migration005(),
+            6 => new Migration006(),
         ];
     }
 }

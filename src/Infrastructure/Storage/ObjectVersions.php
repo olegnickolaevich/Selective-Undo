@@ -45,7 +45,8 @@ final class ObjectVersions
             return $last - $count + 1;
         }
 
-        // One atomic statement; LAST_INSERT_ID(expr) is per connection.
+        // One atomic statement; LAST_INSERT_ID(expr) is per connection, and the client
+        // reports it as the insert ID of the statement (no SELECT LAST_INSERT_ID()).
         $ok = $this->db->query($this->db->prepare(
             "INSERT INTO {$this->t->objectVersions} (object_type, object_id, last_seq) VALUES (%s, %d, LAST_INSERT_ID(%d))
              ON DUPLICATE KEY UPDATE last_seq = LAST_INSERT_ID(last_seq + %d)",
@@ -55,11 +56,11 @@ final class ObjectVersions
             $count
         ));
 
-        if ($ok === false) {
+        if ($ok === false || (int) $this->db->insert_id <= 0) {
             throw new StorageError('object_version_failed');
         }
 
-        return (int) $this->db->get_var('SELECT LAST_INSERT_ID()') - $count + 1;
+        return (int) $this->db->insert_id - $count + 1;
     }
 
     /**

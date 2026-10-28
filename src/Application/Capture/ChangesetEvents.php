@@ -28,6 +28,11 @@ final class ChangesetEvents
 
     public function published(int $changesetId): void
     {
+        // Most sites have no listener: then no summary is read on the save path.
+        if (!has_action('selective_undo/changeset_recorded') && !$this->outbox->hasHandlers(self::TOPIC)) {
+            return;
+        }
+
         try {
             $summary = $this->summary($changesetId);
 

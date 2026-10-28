@@ -348,7 +348,7 @@ final class CaptureService implements CaptureSink
                 continue;
             }
 
-            [$blobId, $restorable, $reason] = $this->storeValue($after);
+            [$blobId, $restorable, $reason] = $this->storeValues([$after])[0];
             $this->journal->updateChangeAfter($row['id'], $blobId, $after->hash(), $restorable, $reason);
         }
 
@@ -387,10 +387,11 @@ final class CaptureService implements CaptureSink
     private function buildRows(int $changesetId, int $sequence, ObjectRef $object, array $changed, CaptureQuality $quality, ?AdapterInterface $adapter = null): array
     {
         $rows = [];
+        $stored = $this->storeValues(array_merge(...array_map(static fn (array $pair): array => [$pair[0], $pair[1]], array_values($changed))));
 
         foreach ($changed as $field => [$before, $after]) {
-            [$beforeBlob, $beforeOk, $beforeReason] = $this->storeValue($before);
-            [$afterBlob, $afterOk, $afterReason] = $this->storeValue($after);
+            [$beforeBlob, $beforeOk, $beforeReason] = array_shift($stored) ?? [null, false, 'payload_not_stored'];
+            [$afterBlob, $afterOk, $afterReason] = array_shift($stored) ?? [null, false, 'payload_not_stored'];
             $restorable = $beforeOk && $afterOk && $quality !== CaptureQuality::Ambiguous;
             $reason = $beforeReason ?? $afterReason ?? ($quality === CaptureQuality::Ambiguous ? 'capture_ambiguous' : null);
 
@@ -422,15 +423,18 @@ final class CaptureService implements CaptureSink
     }
 
     /**
-     * @return array{0: int|null, 1: bool, 2: string|null} blob id, stored, reason
+     * @param list<FieldValue> $values
+     *
+     * @return list<array{0: int|null, 1: bool, 2: string|null}> blob id, stored, reason
      */
-    private function storeValue(FieldValue $value): array
+    private function storeValues(array $values): array
     {
-        try {
-            return [$this->blobs->put($value)['id'], true, null];
-        } catch (InvalidPayload $e) {
-            return [null, false, $e->reasonCode === 'payload_too_large' ? 'payload_not_stored' : $e->reasonCode];
-        }
+        return array_map(
+            static fn (int|InvalidPayload $r): array => $r instanceof InvalidPayload
+                ? [null, false, $r->reasonCode === 'payload_too_large' ? 'payload_not_stored' : $r->reasonCode]
+                : [$r, true, null],
+            $this->blobs->putMany($values)
+        );
     }
 
     /**

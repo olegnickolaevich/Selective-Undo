@@ -355,14 +355,12 @@ final class JournalRepository
         }
 
         $quality = (int) ($stats['ambiguous'] ?? 0) > 0 ? 'ambiguous' : ((int) ($stats['observed'] ?? 0) > 0 ? 'observed' : 'verified');
-        $fields = $this->db->get_col($this->db->prepare(
-            "SELECT DISTINCT field_key FROM {$this->t->changes} WHERE changeset_id = %d AND field_key <> '' LIMIT 50",
+        $pairs = (array) $this->db->get_results($this->db->prepare(
+            "SELECT DISTINCT field_key, event FROM {$this->t->changes} WHERE changeset_id = %d",
             $changesetId
-        ));
-        $events = $this->db->get_col($this->db->prepare(
-            "SELECT DISTINCT event FROM {$this->t->changes} WHERE changeset_id = %d",
-            $changesetId
-        ));
+        ), ARRAY_A);
+        $fields = array_slice(array_values(array_unique(array_filter(array_column($pairs, 'field_key'), static fn ($f): bool => $f !== ''), SORT_STRING)), 0, 50);
+        $events = array_values(array_unique(array_column($pairs, 'event'), SORT_STRING));
 
         $sealed = $this->db->query($this->db->prepare(
             "UPDATE {$this->t->changesets}

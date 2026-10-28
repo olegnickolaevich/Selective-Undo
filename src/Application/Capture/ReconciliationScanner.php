@@ -60,12 +60,13 @@ final class ReconciliationScanner
         $objects = $this->journal->objectsWithHistoryAfter('post', $cursor, self::BATCH);
         $drift = [];
         $checked = 0;
+        $statuses = $this->journal->postStatuses($objects);
 
         foreach ($objects as $objectId) {
             $checked++;
             $cursor = $objectId;
 
-            if (get_post_status($objectId) === 'trash') {
+            if (($statuses[$objectId] ?? 'trash') === 'trash') {
                 continue; // moving to the trash changes the status and slug; it is recorded as an event
             }
 
