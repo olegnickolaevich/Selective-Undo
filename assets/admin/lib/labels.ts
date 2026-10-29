@@ -355,6 +355,7 @@ export function sourceLabel( source: string ): string {
 	const map: Record< string, string > = {
 		block_editor: __( 'Block editor or REST', 'selective-undo' ),
 		classic_editor: __( 'Classic editor', 'selective-undo' ),
+		settings_screen: __( 'Settings screen', 'selective-undo' ),
 		quick_edit: __( 'Quick Edit', 'selective-undo' ),
 		bulk_edit: __( 'Bulk edit', 'selective-undo' ),
 		autosave: __( 'Autosave', 'selective-undo' ),

@@ -61,7 +61,7 @@ final class RestApi
             'within' => ['type' => 'integer', 'minimum' => 10, 'maximum' => 600, 'default' => 120],
             'object_id' => ['type' => 'integer', 'minimum' => 1],
         ]);
-        $this->route('/objects/post/(?P<id>\d+)/changes', 'GET', $view, [$this, 'objectTimeline'], ['cursor' => $cursor, 'limit' => $limit]);
+        $this->route('/objects/(?P<type>post|site)/(?P<id>\d+)/changes', 'GET', $view, [$this, 'objectTimeline'], ['cursor' => $cursor, 'limit' => $limit]);
         $this->route('/changes/(?P<id>\d+)/diff', 'GET', $view, [$this, 'changeDiff'], [
             'offset' => $offset,
             'mode' => ['type' => 'string', 'enum' => ['lines', 'blocks'], 'default' => 'lines'],
@@ -221,7 +221,7 @@ final class RestApi
     public function objectTimeline(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(fn () => $this->s->history()->objectTimeline(
-            new ObjectRef('post', (int) $r['id']),
+            new ObjectRef((string) $r['type'], (int) $r['id']),
             get_current_user_id(),
             $this->nullable($r->get_param('cursor')),
             (int) $r->get_param('limit')

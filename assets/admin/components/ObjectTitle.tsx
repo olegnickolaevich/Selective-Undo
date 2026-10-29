@@ -11,7 +11,10 @@ export function ObjectTitle( {
 	object: ObjectSummary;
 	withLinks?: boolean;
 } ) {
-	const history = { name: 'object' as const, id: object.id };
+	const history =
+		object.type === 'site'
+			? { name: 'object' as const, id: object.id, type: 'site' as const }
+			: { name: 'object' as const, id: object.id };
 
 	return (
 		<span className="su-object">
@@ -33,7 +36,9 @@ export function ObjectTitle( {
 					</a>
 					{ object.edit_url && (
 						<ExternalLink href={ object.edit_url }>
-							{ __( 'Open editor', 'selective-undo' ) }
+							{ object.type === 'site'
+								? __( 'Open settings', 'selective-undo' )
+								: __( 'Open editor', 'selective-undo' ) }
 						</ExternalLink>
 					) }
 				</span>

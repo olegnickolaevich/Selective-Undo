@@ -61,6 +61,10 @@ final class SourceDetector
             if ($pagenow === 'post.php') {
                 return isset($_GET['meta-box-loader']) ? Source::BlockEditor : Source::ClassicEditor;
             }
+
+            if ($pagenow === 'options.php') {
+                return Source::SettingsScreen;
+            }
         }
         // phpcs:enable
 

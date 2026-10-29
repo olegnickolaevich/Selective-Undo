@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\Support;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Infrastructure\WordPress\SiteOptionsAdapter;
 
 /**
  * Describes an object for the UI using its CURRENT state. Titles are returned as raw
@@ -25,6 +26,19 @@ final class ObjectPresenter
         if (isset($this->cache[$key])) {
             /** @var array{type: string, id: int, subtype: string, subtype_label: string, title: string|null, edit_url: string|null, exists: bool, status: string|null} */
             return $this->cache[$key];
+        }
+
+        if ($object->type === 'site') {
+            return $this->cache[$key] = [
+                'type' => 'site',
+                'id' => $object->id,
+                'subtype' => SiteOptionsAdapter::SUBTYPE,
+                'subtype_label' => __('Settings', 'selective-undo'),
+                'title' => __('Site settings', 'selective-undo'),
+                'edit_url' => user_can($viewerUserId, 'manage_options') ? admin_url('options-general.php') : null,
+                'exists' => true,
+                'status' => null,
+            ];
         }
 
         $post = $object->type === 'post' ? get_post($object->id) : null;

@@ -8,7 +8,7 @@ import { config } from './config';
 export type View =
 	| { name: 'history' }
 	| { name: 'changeset'; id: string }
-	| { name: 'object'; id: number }
+	| { name: 'object'; id: number; type?: 'site' }
 	| { name: 'preview'; id: string }
 	| { name: 'restores' }
 	| { name: 'job'; id: string }
@@ -39,6 +39,9 @@ export function viewToUrl( view: View ): string {
 	if ( 'id' in view ) {
 		params.set( 'id', String( view.id ) );
 	}
+	if ( view.name === 'object' && view.type === 'site' ) {
+		params.set( 'type', 'site' );
+	}
 	if ( view.name === 'settings' && view.tab !== 'recording' ) {
 		params.set( 'tab', view.tab );
 	}
@@ -66,7 +69,9 @@ export function urlToView( search: string ): View {
 		return { name: 'changeset', id };
 	}
 	if ( view === 'object' && /^\d+$/.test( id ) ) {
-		return { name: 'object', id: Number( id ) };
+		return params.get( 'type' ) === 'site'
+			? { name: 'object', id: Number( id ), type: 'site' }
+			: { name: 'object', id: Number( id ) };
 	}
 	if ( view === 'preview' && id ) {
 		return { name: 'preview', id };

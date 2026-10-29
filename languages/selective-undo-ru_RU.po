@@ -421,7 +421,7 @@ msgid "The deletion preview has expired. Preview again."
 msgstr "Срок действия предпросмотра удаления истёк. Выполните его ещё раз."
 
 #. translators: %d: user ID of a deleted user.
-#: src/Application/Support/ObjectPresenter.php:64
+#: src/Application/Support/ObjectPresenter.php:78
 #, php-format
 msgid "Deleted user #%d"
 msgstr "Удалённый пользователь #%d"
@@ -596,6 +596,7 @@ msgstr "История"
 msgid "Restores"
 msgstr "Восстановления"
 
+#: src/Application/Support/ObjectPresenter.php:36
 #: src/Presentation/Admin/AdminPage.php:53
 #: src/Presentation/Admin/AdminPage.php:144
 #: build/index.js:15
@@ -2501,14 +2502,74 @@ msgstr "Под ID удалённой записи теперь другая за
 msgid "Undoing this would delete the item again. Move it to the trash instead."
 msgstr "Эта отмена снова удалила бы запись. Вместо этого переместите её в корзину."
 
-#: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored."
-msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields; макеты Elementor. Удалённые навсегда записи сохраняются, чтобы их можно было восстановить."
-
-#: build/index.js:30
-msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, settings, files, orders and payments. Emails, webhooks and other external effects are never undone."
-msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, настройки, файлы, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."
-
 #: build/index.js:24
 msgid "The item comes back as a draft under its own ID, with its custom fields and terms; publish it when ready. Its comments, revisions, child items and media files are not restored."
 msgstr "Запись вернётся черновиком под своим ID, с произвольными полями и терминами; опубликуйте её, когда будете готовы. Комментарии, редакции, дочерние записи и медиафайлы не восстанавливаются."
+
+#: src/Application/Support/ObjectPresenter.php:37
+msgid "Site settings"
+msgstr "Настройки сайта"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:235
+msgid "(no title)"
+msgstr "(без названия)"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:292
+msgid "Site title"
+msgstr "Название сайта"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:293
+msgid "Tagline"
+msgstr "Краткое описание"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:294
+msgid "Your homepage displays"
+msgstr "На главной странице отображать"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:295
+msgid "Homepage"
+msgstr "Главная страница"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
+msgid "Posts page"
+msgstr "Страница записей"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
+msgid "Blog pages show at most"
+msgstr "На страницах блога отображать не более"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
+msgid "Default post category"
+msgstr "Рубрика для записей по умолчанию"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
+msgid "Date format"
+msgstr "Формат даты"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
+msgid "Time format"
+msgstr "Формат времени"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
+msgid "Site icon"
+msgstr "Иконка сайта"
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
+msgid "Site language"
+msgstr "Язык сайта"
+
+#: build/index.js:3
+msgid "Settings screen"
+msgstr "Экран настроек"
+
+#: build/index.js:19
+msgid "Open settings"
+msgstr "Открыть настройки"
+
+#: build/index.js:29
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language."
+msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields; макеты Elementor. Удалённые навсегда записи сохраняются, чтобы их можно было восстановить. Настройки сайта: название, краткое описание, главная страница, число записей на странице, рубрика по умолчанию, форматы даты и времени, иконка и язык сайта."
+
+#: build/index.js:30
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, menus, widgets, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
+msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, меню, виджеты, настройки, кроме названия сайта, краткого описания, главной страницы, форматов даты, иконки и языка сайта, файлы, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."

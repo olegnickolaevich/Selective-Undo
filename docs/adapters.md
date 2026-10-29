@@ -97,7 +97,27 @@ add_filter( 'selective_undo/meta_fields', function ( array $fields, string $post
 Check the result in **Selective Undo → History** after editing a field: the change should list
 the field with its label, and **Check restore** should bring the old value back.
 
-## 2. Writing an adapter
+## 2. Site settings
+
+The site title, tagline, homepage settings, posts per page, default category, date and time
+formats, site icon and language are recorded. Add other options with the
+`selective_undo/tracked_options` filter (option names; values are stored and restored as the
+exact `option_value` strings):
+
+```php
+add_filter( 'selective_undo/tracked_options', function ( array $options ) {
+	$options[] = 'my_plugin_banner_text';
+	return $options;
+} );
+```
+
+Addresses (`siteurl`, `home`), the administrator email, registration, the default role,
+permalinks, active plugins, themes and any option whose name ends with `_key`, `_salt`,
+`_token`, `_secret` or `password` are never recorded, even when the filter lists them:
+undoing them could lock you out of the site. Only users who can manage options see and restore
+this history.
+
+## 3. Writing an adapter
 
 Write an adapter when your data is not post meta. An adapter implements
 `SelectiveUndo\Domain\Contracts\AdapterInterface`; optional interfaces add features:
@@ -178,7 +198,7 @@ The integrations in `src/Infrastructure/Integrations/` show two harder cases:
   (`ElementorTree`) so that the `keys` merge strategy undoes one element edit and keeps later
   edits of other elements; derived caches are removed after a restore.
 
-## 3. Listening to recorded changes
+## 4. Listening to recorded changes
 
 Each time a change set (one save, one request, one restore) is recorded, Selective Undo fires
 an action with its summary. The summary holds IDs and metadata only, never field values:

@@ -101,13 +101,14 @@ export const api = {
 	changeset: ( id: Uuid, signal?: AbortSignal ) =>
 		get< ChangesetDetail >( `/changesets/${ id }`, {}, signal ),
 	objectTimeline: (
-		postId: number,
+		id: number,
 		cursor: string | null,
 		signal?: AbortSignal,
-		limit = 50
+		limit = 50,
+		type: 'post' | 'site' = 'post'
 	) =>
 		get< ObjectTimeline >(
-			`/objects/post/${ postId }/changes`,
+			`/objects/${ type }/${ id }/changes`,
 			{ cursor, limit },
 			signal
 		),

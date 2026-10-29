@@ -107,6 +107,12 @@ final class CapabilityManager
         }
 
         $base = $cap === Capabilities::VIEW_OBJECT ? Capabilities::VIEW_HISTORY : Capabilities::RESTORE_CHANGES;
+
+        // Site settings: whoever manages options.
+        if (($args[1] ?? '') === SiteOptionsAdapter::SUBTYPE) {
+            return [$base, 'manage_options'];
+        }
+
         $postId = (int) ($args[0] ?? 0);
         $post = $postId > 0 ? get_post($postId) : null;
 

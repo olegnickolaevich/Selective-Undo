@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T13:27:24+05:00\n"
+"POT-Creation-Date: 2026-10-29T13:50:46+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -442,8 +442,20 @@ msgstr ""
 msgid "The deletion preview has expired. Preview again."
 msgstr ""
 
+#: src/Application/Support/ObjectPresenter.php:36
+#: src/Presentation/Admin/AdminPage.php:53
+#: src/Presentation/Admin/AdminPage.php:144
+#: build/index.js:15
+#: build/index.js:37
+msgid "Settings"
+msgstr ""
+
+#: src/Application/Support/ObjectPresenter.php:37
+msgid "Site settings"
+msgstr ""
+
 #. translators: %d: user ID of a deleted user.
-#: src/Application/Support/ObjectPresenter.php:64
+#: src/Application/Support/ObjectPresenter.php:78
 #, php-format
 msgid "Deleted user #%d"
 msgstr ""
@@ -674,6 +686,54 @@ msgstr ""
 msgid "This site records changes to selected content (titles, text, excerpts and order of posts and pages) so that administrators can undo specific changes. The history stores who made a change, when, and the previous and new values. Removed text can remain in the history until it expires (up to the retention period set by the administrator). The history is stored in this site's database and is not sent to third parties."
 msgstr ""
 
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:235
+msgid "(no title)"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:292
+msgid "Site title"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:293
+msgid "Tagline"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:294
+msgid "Your homepage displays"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:295
+msgid "Homepage"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
+msgid "Posts page"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
+msgid "Blog pages show at most"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
+msgid "Default post category"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
+msgid "Date format"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
+msgid "Time format"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
+msgid "Site icon"
+msgstr ""
+
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
+msgid "Site language"
+msgstr ""
+
 #: src/Presentation/Admin/AdminPage.php:51
 #: build/index.js:15
 #: build/index.js:21
@@ -685,13 +745,6 @@ msgstr ""
 #: build/index.js:21
 #: build/index.js:28
 msgid "Restores"
-msgstr ""
-
-#: src/Presentation/Admin/AdminPage.php:53
-#: src/Presentation/Admin/AdminPage.php:144
-#: build/index.js:15
-#: build/index.js:37
-msgid "Settings"
 msgstr ""
 
 #: src/Presentation/Admin/AdminPage.php:69
@@ -1386,6 +1439,10 @@ msgid "Classic editor"
 msgstr ""
 
 #: build/index.js:3
+msgid "Settings screen"
+msgstr ""
+
+#: build/index.js:3
 msgid "Quick Edit"
 msgstr ""
 
@@ -1753,6 +1810,10 @@ msgstr ""
 
 #: build/index.js:19
 msgid "in trash"
+msgstr ""
+
+#: build/index.js:19
+msgid "Open settings"
 msgstr ""
 
 #: build/index.js:19
@@ -2219,7 +2280,7 @@ msgid "Content types"
 msgstr ""
 
 #: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored."
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language."
 msgstr ""
 
 #: build/index.js:29
@@ -2251,7 +2312,7 @@ msgid "What is not recorded or restored"
 msgstr ""
 
 #: build/index.js:30
-msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, settings, files, orders and payments. Emails, webhooks and other external effects are never undone."
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, menus, widgets, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
 msgstr ""
 
 #: build/index.js:30

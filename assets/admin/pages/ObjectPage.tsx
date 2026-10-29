@@ -89,13 +89,16 @@ function AsOfForm( {
  * selected together: the preview folds them into one restore.
  * @param root0
  * @param root0.id
+ * @param root0.type
  * @param root0.overview
  */
 export function ObjectPage( {
 	id,
+	type = 'post',
 	overview,
 }: {
 	id: number;
+	type?: 'post' | 'site';
 	overview: Overview | null;
 } ) {
 	const [ object, setObject ] = useState< ObjectSummary | null >( null );
@@ -111,7 +114,7 @@ export function ObjectPage( {
 	useEffect( () => {
 		const controller = new AbortController();
 		setLoading( true );
-		api.objectTimeline( id, null, controller.signal )
+		api.objectTimeline( id, null, controller.signal, 50, type )
 			.then( ( page ) => {
 				setObject( page.object );
 				setItems( page.items );
@@ -125,12 +128,18 @@ export function ObjectPage( {
 				}
 			} );
 		return () => controller.abort();
-	}, [ id ] );
+	}, [ id, type ] );
 
 	const loadMore = async () => {
 		setMore( true );
 		try {
-			const page = await api.objectTimeline( id, cursor );
+			const page = await api.objectTimeline(
+				id,
+				cursor,
+				undefined,
+				50,
+				type
+			);
 			setItems( ( prev ) => [ ...prev, ...page.items ] );
 			setCursor( page.next_cursor );
 		} catch ( e: unknown ) {
@@ -158,7 +167,9 @@ export function ObjectPage( {
 			{ object?.edit_url && (
 				<p>
 					<a href={ object.edit_url }>
-						{ __( 'Open editor', 'selective-undo' ) }
+						{ type === 'site'
+							? __( 'Open settings', 'selective-undo' )
+							: __( 'Open editor', 'selective-undo' ) }
 					</a>
 				</p>
 			) }
@@ -259,7 +270,8 @@ export function ObjectPage( {
 					</p>
 				</div>
 			) }
-			{ canRestore && items.length > 1 && (
+			{ /* Return to a moment: posts only (site settings are undone change by change). */ }
+			{ canRestore && type === 'post' && items.length > 1 && (
 				<AsOfForm
 					objectId={ id }
 					initial={ siteInput(

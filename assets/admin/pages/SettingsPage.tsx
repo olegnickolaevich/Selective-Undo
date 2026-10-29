@@ -107,7 +107,7 @@ function RecordingTab( {
 				<legend>{ __( 'Content types', 'selective-undo' ) }</legend>
 				<p className="su-muted">
 					{ __(
-						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored.',
+						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language.',
 						'selective-undo'
 					) }
 				</p>
@@ -176,7 +176,7 @@ function RecordingTab( {
 				</summary>
 				<p>
 					{ __(
-						'Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, settings, files, orders and payments. Emails, webhooks and other external effects are never undone.',
+						'Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, menus, widgets, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone.',
 						'selective-undo'
 					) }
 				</p>
@@ -724,7 +724,13 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 				<ul className="su-gaps">
 					{ gaps.data.items.map( ( g ) => {
 						const view = g.object
-							? { name: 'object' as const, id: g.object.id }
+							? {
+									name: 'object' as const,
+									id: g.object.id,
+									...( g.object.type === 'site'
+										? { type: 'site' as const }
+										: {} ),
+								}
 							: null;
 						return (
 							<li key={ g.id }>

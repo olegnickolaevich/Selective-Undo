@@ -64,8 +64,9 @@ export function App() {
 					) }
 					{ view.name === 'object' && (
 						<ObjectPage
-							key={ view.id }
+							key={ `${ view.type ?? 'post' }:${ view.id }` }
 							id={ view.id }
+							type={ view.type ?? 'post' }
 							overview={ overview }
 						/>
 					) }

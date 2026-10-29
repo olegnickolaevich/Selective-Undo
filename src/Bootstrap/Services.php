@@ -76,6 +76,7 @@ use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
 use SelectiveUndo\Infrastructure\WordPress\CapabilityManager;
 use SelectiveUndo\Infrastructure\WordPress\PostChangeObserver;
 use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
+use SelectiveUndo\Infrastructure\WordPress\SiteOptionsAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Infrastructure\Integrations\AioseoAdapter;
 use SelectiveUndo\Infrastructure\Integrations\ElementorAdapter;
@@ -334,6 +335,7 @@ final class Services
                 $registry->register($this->postMetaAdapter());
                 $registry->register($this->termsAdapter());
                 $registry->register($this->postDeletionAdapter());
+                $registry->register(new SiteOptionsAdapter($this->db, $this->requestContext()));
 
                 if (AioseoAdapter::available()) {
                     $registry->register($this->get(AioseoAdapter::class, fn () => new AioseoAdapter(

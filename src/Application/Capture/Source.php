@@ -18,6 +18,8 @@ enum Source: string
     case WpCli = 'wp_cli';
     case Cron = 'cron';
     case Ajax = 'ajax';
+    /** A form of Settings (General, Reading and others) saved through options.php. */
+    case SettingsScreen = 'settings_screen';
     case Restore = 'restore';
     /** Changes reconstructed from WordPress revisions saved before recording started. */
     case Revisions = 'revisions';
