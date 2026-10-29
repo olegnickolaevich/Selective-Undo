@@ -12,7 +12,8 @@ export default defineConfig( {
 	expect: { timeout: 15_000 },
 	retries: 0,
 	workers: 1,
-	reporter: [ [ 'list' ] ],
+	// In CI failures also become annotations of the run, readable without the logs.
+	reporter: process.env.CI ? [ [ 'list' ], [ 'github' ] ] : [ [ 'list' ] ],
 	use: {
 		baseURL: process.env.SU_E2E_URL ?? 'http://127.0.0.1:8899',
 		launchOptions: process.env.SU_CHROMIUM ? { executablePath: process.env.SU_CHROMIUM } : {},
