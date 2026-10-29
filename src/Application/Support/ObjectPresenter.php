@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\Support;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Infrastructure\WordPress\NavMenuAdapter;
 use SelectiveUndo\Infrastructure\WordPress\SiteOptionsAdapter;
 
 /**
@@ -37,6 +38,21 @@ final class ObjectPresenter
                 'title' => __('Site settings', 'selective-undo'),
                 'edit_url' => user_can($viewerUserId, 'manage_options') ? admin_url('options-general.php') : null,
                 'exists' => true,
+                'status' => null,
+            ];
+        }
+
+        if ($object->type === 'menu') {
+            $menu = get_term($object->id, 'nav_menu');
+
+            return $this->cache[$key] = [
+                'type' => 'menu',
+                'id' => $object->id,
+                'subtype' => NavMenuAdapter::SUBTYPE,
+                'subtype_label' => __('Menu', 'selective-undo'),
+                'title' => $menu instanceof \WP_Term ? $menu->name : null,
+                'edit_url' => $menu instanceof \WP_Term && user_can($viewerUserId, 'edit_theme_options') ? admin_url('nav-menus.php?action=edit&menu=' . $object->id) : null,
+                'exists' => $menu instanceof \WP_Term,
                 'status' => null,
             ];
         }

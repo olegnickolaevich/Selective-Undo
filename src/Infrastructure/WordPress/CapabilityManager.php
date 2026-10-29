@@ -113,6 +113,11 @@ final class CapabilityManager
             return [$base, 'manage_options'];
         }
 
+        // Menus: whoever may edit them (Appearance → Menus).
+        if (($args[1] ?? '') === NavMenuAdapter::SUBTYPE) {
+            return [$base, 'edit_theme_options'];
+        }
+
         $postId = (int) ($args[0] ?? 0);
         $post = $postId > 0 ? get_post($postId) : null;
 

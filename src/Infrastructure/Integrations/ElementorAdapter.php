@@ -17,6 +17,7 @@ use SelectiveUndo\Domain\Contracts\CapturingAdapter;
 use SelectiveUndo\Domain\Contracts\DescribesFields;
 use SelectiveUndo\Domain\Contracts\FieldDefinition;
 use SelectiveUndo\Domain\Contracts\MergeableAdapter;
+use SelectiveUndo\Domain\Contracts\NormalizesValues;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
 use SelectiveUndo\Domain\Contracts\PresentsValues;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
@@ -38,7 +39,7 @@ use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
  * After a restore the generated CSS and element caches of the post are removed;
  * Elementor builds them again on the next view.
  */
-final class ElementorAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, MergeableAdapter, PresentsValues
+final class ElementorAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, MergeableAdapter, NormalizesValues, PresentsValues
 {
     public const KEY = 'integration/elementor';
     public const VERSION = 1;
@@ -85,6 +86,18 @@ final class ElementorAdapter implements AdapterInterface, CapturingAdapter, Desc
     public function mergeStrategy(string $fieldKey): MergeStrategy
     {
         return $fieldKey === 'elementor:data' ? MergeStrategy::Keys : MergeStrategy::Replace;
+    }
+
+    /** The tree written and read again: elements in page order, neighbours recomputed. */
+    public function normalize(string $fieldKey, FieldValue $value): FieldValue
+    {
+        if ($fieldKey !== 'elementor:data' || !is_array($value->value)) {
+            return $value;
+        }
+
+        $map = ElementorTree::flatten(ElementorTree::build($value->value));
+
+        return $map === null ? $value : FieldValue::of($map);
     }
 
     public function capabilities(): AdapterCapabilities

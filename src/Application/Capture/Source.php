@@ -20,6 +20,8 @@ enum Source: string
     case Ajax = 'ajax';
     /** A form of Settings (General, Reading and others) saved through options.php. */
     case SettingsScreen = 'settings_screen';
+    /** Appearance → Menus. */
+    case MenusScreen = 'menus_screen';
     case Restore = 'restore';
     /** Changes reconstructed from WordPress revisions saved before recording started. */
     case Revisions = 'revisions';

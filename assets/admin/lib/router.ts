@@ -8,11 +8,18 @@ import { config } from './config';
 export type View =
 	| { name: 'history' }
 	| { name: 'changeset'; id: string }
-	| { name: 'object'; id: number; type?: 'site' }
+	| { name: 'object'; id: number; type?: ObjectKind }
 	| { name: 'preview'; id: string }
 	| { name: 'restores' }
 	| { name: 'job'; id: string }
 	| { name: 'settings'; tab: string };
+
+/** Objects that are not posts: site settings and menus. */
+export type ObjectKind = 'site' | 'menu';
+
+export function objectKind( type: string ): ObjectKind | undefined {
+	return type === 'site' || type === 'menu' ? type : undefined;
+}
 
 type TopPage = keyof typeof config.pages;
 
@@ -39,8 +46,8 @@ export function viewToUrl( view: View ): string {
 	if ( 'id' in view ) {
 		params.set( 'id', String( view.id ) );
 	}
-	if ( view.name === 'object' && view.type === 'site' ) {
-		params.set( 'type', 'site' );
+	if ( view.name === 'object' && view.type ) {
+		params.set( 'type', view.type );
 	}
 	if ( view.name === 'settings' && view.tab !== 'recording' ) {
 		params.set( 'tab', view.tab );
@@ -69,8 +76,9 @@ export function urlToView( search: string ): View {
 		return { name: 'changeset', id };
 	}
 	if ( view === 'object' && /^\d+$/.test( id ) ) {
-		return params.get( 'type' ) === 'site'
-			? { name: 'object', id: Number( id ), type: 'site' }
+		const type = objectKind( params.get( 'type' ) ?? '' );
+		return type
+			? { name: 'object', id: Number( id ), type }
 			: { name: 'object', id: Number( id ) };
 	}
 	if ( view === 'preview' && id ) {

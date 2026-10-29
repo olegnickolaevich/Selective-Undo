@@ -61,7 +61,7 @@ final class RestApi
             'within' => ['type' => 'integer', 'minimum' => 10, 'maximum' => 600, 'default' => 120],
             'object_id' => ['type' => 'integer', 'minimum' => 1],
         ]);
-        $this->route('/objects/(?P<type>post|site)/(?P<id>\d+)/changes', 'GET', $view, [$this, 'objectTimeline'], ['cursor' => $cursor, 'limit' => $limit]);
+        $this->route('/objects/(?P<type>post|site|menu)/(?P<id>\d+)/changes', 'GET', $view, [$this, 'objectTimeline'], ['cursor' => $cursor, 'limit' => $limit]);
         $this->route('/changes/(?P<id>\d+)/diff', 'GET', $view, [$this, 'changeDiff'], [
             'offset' => $offset,
             'mode' => ['type' => 'string', 'enum' => ['lines', 'blocks'], 'default' => 'lines'],

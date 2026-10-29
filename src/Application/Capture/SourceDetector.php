@@ -65,6 +65,10 @@ final class SourceDetector
             if ($pagenow === 'options.php') {
                 return Source::SettingsScreen;
             }
+
+            if ($pagenow === 'nav-menus.php') {
+                return Source::MenusScreen;
+            }
         }
         // phpcs:enable
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Integrations;
 
+use SelectiveUndo\Domain\Merge\LinkedOrder;
+
 /**
  * Elementor's element tree (the decoded _elementor_data list) as a map keyed by
  * element ID, so that an undo can work element by element and setting by setting:
@@ -94,44 +96,12 @@ final class ElementorTree
     {
         $out = [];
 
-        foreach (self::order($children[$parent] ?? []) as $id) {
+        foreach (LinkedOrder::order($children[$parent] ?? []) as $id) {
             $element = $map[$id]['element'];
             $element['elements'] = self::level($map, $children, $id);
             $out[] = $element;
         }
 
         return $out;
-    }
-
-    /**
-     * Follows the "comes after" links; elements whose neighbour is gone, or that two
-     * edits put after the same one, are placed after the chain in a stable order.
-     *
-     * @param array<string, string> $after child => previous sibling
-     *
-     * @return list<string>
-     */
-    private static function order(array $after): array
-    {
-        ksort($after, SORT_STRING);
-        $placed = [];
-        $last = '';
-
-        while ($after !== []) {
-            $next = array_search($last, $after, true);
-
-            if ($next === false) {
-                // The chain is broken here: continue with an element whose neighbour is not waiting.
-                $next = array_key_first(array_filter($after, static fn (string $prev): bool => !isset($after[$prev])));
-                $next ??= array_key_first($after);
-            }
-
-            $next = (string) $next;
-            $placed[] = $next;
-            unset($after[$next]);
-            $last = $next;
-        }
-
-        return $placed;
     }
 }

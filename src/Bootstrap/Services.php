@@ -75,6 +75,7 @@ use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
 use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
 use SelectiveUndo\Infrastructure\WordPress\CapabilityManager;
 use SelectiveUndo\Infrastructure\WordPress\PostChangeObserver;
+use SelectiveUndo\Infrastructure\WordPress\NavMenuAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 use SelectiveUndo\Infrastructure\WordPress\SiteOptionsAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
@@ -267,6 +268,11 @@ final class Services
         ));
     }
 
+    public function navMenuAdapter(): NavMenuAdapter
+    {
+        return $this->get(NavMenuAdapter::class, fn () => new NavMenuAdapter($this->db, $this->requestContext()));
+    }
+
     public function postDeletionAdapter(): PostDeletionAdapter
     {
         return $this->get(PostDeletionAdapter::class, fn () => new PostDeletionAdapter($this->db, $this->trackingPolicy(), $this->cacheInvalidator()));
@@ -336,6 +342,7 @@ final class Services
                 $registry->register($this->termsAdapter());
                 $registry->register($this->postDeletionAdapter());
                 $registry->register(new SiteOptionsAdapter($this->db, $this->requestContext()));
+                $registry->register($this->navMenuAdapter());
 
                 if (AioseoAdapter::available()) {
                     $registry->register($this->get(AioseoAdapter::class, fn () => new AioseoAdapter(

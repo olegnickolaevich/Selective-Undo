@@ -105,7 +105,7 @@ export const api = {
 		cursor: string | null,
 		signal?: AbortSignal,
 		limit = 50,
-		type: 'post' | 'site' = 'post'
+		type: 'post' | 'site' | 'menu' = 'post'
 	) =>
 		get< ObjectTimeline >(
 			`/objects/${ type }/${ id }/changes`,

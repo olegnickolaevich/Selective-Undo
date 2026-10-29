@@ -290,7 +290,7 @@ msgstr "Будет восстановлено"
 
 #: src/Application/History/HistoryQuery.php:113
 #: src/Application/History/HistoryQuery.php:120
-#: src/Application/Restore/BuildRestorePlan.php:150
+#: src/Application/Restore/BuildRestorePlan.php:151
 msgid "This operation no longer exists in the history."
 msgstr "Этой операции больше нет в истории."
 
@@ -303,52 +303,52 @@ msgstr "У вас нет прав на просмотр истории этой 
 msgid "Invalid page cursor."
 msgstr "Неверный указатель страницы."
 
-#: src/Application/Restore/BuildRestorePlan.php:128
+#: src/Application/Restore/BuildRestorePlan.php:129
 msgid "Select between 1 and 500 changes."
 msgstr "Выберите от 1 до 500 изменений."
 
-#: src/Application/Restore/BuildRestorePlan.php:134
+#: src/Application/Restore/BuildRestorePlan.php:135
 msgid "Some of the selected changes no longer exist in the history."
 msgstr "Некоторых выбранных изменений больше нет в истории."
 
-#: src/Application/Restore/BuildRestorePlan.php:139
+#: src/Application/Restore/BuildRestorePlan.php:140
 msgid "Informational events cannot be restored."
 msgstr "Информационные события нельзя восстановить."
 
-#: src/Application/Restore/BuildRestorePlan.php:163
+#: src/Application/Restore/BuildRestorePlan.php:164
 msgid "The selection contains no restorable changes."
 msgstr "В выборе нет изменений, которые можно восстановить."
 
-#: src/Application/Restore/BuildRestorePlan.php:167
+#: src/Application/Restore/BuildRestorePlan.php:168
 msgid "Select at most 500 changes at a time."
 msgstr "Выберите не больше 500 изменений за раз."
 
-#: src/Application/Restore/BuildRestorePlan.php:180
+#: src/Application/Restore/BuildRestorePlan.php:181
 msgid "Choose the parts of a change to undo."
 msgstr "Выберите части изменения, которые нужно отменить."
 
-#: src/Application/Restore/BuildRestorePlan.php:191
+#: src/Application/Restore/BuildRestorePlan.php:192
 msgid "Choose an item and a moment."
 msgstr "Выберите объект и момент времени."
 
-#: src/Application/Restore/BuildRestorePlan.php:198
+#: src/Application/Restore/BuildRestorePlan.php:199
 msgid "The item has not changed since this moment."
 msgstr "С этого момента объект не менялся."
 
-#: src/Application/Restore/BuildRestorePlan.php:202
+#: src/Application/Restore/BuildRestorePlan.php:203
 msgid "Too many changes since this moment. Choose a later moment."
 msgstr "С этого момента слишком много изменений. Выберите более поздний момент."
 
-#: src/Application/Restore/BuildRestorePlan.php:208
+#: src/Application/Restore/BuildRestorePlan.php:209
 msgid "Unknown selection type."
 msgstr "Неизвестный тип выбора."
 
-#: src/Application/Restore/BuildRestorePlan.php:260
+#: src/Application/Restore/BuildRestorePlan.php:261
 msgid "You are not allowed to view the history of some of the selected items."
 msgstr "У вас нет прав на просмотр истории некоторых выбранных записей."
 
 #. translators: %d: maximum number of items in one restore.
-#: src/Application/Restore/BuildRestorePlan.php:284
+#: src/Application/Restore/BuildRestorePlan.php:285
 #, php-format
 msgid "One restore can include changes of at most %d item. Select fewer items and restore them in several steps."
 msgid_plural "One restore can include changes of at most %d items. Select fewer items and restore them in several steps."
@@ -421,7 +421,7 @@ msgid "The deletion preview has expired. Preview again."
 msgstr "Срок действия предпросмотра удаления истёк. Выполните его ещё раз."
 
 #. translators: %d: user ID of a deleted user.
-#: src/Application/Support/ObjectPresenter.php:78
+#: src/Application/Support/ObjectPresenter.php:94
 #, php-format
 msgid "Deleted user #%d"
 msgstr "Удалённый пользователь #%d"
@@ -596,7 +596,7 @@ msgstr "История"
 msgid "Restores"
 msgstr "Восстановления"
 
-#: src/Application/Support/ObjectPresenter.php:36
+#: src/Application/Support/ObjectPresenter.php:37
 #: src/Presentation/Admin/AdminPage.php:53
 #: src/Presentation/Admin/AdminPage.php:144
 #: build/index.js:15
@@ -1638,8 +1638,7 @@ msgstr "Загрузка сравнения…"
 msgid "in trash"
 msgstr "в корзине"
 
-#: build/index.js:19
-#: build/index.js:22
+#: build/index.js:8
 msgid "Open editor"
 msgstr "Открыть в редакторе"
 
@@ -2465,13 +2464,13 @@ msgstr "Скрыть от поисковых систем (noindex)"
 msgid "Do not follow links (nofollow)"
 msgstr "Не переходить по ссылкам (nofollow)"
 
-#: src/Infrastructure/Integrations/ElementorAdapter.php:111
-#: src/Infrastructure/Integrations/ElementorAdapter.php:120
+#: src/Infrastructure/Integrations/ElementorAdapter.php:124
+#: src/Infrastructure/Integrations/ElementorAdapter.php:133
 msgid "Layout"
 msgstr "Макет"
 
-#: src/Infrastructure/Integrations/ElementorAdapter.php:112
-#: src/Infrastructure/Integrations/ElementorAdapter.php:121
+#: src/Infrastructure/Integrations/ElementorAdapter.php:125
+#: src/Infrastructure/Integrations/ElementorAdapter.php:134
 msgid "Page settings"
 msgstr "Настройки страницы"
 
@@ -2506,55 +2505,55 @@ msgstr "Эта отмена снова удалила бы запись. Вме�
 msgid "The item comes back as a draft under its own ID, with its custom fields and terms; publish it when ready. Its comments, revisions, child items and media files are not restored."
 msgstr "Запись вернётся черновиком под своим ID, с произвольными полями и терминами; опубликуйте её, когда будете готовы. Комментарии, редакции, дочерние записи и медиафайлы не восстанавливаются."
 
-#: src/Application/Support/ObjectPresenter.php:37
+#: src/Application/Support/ObjectPresenter.php:38
 msgid "Site settings"
 msgstr "Настройки сайта"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:235
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:239
 msgid "(no title)"
 msgstr "(без названия)"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:292
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
 msgid "Site title"
 msgstr "Название сайта"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:293
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
 msgid "Tagline"
 msgstr "Краткое описание"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:294
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
 msgid "Your homepage displays"
 msgstr "На главной странице отображать"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:295
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
 msgid "Homepage"
 msgstr "Главная страница"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
 msgid "Posts page"
 msgstr "Страница записей"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
 msgid "Blog pages show at most"
 msgstr "На страницах блога отображать не более"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
 msgid "Default post category"
 msgstr "Рубрика для записей по умолчанию"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:303
 msgid "Date format"
 msgstr "Формат даты"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:304
 msgid "Time format"
 msgstr "Формат времени"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:305
 msgid "Site icon"
 msgstr "Иконка сайта"
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:306
 msgid "Site language"
 msgstr "Язык сайта"
 
@@ -2562,14 +2561,31 @@ msgstr "Язык сайта"
 msgid "Settings screen"
 msgstr "Экран настроек"
 
-#: build/index.js:19
+#: build/index.js:8
 msgid "Open settings"
 msgstr "Открыть настройки"
 
+#: src/Application/Support/ObjectPresenter.php:52
+msgid "Menu"
+msgstr "Меню"
+
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:134
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:139
+msgid "Menu items"
+msgstr "Пункты меню"
+
+#: build/index.js:8
+msgid "Open menus"
+msgstr "Открыть меню"
+
 #: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language."
-msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields; макеты Elementor. Удалённые навсегда записи сохраняются, чтобы их можно было восстановить. Настройки сайта: название, краткое описание, главная страница, число записей на странице, рубрика по умолчанию, форматы даты и времени, иконка и язык сайта."
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus."
+msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields; макеты Elementor. Удалённые навсегда записи сохраняются, чтобы их можно было восстановить. Настройки сайта: название, краткое описание, главная страница, число записей на странице, рубрика по умолчанию, форматы даты и времени, иконка и язык сайта. Меню."
 
 #: build/index.js:30
-msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, menus, widgets, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
-msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, меню, виджеты, настройки, кроме названия сайта, краткого описания, главной страницы, форматов даты, иконки и языка сайта, файлы, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
+msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, виджеты, области меню, настройки, кроме названия сайта, краткого описания, главной страницы, форматов даты, иконки и языка сайта, файлы, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."
+
+#: build/index.js:3
+msgid "Menus screen"
+msgstr "Экран меню"

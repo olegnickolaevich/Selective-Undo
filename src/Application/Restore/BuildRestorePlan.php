@@ -11,6 +11,7 @@ use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
 use SelectiveUndo\Domain\Contracts\MergeableAdapter;
+use SelectiveUndo\Domain\Contracts\NormalizesValues;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Domain\Merge\MergeStrategy;
@@ -524,6 +525,11 @@ final class BuildRestorePlan
         $outcome = $this->merger->undo($strategy, $base, $current, $target, $resolutions);
         $item = $this->itemSkeleton($object, $group, $field) + ['warnings' => [], 'merge_state' => null];
         $merged = $outcome->value;
+
+        if ($merged !== null && $adapter instanceof NormalizesValues) {
+            // The value the adapter will read back once it is written.
+            $merged = $adapter->normalize($field, $merged);
+        }
 
         if ($merged === null) {
             // Not mergeable (too different, wrong type): the plain conflict stays.

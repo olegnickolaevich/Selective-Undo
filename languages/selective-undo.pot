@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T13:50:46+05:00\n"
+"POT-Creation-Date: 2026-10-29T17:51:05+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -313,7 +313,7 @@ msgstr ""
 
 #: src/Application/History/HistoryQuery.php:113
 #: src/Application/History/HistoryQuery.php:120
-#: src/Application/Restore/BuildRestorePlan.php:150
+#: src/Application/Restore/BuildRestorePlan.php:151
 msgid "This operation no longer exists in the history."
 msgstr ""
 
@@ -326,52 +326,52 @@ msgstr ""
 msgid "Invalid page cursor."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:128
+#: src/Application/Restore/BuildRestorePlan.php:129
 msgid "Select between 1 and 500 changes."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:134
+#: src/Application/Restore/BuildRestorePlan.php:135
 msgid "Some of the selected changes no longer exist in the history."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:139
+#: src/Application/Restore/BuildRestorePlan.php:140
 msgid "Informational events cannot be restored."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:163
+#: src/Application/Restore/BuildRestorePlan.php:164
 msgid "The selection contains no restorable changes."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:167
+#: src/Application/Restore/BuildRestorePlan.php:168
 msgid "Select at most 500 changes at a time."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:180
+#: src/Application/Restore/BuildRestorePlan.php:181
 msgid "Choose the parts of a change to undo."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:191
+#: src/Application/Restore/BuildRestorePlan.php:192
 msgid "Choose an item and a moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:198
+#: src/Application/Restore/BuildRestorePlan.php:199
 msgid "The item has not changed since this moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:202
+#: src/Application/Restore/BuildRestorePlan.php:203
 msgid "Too many changes since this moment. Choose a later moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:208
+#: src/Application/Restore/BuildRestorePlan.php:209
 msgid "Unknown selection type."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:260
+#: src/Application/Restore/BuildRestorePlan.php:261
 msgid "You are not allowed to view the history of some of the selected items."
 msgstr ""
 
 #. translators: %d: maximum number of items in one restore.
-#: src/Application/Restore/BuildRestorePlan.php:284
+#: src/Application/Restore/BuildRestorePlan.php:285
 #, php-format
 msgid "One restore can include changes of at most %d item. Select fewer items and restore them in several steps."
 msgid_plural "One restore can include changes of at most %d items. Select fewer items and restore them in several steps."
@@ -442,7 +442,7 @@ msgstr ""
 msgid "The deletion preview has expired. Preview again."
 msgstr ""
 
-#: src/Application/Support/ObjectPresenter.php:36
+#: src/Application/Support/ObjectPresenter.php:37
 #: src/Presentation/Admin/AdminPage.php:53
 #: src/Presentation/Admin/AdminPage.php:144
 #: build/index.js:15
@@ -450,12 +450,16 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: src/Application/Support/ObjectPresenter.php:37
+#: src/Application/Support/ObjectPresenter.php:38
 msgid "Site settings"
 msgstr ""
 
+#: src/Application/Support/ObjectPresenter.php:52
+msgid "Menu"
+msgstr ""
+
 #. translators: %d: user ID of a deleted user.
-#: src/Application/Support/ObjectPresenter.php:78
+#: src/Application/Support/ObjectPresenter.php:94
 #, php-format
 msgid "Deleted user #%d"
 msgstr ""
@@ -534,13 +538,13 @@ msgstr ""
 msgid "Do not follow links (nofollow)"
 msgstr ""
 
-#: src/Infrastructure/Integrations/ElementorAdapter.php:111
-#: src/Infrastructure/Integrations/ElementorAdapter.php:120
+#: src/Infrastructure/Integrations/ElementorAdapter.php:124
+#: src/Infrastructure/Integrations/ElementorAdapter.php:133
 msgid "Layout"
 msgstr ""
 
-#: src/Infrastructure/Integrations/ElementorAdapter.php:112
-#: src/Infrastructure/Integrations/ElementorAdapter.php:121
+#: src/Infrastructure/Integrations/ElementorAdapter.php:125
+#: src/Infrastructure/Integrations/ElementorAdapter.php:134
 msgid "Page settings"
 msgstr ""
 
@@ -564,6 +568,11 @@ msgstr ""
 
 #: src/Infrastructure/WordPress/MetaFieldRegistry.php:147
 msgid "Custom fields"
+msgstr ""
+
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:134
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:139
+msgid "Menu items"
 msgstr ""
 
 #: src/Infrastructure/WordPress/PostDeletionAdapter.php:97
@@ -686,51 +695,51 @@ msgstr ""
 msgid "This site records changes to selected content (titles, text, excerpts and order of posts and pages) so that administrators can undo specific changes. The history stores who made a change, when, and the previous and new values. Removed text can remain in the history until it expires (up to the retention period set by the administrator). The history is stored in this site's database and is not sent to third parties."
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:235
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:239
 msgid "(no title)"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:292
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
 msgid "Site title"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:293
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
 msgid "Tagline"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:294
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
 msgid "Your homepage displays"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:295
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
 msgid "Homepage"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
 msgid "Posts page"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
 msgid "Blog pages show at most"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
 msgid "Default post category"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:303
 msgid "Date format"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:304
 msgid "Time format"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:305
 msgid "Site icon"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:306
 msgid "Site language"
 msgstr ""
 
@@ -1443,6 +1452,10 @@ msgid "Settings screen"
 msgstr ""
 
 #: build/index.js:3
+msgid "Menus screen"
+msgstr ""
+
+#: build/index.js:3
 msgid "Quick Edit"
 msgstr ""
 
@@ -1536,6 +1549,18 @@ msgid "Edit of %d item"
 msgid_plural "Edit of %d items"
 msgstr[0] ""
 msgstr[1] ""
+
+#: build/index.js:8
+msgid "Open settings"
+msgstr ""
+
+#: build/index.js:8
+msgid "Open menus"
+msgstr ""
+
+#: build/index.js:8
+msgid "Open editor"
+msgstr ""
 
 #. translators: %d: post ID.
 #: build/index.js:9
@@ -1810,15 +1835,6 @@ msgstr ""
 
 #: build/index.js:19
 msgid "in trash"
-msgstr ""
-
-#: build/index.js:19
-msgid "Open settings"
-msgstr ""
-
-#: build/index.js:19
-#: build/index.js:22
-msgid "Open editor"
 msgstr ""
 
 #: build/index.js:19
@@ -2280,7 +2296,7 @@ msgid "Content types"
 msgstr ""
 
 #: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language."
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus."
 msgstr ""
 
 #: build/index.js:29
@@ -2312,7 +2328,7 @@ msgid "What is not recorded or restored"
 msgstr ""
 
 #: build/index.js:30
-msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, menus, widgets, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
 msgstr ""
 
 #: build/index.js:30

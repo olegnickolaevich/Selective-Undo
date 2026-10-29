@@ -356,6 +356,7 @@ export function sourceLabel( source: string ): string {
 		block_editor: __( 'Block editor or REST', 'selective-undo' ),
 		classic_editor: __( 'Classic editor', 'selective-undo' ),
 		settings_screen: __( 'Settings screen', 'selective-undo' ),
+		menus_screen: __( 'Menus screen', 'selective-undo' ),
 		quick_edit: __( 'Quick Edit', 'selective-undo' ),
 		bulk_edit: __( 'Bulk edit', 'selective-undo' ),
 		autosave: __( 'Autosave', 'selective-undo' ),
@@ -465,6 +466,21 @@ export function changesetTitle(
 		),
 		cs.object_count
 	);
+}
+
+/**
+ * The link to where an object is edited.
+ * @param type
+ */
+export function openLabel( type: string ): string {
+	switch ( type ) {
+		case 'site':
+			return __( 'Open settings', 'selective-undo' );
+		case 'menu':
+			return __( 'Open menus', 'selective-undo' );
+		default:
+			return __( 'Open editor', 'selective-undo' );
+	}
 }
 
 export function displayTitle( title: string | null, id: number ): string {

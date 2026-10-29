@@ -13,8 +13,8 @@ import {
 import { ObjectTitle } from '../components/ObjectTitle';
 import { ViewHeading } from '../components/ViewHeading';
 import { exactDate, relativeDate } from '../lib/format';
-import { displayTitle, sourceLabel } from '../lib/labels';
-import { linkHandler, viewToUrl } from '../lib/router';
+import { displayTitle, openLabel, sourceLabel } from '../lib/labels';
+import { linkHandler, viewToUrl, type ObjectKind } from '../lib/router';
 import { ChangeRow, checkRestore } from './ChangesetPage';
 
 /**
@@ -98,7 +98,7 @@ export function ObjectPage( {
 	overview,
 }: {
 	id: number;
-	type?: 'post' | 'site';
+	type?: 'post' | ObjectKind;
 	overview: Overview | null;
 } ) {
 	const [ object, setObject ] = useState< ObjectSummary | null >( null );
@@ -166,11 +166,7 @@ export function ObjectPage( {
 			{ object && <ObjectTitle object={ object } withLinks={ false } /> }
 			{ object?.edit_url && (
 				<p>
-					<a href={ object.edit_url }>
-						{ type === 'site'
-							? __( 'Open settings', 'selective-undo' )
-							: __( 'Open editor', 'selective-undo' ) }
-					</a>
+					<a href={ object.edit_url }>{ openLabel( type ) }</a>
 				</p>
 			) }
 			{ items.length === 0 ? (
