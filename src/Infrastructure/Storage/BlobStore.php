@@ -109,21 +109,26 @@ final class BlobStore
             }, $values);
         }
 
+        // Values stored before (the "before" of an edit almost always is) are neither
+        // compressed nor sent again: only their IDs are looked up.
+        $hashes = array_map(static fn (FieldValue $value): string => $value->hash(), $values);
+        $results = $hashes;
+        $ids = $this->existing(array_values(array_unique($hashes)));
         $codec = $this->codec();
-        $results = [];
         $rows = [];
 
         foreach ($values as $i => $value) {
+            if (isset($ids[$hashes[$i]]) || isset($rows[$hashes[$i]])) {
+                continue;
+            }
+
             try {
-                $row = $codec->pack($value);
-                $rows[$row['content_hash']] = $row;
-                $results[$i] = $row['content_hash'];
+                $rows[$hashes[$i]] = $codec->pack($value);
             } catch (InvalidPayload $e) {
                 $results[$i] = $e;
             }
         }
 
-        $ids = [];
         // Escaping can double binary payloads in the SQL text.
         $budget = max(1 << 20, intdiv($this->dbInfo->maxAllowedPacket(), 3));
         $chunk = [];
@@ -152,6 +157,48 @@ final class BlobStore
         return $out;
     }
 
+    /**
+     * IDs of values already stored. Their last_seen_at is refreshed when it is more than
+     * a minute old, so the collector (grace period of at least 5 minutes) never removes
+     * a value a capture is about to reference.
+     *
+     * @param list<string> $hashes
+     *
+     * @return array<string, int> content hash => blob ID
+     */
+    private function existing(array $hashes): array
+    {
+        if ($hashes === []) {
+            return [];
+        }
+
+        $rows = $this->db->get_results($this->db->prepare(
+            "SELECT id, content_hash, last_seen_at < " . SqlTime::utc(-MINUTE_IN_SECONDS) . " AS stale FROM {$this->t->blobs}
+             WHERE content_hash IN (" . implode(', ', array_fill(0, count($hashes), '%s')) . ')',
+            ...$hashes
+        ), ARRAY_A);
+
+        if (!is_array($rows)) {
+            throw new StorageError('blob_read_failed');
+        }
+
+        $ids = [];
+        $stale = [];
+
+        foreach ($rows as $row) {
+            $ids[(string) $row['content_hash']] = (int) $row['id'];
+
+            if ((int) $row['stale'] === 1) {
+                $stale[] = (int) $row['id'];
+            }
+        }
+
+        if ($stale !== [] && $this->db->query("UPDATE {$this->t->blobs} SET last_seen_at = " . SqlTime::utc() . ' WHERE id IN (' . implode(',', $stale) . ')') === false) {
+            throw new StorageError('blob_insert_failed');
+        }
+
+        return $ids;
+    }
     /**
      * @param non-empty-list<array{content_hash: string, encoding: string, payload: string, uncompressed_bytes: int, stored_bytes: int}> $rows
      *

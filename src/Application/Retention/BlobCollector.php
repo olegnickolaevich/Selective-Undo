@@ -23,7 +23,9 @@ final class BlobCollector
 
     public function collect(float $budgetSeconds = 10.0, ?int $graceSeconds = null): int
     {
-        $grace = $graceSeconds ?? (int) apply_filters('selective_undo/blob_gc_grace_seconds', self::GRACE_SECONDS);
+        // A capture refreshes the values it reuses once a minute (BlobStore): a shorter grace
+        // period could remove a value between that check and the change referencing it.
+        $grace = $graceSeconds ?? max(5 * MINUTE_IN_SECONDS, (int) apply_filters('selective_undo/blob_gc_grace_seconds', self::GRACE_SECONDS));
         $threshold = gmdate('Y-m-d H:i:s', time() - max(0, $grace));
         $started = microtime(true);
         $deleted = 0;

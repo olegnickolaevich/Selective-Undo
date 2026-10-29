@@ -229,6 +229,29 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertSame('1', (string) $rows['post_title']['restorable']);
     }
 
+    public function testReusedValueIsNotSentAgainButKeptFromTheCollector(): void
+    {
+        $id = $this->createPost(['post_title' => 'Old title']);
+        wp_update_post(['ID' => $id, 'post_title' => 'New title']);
+        $this->endRequest();
+        $blob = (int) $this->changes($id, 'update')[0]['after_blob_id'];
+        // The value was stored long ago and nothing references it any more
+        // (as after the oldest history was removed).
+        $this->db->query($this->db->prepare("UPDATE {$this->s->tables()->blobs} SET last_seen_at = %s WHERE id = %d", gmdate('Y-m-d H:i:s', time() - 2 * HOUR_IN_SECONDS), $blob));
+        $this->truncateChangesOnly();
+        $count = (int) $this->db->get_var("SELECT COUNT(*) FROM {$this->s->tables()->blobs}");
+
+        wp_update_post(['ID' => $id, 'post_title' => 'Newer title']); // "New title" is the before again
+        $this->endRequest();
+        $this->assertSame($blob, (int) $this->changes($id, 'update')[0]['before_blob_id'], 'the stored value is reused');
+        $this->assertSame($count + 1, (int) $this->db->get_var("SELECT COUNT(*) FROM {$this->s->tables()->blobs}"), 'only the new value is added');
+
+        // Between this lookup and the insert of the change nothing references it: the
+        // collector keeps it only because its reuse made it recent again.
+        $seen = (string) $this->db->get_var($this->db->prepare("SELECT last_seen_at FROM {$this->s->tables()->blobs} WHERE id = %d", $blob));
+        $this->assertTrue(strtotime($seen . ' UTC') > time() - MINUTE_IN_SECONDS, 'refreshed on reuse: ' . $seen);
+    }
+
     public function testDeduplicatesIdenticalValues(): void
     {
         $a = $this->createPost(['post_title' => 'Same']);
@@ -413,6 +436,11 @@ final class CaptureTest extends IntegrationTestCase
     /**
      * @return list<array<string, mixed>>
      */
+    private function truncateChangesOnly(): void
+    {
+        $this->db->query("DELETE FROM {$this->s->tables()->changes}");
+    }
+
     private function gapRows(string $reason): array
     {
         return (array) $this->db->get_results($this->db->prepare(

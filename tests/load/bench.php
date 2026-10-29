@@ -98,7 +98,8 @@ $report('Restore plan: merge, 500 blocks, 100 later edits', $time(function () us
 $status = $s->planView()->forUser((string) $plan, 1)['items'][0]['status'] ?? '?';
 WP_CLI::log("  (merged plan item: {$status})");
 
-// Saves: 4 fields + 5 recorded meta keys, text of 20-200 KB (NFR-1: p95 ≤ 15 ms extra; NFR-2: ≤ 2 ms without changes).
+// Saves (NFR-1: p95 ≤ 15 ms, p99 ≤ 40 ms extra for up to 4 fields of up to 100 KB; NFR-2: ≤ 2 ms without
+// changes), and a heavier case: 4 fields and 5 recorded meta keys, texts of up to 170 KB.
 add_filter('selective_undo/meta_fields', static fn (array $f): array => [...$f, ...array_map(static fn (int $i) => new FieldDefinition("meta:load_{$i}", "Load {$i}", 'text'), range(1, 5))]);
 $s->metaFields()->flush();
 $ids = [];
@@ -109,16 +110,18 @@ for ($i = 0; $i < 20; $i++) {
 
 $s->capture()->sealRequestChangesets();
 $s->requestContext()->reset();
-$run = static function (bool $change, int $n) use ($ids, $s): array {
+$run = static function (bool $change, int $n, bool $meta = true) use ($ids, $s): array {
     $ms = [];
+    // Without meta: the first 10 posts, texts of up to 100 KB.
+    $pool = $meta ? $ids : array_slice($ids, 0, 10);
 
     for ($i = 0; $i < $n; $i++) {
-        $id = $ids[$i % count($ids)];
+        $id = $pool[$i % count($pool)];
         $suffix = $change ? (string) $i : 'same';
         $start = hrtime(true);
         wp_update_post(['ID' => $id, 'post_title' => "Save {$id} {$suffix}", 'post_excerpt' => "Excerpt {$suffix}", 'post_name' => "save-{$id}", 'post_content' => get_post_field('post_content', $id, 'raw') . ($change ? "<p>{$i}</p>" : '')]);
 
-        for ($m = 1; $m <= 5; $m++) {
+        for ($m = 1; $m <= ($meta ? 5 : 0); $m++) {
             update_post_meta($id, "load_{$m}", "value {$m} {$suffix}");
         }
 
@@ -132,18 +135,24 @@ $run = static function (bool $change, int $n) use ($ids, $s): array {
     return ['p50' => $ms[intdiv(count($ms), 2)], 'p95' => $ms[(int) floor(count($ms) * 0.95)], 'p99' => $ms[(int) floor(count($ms) * 0.99)]];
 };
 $settings = $s->settings();
+$spec = $run(true, $saves, false);
 $on = $run(true, $saves);
 $same = $run(false, 50);
 $options = (array) get_option($settings::OPTION);
 update_option($settings::OPTION, ['capture_enabled' => false] + $options);
 $settings->flush();
+$specOff = $run(true, $saves, false);
 $off = $run(true, $saves);
 $sameOff = $run(false, 50);
 update_option($settings::OPTION, $options);
 $settings->flush();
 
 WP_CLI::log(sprintf(
-    'Save with 9 changed fields, %d saves: recording p50 %.1f / p95 %.1f / p99 %.1f ms; without %.1f / %.1f / %.1f ms; extra p95 %.1f ms (budget 15), p99 %.1f ms (budget 40)',
+    'Save with 3 changed fields (title, excerpt, text up to 100 KB), %d saves: extra p50 %.1f / p95 %.1f ms (budget 15) / p99 %.1f ms (budget 40)',
+    $saves, $spec['p50'] - $specOff['p50'], $spec['p95'] - $specOff['p95'], $spec['p99'] - $specOff['p99']
+));
+WP_CLI::log(sprintf(
+    'Save with 8 changed fields, %d saves: recording p50 %.1f / p95 %.1f / p99 %.1f ms; without %.1f / %.1f / %.1f ms; extra p95 %.1f ms (budget 15), p99 %.1f ms (budget 40)',
     $saves, $on['p50'], $on['p95'], $on['p99'], $off['p50'], $off['p95'], $off['p99'], $on['p95'] - $off['p95'], $on['p99'] - $off['p99']
 ));
 WP_CLI::log(sprintf('Save without changes: extra p50 %.1f ms (budget 2)', $same['p50'] - $sameOff['p50']));
