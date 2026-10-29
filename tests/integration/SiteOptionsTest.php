@@ -17,7 +17,7 @@ final class SiteOptionsTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        foreach (['blogname', 'page_on_front', 'siteurl'] as $option) {
+        foreach (['date_format', 'siteurl'] as $option) {
             $this->saved[$option] = get_option($option);
         }
     }
@@ -34,27 +34,45 @@ final class SiteOptionsTest extends IntegrationTestCase
         $this->endRequest();
     }
 
-    public function testSiteTitleChangeIsUndoneAndOnlyAdministratorsSeeIt(): void
+    public function testDateFormatChangeIsUndoneAndOnlyAdministratorsSeeIt(): void
     {
-        update_option('blogname', 'Pumps and filters');
+        // (Not the site title: Elementor without a kit, as on the test site, fails on its change.)
+        update_option('date_format', 'd.m.Y');
         $this->endRequest();
-        update_option('blogname', 'Pumps & filters OLD');
+        update_option('date_format', 'Y-m-d');
         update_option('siteurl', (string) get_option('siteurl')); // never recorded, even unchanged
         $this->endRequest();
 
         $rows = $this->siteChanges();
-        $this->assertSame(['option:blogname', 'option:blogname'], array_column($rows, 'field_key'));
+        $this->assertSame(['option:date_format', 'option:date_format'], array_column($rows, 'field_key'));
         $this->assertSame('site:options', $rows[1]['object_subtype']);
 
-        $job = $this->start($this->plan(['type' => 'changes', 'change_ids' => [(int) $rows[1]['id']]]));
+        // Other plugins react to the restored value as the user who restored it, also when
+        // the restore runs where there is no current user (the background queue).
+        $seen = [];
+        add_action('update_option_date_format', static function () use (&$seen): void {
+            $seen[] = get_current_user_id();
+        });
+        $plan = $this->plan(['type' => 'changes', 'change_ids' => [(int) $rows[1]['id']]]);
+        wp_set_current_user(0);
+
+        try {
+            $job = $this->start($plan);
+        } finally {
+            remove_all_actions('update_option_date_format');
+        }
+
+        $this->assertSame(0, get_current_user_id(), 'and then the request goes on as before');
+        wp_set_current_user(1);
         $this->assertSame('completed', $job['status']);
+        $this->assertSame([1], $seen);
         wp_cache_flush();
-        $this->assertSame('Pumps and filters', get_option('blogname'));
+        $this->assertSame('d.m.Y', get_option('date_format'));
 
         $site = new ObjectRef('site', get_current_blog_id());
         $timeline = $this->s->history()->objectTimeline($site, 1, null, 20);
         $this->assertSame('Site settings', $timeline['object']['title']);
-        $this->assertSame('Site title', $timeline['items'][0]['field_label']);
+        $this->assertSame('Date format', $timeline['items'][0]['field_label']);
 
         // Editors may have the history permissions, but not this object.
         $editor = $this->userId('editor');

@@ -90,6 +90,10 @@ final class SiteOptionsAdapter implements AdapterInterface, CapturingAdapter, De
 
     public function fieldLabel(string $fieldKey): string
     {
+        if (!str_starts_with($fieldKey, 'option:')) {
+            return $fieldKey; // a field of another adapter
+        }
+
         $name = substr($fieldKey, 7);
 
         return self::labels()[$name] ?? $name;

@@ -30,21 +30,37 @@ final class PostRestoreHandler
             ? $payload['adapters']
             : [(string) ($payload['adapter_key'] ?? '') => $payload['fields'] ?? []];
 
-        foreach ($byAdapter as $key => $fields) {
-            $adapter = $this->adapters->find((string) $key);
+        // Run as the user who restored (in the background there is none): other plugins
+        // that react to the restored values (Elementor syncing the site title into its kit)
+        // check the permissions of the current user.
+        $actor = (int) ($payload['actor_user_id'] ?? 0);
+        $previous = get_current_user_id();
 
-            if ($adapter === null) {
-                throw new \RuntimeException('adapter_unavailable');
-            }
-
-            $adapter->afterCommit($object, array_values(array_map('strval', (array) $fields)));
+        if ($actor > 0 && $actor !== $previous) {
+            wp_set_current_user($actor);
         }
 
-        if ($object->type === 'post' && $this->settings->createRevisionAfterRestore()) {
-            $post = get_post($object->id);
+        try {
+            foreach ($byAdapter as $key => $fields) {
+                $adapter = $this->adapters->find((string) $key);
 
-            if ($post instanceof \WP_Post && wp_revisions_enabled($post)) {
-                wp_save_post_revision($object->id);
+                if ($adapter === null) {
+                    throw new \RuntimeException('adapter_unavailable');
+                }
+
+                $adapter->afterCommit($object, array_values(array_map('strval', (array) $fields)));
+            }
+
+            if ($object->type === 'post' && $this->settings->createRevisionAfterRestore()) {
+                $post = get_post($object->id);
+
+                if ($post instanceof \WP_Post && wp_revisions_enabled($post)) {
+                    wp_save_post_revision($object->id);
+                }
+            }
+        } finally {
+            if (get_current_user_id() !== $previous) {
+                wp_set_current_user($previous);
             }
         }
 
