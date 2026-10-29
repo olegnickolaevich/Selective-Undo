@@ -17,6 +17,7 @@ use SelectiveUndo\Domain\Merge\MergeStrategy;
 use SelectiveUndo\Domain\Restore\ChainResolver;
 use SelectiveUndo\Domain\Restore\ChangeLink;
 use SelectiveUndo\Domain\Restore\ItemFacts;
+use SelectiveUndo\Domain\Restore\PlanItemDecision;
 use SelectiveUndo\Domain\Restore\PlanItemEvaluator;
 use SelectiveUndo\Domain\Restore\PlanItemStatus;
 use SelectiveUndo\Domain\Restore\ResolvedChain;
@@ -25,6 +26,7 @@ use SelectiveUndo\Domain\Value\InvalidPayload;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
+use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 
 /**
  * Builds an immutable restore plan (the preview).
@@ -133,7 +135,7 @@ final class BuildRestorePlan
             }
 
             foreach ($rows as $row) {
-                if (!ChangeEvent::from((string) $row['event'])->isFieldChange()) {
+                if (!ChangeEvent::from((string) $row['event'])->isRestorable((string) $row['field_key'])) {
                     throw new DomainError('su_invalid_selection', 400, __('Informational events cannot be restored.', 'selective-undo'));
                 }
             }
@@ -152,7 +154,7 @@ final class BuildRestorePlan
             $objectIds = array_map('intval', (array) ($selection['object_ids'] ?? []));
             $rows = array_values(array_filter(
                 $this->journal->changesOfChangeset((int) $changeset['id'], self::MAX_CHANGES + 1),
-                static fn (array $r): bool => ChangeEvent::from((string) $r['event'])->isFieldChange()
+                static fn (array $r): bool => ChangeEvent::from((string) $r['event'])->isRestorable((string) $r['field_key'])
                     && ($fields === [] || in_array((string) $r['field_key'], $fields, true))
                     && ($objectIds === [] || in_array((int) $r['object_id'], $objectIds, true))
             ));
@@ -394,6 +396,11 @@ final class BuildRestorePlan
             warnings: $warnings,
             unsupportedReason: $unsupportedReason,
         ));
+
+        if ($decision->status === PlanItemStatus::Conflict && $adapter?->key() === PostDeletionAdapter::KEY) {
+            // Another post holds the ID of the deleted one: it is never overwritten.
+            $decision = new PlanItemDecision(PlanItemStatus::Conflict, 'object_id_taken', $decision->warnings);
+        }
 
         if ($decision->status === PlanItemStatus::Conflict && $decision->reasonCode === 'current_value_changed'
             && $chain instanceof ResolvedChain && $target !== null && $snapshot !== null

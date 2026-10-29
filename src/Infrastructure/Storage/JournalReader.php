@@ -6,6 +6,7 @@ namespace SelectiveUndo\Infrastructure\Storage;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Database\Tables;
+use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 
 /**
  * Read-side queries over the journal.
@@ -312,8 +313,10 @@ final class JournalReader
     public function fieldChangesAfter(ObjectRef $object, string $afterUtc, array $fields, int $limit): array
     {
         $sql = 'SELECT ' . self::CHANGE_COLUMNS . " FROM {$this->t->changes} c
-             WHERE c.object_type = %s AND c.object_id = %d AND c.event IN ('update', 'restore') AND c.created_at > %s";
-        $params = [$object->type, $object->id, $afterUtc];
+             WHERE c.object_type = %s AND c.object_id = %d AND c.event IN ('update', 'restore') AND c.created_at > %s
+               AND c.adapter_key <> %s";
+        // A restored deletion is not a state to go back to: the item exists again.
+        $params = [$object->type, $object->id, $afterUtc, PostDeletionAdapter::KEY];
 
         if ($fields !== []) {
             $sql .= ' AND c.field_key IN (' . implode(', ', array_fill(0, count($fields), '%s')) . ')';

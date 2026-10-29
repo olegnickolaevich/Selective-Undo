@@ -19,6 +19,7 @@ use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
 use SelectiveUndo\Infrastructure\WordPress\CaptureFrame;
+use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostRow;
 
@@ -142,6 +143,42 @@ final class CaptureService implements CaptureSink
             $this->checkContinuity($object, $changed);
             $changesetId = $this->currentChangesetId($object);
             $this->journal->insertChanges($this->buildRows($changesetId, $frame->sequence, $object, $changed, $quality));
+        });
+    }
+
+    /**
+     * A permanent deletion with what was deleted: undoable through the deletion adapter.
+     */
+    public function recordDeletion(ObjectRef $object, FieldValue $snapshot): void
+    {
+        if (!$this->state->isActive()) {
+            return;
+        }
+
+        $this->quietly(function () use ($object, $snapshot): void {
+            $this->revisions->ensureImported($object);
+            [[$beforeBlob, $beforeOk, $reason], [$afterBlob, $afterOk]] = $this->storeValues([$snapshot, FieldValue::missing()]);
+
+            if (!$beforeOk) {
+                $this->gaps->object('payload_not_stored', $object, ['field' => PostDeletionAdapter::FIELD]);
+            }
+
+            $this->journal->insertChanges([[
+                'changeset_id' => $this->currentChangesetId($object),
+                'sequence_no' => $this->request->reserveSequence(),
+                'event' => ChangeEvent::Deleted->value,
+                'object' => $object,
+                'adapter_key' => PostDeletionAdapter::KEY,
+                'adapter_version' => PostDeletionAdapter::VERSION,
+                'field_key' => PostDeletionAdapter::FIELD,
+                'before_blob_id' => $beforeBlob,
+                'after_blob_id' => $afterBlob,
+                'before_hash' => $snapshot->hash(),
+                'after_hash' => FieldValue::missing()->hash(),
+                'quality' => CaptureQuality::Verified->value,
+                'restorable' => $beforeOk && $afterOk,
+                'reason_code' => $beforeOk ? null : $reason,
+            ]]);
         });
     }
 

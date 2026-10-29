@@ -27,11 +27,19 @@ export function reasonText( code: string | null ): string {
 			'selective-undo'
 		),
 		object_missing: __(
-			'The item no longer exists. Deleted items cannot be restored in this version.',
+			'The item no longer exists. To bring it back, restore the change that deleted it.',
 			'selective-undo'
 		),
 		not_allowed: __(
 			'You are not allowed to edit this item.',
+			'selective-undo'
+		),
+		object_id_taken: __(
+			'Another item now has the ID of the deleted one. It is not overwritten.',
+			'selective-undo'
+		),
+		deletion_not_restorable: __(
+			'Undoing this would delete the item again. Move it to the trash instead.',
 			'selective-undo'
 		),
 		object_trashed: __(
@@ -223,6 +231,10 @@ export function warningText( code: string ): string {
 		),
 		linked_field_present: __(
 			'Another plugin keeps a copy of this content (for example Markdown source) and may overwrite the restored content on the next edit.',
+			'selective-undo'
+		),
+		restored_as_draft: __(
+			'The item comes back as a draft under its own ID, with its custom fields and terms; publish it when ready. Its comments, revisions, child items and media files are not restored.',
 			'selective-undo'
 		),
 		capture_gap_in_range: __(

@@ -46,7 +46,11 @@ export function ChangeRow( {
 		[ change.id ]
 	);
 	const isField = change.field !== '';
-	const label = isField ? change.field_label : eventLabel( change.event );
+	// A deletion recorded with what was deleted is undoable: it reads as the deletion.
+	const label =
+		isField && change.event !== 'deleted'
+			? change.field_label
+			: eventLabel( change.event );
 	const blocks = change.field === 'post_content' && byBlocks;
 
 	return (

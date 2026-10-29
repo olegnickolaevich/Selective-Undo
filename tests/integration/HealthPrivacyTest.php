@@ -20,7 +20,7 @@ final class HealthPrivacyTest extends IntegrationTestCase
         add_filter('home_url', $staging = static fn (string $url): string => str_replace('://', '://staging.', $url));
 
         try {
-            $site->check(true);
+                $site->check(true);
         } finally {
             remove_filter('home_url', $staging);
         }
@@ -120,14 +120,23 @@ final class HealthPrivacyTest extends IntegrationTestCase
         $this->assertTrue(user_can(1, 'sundo_view_history'));
 
         $this->s->settings()->update(['delete_data_on_uninstall' => true]);
-        $this->runUninstall();
-        $this->assertTrue($this->s->schema()->verify() !== []);
-        $this->assertFalse(get_role('administrator')->has_cap('sundo_view_history'));
-        $this->assertFalse(get_option('selective_undo_settings'));
 
-        // Restore the test site.
-        \SelectiveUndo\Bootstrap\Plugin::activate();
-        $this->s->settings()->flush();
+        try {
+            // State the plugin keeps besides its tables.
+            update_option('selective_undo_reconcile_cursor', 5, false);
+            $this->s->siteFingerprint()->check(true);
+            add_post_meta($id, '_selective_undo_deleted_status', 'publish');
+            $this->runUninstall();
+            $this->assertTrue($this->s->schema()->verify() !== []);
+            $this->assertFalse(get_role('administrator')->has_cap('sundo_view_history'));
+            $this->assertSame([], $this->db->get_col("SELECT option_name FROM {$this->db->options} WHERE option_name LIKE 'selective\_undo\_%'"), 'no option is left behind');
+            $this->assertSame([], $this->db->get_col("SELECT meta_id FROM {$this->db->postmeta} WHERE meta_key LIKE '\_selective\_undo\_%'"));
+        } finally {
+            // Restore the test site, also when an assertion above failed.
+            \SelectiveUndo\Bootstrap\Plugin::activate();
+            $this->s->settings()->flush();
+        }
+
         $this->assertSame([], $this->s->schema()->verify());
     }
 

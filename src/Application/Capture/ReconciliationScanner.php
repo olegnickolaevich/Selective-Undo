@@ -12,6 +12,7 @@ use SelectiveUndo\Domain\Contracts\CaptureSink;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
+use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
 /**
@@ -71,6 +72,10 @@ final class ReconciliationScanner
             }
 
             foreach ($this->groupByAdapter($this->journal->latestStoredValues(new ObjectRef('post', $objectId))) as $adapterKey => $fields) {
+                if ($adapterKey === PostDeletionAdapter::KEY) {
+                    continue; // the whole item is not a field that can drift
+                }
+
                 $adapter = $this->adapters->find($adapterKey);
                 $snapshot = $adapter?->read(new ObjectRef('post', $objectId));
 

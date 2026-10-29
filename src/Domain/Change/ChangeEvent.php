@@ -17,4 +17,10 @@ enum ChangeEvent: string
     {
         return $this === self::Update || $this === self::Restore;
     }
+
+    /** A change that can be undone: a field change, or a permanent deletion recorded with its snapshot. */
+    public function isRestorable(string $fieldKey): bool
+    {
+        return $this->isFieldChange() || ($this === self::Deleted && $fieldKey !== '');
+    }
 }

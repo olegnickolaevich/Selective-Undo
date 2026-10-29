@@ -290,7 +290,7 @@ msgstr "Будет восстановлено"
 
 #: src/Application/History/HistoryQuery.php:113
 #: src/Application/History/HistoryQuery.php:120
-#: src/Application/Restore/BuildRestorePlan.php:148
+#: src/Application/Restore/BuildRestorePlan.php:150
 msgid "This operation no longer exists in the history."
 msgstr "Этой операции больше нет в истории."
 
@@ -303,52 +303,52 @@ msgstr "У вас нет прав на просмотр истории этой 
 msgid "Invalid page cursor."
 msgstr "Неверный указатель страницы."
 
-#: src/Application/Restore/BuildRestorePlan.php:126
+#: src/Application/Restore/BuildRestorePlan.php:128
 msgid "Select between 1 and 500 changes."
 msgstr "Выберите от 1 до 500 изменений."
 
-#: src/Application/Restore/BuildRestorePlan.php:132
+#: src/Application/Restore/BuildRestorePlan.php:134
 msgid "Some of the selected changes no longer exist in the history."
 msgstr "Некоторых выбранных изменений больше нет в истории."
 
-#: src/Application/Restore/BuildRestorePlan.php:137
+#: src/Application/Restore/BuildRestorePlan.php:139
 msgid "Informational events cannot be restored."
 msgstr "Информационные события нельзя восстановить."
 
-#: src/Application/Restore/BuildRestorePlan.php:161
+#: src/Application/Restore/BuildRestorePlan.php:163
 msgid "The selection contains no restorable changes."
 msgstr "В выборе нет изменений, которые можно восстановить."
 
-#: src/Application/Restore/BuildRestorePlan.php:165
+#: src/Application/Restore/BuildRestorePlan.php:167
 msgid "Select at most 500 changes at a time."
 msgstr "Выберите не больше 500 изменений за раз."
 
-#: src/Application/Restore/BuildRestorePlan.php:178
+#: src/Application/Restore/BuildRestorePlan.php:180
 msgid "Choose the parts of a change to undo."
 msgstr "Выберите части изменения, которые нужно отменить."
 
-#: src/Application/Restore/BuildRestorePlan.php:189
+#: src/Application/Restore/BuildRestorePlan.php:191
 msgid "Choose an item and a moment."
 msgstr "Выберите объект и момент времени."
 
-#: src/Application/Restore/BuildRestorePlan.php:196
+#: src/Application/Restore/BuildRestorePlan.php:198
 msgid "The item has not changed since this moment."
 msgstr "С этого момента объект не менялся."
 
-#: src/Application/Restore/BuildRestorePlan.php:200
+#: src/Application/Restore/BuildRestorePlan.php:202
 msgid "Too many changes since this moment. Choose a later moment."
 msgstr "С этого момента слишком много изменений. Выберите более поздний момент."
 
-#: src/Application/Restore/BuildRestorePlan.php:206
+#: src/Application/Restore/BuildRestorePlan.php:208
 msgid "Unknown selection type."
 msgstr "Неизвестный тип выбора."
 
-#: src/Application/Restore/BuildRestorePlan.php:258
+#: src/Application/Restore/BuildRestorePlan.php:260
 msgid "You are not allowed to view the history of some of the selected items."
 msgstr "У вас нет прав на просмотр истории некоторых выбранных записей."
 
 #. translators: %d: maximum number of items in one restore.
-#: src/Application/Restore/BuildRestorePlan.php:282
+#: src/Application/Restore/BuildRestorePlan.php:284
 #, php-format
 msgid "One restore can include changes of at most %d item. Select fewer items and restore them in several steps."
 msgid_plural "One restore can include changes of at most %d items. Select fewer items and restore them in several steps."
@@ -486,6 +486,7 @@ msgstr "Индексация поисковиками"
 msgid "Custom fields"
 msgstr "Произвольные поля"
 
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:309
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:93
 msgid "Title"
 msgstr "Заголовок"
@@ -503,10 +504,12 @@ msgctxt "post menu order field"
 msgid "Order"
 msgstr "Порядок"
 
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:311
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
 msgid "Slug"
 msgstr "Ярлык"
 
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:310
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
 msgid "Status"
 msgstr "Статус"
@@ -1032,10 +1035,6 @@ msgstr "Некоторые части менялись ещё раз после 
 #: build/index.js:2
 msgid "This field was changed again after the selected change. It is skipped so that the newer version is not lost."
 msgstr "Это поле изменили ещё раз после выбранного изменения. Оно пропущено, чтобы не потерять более новую версию."
-
-#: build/index.js:2
-msgid "The item no longer exists. Deleted items cannot be restored in this version."
-msgstr "Записи больше нет. Удалённые записи в этой версии не восстанавливаются."
 
 #: build/index.js:2
 msgid "The item is in the trash. Restore it from the trash first, then check again."
@@ -2131,10 +2130,6 @@ msgid "What is not recorded or restored"
 msgstr "Что не записывается и не восстанавливается"
 
 #: build/index.js:30
-msgid "Deleted items, creation of new items, status, slug, author, dates, custom fields, comments, users, settings, files, orders and payments. Changes made directly in the database, bypassing WordPress, are detected but not recorded. Emails, webhooks and other external effects are never undone."
-msgstr "Удалённые записи, создание новых записей, статус, ярлык, автор, даты, произвольные поля, комментарии, пользователи, настройки, файлы, заказы и платежи. Изменения, внесённые напрямую в базу данных в обход WordPress, обнаруживаются, но не записываются. Отправленные письма, вебхуки и другие внешние действия никогда не отменяются."
-
-#: build/index.js:30
 msgid "Text removed from pages can stay in the history until it expires. Delete it here, for example after removing personal data."
 msgstr "Удалённый со страниц текст может оставаться в истории до истечения срока хранения. Удалите его здесь, например после удаления персональных данных."
 
@@ -2361,10 +2356,6 @@ msgstr "Подпись"
 msgid "Description"
 msgstr "Описание"
 
-#: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields."
-msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields."
-
 #: src/Application/Health/HealthService.php:226
 msgid "Maintenance runs through WP-Cron; restores and imports run through Action Scheduler."
 msgstr "Обслуживание выполняется через WP-Cron; восстановления и импорт — через Action Scheduler."
@@ -2401,7 +2392,7 @@ msgstr "Очистить историю"
 msgid "The history was copied from another site. Check that these values belong to this site before restoring."
 msgstr "История скопирована с другого сайта. Перед восстановлением убедитесь, что эти значения относятся к этому сайту."
 
-#: src/Application/Capture/ReconciliationScanner.php:133
+#: src/Application/Capture/ReconciliationScanner.php:139
 msgid "Changes made outside WordPress (found by the check)"
 msgstr "Изменения в обход WordPress (обнаружены при проверке)"
 
@@ -2482,3 +2473,42 @@ msgstr "Макет"
 #: src/Infrastructure/Integrations/ElementorAdapter.php:121
 msgid "Page settings"
 msgstr "Настройки страницы"
+
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:97
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:102
+msgid "Whole item"
+msgstr "Вся запись"
+
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:312
+msgid "Published"
+msgstr "Опубликовано"
+
+#. translators: %d: number of custom field rows.
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:323
+#, php-format
+msgid "Custom fields: %d"
+msgstr "Произвольных полей: %d"
+
+#: build/index.js:2
+msgid "The item no longer exists. To bring it back, restore the change that deleted it."
+msgstr "Записи больше нет. Чтобы вернуть её, восстановите изменение, которым она была удалена."
+
+#: build/index.js:2
+msgid "Another item now has the ID of the deleted one. It is not overwritten."
+msgstr "Под ID удалённой записи теперь другая запись. Она не будет перезаписана."
+
+#: build/index.js:2
+msgid "Undoing this would delete the item again. Move it to the trash instead."
+msgstr "Эта отмена снова удалила бы запись. Вместо этого переместите её в корзину."
+
+#: build/index.js:29
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored."
+msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields; макеты Elementor. Удалённые навсегда записи сохраняются, чтобы их можно было восстановить."
+
+#: build/index.js:30
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, settings, files, orders and payments. Emails, webhooks and other external effects are never undone."
+msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, настройки, файлы, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."
+
+#: build/index.js:24
+msgid "The item comes back as a draft under its own ID, with its custom fields and terms; publish it when ready. Its comments, revisions, child items and media files are not restored."
+msgstr "Запись вернётся черновиком под своим ID, с произвольными полями и терминами; опубликуйте её, когда будете готовы. Комментарии, редакции, дочерние записи и медиафайлы не восстанавливаются."

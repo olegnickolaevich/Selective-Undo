@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T03:31:03+05:00\n"
+"POT-Creation-Date: 2026-10-29T13:27:24+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Selective Undo requires PHP 8.2 or newer. The plugin is inactive."
 msgstr ""
 
-#: src/Application/Capture/ReconciliationScanner.php:133
+#: src/Application/Capture/ReconciliationScanner.php:139
 msgid "Changes made outside WordPress (found by the check)"
 msgstr ""
 
@@ -313,7 +313,7 @@ msgstr ""
 
 #: src/Application/History/HistoryQuery.php:113
 #: src/Application/History/HistoryQuery.php:120
-#: src/Application/Restore/BuildRestorePlan.php:148
+#: src/Application/Restore/BuildRestorePlan.php:150
 msgid "This operation no longer exists in the history."
 msgstr ""
 
@@ -326,52 +326,52 @@ msgstr ""
 msgid "Invalid page cursor."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:126
+#: src/Application/Restore/BuildRestorePlan.php:128
 msgid "Select between 1 and 500 changes."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:132
+#: src/Application/Restore/BuildRestorePlan.php:134
 msgid "Some of the selected changes no longer exist in the history."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:137
+#: src/Application/Restore/BuildRestorePlan.php:139
 msgid "Informational events cannot be restored."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:161
+#: src/Application/Restore/BuildRestorePlan.php:163
 msgid "The selection contains no restorable changes."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:165
+#: src/Application/Restore/BuildRestorePlan.php:167
 msgid "Select at most 500 changes at a time."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:178
+#: src/Application/Restore/BuildRestorePlan.php:180
 msgid "Choose the parts of a change to undo."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:189
+#: src/Application/Restore/BuildRestorePlan.php:191
 msgid "Choose an item and a moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:196
+#: src/Application/Restore/BuildRestorePlan.php:198
 msgid "The item has not changed since this moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:200
+#: src/Application/Restore/BuildRestorePlan.php:202
 msgid "Too many changes since this moment. Choose a later moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:206
+#: src/Application/Restore/BuildRestorePlan.php:208
 msgid "Unknown selection type."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:258
+#: src/Application/Restore/BuildRestorePlan.php:260
 msgid "You are not allowed to view the history of some of the selected items."
 msgstr ""
 
 #. translators: %d: maximum number of items in one restore.
-#: src/Application/Restore/BuildRestorePlan.php:282
+#: src/Application/Restore/BuildRestorePlan.php:284
 #, php-format
 msgid "One restore can include changes of at most %d item. Select fewer items and restore them in several steps."
 msgid_plural "One restore can include changes of at most %d items. Select fewer items and restore them in several steps."
@@ -554,8 +554,34 @@ msgstr ""
 msgid "Custom fields"
 msgstr ""
 
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:97
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:102
+msgid "Whole item"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:309
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:93
 msgid "Title"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:310
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
+msgid "Status"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:311
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
+msgid "Slug"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:312
+msgid "Published"
+msgstr ""
+
+#. translators: %d: number of custom field rows.
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:323
+#, php-format
+msgid "Custom fields: %d"
 msgstr ""
 
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:94
@@ -569,14 +595,6 @@ msgstr ""
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:96
 msgctxt "post menu order field"
 msgid "Order"
-msgstr ""
-
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
-msgid "Slug"
-msgstr ""
-
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
-msgid "Status"
 msgstr ""
 
 #: src/Infrastructure/WordPress/PostFieldsAdapter.php:99
@@ -1123,7 +1141,15 @@ msgid "This field was changed again after the selected change. It is skipped so 
 msgstr ""
 
 #: build/index.js:2
-msgid "The item no longer exists. Deleted items cannot be restored in this version."
+msgid "The item no longer exists. To bring it back, restore the change that deleted it."
+msgstr ""
+
+#: build/index.js:2
+msgid "Another item now has the ID of the deleted one. It is not overwritten."
+msgstr ""
+
+#: build/index.js:2
+msgid "Undoing this would delete the item again. Move it to the trash instead."
 msgstr ""
 
 #: build/index.js:2
@@ -2065,6 +2091,10 @@ msgid "Another plugin keeps a copy of this content (for example Markdown source)
 msgstr ""
 
 #: build/index.js:24
+msgid "The item comes back as a draft under its own ID, with its custom fields and terms; publish it when ready. Its comments, revisions, child items and media files are not restored."
+msgstr ""
+
+#: build/index.js:24
 msgid "The history of this item is incomplete for this period."
 msgstr ""
 
@@ -2189,7 +2219,7 @@ msgid "Content types"
 msgstr ""
 
 #: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields."
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored."
 msgstr ""
 
 #: build/index.js:29
@@ -2221,7 +2251,7 @@ msgid "What is not recorded or restored"
 msgstr ""
 
 #: build/index.js:30
-msgid "Deleted items, creation of new items, status, slug, author, dates, custom fields, comments, users, settings, files, orders and payments. Changes made directly in the database, bypassing WordPress, are detected but not recorded. Emails, webhooks and other external effects are never undone."
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, settings, files, orders and payments. Emails, webhooks and other external effects are never undone."
 msgstr ""
 
 #: build/index.js:30

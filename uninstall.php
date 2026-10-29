@@ -17,8 +17,12 @@ $selective_undo_uninstall_site = static function (): void {
 
     $settings = get_option('selective_undo_settings', []);
 
-    foreach (['sundo_hourly_maintenance', 'sundo_process_queue', 'sundo_run_job'] as $hook) {
+    foreach (['sundo_hourly_maintenance', 'sundo_process_queue', 'sundo_run_job', 'sundo_import_revisions', 'sundo_reconcile'] as $hook) {
         wp_unschedule_hook($hook);
+
+        if (function_exists('as_unschedule_all_actions')) {
+            as_unschedule_all_actions($hook);
+        }
     }
 
     if (!is_array($settings) || empty($settings['delete_data_on_uninstall'])) {
@@ -38,12 +42,21 @@ $selective_undo_uninstall_site = static function (): void {
         'selective_undo_last_maintenance_run',
         'selective_undo_recording_since',
         'selective_undo_revision_import',
+        'selective_undo_circuit',
+        'selective_undo_reconcile_cursor',
+        'selective_undo_site_fingerprint',
+        'selective_undo_site_moved',
+        'selective_undo_site_moved_reason',
     ] as $option) {
         delete_option($option);
     }
 
+    // The status a restored deleted post had; nothing else is stored on posts.
+    delete_post_meta_by_key('_selective_undo_deleted_status');
+
     delete_transient('selective_undo_db_info');
     delete_transient('selective_undo_restore_ready');
+    delete_transient('selective_undo_fingerprint_checked');
 };
 
 if (is_multisite()) {

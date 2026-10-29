@@ -107,7 +107,7 @@ function RecordingTab( {
 				<legend>{ __( 'Content types', 'selective-undo' ) }</legend>
 				<p className="su-muted">
 					{ __(
-						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields.',
+						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored.',
 						'selective-undo'
 					) }
 				</p>
@@ -176,7 +176,7 @@ function RecordingTab( {
 				</summary>
 				<p>
 					{ __(
-						'Deleted items, creation of new items, status, slug, author, dates, custom fields, comments, users, settings, files, orders and payments. Changes made directly in the database, bypassing WordPress, are detected but not recorded. Emails, webhooks and other external effects are never undone.',
+						'Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, settings, files, orders and payments. Emails, webhooks and other external effects are never undone.',
 						'selective-undo'
 					) }
 				</p>

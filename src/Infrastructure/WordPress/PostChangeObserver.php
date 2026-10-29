@@ -9,6 +9,7 @@ use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Change\CaptureQuality;
 use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Domain\Value\FieldValue;
 
 /**
  * Captures standard post fields with "frames" around wp_insert_post() updates.
@@ -32,12 +33,15 @@ final class PostChangeObserver
 
     /** @var array<int, list<CaptureFrame>> */
     private array $frames = [];
+    /** @var array<int, FieldValue> post ID => what is about to be deleted */
+    private array $deleting = [];
 
     public function __construct(
         private readonly CaptureService $capture,
         private readonly TrackingPolicy $policy,
         private readonly PostRowReader $reader,
         private readonly RequestContext $request,
+        private readonly PostDeletionAdapter $deletion,
     ) {
     }
 
@@ -53,6 +57,8 @@ final class PostChangeObserver
         add_action('trashed_post', [$this, 'onTrashed'], PHP_INT_MAX, 1);
         add_action('untrashed_post', [$this, 'onUntrashed'], PHP_INT_MAX, 1);
         add_action('before_delete_post', [$this->request, 'enterPostLifecycle'], PHP_INT_MIN, 0);
+        // Right after: the row, meta and terms are still there.
+        add_action('before_delete_post', [$this, 'onBeforeDelete'], PHP_INT_MIN + 1, 2);
         add_action('delete_attachment', [$this->request, 'enterPostLifecycle'], PHP_INT_MIN, 0);
         add_action('deleted_post', [$this, 'onDeleted'], PHP_INT_MAX, 2);
         add_action('shutdown', [$this, 'onShutdown'], 0);
@@ -186,11 +192,33 @@ final class PostChangeObserver
         }
     }
 
+    public function onBeforeDelete(int|string $postId, mixed $post = null): void
+    {
+        $postId = (int) $postId;
+
+        if (!$post instanceof \WP_Post || !$this->deletion->supports(new ObjectRef('post', $postId, $post->post_type), PostDeletionAdapter::FIELD)
+            || !$this->policy->shouldCapture($postId, $post->post_type) || !$this->capture->isActive()) {
+            return;
+        }
+
+        $this->guarded($postId, function () use ($postId): void {
+            $this->deleting[$postId] = $this->deletion->capture($postId);
+        });
+    }
+
     public function onDeleted(int|string $postId, mixed $post = null): void
     {
         $this->request->leavePostLifecycle();
+        $snapshot = $this->deleting[(int) $postId] ?? null;
+        unset($this->deleting[(int) $postId]);
 
-        if ($post instanceof \WP_Post) {
+        if (!$post instanceof \WP_Post) {
+            return;
+        }
+
+        if ($snapshot !== null && $snapshot->exists) {
+            $this->guarded($post->ID, fn () => $this->capture->recordDeletion(new ObjectRef('post', $post->ID, $post->post_type), $snapshot));
+        } else {
             $this->event(ChangeEvent::Deleted, $post);
         }
     }

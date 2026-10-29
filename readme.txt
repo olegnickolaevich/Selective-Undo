@@ -51,6 +51,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 * SEO fields of Yoast SEO, Rank Math, SEOPress and All in One SEO (title, meta description, focus keyphrase, canonical URL, indexing) and the fields of ACF field groups, when those plugins are active.
 * Elementor layouts: undo of one widget edit keeps later edits of other widgets and of other settings of the same widget; the page's CSS is rebuilt after a restore. Developers add other custom fields with the `selective_undo/meta_fields` filter.
 * Undoing a tag or category change keeps the terms added or removed later.
+* Permanently deleted posts and pages: restored under their own ID with their custom fields and terms, as a draft.
 * History for as long as you choose (30 days by default, up to a year), limited by a size limit (256 MB by default) with automatic removal of the oldest history.
 * A head start: title, content and excerpt changes saved in WordPress revisions during the retention period before activation are imported, so they can be undone too.
 * Restore changes of several items at once (up to 50 per restore).
@@ -59,7 +60,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 
 **What is not recorded or restored**
 
-Deleted items, creation of new items, moving to and from the trash (use the trash for that), other custom fields and metadata (including ACF repeater, group, flexible content, clone and password fields), comments, users, settings, media files themselves, orders and payments. Emails, webhooks and other effects outside the database are never undone.
+Creation of new items, moving to and from the trash (use the trash for that), deleted media and the comments, revisions and child items of a deleted item, other custom fields and metadata (including ACF repeater, group, flexible content, clone and password fields), comments, users, settings, media files themselves, orders and payments. Emails, webhooks and other effects outside the database are never undone.
 
 **Permissions**
 
@@ -146,6 +147,7 @@ The plugin adds a suggested paragraph to the privacy policy guide and registers 
 * Fields: title, content, excerpt, slug, status, publish date, author, parent, order, discussion settings, featured image, categories, tags and other taxonomies, media alternative text, caption and description.
 * SEO fields of Yoast SEO, Rank Math, SEOPress and All in One SEO, and ACF fields; other custom fields through the `selective_undo/meta_fields` filter.
 * Elementor layouts, undone widget by widget.
+* Restore of permanently deleted posts and pages.
 * Undo of one block of the content while keeping later edits of other blocks, with conflicts shown instead of overwritten.
 * Undo in the block editor, block history ("who changed this block"), and "Return to the state at" for an item.
 * Quick undo after Quick Edit and bulk edit, command palette commands, a Last change column, and the latest change outlined on the site for users with access.

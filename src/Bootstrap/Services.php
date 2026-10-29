@@ -75,6 +75,7 @@ use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
 use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
 use SelectiveUndo\Infrastructure\WordPress\CapabilityManager;
 use SelectiveUndo\Infrastructure\WordPress\PostChangeObserver;
+use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Infrastructure\Integrations\AioseoAdapter;
 use SelectiveUndo\Infrastructure\Integrations\ElementorAdapter;
@@ -261,7 +262,13 @@ final class Services
             $this->trackingPolicy(),
             $this->postRowReader(),
             $this->requestContext(),
+            $this->postDeletionAdapter(),
         ));
+    }
+
+    public function postDeletionAdapter(): PostDeletionAdapter
+    {
+        return $this->get(PostDeletionAdapter::class, fn () => new PostDeletionAdapter($this->db, $this->trackingPolicy(), $this->cacheInvalidator()));
     }
 
     public function operations(): OperationManager
@@ -326,6 +333,7 @@ final class Services
                 $registry->register($this->postFieldsAdapter());
                 $registry->register($this->postMetaAdapter());
                 $registry->register($this->termsAdapter());
+                $registry->register($this->postDeletionAdapter());
 
                 if (AioseoAdapter::available()) {
                     $registry->register($this->get(AioseoAdapter::class, fn () => new AioseoAdapter(
