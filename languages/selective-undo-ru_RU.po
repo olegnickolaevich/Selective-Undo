@@ -426,15 +426,15 @@ msgstr "Срок действия предпросмотра удаления и
 msgid "Deleted user #%d"
 msgstr "Удалённый пользователь #%d"
 
-#: src/Bootstrap/Plugin.php:101
+#: src/Bootstrap/Plugin.php:107
 msgid "Every five minutes (Selective Undo)"
 msgstr "Каждые пять минут (Selective Undo)"
 
-#: src/Bootstrap/Plugin.php:200
+#: src/Bootstrap/Plugin.php:206
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr "Selective Undo нельзя активировать для всей сети. Активируйте его на отдельных сайтах."
 
-#: src/Bootstrap/Plugin.php:201
+#: src/Bootstrap/Plugin.php:207
 msgid "Plugin activation"
 msgstr "Активация плагина"
 
@@ -2578,14 +2578,26 @@ msgstr "Пункты меню"
 msgid "Open menus"
 msgstr "Открыть меню"
 
-#: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus."
-msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields; макеты Elementor. Удалённые навсегда записи сохраняются, чтобы их можно было восстановить. Настройки сайта: название, краткое описание, главная страница, число записей на странице, рубрика по умолчанию, форматы даты и времени, иконка и язык сайта. Меню."
-
-#: build/index.js:30
-msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
-msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, виджеты, области меню, настройки, кроме названия сайта, краткого описания, главной страницы, форматов даты, иконки и языка сайта, файлы, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."
-
 #: build/index.js:3
 msgid "Menus screen"
 msgstr "Экран меню"
+
+#: src/Infrastructure/Integrations/WooCommerce.php:47
+msgid "Regular price"
+msgstr "Базовая цена"
+
+#: src/Infrastructure/Integrations/WooCommerce.php:48
+msgid "Sale price"
+msgstr "Цена распродажи"
+
+#: src/Infrastructure/Integrations/WooCommerce.php:49
+msgid "SKU"
+msgstr "Артикул"
+
+#: build/index.js:29
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus. WooCommerce prices and SKUs of products and variations."
+msgstr "Для существующих записей записываются: заголовок, содержимое, отрывок, ярлык, статус, дата, автор и другие поля записи; миниатюра, рубрики и метки; поля поддерживаемых SEO-плагинов и Advanced Custom Fields; макеты Elementor. Удалённые навсегда записи сохраняются, чтобы их можно было восстановить. Настройки сайта: название, краткое описание, главная страница, число записей на странице, рубрика по умолчанию, форматы даты и времени, иконка и язык сайта. Меню. Цены и артикулы товаров и вариаций WooCommerce."
+
+#: build/index.js:30
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, stock, orders and payments. Emails, webhooks and other external effects are never undone."
+msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, виджеты, области меню, настройки, кроме названия сайта, краткого описания, главной страницы, форматов даты, иконки и языка сайта, файлы, остатки товаров, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."

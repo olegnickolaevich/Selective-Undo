@@ -25,7 +25,7 @@ final class SiteOptionsTest extends IntegrationTestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        remove_all_filters('selective_undo/tracked_options');
+        remove_all_filters('selective_undo/tracked_options', 999);
 
         foreach ($this->saved as $option => $value) {
             update_option($option, $value);
@@ -87,7 +87,7 @@ final class SiteOptionsTest extends IntegrationTestCase
 
     public function testAddressesNeverRecordedEvenWhenAskedFor(): void
     {
-        add_filter('selective_undo/tracked_options', static fn (array $o): array => [...$o, 'siteurl', 'my_api_key', 'posts_per_rss']);
+        add_filter('selective_undo/tracked_options', static fn (array $o): array => [...$o, 'siteurl', 'my_api_key', 'posts_per_rss'], 999);
         update_option('siteurl', (string) get_option('siteurl') . '/x');
         update_option('my_api_key', 'secret-' . wp_generate_password(6, false));
         update_option('posts_per_rss', (int) get_option('posts_per_rss') + 1);

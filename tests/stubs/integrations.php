@@ -56,3 +56,65 @@ function as_has_scheduled_action(string $hook, ?array $args = null, string $grou
 function as_unschedule_all_actions(string $hook, array $args = [], string $group = ''): void
 {
 }
+
+// WooCommerce (only what the integration uses).
+
+class WooCommerce
+{
+}
+
+class WC_Product
+{
+    public function is_on_sale(string $context = 'view'): bool
+    {
+        return false;
+    }
+
+    public function get_sale_price(string $context = 'view'): string
+    {
+        return '';
+    }
+
+    public function get_data_store(): ?object
+    {
+        return null;
+    }
+
+    public function get_regular_price(string $context = 'view'): string
+    {
+        return '';
+    }
+
+    public function get_parent_id(string $context = 'view'): int
+    {
+        return 0;
+    }
+
+    public function save(): int
+    {
+        return 0;
+    }
+}
+
+class WC_Product_Variation extends WC_Product
+{
+}
+
+class WC_Product_Variable extends WC_Product
+{
+    public static function sync(int $product, bool $save = true): void
+    {
+    }
+}
+
+/**
+ * @return WC_Product|null|false
+ */
+function wc_get_product(mixed $the_product = false, array $deprecated = [])
+{
+    return null;
+}
+
+function wc_delete_product_transients(int $post_id = 0): void
+{
+}

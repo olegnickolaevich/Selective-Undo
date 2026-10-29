@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T17:51:05+05:00\n"
+"POT-Creation-Date: 2026-10-29T18:19:54+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -464,15 +464,15 @@ msgstr ""
 msgid "Deleted user #%d"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:101
+#: src/Bootstrap/Plugin.php:107
 msgid "Every five minutes (Selective Undo)"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:200
+#: src/Bootstrap/Plugin.php:206
 msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:201
+#: src/Bootstrap/Plugin.php:207
 msgid "Plugin activation"
 msgstr ""
 
@@ -546,6 +546,18 @@ msgstr ""
 #: src/Infrastructure/Integrations/ElementorAdapter.php:125
 #: src/Infrastructure/Integrations/ElementorAdapter.php:134
 msgid "Page settings"
+msgstr ""
+
+#: src/Infrastructure/Integrations/WooCommerce.php:47
+msgid "Regular price"
+msgstr ""
+
+#: src/Infrastructure/Integrations/WooCommerce.php:48
+msgid "Sale price"
+msgstr ""
+
+#: src/Infrastructure/Integrations/WooCommerce.php:49
+msgid "SKU"
 msgstr ""
 
 #: src/Infrastructure/WordPress/BlockTitles.php:19
@@ -2296,7 +2308,7 @@ msgid "Content types"
 msgstr ""
 
 #: build/index.js:29
-msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus."
+msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus. WooCommerce prices and SKUs of products and variations."
 msgstr ""
 
 #: build/index.js:29
@@ -2328,7 +2340,7 @@ msgid "What is not recorded or restored"
 msgstr ""
 
 #: build/index.js:30
-msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone."
+msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, stock, orders and payments. Emails, webhooks and other external effects are never undone."
 msgstr ""
 
 #: build/index.js:30

@@ -54,6 +54,12 @@ final class Plugin
         }
         add_action(\SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK, [self::class, 'runMaintenance']);
         $s->privacy()->register();
+        // Plugins are loaded by then; WooCommerce registers its product types on init.
+        add_action('plugins_loaded', static function (): void {
+            if (\SelectiveUndo\Infrastructure\Integrations\WooCommerce::available()) {
+                (new \SelectiveUndo\Infrastructure\Integrations\WooCommerce())->register();
+            }
+        }, 20);
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RestApi(self::services()))->register());
         add_action('rest_api_init', static fn () => (new \SelectiveUndo\Presentation\Rest\RevertIntentField(self::services()->trackingPolicy(), self::services()->requestContext()))->register());
 

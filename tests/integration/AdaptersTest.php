@@ -13,7 +13,8 @@ final class AdaptersTest extends IntegrationTestCase
     public function tearDown(): void
     {
         parent::tearDown();
-        remove_all_filters('selective_undo/meta_fields');
+        // Only this test's filters (priority 999): integrations (WooCommerce) keep theirs.
+        remove_all_filters('selective_undo/meta_fields', 999);
         $this->s->metaFields()->flush();
     }
 
@@ -76,7 +77,7 @@ final class AdaptersTest extends IntegrationTestCase
         add_filter('selective_undo/meta_fields', static fn (array $fields): array => [
             ...$fields,
             new FieldDefinition('meta:price', 'Price', 'text'),
-        ]);
+        ], 999);
         $this->s->metaFields()->flush();
         $id = $this->createPost(['post_type' => 'post']);
 

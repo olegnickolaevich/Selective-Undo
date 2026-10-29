@@ -107,7 +107,7 @@ function RecordingTab( {
 				<legend>{ __( 'Content types', 'selective-undo' ) }</legend>
 				<p className="su-muted">
 					{ __(
-						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus.',
+						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus. WooCommerce prices and SKUs of products and variations.',
 						'selective-undo'
 					) }
 				</p>
@@ -176,7 +176,7 @@ function RecordingTab( {
 				</summary>
 				<p>
 					{ __(
-						'Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, orders and payments. Emails, webhooks and other external effects are never undone.',
+						'Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, stock, orders and payments. Emails, webhooks and other external effects are never undone.',
 						'selective-undo'
 					) }
 				</p>
