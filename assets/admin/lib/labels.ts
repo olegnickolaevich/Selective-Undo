@@ -469,6 +469,21 @@ export function changesetTitle(
 }
 
 /**
+ * The link to the history of one object.
+ * @param type Object type.
+ */
+export function historyLabel( type: string ): string {
+	switch ( type ) {
+		case 'site':
+			return __( 'History of these settings', 'selective-undo' );
+		case 'menu':
+			return __( 'History of this menu', 'selective-undo' );
+		default:
+			return __( 'History of this item', 'selective-undo' );
+	}
+}
+
+/**
  * The link to where an object is edited.
  * @param type
  */

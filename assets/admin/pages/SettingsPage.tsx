@@ -122,6 +122,21 @@ function RecordingTab( {
 						}
 					/>
 				) ) }
+				<ToggleControl
+					__nextHasNoMarginBottom
+					label={ __(
+						'Templates and site styles',
+						'selective-undo'
+					) }
+					help={ __(
+						'For block themes: templates, template parts, navigation menus, synced patterns and global styles edited in the Site Editor.',
+						'selective-undo'
+					) }
+					checked={ draft.track_site_design }
+					onChange={ ( v: boolean ) =>
+						setDraft( { ...draft, track_site_design: v } )
+					}
+				/>
 			</fieldset>
 			<ToggleControl
 				__nextHasNoMarginBottom
@@ -189,6 +204,7 @@ function RecordingTab( {
 					await onSave( {
 						capture_enabled: draft.capture_enabled,
 						tracked_post_types: draft.tracked_post_types,
+						track_site_design: draft.track_site_design,
 						coalesce_autosaves: draft.coalesce_autosaves,
 						import_revisions: draft.import_revisions,
 						create_revision_after_restore:

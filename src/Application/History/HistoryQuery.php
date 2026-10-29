@@ -217,6 +217,8 @@ final class HistoryQuery
             'event' => (string) $change['event'],
             'field' => $field,
             'field_label' => $field === '' ? '' : $this->adapters->fieldLabel($field, (string) $change['adapter_key'], new ObjectRef((string) $change['object_type'], (int) $change['object_id'], (string) $change['object_subtype'])),
+            // Block markup, compared and undone block by block (global styles are JSON).
+            'blocks' => $field === 'post_content' && (string) $change['object_subtype'] !== 'wp_global_styles',
             'restorable' => (bool) (int) $change['restorable'],
             'reason_code' => $change['reason_code'] === null ? null : (string) $change['reason_code'],
             'quality' => (string) $change['quality'],

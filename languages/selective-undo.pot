@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-29T18:19:54+05:00\n"
+"POT-Creation-Date: 2026-10-30T03:46:41+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: selective-undo\n"
@@ -321,8 +321,8 @@ msgstr ""
 msgid "You are not allowed to view the history of this item."
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:467
-#: src/Application/History/HistoryQuery.php:481
+#: src/Application/History/HistoryQuery.php:469
+#: src/Application/History/HistoryQuery.php:483
 msgid "Invalid page cursor."
 msgstr ""
 
@@ -548,15 +548,23 @@ msgstr ""
 msgid "Page settings"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:47
+#: src/Infrastructure/Integrations/WooCommerce.php:48
 msgid "Regular price"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:48
+#: src/Infrastructure/Integrations/WooCommerce.php:49
 msgid "Sale price"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:49
+#: src/Infrastructure/Integrations/WooCommerce.php:50
+msgid "Sale starts"
+msgstr ""
+
+#: src/Infrastructure/Integrations/WooCommerce.php:51
+msgid "Sale ends"
+msgstr ""
+
+#: src/Infrastructure/Integrations/WooCommerce.php:52
 msgid "SKU"
 msgstr ""
 
@@ -582,8 +590,8 @@ msgstr ""
 msgid "Custom fields"
 msgstr ""
 
-#: src/Infrastructure/WordPress/NavMenuAdapter.php:134
-#: src/Infrastructure/WordPress/NavMenuAdapter.php:139
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:140
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:145
 msgid "Menu items"
 msgstr ""
 
@@ -660,11 +668,15 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:445
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:120
+msgid "Styles"
+msgstr ""
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:452
 msgid "Open"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:445
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:452
 msgid "Closed"
 msgstr ""
 
@@ -826,7 +838,7 @@ msgid "Show the latest change on this page"
 msgstr ""
 
 #: src/Presentation/Frontend/ChangeIndicator.php:93
-#: build/index.js:19
+#: build/index.js:8
 msgid "History of this item"
 msgstr ""
 
@@ -873,7 +885,7 @@ msgid "Something went wrong. The details were written to the Selective Undo diag
 msgstr ""
 
 #: src/Presentation/Rest/RestApi.php:435
-#: src/Presentation/Rest/RestApi.php:603
+#: src/Presentation/Rest/RestApi.php:604
 msgid "This restore does not exist."
 msgstr ""
 
@@ -881,24 +893,24 @@ msgstr ""
 msgid "Only the author of a restore can continue it."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:585
+#: src/Presentation/Rest/RestApi.php:586
 msgid "View history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:586
+#: src/Presentation/Rest/RestApi.php:587
 msgid "Restore changes"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:587
+#: src/Presentation/Rest/RestApi.php:588
 msgid "Manage settings"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:588
+#: src/Presentation/Rest/RestApi.php:589
 #: build/index.js:30
 msgid "Delete history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:589
+#: src/Presentation/Rest/RestApi.php:590
 msgid "Export history"
 msgstr ""
 
@@ -1561,6 +1573,14 @@ msgid "Edit of %d item"
 msgid_plural "Edit of %d items"
 msgstr[0] ""
 msgstr[1] ""
+
+#: build/index.js:8
+msgid "History of these settings"
+msgstr ""
+
+#: build/index.js:8
+msgid "History of this menu"
+msgstr ""
 
 #: build/index.js:8
 msgid "Open settings"
@@ -2309,6 +2329,14 @@ msgstr ""
 
 #: build/index.js:29
 msgid "Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus. WooCommerce prices and SKUs of products and variations."
+msgstr ""
+
+#: build/index.js:29
+msgid "Templates and site styles"
+msgstr ""
+
+#: build/index.js:29
+msgid "For block themes: templates, template parts, navigation menus, synced patterns and global styles edited in the Site Editor."
 msgstr ""
 
 #: build/index.js:29

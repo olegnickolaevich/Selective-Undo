@@ -105,7 +105,9 @@ final class HealthPrivacyTest extends IntegrationTestCase
         $this->assertThrows(\SelectiveUndo\Domain\DomainError::class, fn () => $settings->update(['unknown' => 1]));
         $next = $settings->update(['retention_days' => 3, 'tracked_post_types' => ['post']]);
         $this->assertSame(3, $next['retention_days']);
-        $this->assertSame(['post'], $settings->trackedPostTypes());
+        $this->assertSame(['post', ...\SelectiveUndo\Infrastructure\Settings\Settings::SITE_DESIGN_POST_TYPES], $settings->trackedPostTypes());
+        $settings->update(['track_site_design' => false]);
+        $this->assertSame(['post'], $settings->trackedPostTypes(), 'site design has its own switch');
         $this->assertSame(3, $settings->retentionDays());
     }
 

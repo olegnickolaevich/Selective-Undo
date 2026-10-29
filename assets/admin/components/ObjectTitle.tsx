@@ -1,7 +1,7 @@
 import { ExternalLink } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import type { ObjectSummary } from '../api/types';
-import { displayTitle, openLabel } from '../lib/labels';
+import { displayTitle, historyLabel, openLabel } from '../lib/labels';
 import { linkHandler, objectKind, viewToUrl } from '../lib/router';
 
 export function ObjectTitle( {
@@ -32,7 +32,7 @@ export function ObjectTitle( {
 						href={ viewToUrl( history ) }
 						onClick={ linkHandler( history ) }
 					>
-						{ __( 'History of this item', 'selective-undo' ) }
+						{ historyLabel( object.type ) }
 					</a>
 					{ object.edit_url && (
 						<ExternalLink href={ object.edit_url }>

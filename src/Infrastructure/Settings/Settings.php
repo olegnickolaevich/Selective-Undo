@@ -15,13 +15,19 @@ final class Settings
 {
     public const OPTION = 'selective_undo_settings';
 
-    /** Post types that are never tracked: internals, FSE entities, orders. */
+    /** Post types that are never tracked: internals, orders. */
     public const ALWAYS_EXCLUDED_POST_TYPES = [
         'revision', 'nav_menu_item', 'custom_css', 'customize_changeset', 'oembed_cache',
-        'user_request', 'wp_block', 'wp_template', 'wp_template_part', 'wp_global_styles', 'wp_navigation',
-        'wp_font_family', 'wp_font_face', 'shop_order', 'shop_order_refund', 'shop_coupon', 'shop_subscription',
+        'user_request', 'wp_font_family', 'wp_font_face', 'shop_order', 'shop_order_refund', 'shop_coupon', 'shop_subscription',
         'shop_order_placehold',
     ];
+
+    /**
+     * The design of a block theme site (Site Editor): templates, template parts,
+     * navigation menus, synced patterns and global styles. Recorded together, with
+     * their own setting, not listed with the content types.
+     */
+    public const SITE_DESIGN_POST_TYPES = ['wp_template', 'wp_template_part', 'wp_navigation', 'wp_block', 'wp_global_styles'];
 
     /** Technical bounds, not a paid limit (WordPress.org guideline 5). */
     public const DEFAULT_RETENTION_DAYS = 30;
@@ -40,6 +46,7 @@ final class Settings
         return [
             'capture_enabled' => true,
             'tracked_post_types' => ['post', 'page', 'attachment'],
+            'track_site_design' => true,
             'retention_days' => self::DEFAULT_RETENTION_DAYS,
             'quota_mb' => 256,
             'evict_oldest_on_quota' => true,
@@ -98,7 +105,13 @@ final class Settings
      */
     public function trackedPostTypes(): array
     {
-        $types = (array) apply_filters('selective_undo/tracked_post_types', $this->all()['tracked_post_types']);
+        $types = (array) $this->all()['tracked_post_types'];
+
+        if ($this->all()['track_site_design']) {
+            array_push($types, ...self::SITE_DESIGN_POST_TYPES);
+        }
+
+        $types = (array) apply_filters('selective_undo/tracked_post_types', $types);
         $excluded = $this->excludedPostTypes();
 
         return array_values(array_filter(
@@ -186,7 +199,7 @@ final class Settings
     {
         $out = $this->defaults();
 
-        foreach (['capture_enabled', 'evict_oldest_on_quota', 'create_revision_after_restore', 'coalesce_autosaves', 'import_revisions', 'delete_data_on_uninstall'] as $key) {
+        foreach (['capture_enabled', 'track_site_design', 'evict_oldest_on_quota', 'create_revision_after_restore', 'coalesce_autosaves', 'import_revisions', 'delete_data_on_uninstall'] as $key) {
             $out[$key] = filter_var($s[$key] ?? $out[$key], FILTER_VALIDATE_BOOLEAN);
         }
 
@@ -216,7 +229,8 @@ final class Settings
 
         $types = $s['tracked_post_types'] ?? $out['tracked_post_types'];
         $types = is_array($types) ? array_values(array_unique(array_map('sanitize_key', array_map('strval', $types)))) : [];
-        $excluded = $this->excludedPostTypes();
+        // Site design types have their own setting.
+        $excluded = [...$this->excludedPostTypes(), ...self::SITE_DESIGN_POST_TYPES];
 
         if ($strict) {
             foreach ($types as $type) {

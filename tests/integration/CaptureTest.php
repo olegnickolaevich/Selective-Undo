@@ -180,8 +180,9 @@ final class CaptureTest extends IntegrationTestCase
 
     public function testUntrackedPostTypesAndRevisionsAreIgnored(): void
     {
-        $id = wp_insert_post(['post_type' => 'wp_block', 'post_status' => 'publish', 'post_title' => 'Pattern']);
-        wp_update_post(['ID' => $id, 'post_title' => 'Pattern 2']);
+        // (Patterns, templates and global styles are recorded since site design is: SiteDesignTest.)
+        $id = wp_insert_post(['post_type' => 'custom_css', 'post_status' => 'publish', 'post_title' => 'twentytwentyfive']);
+        wp_update_post(['ID' => $id, 'post_content' => 'body { color: red; }']);
         $this->endRequest();
         $this->assertCount(0, $this->changes((int) $id));
 

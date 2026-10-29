@@ -53,6 +53,7 @@ A WordPress revision restores the whole post. Selective Undo restores only what 
 * Undoing a tag or category change keeps the terms added or removed later.
 * Permanently deleted posts and pages: restored under their own ID with their custom fields and terms, as a draft.
 * WooCommerce products, once Products are a recorded content type: title, descriptions, status, categories, tags, images, regular and sale price, SKU, and the prices of variations; after a restore the active price, the price range and the product lookup table follow. Stock is not recorded: it changes with every order.
+* Block themes (Site Editor): templates, template parts, navigation menus and synced patterns, undone block by block; global styles, undone setting by setting. A template reset to the theme comes back like any deleted item.
 * Menus (Appearance → Menus and the Customizer): undoing one edit keeps later edits of other items; deleted items come back in their place.
 * Site settings: title, tagline, homepage and posts page, posts per page, default category, date and time formats, site icon and language. Developers add others with the `selective_undo/tracked_options` filter.
 * History for as long as you choose (30 days by default, up to a year), limited by a size limit (256 MB by default) with automatic removal of the oldest history.
@@ -153,6 +154,7 @@ The plugin adds a suggested paragraph to the privacy policy guide and registers 
 * Restore of permanently deleted posts and pages.
 * History of site settings (General and Reading).
 * History of menus, undone item by item.
+* Templates, template parts, navigation menus, patterns and global styles of block themes.
 * WooCommerce prices and SKUs of products and variations.
 * Undo of one block of the content while keeping later edits of other blocks, with conflicts shown instead of overwritten.
 * Undo in the block editor, block history ("who changed this block"), and "Return to the state at" for an item.

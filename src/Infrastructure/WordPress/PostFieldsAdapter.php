@@ -117,6 +117,7 @@ final class PostFieldsAdapter implements AdapterInterface, DescribesFields, Merg
             $label = match (true) {
                 $object->subtype === 'attachment' && $field === 'post_excerpt' => __('Caption', 'selective-undo'),
                 $object->subtype === 'attachment' && $field === 'post_content' => __('Description', 'selective-undo'),
+                $object->subtype === 'wp_global_styles' && $field === 'post_content' => __('Styles', 'selective-undo'),
                 default => $this->fieldLabel($field),
             };
             $fields[] = new FieldDefinition($field, $label, in_array($field, self::INT_FIELDS, true) ? 'int' : 'text', $this->mergeStrategy($field));
@@ -406,6 +407,12 @@ final class PostFieldsAdapter implements AdapterInterface, DescribesFields, Merg
         $this->caches->purgePost($object->id);
         wp_cache_delete($object->id, 'post_meta');
 
+        if ($object->subtype === 'wp_global_styles' || get_post_type($object->id) === 'wp_global_styles') {
+            // The styles of a block theme are cached as resolved theme.json data.
+            wp_clean_theme_json_cache();
+            \WP_Theme_JSON_Resolver::clean_cached_data();
+        }
+
         if (array_intersect($fieldKeys, ['post_status', 'post_date']) !== []) {
             $post = get_post($object->id);
 
@@ -443,6 +450,9 @@ final class PostFieldsAdapter implements AdapterInterface, DescribesFields, Merg
             $fieldKey === 'post_author' && is_int($v) => self::userName($v),
             $fieldKey === 'post_parent' && is_int($v) => $v === 0 ? '' : get_the_title($v) . ' (#' . $v . ')',
             in_array($fieldKey, ['comment_status', 'ping_status'], true) => $v === 'open' ? __('Open', 'selective-undo') : __('Closed', 'selective-undo'),
+            // Global styles are one line of JSON: one setting per line instead.
+            $fieldKey === 'post_content' && $object->subtype === 'wp_global_styles' && is_string($v) && is_array($json = json_decode($v, true))
+                => (string) wp_json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
             default => $value->toDisplayString(),
         };
     }

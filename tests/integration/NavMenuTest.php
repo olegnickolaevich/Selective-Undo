@@ -57,6 +57,16 @@ final class NavMenuTest extends IntegrationTestCase
         $this->save();
         $this->assertSame('0', (string) $this->db->get_var("SELECT COUNT(*) FROM {$this->s->tables()->gaps} WHERE reason = 'external_write_detected'"));
 
+        // Undoing the addition of a parent added later under it keeps the child, at the top level.
+        $services = $add(['menu-item-title' => 'Services', 'menu-item-url' => 'https://example.test/services', 'menu-item-type' => 'custom']);
+        $this->save();
+        $addition = $this->lastChange();
+        $repair = $add(['menu-item-title' => 'Repair', 'menu-item-url' => 'https://example.test/repair', 'menu-item-type' => 'custom', 'menu-item-parent-id' => $services]);
+        $this->save();
+        $this->assertSame('completed', $this->start($this->plan(['type' => 'changes', 'change_ids' => [$addition]]))['status']);
+        $this->assertNotContains('Services', $this->titles());
+        $this->assertSame('0', (string) get_post_meta($repair, '_menu_item_menu_item_parent', true));
+
         // Only who may edit menus sees this history.
         $this->assertSame('Main', substr((string) $this->s->history()->objectTimeline(new ObjectRef('menu', $this->menu), 1, null, 5)['object']['title'], 0, 4));
         $this->assertFalse(user_can($this->userId('author'), 'sundo_view_object_history', $this->menu, 'menu:nav'));

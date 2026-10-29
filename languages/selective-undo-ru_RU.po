@@ -298,8 +298,8 @@ msgstr "Этой операции больше нет в истории."
 msgid "You are not allowed to view the history of this item."
 msgstr "У вас нет прав на просмотр истории этой записи."
 
-#: src/Application/History/HistoryQuery.php:467
-#: src/Application/History/HistoryQuery.php:481
+#: src/Application/History/HistoryQuery.php:469
+#: src/Application/History/HistoryQuery.php:483
 msgid "Invalid page cursor."
 msgstr "Неверный указатель страницы."
 
@@ -536,11 +536,11 @@ msgstr "Комментарии"
 msgid "Pingbacks and trackbacks"
 msgstr "Уведомления и обратные ссылки"
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:445
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:452
 msgid "Open"
 msgstr "Открыты"
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:445
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:452
 msgid "Closed"
 msgstr "Закрыты"
 
@@ -662,7 +662,7 @@ msgid "Show the latest change on this page"
 msgstr "Показать последнее изменение на странице"
 
 #: src/Presentation/Frontend/ChangeIndicator.php:93
-#: build/index.js:19
+#: build/index.js:8
 msgid "History of this item"
 msgstr "История этой записи"
 
@@ -710,7 +710,7 @@ msgid "Something went wrong. The details were written to the Selective Undo diag
 msgstr "Что-то пошло не так. Подробности записаны в журнал диагностики Selective Undo."
 
 #: src/Presentation/Rest/RestApi.php:435
-#: src/Presentation/Rest/RestApi.php:603
+#: src/Presentation/Rest/RestApi.php:604
 msgid "This restore does not exist."
 msgstr "Такого восстановления нет."
 
@@ -718,24 +718,24 @@ msgstr "Такого восстановления нет."
 msgid "Only the author of a restore can continue it."
 msgstr "Продолжить восстановление может только тот, кто его запустил."
 
-#: src/Presentation/Rest/RestApi.php:585
+#: src/Presentation/Rest/RestApi.php:586
 msgid "View history"
 msgstr "Просмотр истории"
 
-#: src/Presentation/Rest/RestApi.php:586
+#: src/Presentation/Rest/RestApi.php:587
 msgid "Restore changes"
 msgstr "Восстановление изменений"
 
-#: src/Presentation/Rest/RestApi.php:587
+#: src/Presentation/Rest/RestApi.php:588
 msgid "Manage settings"
 msgstr "Управление настройками"
 
-#: src/Presentation/Rest/RestApi.php:588
+#: src/Presentation/Rest/RestApi.php:589
 #: build/index.js:30
 msgid "Delete history"
 msgstr "Удаление истории"
 
-#: src/Presentation/Rest/RestApi.php:589
+#: src/Presentation/Rest/RestApi.php:590
 msgid "Export history"
 msgstr "Экспорт истории"
 
@@ -2569,8 +2569,8 @@ msgstr "Открыть настройки"
 msgid "Menu"
 msgstr "Меню"
 
-#: src/Infrastructure/WordPress/NavMenuAdapter.php:134
-#: src/Infrastructure/WordPress/NavMenuAdapter.php:139
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:140
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:145
 msgid "Menu items"
 msgstr "Пункты меню"
 
@@ -2582,15 +2582,15 @@ msgstr "Открыть меню"
 msgid "Menus screen"
 msgstr "Экран меню"
 
-#: src/Infrastructure/Integrations/WooCommerce.php:47
+#: src/Infrastructure/Integrations/WooCommerce.php:48
 msgid "Regular price"
 msgstr "Базовая цена"
 
-#: src/Infrastructure/Integrations/WooCommerce.php:48
+#: src/Infrastructure/Integrations/WooCommerce.php:49
 msgid "Sale price"
 msgstr "Цена распродажи"
 
-#: src/Infrastructure/Integrations/WooCommerce.php:49
+#: src/Infrastructure/Integrations/WooCommerce.php:52
 msgid "SKU"
 msgstr "Артикул"
 
@@ -2601,3 +2601,31 @@ msgstr "Для существующих записей записываются:
 #: build/index.js:30
 msgid "Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, stock, orders and payments. Emails, webhooks and other external effects are never undone."
 msgstr "Создание новых записей, перемещение в корзину и из неё (для этого есть корзина), удалённые медиафайлы, произвольные поля, не перечисленные выше, комментарии, пользователи, виджеты, области меню, настройки, кроме названия сайта, краткого описания, главной страницы, форматов даты, иконки и языка сайта, файлы, остатки товаров, заказы и платежи. Письма, вебхуки и другие внешние действия никогда не отменяются."
+
+#: src/Infrastructure/Integrations/WooCommerce.php:50
+msgid "Sale starts"
+msgstr "Начало распродажи"
+
+#: src/Infrastructure/Integrations/WooCommerce.php:51
+msgid "Sale ends"
+msgstr "Конец распродажи"
+
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:120
+msgid "Styles"
+msgstr "Стили"
+
+#: build/index.js:8
+msgid "History of these settings"
+msgstr "История этих настроек"
+
+#: build/index.js:8
+msgid "History of this menu"
+msgstr "История этого меню"
+
+#: build/index.js:29
+msgid "Templates and site styles"
+msgstr "Шаблоны и стили сайта"
+
+#: build/index.js:29
+msgid "For block themes: templates, template parts, navigation menus, synced patterns and global styles edited in the Site Editor."
+msgstr "Для блочных тем: шаблоны, части шаблонов, меню навигации, синхронизированные паттерны и глобальные стили, которые правят в редакторе сайта."

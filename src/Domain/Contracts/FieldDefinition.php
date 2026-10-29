@@ -15,7 +15,7 @@ final readonly class FieldDefinition
 {
     /**
      * @param string $key Field key with its namespace: "post_title", "meta:<key>", "tax:<taxonomy>".
-     * @param 'text'|'html'|'int'|'int_list'|'json'|'raw'|'attachment' $valueType How values are compared and shown;
+     * @param 'text'|'html'|'int'|'int_list'|'json'|'raw'|'attachment'|'timestamp' $valueType How values are compared and shown;
      *                                                                     "attachment": a media library ID, shown as an image.
      * @param bool $sensitive Values are never shown in comparisons (only that they changed).
      * @param string|null $group Heading the field is listed under ("SEO", "Fields").

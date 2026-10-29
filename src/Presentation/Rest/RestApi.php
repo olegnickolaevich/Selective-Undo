@@ -559,7 +559,8 @@ final class RestApi
         $types = [];
 
         foreach (get_post_types(['show_ui' => true], 'objects') as $name => $type) {
-            if (in_array($name, $excluded, true)) {
+            // Site design types are one setting of their own (track_site_design).
+            if (in_array($name, $excluded, true) || in_array($name, \SelectiveUndo\Infrastructure\Settings\Settings::SITE_DESIGN_POST_TYPES, true)) {
                 continue;
             }
 

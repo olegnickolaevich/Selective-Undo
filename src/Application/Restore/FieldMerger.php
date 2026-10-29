@@ -45,6 +45,16 @@ final class FieldMerger
             return new FieldMergeOutcome(null, [], 'merge_type_mismatch');
         }
 
+        // Content that is a JSON object (global styles of a block theme): key by key.
+        $json = [self::jsonObject($base->value), self::jsonObject($current->value), self::jsonObject($restored->value)];
+
+        if (!in_array(null, $json, true)) {
+            $keyed = $this->keys(FieldValue::of($json[0]), FieldValue::of($json[1]), FieldValue::of($json[2]));
+            $encoded = is_array($keyed->value?->value) ? wp_json_encode($keyed->value->value) : false;
+
+            return is_string($encoded) ? new FieldMergeOutcome(FieldValue::of($encoded), $keyed->conflicts) : new FieldMergeOutcome(null, [], 'merge_type_mismatch');
+        }
+
         $result = $this->content->undo($base->value, $current->value, $restored->value, $resolutions);
 
         if ($result === null) {
@@ -106,6 +116,20 @@ final class FieldMerger
         }
 
         return new FieldMergeOutcome(FieldValue::of($merged), $conflicts);
+    }
+
+    /**
+     * @return array<array-key, mixed>|null
+     */
+    private static function jsonObject(string $text): ?array
+    {
+        if (!str_starts_with(ltrim($text), '{')) {
+            return null;
+        }
+
+        $data = json_decode($text, true);
+
+        return is_array($data) && !array_is_list($data) ? $data : null;
     }
 
     /**

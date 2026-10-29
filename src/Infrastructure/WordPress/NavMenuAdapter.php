@@ -95,6 +95,12 @@ final class NavMenuAdapter implements AdapterInterface, CapturingAdapter, Descri
         foreach (LinkedOrder::order(array_map(static fn ($i): string => is_array($i) ? (string) ($i['after'] ?? '') : '', $items)) as $id) {
             $item = (array) $items[$id];
             $meta = array_map('strval', (array) ($item['meta'] ?? []));
+
+            // A submenu item whose parent the undo removes moves to the top level.
+            if (($meta['_menu_item_menu_item_parent'] ?? '0') !== '0' && !isset($items[$meta['_menu_item_menu_item_parent']])) {
+                $meta['_menu_item_menu_item_parent'] = '0';
+            }
+
             ksort($meta);
             // The same shape as toValue().
             $out[$id] = [

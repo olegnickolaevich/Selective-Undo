@@ -70,6 +70,34 @@ final class WooCommerceTest extends IntegrationTestCase
         $this->assertSame(4, wc_get_product($id)->get_stock_quantity(), 'the stock is left alone');
     }
 
+    public function testUndoingASaleDateChangeTakesTheActivePriceBack(): void
+    {
+        if (!class_exists(\WooCommerce::class)) {
+            return;
+        }
+
+        $product = new \WC_Product_Simple();
+        $product->set_name('Hose');
+        $product->set_regular_price('100');
+        $product->set_sale_price('90');
+        $product->set_date_on_sale_from((string) (time() + DAY_IN_SECONDS)); // the sale starts tomorrow
+        $id = $product->save();
+        $this->endRequest();
+        $this->assertSame('100', wc_get_product($id)->get_price());
+
+        $product = wc_get_product($id);
+        $product->set_date_on_sale_from((string) (time() - DAY_IN_SECONDS)); // moved to yesterday: on sale now
+        $product->save();
+        $this->endRequest();
+        $this->assertSame('90', wc_get_product($id)->get_price());
+
+        $rows = array_values(array_filter($this->changes($id, 'update'), static fn (array $r): bool => $r['field_key'] === 'meta:_sale_price_dates_from'));
+        $this->assertSame('completed', $this->start($this->plan(['type' => 'changes', 'change_ids' => [(int) end($rows)['id']]]))['status']);
+
+        wp_cache_flush();
+        $this->assertSame('100', wc_get_product($id)->get_price(), 'not on sale yet again');
+    }
+
     public function testVariationPriceIsUndoneAndThePriceRangeFollows(): void
     {
         if (!class_exists(\WooCommerce::class)) {

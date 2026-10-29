@@ -9,7 +9,7 @@ use SelectiveUndo\Domain\Contracts\FieldDefinition;
 /**
  * WooCommerce products. Their titles, descriptions, status, categories, tags and
  * images are post fields and terms, recorded once "Products" is a recorded content
- * type. This adds the regular price, the sale price and the SKU of products and
+ * type. This adds the regular price, the sale price and its dates, and the SKU of products and
  * of their variations (recorded together with the products), and refreshes what
  * WooCommerce derives from them right after a restore: the active price, the price
  * range of a variable product, the lookup table and the product caches.
@@ -19,7 +19,8 @@ use SelectiveUndo\Domain\Contracts\FieldDefinition;
 final class WooCommerce
 {
     private const PRODUCT_TYPES = ['product', 'product_variation'];
-    private const PRICE_META = ['_regular_price', '_sale_price'];
+    /** What the active price depends on. */
+    private const PRICE_META = ['_regular_price', '_sale_price', '_sale_price_dates_from', '_sale_price_dates_to'];
 
     public static function available(): bool
     {
@@ -46,6 +47,8 @@ final class WooCommerce
 
         $fields[] = new FieldDefinition('meta:_regular_price', __('Regular price', 'selective-undo'), 'text', group: 'WooCommerce');
         $fields[] = new FieldDefinition('meta:_sale_price', __('Sale price', 'selective-undo'), 'text', group: 'WooCommerce');
+        $fields[] = new FieldDefinition('meta:_sale_price_dates_from', __('Sale starts', 'selective-undo'), 'timestamp', group: 'WooCommerce');
+        $fields[] = new FieldDefinition('meta:_sale_price_dates_to', __('Sale ends', 'selective-undo'), 'timestamp', group: 'WooCommerce');
         $fields[] = new FieldDefinition('meta:_sku', __('SKU', 'selective-undo'), 'text', group: 'WooCommerce');
 
         return $fields;

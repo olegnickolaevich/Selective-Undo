@@ -88,6 +88,8 @@ export interface ChangeSummary {
 	event: ChangeEvent;
 	field: string;
 	field_label: string;
+	/** Block markup: compared and undone block by block. */
+	blocks: boolean;
 	restorable: boolean;
 	reason_code: string | null;
 	quality: 'verified' | 'observed' | 'ambiguous';
@@ -286,6 +288,7 @@ export interface Overview {
 export interface Settings {
 	capture_enabled: boolean;
 	tracked_post_types: string[];
+	track_site_design: boolean;
 	retention_days: number;
 	quota_mb: number;
 	evict_oldest_on_quota: boolean;

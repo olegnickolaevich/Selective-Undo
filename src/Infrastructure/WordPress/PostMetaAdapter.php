@@ -306,6 +306,16 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
             }, $rows));
         }
 
+        if ($this->registry->definition($object->subtype, substr($fieldKey, 5))?->valueType === 'timestamp') {
+            // A Unix time (WooCommerce sale dates): shown as a date of the site.
+            return implode("\n", array_map(
+                static fn (string $raw): string => ctype_digit($raw)
+                    ? wp_date(get_option('date_format') . ' ' . get_option('time_format'), (int) $raw) . ' (' . $raw . ')'
+                    : $raw,
+                $rows
+            ));
+        }
+
         return implode("\n", array_map(static function (string $raw): string {
             if (!is_serialized($raw)) {
                 return $raw;

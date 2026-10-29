@@ -51,7 +51,7 @@ export function ChangeRow( {
 		isField && change.event !== 'deleted'
 			? change.field_label
 			: eventLabel( change.event );
-	const blocks = change.field === 'post_content' && byBlocks;
+	const blocks = change.blocks && byBlocks;
 
 	return (
 		<li className="su-change">
@@ -90,7 +90,7 @@ export function ChangeRow( {
 			{ isField && ! change.restorable && (
 				<p className="su-muted">{ reasonText( change.reason_code ) }</p>
 			) }
-			{ open && change.field === 'post_content' && (
+			{ open && change.blocks && (
 				<Button
 					variant="link"
 					className="su-change__mode"
