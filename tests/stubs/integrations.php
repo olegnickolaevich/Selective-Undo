@@ -118,3 +118,10 @@ function wc_get_product(mixed $the_product = false, array $deprecated = [])
 function wc_delete_product_transients(int $post_id = 0): void
 {
 }
+
+class WC_Install
+{
+    public static function create_roles(): void
+    {
+    }
+}

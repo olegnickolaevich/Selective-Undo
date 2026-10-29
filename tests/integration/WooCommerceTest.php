@@ -16,6 +16,14 @@ final class WooCommerceTest extends IntegrationTestCase
         parent::setUp();
 
         if (class_exists(\WooCommerce::class)) {
+            // Right after WooCommerce was activated from the command line (as in CI), its
+            // roles are created by the first request that follows: this one.
+            if (!user_can(1, 'edit_products') && class_exists(\WC_Install::class)) {
+                \WC_Install::create_roles();
+                wp_roles()->for_site(); // add_cap() leaves the role objects of this request as they were
+                wp_set_current_user(1);
+            }
+
             $this->s->settings()->update(['tracked_post_types' => ['post', 'page', 'attachment', 'product']]);
             $this->s->metaFields()->flush();
         }
