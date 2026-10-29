@@ -34,4 +34,5 @@ jobs:
       - name: Timings
         run: |
           bin/test-env.sh wp eval-file tests/load/bench.php 300 2>/dev/null | tee bench.txt
-          sed 's/^/::notice title=Load check::/' bench.txt
+          # One notice: GitHub keeps at most 10 per step.
+          echo "::notice title=Load check::$(awk 'BEGIN { ORS = "%0A" } { print }' bench.txt)"
