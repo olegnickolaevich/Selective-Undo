@@ -60,7 +60,7 @@ jobs:
           - { name: 'WP latest, PHP 8.4, MySQL 8.4', wp: 'wordpress:latest', php: '8.4', db: 'mysql:8.4', engine: mysql, prefix: 'su9_' }
           # Action Scheduler as on WooCommerce stores: background tasks run through it;
           # All in One SEO, Elementor and WooCommerce: their integrations are tested against the real plugins.
-          - { name: 'WP latest, PHP 8.3, MariaDB 10.11, Action Scheduler, AIOSEO, Elementor, WooCommerce', wp: 'wordpress:latest', php: '8.3', db: 'mariadb:10.11', engine: mysql, prefix: 'wp_', plugins: 'action-scheduler all-in-one-seo-pack elementor woocommerce' }
+          - { name: 'WP latest, PHP 8.3, MariaDB 10.11, Action Scheduler, AIOSEO, Elementor, WooCommerce', wp: 'wordpress:latest', php: '8.3', db: 'mariadb:10.11', engine: mysql, prefix: 'wp_', plugins: 'woocommerce action-scheduler all-in-one-seo-pack elementor' }
           - { name: 'WP latest, PHP 8.4, MySQL 8.4, compatibility mode', wp: 'wordpress:latest', php: '8.4', db: 'mysql:8.4', engine: mysql, prefix: 'wp_', compat: '1' }
           - { name: 'WP latest, PHP 8.3, SQLite', wp: 'wordpress:latest', php: '8.3', db: '', engine: sqlite, prefix: 'wp_' }
     steps:
@@ -79,7 +79,9 @@ jobs:
         run: bin/test-env.sh up
       - name: Plugins of the site
         if: matrix.plugins
-        run: bin/test-env.sh wp plugin install ${{ matrix.plugins }} --activate
+        # One at a time, WooCommerce first: activating it from WP-CLI while Elementor is
+        # active is a fatal error in Elementor (no request, no common app yet).
+        run: for plugin in ${{ matrix.plugins }}; do bin/test-env.sh wp plugin install "$plugin" --activate; done
       - name: Unit and integration tests
         env:
           SU_COMPAT_MODE: ${{ matrix.compat }}
