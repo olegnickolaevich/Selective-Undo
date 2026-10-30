@@ -46,7 +46,8 @@ test( 'a permanently deleted post comes back as a draft from its history', async
 } );
 
 test( 'a change of the site settings is undone from the history of the settings', async ( { page } ) => {
-	const before = wp( 'option', 'get', 'blogdescription' );
+	// A new site may have no row for the tagline at all (wp option get fails then).
+	const before = wp( 'eval', 'echo get_option( "blogdescription" );' );
 	wp( 'option', 'update', 'blogdescription', `Changed ${ RUN }` );
 
 	try {
@@ -55,7 +56,7 @@ test( 'a change of the site settings is undone from the history of the settings'
 		await expect( page.getByRole( 'heading', { name: 'Site settings' } ) ).toBeVisible();
 		await page.getByRole( 'checkbox', { name: 'Tagline' } ).first().check();
 		await restoreSelected( page );
-		expect( wp( 'option', 'get', 'blogdescription' ) ).toBe( before );
+		expect( wp( 'eval', 'echo get_option( "blogdescription" );' ) ).toBe( before );
 	} finally {
 		wp( 'option', 'update', 'blogdescription', before );
 	}

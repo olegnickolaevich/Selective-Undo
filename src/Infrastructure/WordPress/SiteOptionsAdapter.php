@@ -219,7 +219,7 @@ final class SiteOptionsAdapter implements AdapterInterface, CapturingAdapter, De
             $old = $this->replaced[$name];
             unset($this->replaced[$name]);
             $this->request->whileRestoring(static function () use ($name, $old): void {
-                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Core action, fired as update_option() would.
+                // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound, WordPress.NamingConventions.PrefixAllGlobals.DynamicHooknameFound -- Core action, fired as update_option() would.
                 do_action("update_option_{$name}", maybe_unserialize((string) $old), get_option($name), $name);
             });
         }
