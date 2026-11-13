@@ -23,9 +23,11 @@ final class ActivationTest extends IntegrationTestCase
 
     public function testDeletingASiteOfANetworkDropsItsHistoryTables(): void
     {
+        // Other plugins (WooCommerce) add their own tables too.
         $tables = (array) apply_filters('wpmu_drop_tables', ['posts' => $this->db->posts], get_current_blog_id());
 
-        $this->assertSame([$this->db->posts, ...$this->s->tables()->own()], array_values($tables));
+        $this->assertSame($this->db->posts, $tables['posts']);
+        $this->assertSame([], array_diff($this->s->tables()->own(), $tables));
     }
 
     public function testCapabilitiesAreGrantedToAdministratorsOnly(): void
