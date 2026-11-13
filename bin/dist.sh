@@ -24,5 +24,9 @@ for path in "$ROOT"/*; do
   [[ " ${IGNORED[*]} " == *" $name "* ]] && continue
   cp -R "$path" "$OUT/$SLUG/"
 done
-(cd "$OUT" && zip -qr "$SLUG-$VERSION.zip" "$SLUG")
+if command -v zip >/dev/null; then
+  (cd "$OUT" && zip -qr "$SLUG-$VERSION.zip" "$SLUG")
+else # Windows: the bsdtar of the system writes zip files too
+  (cd "$OUT" && "${SYSTEMROOT:-C:/Windows}/System32/tar.exe" -a -cf "$SLUG-$VERSION.zip" "$SLUG")
+fi
 echo "$OUT/$SLUG-$VERSION.zip"

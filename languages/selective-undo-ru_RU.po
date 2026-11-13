@@ -32,8 +32,8 @@ msgstr "https://github.com/olegnickolaevich/Selective-Undo"
 
 #. Description of the plugin
 #: selective-undo.php
-msgid "Undo a specific content change and keep everything else. Selective restore of supported post fields with conflict checks."
-msgstr "Отмените конкретное изменение контента и сохраните всё остальное. Выборочное восстановление поддерживаемых полей записей с проверкой конфликтов."
+msgid "Undo one change and keep everything else: restore single fields of posts, pages, products, menus and site settings without overwriting newer edits."
+msgstr "Отмените одно изменение и сохраните всё остальное: восстановление отдельных полей записей, страниц, товаров, меню и настроек сайта без перезаписи более новых правок."
 
 #. Author of the plugin
 #: selective-undo.php

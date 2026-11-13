@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Selective Undo
  * Plugin URI:        https://github.com/olegnickolaevich/Selective-Undo
- * Description:       Undo a specific content change and keep everything else. Selective restore of supported post fields with conflict checks.
+ * Description:       Undo one change and keep everything else: restore single fields of posts, pages, products, menus and site settings without overwriting newer edits.
  * Version:           1.0.0
  * Requires at least: 6.8
  * Requires PHP:      8.2

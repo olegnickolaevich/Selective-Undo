@@ -32,7 +32,7 @@ msgstr ""
 
 #. Description of the plugin
 #: selective-undo.php
-msgid "Undo a specific content change and keep everything else. Selective restore of supported post fields with conflict checks."
+msgid "Undo one change and keep everything else: restore single fields of posts, pages, products, menus and site settings without overwriting newer edits."
 msgstr ""
 
 #. Author of the plugin

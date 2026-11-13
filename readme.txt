@@ -8,7 +8,7 @@ Stable tag: 1.0.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Undo a specific content change and keep everything else. Restore single fields of posts and pages without overwriting newer edits.
+Undo one change and keep everything else: restore single fields of posts, pages, products, menus and site settings without overwriting newer edits.
 
 == Description ==
 
