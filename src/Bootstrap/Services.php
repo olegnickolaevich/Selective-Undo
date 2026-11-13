@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Bootstrap;
 
+defined('ABSPATH') || exit;
+
 use SelectiveUndo\Application\Capture\CaptureCircuitBreaker;
 use SelectiveUndo\Application\Capture\CaptureService;
 use SelectiveUndo\Application\Capture\ChangesetEvents;
@@ -85,8 +87,6 @@ use SelectiveUndo\Infrastructure\WordPress\PostRowReader;
 use SelectiveUndo\Infrastructure\WordPress\PrivacyIntegration;
 use SelectiveUndo\Infrastructure\WordPress\SystemClock;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
-
-defined('ABSPATH') || exit;
 
 /**
  * Lazily constructed service graph. Explicit factories keep the wiring readable
