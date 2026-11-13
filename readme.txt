@@ -1,6 +1,6 @@
 === Selective Undo ===
 Contributors: olegnickolaevich
-Tags: undo, history, restore, revisions, content
+Tags: undo, revisions, rollback, restore, history
 Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 8.2
@@ -8,11 +8,13 @@ Stable tag: 1.0.0
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Undo one change and keep everything else: restore single fields of posts, pages, products, menus and site settings without overwriting newer edits.
+Undo one change without losing newer edits: restore a title, block, price, menu or setting from its history. Revisions, but field by field.
 
 == Description ==
 
 A WordPress revision restores the whole post. Selective Undo restores only what you choose: the title changed by mistake, the excerpt someone rewrote, the content from before a bad paste. Everything else, including edits made after that change, stays as it is.
+
+Use it to undo a change in the block editor (Gutenberg), Elementor, WooCommerce products, menus and site settings, to roll back one block of a page, or to restore a permanently deleted page, with a preview and a conflict check before anything is written.
 
 **How it works**
 
@@ -105,7 +107,19 @@ Yes. Select consecutive changes of the same field in the item's history and the 
 
 Yes. A restore is recorded in the history like any other change. Open it and click **Check undo of this restore**.
 
-= Does it work with page builders? =
+= How do I undo a change in WordPress? =
+
+Open **Change history** from the post's row actions, the block editor sidebar or **Selective Undo → History**, select the change and click **Check restore**. After Quick Edit and bulk edit, a notice offers **Undo** right away.
+
+= Can I undo a WooCommerce price change? =
+
+Yes. Regular and sale prices, sale dates and SKUs of products and variations are recorded once Products are a recorded content type. After the undo, the active price, the price range of variable products and WooCommerce's lookup table follow.
+
+= Can I restore a permanently deleted page or post? =
+
+Yes. It comes back as a draft under its own ID, with its custom fields and terms. Comments, revisions and child items are not restored.
+
+= Does it work with Elementor and other page builders? =
 
 Elementor layouts are recorded and restored element by element: undoing one widget edit keeps later edits of other widgets, and the page's CSS and text copy are rebuilt after a restore. For other page builders (Bricks, Divi, Beaver Builder) Selective Undo restores the `post_content` field, and the preview warns that restoring the content may not change what visitors see.
 
