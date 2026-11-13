@@ -107,10 +107,7 @@ function useBlame( enabled: boolean ): BlameResult | null {
 	return enabled ? result : null;
 }
 
-/**
- * The same person keeps the same color across saves and posts.
- * @param actorId
- */
+/** The same person keeps the same color across saves and posts. */
 function authorColor( actorId: number ): string {
 	return COLORS[ actorId % COLORS.length ]!;
 }

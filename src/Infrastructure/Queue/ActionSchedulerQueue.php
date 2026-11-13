@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Queue;
 
+defined('ABSPATH') || exit;
+
 /**
  * Action Scheduler (bundled with WooCommerce and other plugins): its own runner,
  * retries and a log under Tools → Scheduled Actions.

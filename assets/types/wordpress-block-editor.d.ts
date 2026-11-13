@@ -1,6 +1,4 @@
-/**
- * The part of `@wordpress/block-editor` this plugin uses; the package ships no types.
- */
+/** The part of `@wordpress/block-editor` this plugin uses; the package ships no types. */
 declare module '@wordpress/block-editor' {
 	import type { ReduxStoreConfig, StoreDescriptor } from '@wordpress/data';
 	import type { ComponentType, ReactNode } from 'react';

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
+defined('ABSPATH') || exit;
+
 /**
  * Capture state of one wp_insert_post() call in update mode.
  * Mutable: "after" is filled later, in clean_post_cache.

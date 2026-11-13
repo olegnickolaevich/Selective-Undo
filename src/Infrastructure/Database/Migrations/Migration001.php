@@ -8,6 +8,8 @@ use SelectiveUndo\Infrastructure\Database\Migration;
 use SelectiveUndo\Infrastructure\Database\SchemaError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Initial schema. Identifiers, codes and statuses use ascii_bin; hashes are raw
  * BINARY(32) SHA-256; all DATETIME values are UTC.
@@ -28,9 +30,7 @@ final class Migration001 implements Migration
         }
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     private function statements(Tables $t, string $collate): array
     {
         return [

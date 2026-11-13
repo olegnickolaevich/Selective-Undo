@@ -13,6 +13,8 @@ use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 
+defined('ABSPATH') || exit;
+
 /**
  * Hourly maintenance: expiry, sealing, retention by age, quota enforcement and
  * blob garbage collection. Data of active plans and running jobs is never deleted.
@@ -37,9 +39,7 @@ final class RetentionService
     ) {
     }
 
-    /**
-     * @return array<string, int> Counters of what was done.
-     */
+    /** @return array<string, int> Counters of what was done. */
     public function run(float $budgetSeconds = 20.0): array
     {
         $started = microtime(true);
@@ -117,9 +117,7 @@ final class RetentionService
         return $blobs + $rows * self::ROW_OVERHEAD_BYTES;
     }
 
-    /**
-     * @param list<int> $ids
-     */
+    /** @param list<int> $ids */
     public function deleteChangesets(array $ids): int
     {
         if ($ids === []) {
@@ -148,9 +146,7 @@ final class RetentionService
         return array_values(array_map('intval', (array) $this->db->get_col($this->db->prepare($sql . ' ORDER BY cs.id LIMIT %d', ...[...$params, $limit]))));
     }
 
-    /**
-     * @param list<int|string> $extraParams
-     */
+    /** @param list<int|string> $extraParams */
     public function countPrunable(?string $cutoffUtc, string $extraWhere = '', array $extraParams = []): int
     {
         [$sql, $params] = $this->prunableSql($cutoffUtc, $extraWhere, $extraParams);

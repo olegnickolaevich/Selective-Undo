@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
-/**
- * Undo of a change of a JSON object, key by key and recursively; lists are values.
- */
+defined('ABSPATH') || exit;
+
+/** Undo of a change of a JSON object, key by key and recursively; lists are values. */
 final class KeyedMerger
 {
     private const MISSING = "\0missing";

@@ -6,6 +6,8 @@ namespace SelectiveUndo\Presentation\Admin;
 
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 
+defined('ABSPATH') || exit;
+
 /**
  * Commands in the WordPress command palette (Ctrl+K / ⌘K). Added only where
  * WordPress already loads the palette (every admin screen since 6.9, the editors

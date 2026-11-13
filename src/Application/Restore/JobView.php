@@ -11,9 +11,9 @@ use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 
-/**
- * Read model of restore jobs. The owner sees their jobs; users who manage settings see all.
- */
+defined('ABSPATH') || exit;
+
+/** Read model of restore jobs. The owner sees their jobs; users who manage settings see all. */
 final class JobView
 {
     public function __construct(
@@ -25,9 +25,7 @@ final class JobView
     ) {
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function forUser(string $uuid, int $userId): ?array
     {
         $job = $this->jobs->findByUuid($uuid);
@@ -39,9 +37,7 @@ final class JobView
         return $this->present($job, $userId);
     }
 
-    /**
-     * @param array<string, mixed> $job
-     */
+    /** @param array<string, mixed> $job */
     public function canSee(array $job, int $userId): bool
     {
         return (int) $job['blog_id'] === get_current_blog_id()
@@ -112,9 +108,7 @@ final class JobView
         return $out;
     }
 
-    /**
-     * @param array<string, mixed> $job
-     */
+    /** @param array<string, mixed> $job */
     private function queueHealth(array $job): string
     {
         if (!in_array($job['status'], ['queued', 'running', 'cancel_requested'], true)) {

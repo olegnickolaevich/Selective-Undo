@@ -24,11 +24,12 @@ use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostRow;
 
+defined('ABSPATH') || exit;
+
 /**
- * Writes captured changes to the journal. Every write is a short autocommit
- * statement on the WordPress connection so that nothing is lost between requests.
- * Post fields come from capture frames (PostChangeObserver); other adapters report
- * their changes through the CaptureSink interface.
+ * Writes captured changes to the journal, each in a short autocommit statement on
+ * the WordPress connection. Post fields come from capture frames, other adapters
+ * report through CaptureSink.
  *
  * @phpstan-import-type ChangeRow from JournalRepository
  */
@@ -148,9 +149,7 @@ final class CaptureService implements CaptureSink
         });
     }
 
-    /**
-     * A permanent deletion with what was deleted: undoable through the deletion adapter.
-     */
+    /** A permanent deletion with what was deleted: undoable through the deletion adapter. */
     public function recordDeletion(ObjectRef $object, FieldValue $snapshot): void
     {
         if (!$this->recording()) {
@@ -227,9 +226,7 @@ final class CaptureService implements CaptureSink
         $this->gaps->object('capture_failed', new ObjectRef('post', $postId));
     }
 
-    /**
-     * Seals changesets opened by this request (autosave sessions stay open).
-     */
+    /** Seals changesets opened by this request (autosave sessions stay open). */
     public function sealRequestChangesets(): void
     {
         foreach ($this->request->changesets() as $key => $id) {
@@ -260,7 +257,7 @@ final class CaptureService implements CaptureSink
         }
 
         if ($operation === null && $object !== null && $actor > 0 && $this->request->isMetaBoxSave()) {
-            // One click on Save is two requests (REST, then meta boxes): one change set.
+            // One click on Save is two requests (REST, then meta boxes): one changeset.
             $joined = $this->journal->findRecentChangeset($actor, $object, Source::BlockEditor->value, $this->clock->utcMysql(-120));
 
             if ($joined !== null) {
@@ -287,9 +284,9 @@ final class CaptureService implements CaptureSink
 
     /**
      * The requests of one click on Save in the block editor share its token and one
-     * change set. They may run at the same time (plugins save their fields through
-     * their own endpoints while the post is being saved), so the change set is found
-     * or created under a lock, and the token is kept as the change set's request UUID.
+     * changeset. They may run at the same time (plugins save their fields through
+     * their own endpoints while the post is being saved), so the changeset is found
+     * or created under a lock, and the token is kept as the changeset's request UUID.
      */
     private function changesetForSave(string $key, int $actor, string $token): int
     {
@@ -488,7 +485,7 @@ final class CaptureService implements CaptureSink
         try {
             $fn();
         } catch (\Throwable $e) {
-            // Failures pause recording when they repeat (I-14); the caller records the gap.
+            // Failures pause recording when they repeat; the caller records the gap.
             $this->breaker->failure();
 
             throw $e;

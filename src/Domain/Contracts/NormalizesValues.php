@@ -6,6 +6,8 @@ namespace SelectiveUndo\Domain\Contracts;
 
 use SelectiveUndo\Domain\Value\FieldValue;
 
+defined('ABSPATH') || exit;
+
 /**
  * Optional, for adapters whose values can be merged key by key: puts a merged value
  * into the form the adapter reads back after writing it (the order of keys, values

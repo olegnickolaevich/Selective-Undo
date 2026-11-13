@@ -17,6 +17,8 @@ use SelectiveUndo\Infrastructure\Database\DbDialect;
 use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Restore jobs and their items. State transitions that must be atomic with content
  * writes go through the restore connection; reads use $wpdb.
@@ -45,9 +47,7 @@ final class JobRepository
     ) {
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function findByUuid(string $uuid): ?array
     {
         $row = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->t->jobs} WHERE uuid = %s", $uuid), ARRAY_A);
@@ -55,9 +55,7 @@ final class JobRepository
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function findById(int $id): ?array
     {
         $row = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->t->jobs} WHERE id = %d", $id), ARRAY_A);
@@ -65,9 +63,7 @@ final class JobRepository
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function findByIdempotency(int $actorUserId, string $keyHash): ?array
     {
         $row = $this->db->get_row($this->db->prepare(
@@ -79,9 +75,7 @@ final class JobRepository
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * Takes the lease if the job is not terminal and nobody else holds a live lease.
-     */
+    /** Takes the lease if the job is not terminal and nobody else holds a live lease. */
     public function claim(int $jobId): ?JobLease
     {
         $token = wp_generate_uuid4();
@@ -150,9 +144,7 @@ final class JobRepository
         )[0]['status'] === JobStatus::CancelRequested->value;
     }
 
-    /**
-     * @return array{object: ObjectRef, adapter_key: string}|null
-     */
+    /** @return array{object: ObjectRef, adapter_key: string}|null */
     public function nextPendingObject(int $jobId): ?array
     {
         $rows = $this->connection->select(
@@ -221,9 +213,7 @@ final class JobRepository
         );
     }
 
-    /**
-     * @param list<ItemOutcome> $outcomes
-     */
+    /** @param list<ItemOutcome> $outcomes */
     public function bumpCounters(RestoreTransaction $tx, int $jobId, array $outcomes): void
     {
         $sets = [];
@@ -369,9 +359,7 @@ final class JobRepository
         ))));
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     public function items(int $jobId, ?string $status = null, int $afterId = 0, int $limit = 100): array
     {
         return (array) $this->db->get_results($this->db->prepare(

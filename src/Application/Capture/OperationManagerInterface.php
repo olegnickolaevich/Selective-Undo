@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Capture;
 
+defined('ABSPATH') || exit;
+
 /**
  * Public API: lets integrations mark the boundaries of their operations
  * (for example an import) so that the history shows a confirmed group.
@@ -12,9 +14,7 @@ namespace SelectiveUndo\Application\Capture;
  */
 interface OperationManagerInterface
 {
-    /**
-     * @param array<string, scalar|null> $metadata Scalars only, no content, at most 4 KB encoded.
-     */
+    /** @param array<string, scalar|null> $metadata Scalars only, no content, at most 4 KB encoded. */
     public function begin(string $label, array $metadata = [], string $source = 'integration'): OperationToken;
 
     /** Continues an active operation in another request. */

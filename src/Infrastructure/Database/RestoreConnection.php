@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 use SelectiveUndo\Domain\Contracts\TransactionRunner;
+
+defined('ABSPATH') || exit;
 
 /**
  * Dedicated connection to the primary database, used only for restore transactions.
@@ -28,9 +30,7 @@ final class RestoreConnection implements TransactionRunner
     private ?\mysqli $link = null;
     private bool $inTransaction = false;
 
-    /**
-     * @param \Closure(self): void|null $verify Called once per new connection (same-database check).
-     */
+    /** @param \Closure(self): void|null $verify Called once per new connection (same-database check). */
     public function __construct(
         private readonly \Closure $credentials,
         private readonly string $charset,
@@ -125,9 +125,7 @@ final class RestoreConnection implements TransactionRunner
         return self::DEDICATED;
     }
 
-    /**
-     * Opens the connection and runs the verification callback.
-     */
+    /** Opens the connection and runs the verification callback. */
     public function ping(): void
     {
         $this->link();
@@ -138,9 +136,7 @@ final class RestoreConnection implements TransactionRunner
         $this->drop();
     }
 
-    /**
-     * @param list<int|string|null> $params
-     */
+    /** @param list<int|string|null> $params */
     private function prepare(string $sql, string $types, array $params): \mysqli_stmt
     {
         $link = $this->link();
@@ -194,7 +190,7 @@ final class RestoreConnection implements TransactionRunner
             throw new StorageUnavailable('mysqli_unavailable');
         }
 
-        // phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_init -- A separate transactional session is required; see the class comment for why $wpdb cannot be used.
+        // phpcs:ignore WordPress.DB.RestrictedFunctions.mysql_mysqli_init -- A separate transactional session; see the class comment.
         $link = mysqli_init();
 
         if ($link === false) {
@@ -265,7 +261,7 @@ final class RestoreConnection implements TransactionRunner
             try {
                 @$this->link->close();
             } catch (\Throwable) {
-                // already closed
+                // Already closed.
             }
         }
 

@@ -7,11 +7,7 @@ export interface AsyncState< T > {
 	reload: () => void;
 }
 
-/**
- * Loads data with cancellation on unmount or dependency change.
- * @param loader
- * @param deps
- */
+/** Loads data with cancellation on unmount or dependency change. */
 export function useAsync< T >(
 	loader: ( signal: AbortSignal ) => Promise< T >,
 	deps: unknown[]

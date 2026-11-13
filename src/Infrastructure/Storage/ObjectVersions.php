@@ -10,6 +10,8 @@ use SelectiveUndo\Infrastructure\Database\DbDialect;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Per-object version numbers (object_seq): the order of an object's history. New
  * changes take numbers from a counter per object; history added before the existing
@@ -63,9 +65,7 @@ final class ObjectVersions
         return (int) $this->db->insert_id - $count + 1;
     }
 
-    /**
-     * The same inside a restore transaction: the counter row stays locked until it ends.
-     */
+    /** The same inside a restore transaction: the counter row stays locked until it ends. */
     public function reserveTx(RestoreTransaction $tx, ObjectRef $object, int $count = 1): int
     {
         $tx->write(

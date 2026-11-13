@@ -20,7 +20,6 @@ import { ChangeRow, checkRestore } from './ChangesetPage';
 /**
  * "2026-10-01T10:30" in the site's time zone, for a datetime-local input. The
  * history shows times in the site's time zone, so the input uses it too.
- * @param iso
  */
 function siteInput( iso: string ): string {
 	return date( 'Y-m-d\\TH:i', iso );
@@ -29,9 +28,6 @@ function siteInput( iso: string ): string {
 /**
  * Back to the state at a moment: every field changed after it is restored to its
  * value at that moment.
- * @param root0
- * @param root0.objectId
- * @param root0.initial
  */
 function AsOfForm( {
 	objectId,
@@ -87,10 +83,6 @@ function AsOfForm( {
 /**
  * History of one item. Several consecutive changes of the same field can be
  * selected together: the preview folds them into one restore.
- * @param root0
- * @param root0.id
- * @param root0.type
- * @param root0.overview
  */
 export function ObjectPage( {
 	id,

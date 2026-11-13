@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Capture;
 
+defined('ABSPATH') || exit;
+
 enum Source: string
 {
     /** REST with cookie authentication: the block editor or another logged-in REST client. */

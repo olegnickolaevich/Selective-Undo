@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
+defined('ABSPATH') || exit;
+
 enum JobStatus: string
 {
     case Queued = 'queued';

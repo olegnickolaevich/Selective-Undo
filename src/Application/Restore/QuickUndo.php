@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Restore;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper), never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Domain\Restore\JobStatus;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
+
+defined('ABSPATH') || exit;
 
 /**
  * Undo of a whole operation in one step. The plan is built and checked exactly as
@@ -99,9 +101,7 @@ final class QuickUndo
         return $this->restored($userId, $started['job_uuid'], $planUuid);
     }
 
-    /**
-     * @return array{status: 'restored', plan_id: string|null, job: array<string, mixed>}
-     */
+    /** @return array{status: 'restored', plan_id: string|null, job: array<string, mixed>} */
     private function restored(int $userId, string $jobUuid, ?string $planUuid = null): array
     {
         $job = $this->jobView->forUser($jobUuid, $userId) ?? [];

@@ -6,9 +6,9 @@ namespace SelectiveUndo\Application\History;
 
 use SelectiveUndo\Infrastructure\Database\Tables;
 
-/**
- * CSV export of history METADATA (no values, no titles).
- */
+defined('ABSPATH') || exit;
+
+/** CSV export of history METADATA (no values, no titles). */
 final class HistoryExport
 {
     public const MAX_ROWS = 10000;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Restore;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
@@ -17,6 +17,8 @@ use SelectiveUndo\Infrastructure\Queue\JobQueue;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
+
+defined('ABSPATH') || exit;
 
 /**
  * Starts a restore for a plan exactly once.
@@ -166,9 +168,7 @@ final class CreateRestoreJob
         return ['job_uuid' => (string) ($job['uuid'] ?? ''), 'created' => true];
     }
 
-    /**
-     * The job already started with this request key, if any.
-     */
+    /** The job already started with this request key, if any. */
     public function findByKey(int $userId, string $idempotencyKey): ?string
     {
         $existing = $this->jobs->findByIdempotency($userId, hash('sha256', strtolower($idempotencyKey), true));
@@ -190,9 +190,7 @@ final class CreateRestoreJob
         return ['job_uuid' => (string) $existing['uuid'], 'created' => false];
     }
 
-    /**
-     * @param array<string, mixed> $plan
-     */
+    /** @param array<string, mixed> $plan */
     private function assertStartable(array $plan, bool $afterRace = false): void
     {
         if ($plan['status'] === 'consumed') {

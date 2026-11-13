@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Change\CaptureQuality;
@@ -24,6 +24,8 @@ use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
+
+defined('ABSPATH') || exit;
 
 /**
  * Terms of a post in each taxonomy shown in the admin ("tax:<taxonomy>"). The value
@@ -421,9 +423,7 @@ final class TermsAdapter implements AdapterInterface, MergeableAdapter, Capturin
         return $ids;
     }
 
-    /**
-     * @return list<int>|null
-     */
+    /** @return list<int>|null */
     private static function ids(FieldValue $value): ?array
     {
         if (!$value->exists) {

@@ -6,6 +6,8 @@ namespace SelectiveUndo\Domain\Contracts;
 
 use SelectiveUndo\Domain\Merge\MergeStrategy;
 
+defined('ABSPATH') || exit;
+
 /**
  * One restorable field as the interface and the planner see it.
  *

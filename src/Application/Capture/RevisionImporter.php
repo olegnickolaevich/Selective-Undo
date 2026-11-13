@@ -22,17 +22,14 @@ use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Infrastructure\WordPress\PostRow;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
- * Turns WordPress revisions saved before recording started into ordinary history,
- * so that changes made shortly before the plugin was installed can be undone too.
- *
- * Consecutive revisions of a post are consecutive saves of its title, content and
- * excerpt; each pair becomes one change set with the revision's author and time.
- * Only revisions inside the retention period are imported.
- *
- * Imported changes are numbered below the item's recorded history (object versions),
- * so they come first in its history whenever the import runs: on the capture path or
- * by the background pass, under a per-item lock.
+ * Turns WordPress revisions saved before recording started into history, so recent
+ * changes made before installation can be undone too. Each pair of consecutive
+ * revisions (title, content, excerpt) becomes one changeset with the revision's author
+ * and time; only revisions within the retention period are imported. Imported changes
+ * are numbered below the item's recorded history, so they always come first.
  *
  * @phpstan-import-type ChangeRow from JournalRepository
  */
@@ -65,9 +62,7 @@ final class RevisionImporter
     ) {
     }
 
-    /**
-     * Remembers when recording started. Called on activation and schema updates.
-     */
+    /** Remembers when recording started. Called on activation and schema updates. */
     public function initialize(): void
     {
         if (get_option(self::SINCE_OPTION) !== false) {
@@ -142,9 +137,7 @@ final class RevisionImporter
         return $result;
     }
 
-    /**
-     * Forgets which items were checked; for long-running processes such as tests.
-     */
+    /** Forgets which items were checked; for long-running processes such as tests. */
     public function reset(): void
     {
         $this->checked = [];
@@ -155,9 +148,7 @@ final class RevisionImporter
         return get_option(self::STATUS_OPTION, 'done') === 'done';
     }
 
-    /**
-     * @return array{enabled: bool, done: bool, items: int, changes: int, since: string|null}
-     */
+    /** @return array{enabled: bool, done: bool, items: int, changes: int, since: string|null} */
     public function status(): array
     {
         $row = $this->db->get_row(
@@ -205,9 +196,7 @@ final class RevisionImporter
         ))));
     }
 
-    /**
-     * @return int|null Number of imported changes, or null when nothing was imported.
-     */
+    /** @return int|null Number of imported changes, or null when nothing was imported. */
     private function importItem(int $postId, int $lockWait): ?int
     {
         $lock = 'import_' . $postId;
@@ -374,9 +363,7 @@ final class RevisionImporter
         return $rows;
     }
 
-    /**
-     * @return array{0: int|null, 1: string|null} blob id and the reason it was not stored
-     */
+    /** @return array{0: int|null, 1: string|null} blob id and the reason it was not stored */
     private function store(FieldValue $value): array
     {
         try {

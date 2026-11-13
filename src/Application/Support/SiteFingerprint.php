@@ -6,6 +6,8 @@ namespace SelectiveUndo\Application\Support;
 
 use SelectiveUndo\Application\Capture\GapRecorder;
 
+defined('ABSPATH') || exit;
+
 /**
  * Notices when the history was copied with the database to another site (a staging
  * clone, a move to another address or database): the history may then describe
@@ -64,7 +66,7 @@ final class SiteFingerprint
 
     /**
      * The reconciliation check found most items changed at once: the database was most
-     * likely restored from a backup. Same choice as for a copy: keep or clear (FR-8.7.3).
+     * likely restored from a backup. Same choice as for a copy: keep or clear.
      */
     public function flagRestoredBackup(): void
     {

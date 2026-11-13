@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
-/**
- * How a field can be undone when it changed again after the change being undone.
- */
+defined('ABSPATH') || exit;
+
+/** How a field can be undone when it changed again after the change being undone. */
 enum MergeStrategy: string
 {
     /** The whole field: a later change is a conflict (as in 1.0). */

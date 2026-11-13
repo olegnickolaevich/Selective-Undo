@@ -7,6 +7,8 @@ namespace SelectiveUndo\Application\Restore;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 
+defined('ABSPATH') || exit;
+
 /**
  * Outbox handler for "object_restored". Every step is idempotent: cache purges can
  * repeat, and WordPress does not create a revision when nothing changed.
@@ -19,9 +21,7 @@ final class PostRestoreHandler
     ) {
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
+    /** @param array<string, mixed> $payload */
     public function __invoke(array $payload): void
     {
         $object = new ObjectRef((string) ($payload['object_type'] ?? ''), (int) ($payload['object_id'] ?? 0), (string) ($payload['object_subtype'] ?? ''));

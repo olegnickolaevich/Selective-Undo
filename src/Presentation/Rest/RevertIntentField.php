@@ -8,6 +8,8 @@ use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Application\Capture\Source;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
  * "selective_undo_intent" in a post save request marks the saved values as the undo
  * of earlier changes (the editor's "Undo in the editor"). It is read in

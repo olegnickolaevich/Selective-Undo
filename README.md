@@ -46,7 +46,17 @@ bin/serve.sh &                     # serve the test site on http://127.0.0.1:889
 npx playwright test                # E2E tests (set SU_CHROMIUM to use a preinstalled Chromium)
 ```
 
-`SU_DB_IMAGE=mariadb:10.11 bin/test-env.sh up` runs the same site on MariaDB.
+`SU_DB_IMAGE=mariadb:10.11 bin/test-env.sh up` runs the same site on MariaDB. Without Docker, `SU_DB_ENGINE=sqlite SU_TEST_SITE=$PWD/.work/sqlite-site bin/test-env.sh up` creates a SQLite site (compatibility mode); pass the same `SU_TEST_SITE` to `php tests/run.php`.
+
+### Comments
+
+Comments explain why, not what the code already says. In English, short:
+
+* a docblock starts with one sentence; a single line (`/** Summary. */`, `/** @return list<int> */`) stays on one line;
+* tags only where the signature cannot say it: array shapes and generics for PHPStan, `@throws`, `@api`; TypeScript types document parameters, so no `@param` without a description;
+* a comment on its own line is a sentence (capital letter, period), a comment after code is a lowercase fragment;
+* `phpcs:ignore` names the sniff and gives a reason: `// phpcs:ignore Sniff.Name -- Reason.`;
+* no references to tickets, plans or internal documents.
 
 ## Translations
 

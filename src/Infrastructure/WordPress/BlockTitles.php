@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
+defined('ABSPATH') || exit;
+
 /**
  * Names of blocks as the user sees them: the registered title, translated by
  * WordPress ("Paragraph", «Абзац»), or the block name when the block is unknown.
  */
 final class BlockTitles
 {
-    /**
-     * @param string $name Name from block markup: "paragraph", "core/heading", "acme/card"; "" for classic text.
-     */
+    /** @param string $name Name from block markup: "paragraph", "core/heading", "acme/card"; "" for classic text. */
     public static function title(string $name): string
     {
         if ($name === '') {

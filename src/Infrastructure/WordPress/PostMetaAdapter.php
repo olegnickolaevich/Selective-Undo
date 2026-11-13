@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Change\CaptureQuality;
@@ -21,15 +21,15 @@ use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 
+defined('ABSPATH') || exit;
+
 /**
- * Registered post meta keys ("meta:<key>", see MetaFieldRegistry). Values are the
- * raw meta_value strings: one string for a single row, a list of strings (meta_id
- * order) for several rows, missing when there is none. They are stored and written
- * back byte for byte; nothing is ever unserialized on the restore path.
+ * Registered post meta ("meta:<key>", see MetaFieldRegistry) as raw meta_value
+ * strings: one string for one row, a list (meta_id order) for several, missing for
+ * none. Written back byte for byte, never unserialized on the restore path.
  *
- * One empty row is the same value as no row: get_post_meta() returns "" for both,
- * and plugins that save all their fields on every save (SEO plugins in Quick Edit)
- * would otherwise record a change of every untouched field.
+ * One empty row equals no row: get_post_meta() returns "" for both, and plugins that
+ * save every field on each save would otherwise record changes of untouched fields.
  */
 final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, PresentsValues, PresentsImages
 {
@@ -322,7 +322,7 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
             }
 
             // Shown only: never instantiate objects from stored data.
-            // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- allowed_classes=false.
+            // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- With allowed_classes=false.
             $data = @unserialize($raw, ['allowed_classes' => false]);
 
             return $data === false && $raw !== 'b:0;' ? $raw : (string) wp_json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -371,9 +371,7 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
         )))));
     }
 
-    /**
-     * @param list<string> $rows
-     */
+    /** @param list<string> $rows */
     private static function toValue(array $rows): FieldValue
     {
         return match (count($rows)) {
@@ -383,9 +381,7 @@ final class PostMetaAdapter implements AdapterInterface, CapturingAdapter, Descr
         };
     }
 
-    /**
-     * @return list<string>|null Null for a value this adapter never produces.
-     */
+    /** @return list<string>|null Null for a value this adapter never produces. */
     private static function toRows(FieldValue $value): ?array
     {
         if (!$value->exists) {

@@ -8,6 +8,8 @@ use SelectiveUndo\Infrastructure\Database\Migration;
 use SelectiveUndo\Infrastructure\Database\SchemaError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * One row per item whose WordPress revisions were imported (or found to have
  * nothing to import). The row is written before any recorded change of the item,

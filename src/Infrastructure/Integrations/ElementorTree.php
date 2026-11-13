@@ -6,6 +6,8 @@ namespace SelectiveUndo\Infrastructure\Integrations;
 
 use SelectiveUndo\Domain\Merge\LinkedOrder;
 
+defined('ABSPATH') || exit;
+
 /**
  * Elementor's element tree (the decoded _elementor_data list) as a map keyed by
  * element ID, so that an undo can work element by element and setting by setting:

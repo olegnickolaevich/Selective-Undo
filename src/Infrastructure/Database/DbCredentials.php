@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
+defined('ABSPATH') || exit;
+
 final readonly class DbCredentials
 {
     public function __construct(
@@ -17,9 +19,7 @@ final readonly class DbCredentials
     ) {
     }
 
-    /**
-     * Uses wpdb::parse_db_host() so DB_HOST parsing matches WordPress (port, socket, IPv6).
-     */
+    /** Uses wpdb::parse_db_host() so DB_HOST parsing matches WordPress (port, socket, IPv6). */
     public static function fromWordPress(\wpdb $wpdb): self
     {
         if (!defined('DB_HOST') || !defined('DB_USER') || !defined('DB_PASSWORD') || !defined('DB_NAME')) {

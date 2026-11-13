@@ -11,6 +11,8 @@ use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Value\FieldValue;
 
+defined('ABSPATH') || exit;
+
 /**
  * Captures standard post fields with "frames" around wp_insert_post() updates.
  *
@@ -65,9 +67,7 @@ final class PostChangeObserver
         add_action('shutdown', [$this->capture, 'sealRequestChangesets'], 5);
     }
 
-    /**
-     * @param array<string, mixed> $data Data WordPress is about to write (already unslashed).
-     */
+    /** @param array<string, mixed> $data Data WordPress is about to write (already unslashed). */
     public function onPreUpdate(int|string $postId, array $data): void
     {
         $postId = (int) $postId;
@@ -278,9 +278,7 @@ final class PostChangeObserver
         return $frame;
     }
 
-    /**
-     * Journal errors never break the post save.
-     */
+    /** Journal errors never break the post save. */
     private function guarded(int $postId, callable $fn): void
     {
         try {

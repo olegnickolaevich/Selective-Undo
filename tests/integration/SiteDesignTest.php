@@ -6,9 +6,7 @@ namespace SelectiveUndo\Tests\Integration;
 
 use SelectiveUndo\Tests\IntegrationTestCase;
 
-/**
- * The Site Editor of block themes: templates, template parts and global styles.
- */
+/** The Site Editor of block themes: templates, template parts and global styles. */
 final class SiteDesignTest extends IntegrationTestCase
 {
     public function testTemplatePartBlockAndGlobalStylesAreUndoneKeepingLaterEdits(): void

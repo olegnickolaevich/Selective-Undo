@@ -11,9 +11,7 @@ import {
 	type QuickUndoConfig,
 } from '../shared/quick-undo';
 
-/**
- * Commands in the WordPress command palette (Ctrl+K / ⌘K).
- */
+/** Commands in the WordPress command palette (Ctrl+K / ⌘K). */
 const LAST_CHANGE_SECONDS = 600;
 const config = (
 	window as unknown as { selectiveUndoCommands?: QuickUndoConfig }

@@ -483,10 +483,7 @@ export function historyLabel( type: string ): string {
 	}
 }
 
-/**
- * The link to where an object is edited.
- * @param type
- */
+/** The link to where an object is edited. */
 export function openLabel( type: string ): string {
 	switch ( type ) {
 		case 'site':

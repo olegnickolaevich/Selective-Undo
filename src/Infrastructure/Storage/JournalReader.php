@@ -8,9 +8,9 @@ use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 
-/**
- * Read-side queries over the journal.
- */
+defined('ABSPATH') || exit;
+
+/** Read-side queries over the journal. */
 final class JournalReader
 {
     private const CHANGE_COLUMNS = 'c.id, c.changeset_id, c.sequence_no, c.object_seq, c.event, c.object_type, c.object_subtype, c.object_id,
@@ -119,9 +119,7 @@ final class JournalReader
         return $out;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function changesetByUuid(string $uuid): ?array
     {
         $row = $this->db->get_row($this->db->prepare(
@@ -132,9 +130,7 @@ final class JournalReader
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function changesetById(int $id): ?array
     {
         $row = $this->db->get_row($this->db->prepare(
@@ -145,9 +141,7 @@ final class JournalReader
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     public function changesOfChangeset(int $changesetId, int $limit = 5000): array
     {
         return (array) $this->db->get_results($this->db->prepare(
@@ -188,9 +182,7 @@ final class JournalReader
         )) !== null;
     }
 
-    /**
-     * Whether history for this object is known to be incomplete since $sinceUtc.
-     */
+    /** Whether history for this object is known to be incomplete since $sinceUtc. */
     public function hasGapsSince(ObjectRef $object, string $sinceUtc): bool
     {
         return $this->db->get_var($this->db->prepare(
@@ -209,7 +201,7 @@ final class JournalReader
     /**
      * The latest recorded change of each post, for list screens, with all fields that
      * save changed (a Quick Edit can change the title and the author at once). One
-     * query for all rows: the rows of each post's latest change set.
+     * query for all rows: the rows of each post's latest changeset.
      *
      * @param list<int> $postIds
      *
@@ -258,7 +250,7 @@ final class JournalReader
 
     /**
      * The latest recorded change of a field of an object (not informational events).
-     * When the latest change set also changed the content, that change is returned:
+     * When the latest changeset also changed the content, that change is returned:
      * it is the one that can be shown on the page.
      *
      * @return array{id: int, field_key: string, created_at: string, actor: int|null, changeset: string}|null

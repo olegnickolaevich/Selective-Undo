@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
+defined('ABSPATH') || exit;
+
 final readonly class PlanItemDecision
 {
-    /**
-     * @param list<string> $warnings
-     */
+    /** @param list<string> $warnings */
     public function __construct(
         public PlanItemStatus $status,
         public ?string $reasonCode,

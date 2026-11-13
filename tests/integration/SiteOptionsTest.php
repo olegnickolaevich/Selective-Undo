@@ -98,9 +98,7 @@ final class SiteOptionsTest extends IntegrationTestCase
         update_option('posts_per_rss', (int) get_option('posts_per_rss') - 1);
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     private function siteChanges(): array
     {
         return array_values((array) $this->db->get_results(

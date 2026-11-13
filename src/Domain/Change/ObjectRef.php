@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Change;
 
+defined('ABSPATH') || exit;
+
 /**
  * Reference to a restorable object: type (post), ID and subtype (post type
  * at capture time). The site is implied by the table prefix.

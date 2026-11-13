@@ -86,6 +86,8 @@ use SelectiveUndo\Infrastructure\WordPress\PrivacyIntegration;
 use SelectiveUndo\Infrastructure\WordPress\SystemClock;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
  * Lazily constructed service graph. Explicit factories keep the wiring readable
  * and statically analysable without a generic container.
@@ -624,9 +626,7 @@ final class Services
         return $this->get(PrivacyIntegration::class, fn () => new PrivacyIntegration($this->db, $this->tables()));
     }
 
-    /**
-     * Drops cached instances whose configuration may have changed (settings update, tests).
-     */
+    /** Drops cached instances whose configuration may have changed (settings update, tests). */
     public function reset(string ...$classes): void
     {
         foreach ($classes as $class) {

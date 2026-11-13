@@ -9,9 +9,7 @@ use SelectiveUndo\Bootstrap\Services;
 use SelectiveUndo\Application\Capture\CaptureState;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 
-/**
- * Runs inside a real WordPress site with the plugin active.
- */
+/** Runs inside a real WordPress site with the plugin active. */
 abstract class IntegrationTestCase extends TestCase
 {
     protected Services $s;
@@ -36,17 +34,13 @@ abstract class IntegrationTestCase extends TestCase
         wp_set_current_user(1);
     }
 
-    /**
-     * @param array<string, mixed> $selection
-     */
+    /** @param array<string, mixed> $selection */
     protected function plan(array $selection, int $userId = 1): string
     {
         return $this->s->buildPlan()->handle($userId, $selection);
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     protected function planView(string $uuid, int $userId = 1): array
     {
         $view = $this->s->planView()->forUser($uuid, $userId);
@@ -58,9 +52,7 @@ abstract class IntegrationTestCase extends TestCase
         return $view;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     protected function start(string $planUuid, ?string $key = null, int $userId = 1): array
     {
         $result = $this->s->createJob()->handle($userId, $planUuid, $key ?? wp_generate_uuid4());
@@ -71,9 +63,7 @@ abstract class IntegrationTestCase extends TestCase
         return $job;
     }
 
-    /**
-     * @return list<int>
-     */
+    /** @return list<int> */
     protected function updateIds(int $postId, ?string $field = null): array
     {
         return array_map(
@@ -107,9 +97,7 @@ abstract class IntegrationTestCase extends TestCase
         }
     }
 
-    /**
-     * @param array<string, mixed> $args
-     */
+    /** @param array<string, mixed> $args */
     protected function createPost(array $args = []): int
     {
         $id = wp_insert_post(array_merge([
@@ -129,9 +117,7 @@ abstract class IntegrationTestCase extends TestCase
         return (int) $id;
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     protected function changes(int $postId, ?string $event = null): array
     {
         $t = $this->s->tables();
@@ -144,9 +130,7 @@ abstract class IntegrationTestCase extends TestCase
         return array_values(array_filter($rows, static fn (array $r): bool => $event === null || $r['event'] === $event));
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     protected function changesets(): array
     {
         return (array) $this->db->get_results("SELECT * FROM {$this->s->tables()->changesets} ORDER BY id", ARRAY_A);

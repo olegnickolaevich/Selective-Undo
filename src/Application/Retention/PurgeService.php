@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Retention;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Support\SiteFingerprint;
 use SelectiveUndo\Application\Support\Time;
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
+
+defined('ABSPATH') || exit;
 
 /**
  * User-initiated history deletion (privacy, space). Always two steps: a preview
@@ -60,9 +62,7 @@ final class PurgeService
         ];
     }
 
-    /**
-     * @return array{deleted_changesets: int, deleted_changes: int, remaining: bool}
-     */
+    /** @return array{deleted_changesets: int, deleted_changes: int, remaining: bool} */
     public function execute(string $token, string $confirmation, int $userId, float $budgetSeconds = 20.0): array
     {
         if ($confirmation !== self::CONFIRMATION) {
@@ -174,9 +174,7 @@ final class PurgeService
         };
     }
 
-    /**
-     * @param Criteria $criteria
-     */
+    /** @param Criteria $criteria */
     private function countChanges(array $criteria): int
     {
         return match ($criteria['scope']) {
@@ -186,9 +184,7 @@ final class PurgeService
         };
     }
 
-    /**
-     * @return Criteria
-     */
+    /** @return Criteria */
     private function verify(string $token, int $userId): array
     {
         [$payload, $mac] = array_pad(explode('.', $token, 2), 2, '');

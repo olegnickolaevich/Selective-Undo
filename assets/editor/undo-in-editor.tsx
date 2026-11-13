@@ -162,14 +162,7 @@ function ConflictModal( {
 	);
 }
 
-/**
- * Button for one recorded change in the editor's history panel.
- * @param root0
- * @param root0.changeId
- * @param root0.field
- * @param root0.hunks
- * @param root0.label
- */
+/** Button for one recorded change in the editor's history panel. */
 export function UndoInEditorButton( {
 	changeId,
 	field,

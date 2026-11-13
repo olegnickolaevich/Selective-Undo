@@ -6,6 +6,8 @@ namespace SelectiveUndo\Application\History;
 
 use SelectiveUndo\Domain\Value\FieldValue;
 
+defined('ABSPATH') || exit;
+
 /**
  * Structured line diff for the UI. Output is plain text lines; the UI renders
  * them as text nodes only. Unchanged runs are collapsed around changes.
@@ -49,9 +51,7 @@ final class DiffBuilder
         ];
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     private function lines(string $text): array
     {
         if ($text === '') {

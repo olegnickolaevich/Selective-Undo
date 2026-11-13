@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Presentation\Rest;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\CaptureState;
 use SelectiveUndo\Bootstrap\Services;
@@ -13,6 +13,8 @@ use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\NavMenuAdapter;
 use SelectiveUndo\Infrastructure\WordPress\SiteOptionsAdapter;
+
+defined('ABSPATH') || exit;
 
 /**
  * REST API /selective-undo/v1. Route permission callbacks are a coarse gate;
@@ -237,9 +239,7 @@ final class RestApi
             : $this->s->diffs()->change((int) $r['id'], get_current_user_id(), (int) $r->get_param('offset')));
     }
 
-    /**
-     * Who last changed each top-level block of the post content.
-     */
+    /** Who last changed each top-level block of the post content. */
     public function blame(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(fn () => $this->s->blame()->forPost((int) $r['id'], get_current_user_id()));
@@ -349,9 +349,7 @@ final class RestApi
         });
     }
 
-    /**
-     * Undo of one change against the editor's current value. Nothing is written.
-     */
+    /** Undo of one change against the editor's current value. Nothing is written. */
     public function mergePreview(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(function () use ($r): array {
@@ -377,9 +375,7 @@ final class RestApi
             ?? throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'selective-undo')));
     }
 
-    /**
-     * Both sides of each part that was changed again after the change being undone.
-     */
+    /** Both sides of each part that was changed again after the change being undone. */
     public function planItemConflicts(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(fn () => ['items' => $this->s->mergeView()->conflicts((string) $r['id'], (int) $r['item'], get_current_user_id())]);
@@ -467,9 +463,7 @@ final class RestApi
         });
     }
 
-    /**
-     * Processes a batch in this request: fallback when background tasks do not run.
-     */
+    /** Processes a batch in this request: fallback when background tasks do not run. */
     public function runJob(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(function () use ($r): array {
@@ -555,9 +549,7 @@ final class RestApi
         ));
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     private function settingsPayload(): array
     {
         $settings = $this->s->settings();
@@ -600,9 +592,7 @@ final class RestApi
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     private function visibleJob(string $uuid): array
     {
         $job = $this->s->jobs()->findByUuid($uuid);

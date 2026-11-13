@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\History;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Support\ObjectPresenter;
@@ -14,13 +14,12 @@ use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 
+defined('ABSPATH') || exit;
+
 /**
- * History read model with cursor pagination and per-object permission filtering.
- * Nothing about objects the viewer cannot see is revealed besides a count.
- *
- * The operation list is ordered by time (changes imported from WordPress revisions
- * are written later than they happened); an item's timeline is ordered by id, which
- * is chronological per item.
+ * History read model: cursor pagination, per-object permission filtering (hidden
+ * objects show up only in a count). Operations are listed by time, an item's
+ * timeline by ID (chronological per item; imported revisions are written later).
  */
 final class HistoryQuery
 {
@@ -334,9 +333,7 @@ final class HistoryQuery
         ];
     }
 
-    /**
-     * @param array<string, mixed> $row
-     */
+    /** @param array<string, mixed> $row */
     private function label(array $row): string
     {
         if (($row['label'] ?? '') !== '') {
@@ -458,9 +455,7 @@ final class HistoryQuery
         return rtrim(strtr(base64_encode('t1:' . $createdAt . '|' . $id), '+/', '-_'), '=');
     }
 
-    /**
-     * @return array{0: string, 1: int}
-     */
+    /** @return array{0: string, 1: int} */
     private function decodeListCursor(string $cursor): array
     {
         $raw = base64_decode(strtr($cursor, '-_', '+/'), true);
@@ -472,9 +467,7 @@ final class HistoryQuery
         return [$m[1], (int) $m[2]];
     }
 
-    /**
-     * @return array{0: int, 1: int} object version and id of the last item shown
-     */
+    /** @return array{0: int, 1: int} object version and id of the last item shown */
     private function decodeCursor(string $cursor): array
     {
         $raw = base64_decode(strtr($cursor, '-_', '+/'), true);

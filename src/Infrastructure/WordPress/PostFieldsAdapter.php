@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterCapabilities;
@@ -19,6 +19,8 @@ use SelectiveUndo\Domain\Contracts\WallClock;
 use SelectiveUndo\Domain\Merge\MergeStrategy;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\StorageError;
+
+defined('ABSPATH') || exit;
 
 /**
  * Standard wp_posts fields. The field list is hard-coded and never extended from
@@ -464,9 +466,7 @@ final class PostFieldsAdapter implements AdapterInterface, DescribesFields, Merg
         return $user instanceof \WP_User ? $user->display_name : ($userId > 0 ? '#' . $userId : '');
     }
 
-    /**
-     * @return array{local: string, gmt: string}|null
-     */
+    /** @return array{local: string, gmt: string}|null */
     private static function dates(FieldValue $value): ?array
     {
         $v = $value->value;

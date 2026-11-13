@@ -1,8 +1,6 @@
 import { showRecent, type QuickUndoConfig } from '../shared/quick-undo';
 
-/**
- * Posts and pages list screens: "Undo" notice after Quick Edit and bulk edit.
- */
+/** Posts and pages list screens: "Undo" notice after Quick Edit and bulk edit. */
 interface ListConfig extends QuickUndoConfig {
 	afterBulkEdit: boolean;
 }

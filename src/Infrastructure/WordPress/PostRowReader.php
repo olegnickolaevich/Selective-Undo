@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
+defined('ABSPATH') || exit;
+
 /**
  * Reads a wp_posts row directly from the database, bypassing the object cache.
  * Values are compared in PHP, never in SQL: utf8mb4_*_ci collations treat

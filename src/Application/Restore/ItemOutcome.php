@@ -7,11 +7,11 @@ namespace SelectiveUndo\Application\Restore;
 use SelectiveUndo\Domain\Restore\JobItemStatus;
 use SelectiveUndo\Domain\Value\FieldValue;
 
+defined('ABSPATH') || exit;
+
 final readonly class ItemOutcome
 {
-    /**
-     * @param array<string, int|float|string|null> $item Locked job item joined with its plan item.
-     */
+    /** @param array<string, int|float|string|null> $item Locked job item joined with its plan item. */
     public function __construct(
         public array $item,
         public JobItemStatus $status,

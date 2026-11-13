@@ -8,6 +8,8 @@ use SelectiveUndo\Infrastructure\Database\Migration;
 use SelectiveUndo\Infrastructure\Database\SchemaError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Object versions: every change gets a number within its object (object_seq), and
  * the history of an object is ordered by it instead of by row id. Existing rows are
@@ -75,9 +77,7 @@ final class Migration005 implements Migration
         }
     }
 
-    /**
-     * Databases without window functions (MySQL 5.7): one object at a time.
-     */
+    /** Databases without window functions (MySQL 5.7): one object at a time. */
     private function backfillPerObject(\wpdb $db, Tables $t): bool
     {
         [$type, $id] = ['', 0];

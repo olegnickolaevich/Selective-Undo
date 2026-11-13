@@ -6,6 +6,8 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 
 use SelectiveUndo\Domain\Contracts\WallClock;
 
+defined('ABSPATH') || exit;
+
 final class SystemClock implements WallClock
 {
     public function now(): int

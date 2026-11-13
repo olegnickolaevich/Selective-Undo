@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Tests;
 
-/**
- * Discovers *Test.php files, runs public test* methods in isolation and reports.
- */
+/** Discovers *Test.php files, runs public test* methods in isolation and reports. */
 final class Runner
 {
     private int $passed = 0;
@@ -66,9 +64,7 @@ final class Runner
         return $this->failures === [] ? 0 : 1;
     }
 
-    /**
-     * @param \ReflectionClass<TestCase> $ref
-     */
+    /** @param \ReflectionClass<TestCase> $ref */
     private function runOne(\ReflectionClass $ref, string $method, string $name): void
     {
         /** @var TestCase $test */

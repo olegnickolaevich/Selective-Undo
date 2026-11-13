@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Settings;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\DomainError;
 
-/**
- * Plugin settings stored in a single autoloaded option.
- */
+defined('ABSPATH') || exit;
+
+/** Plugin settings stored in a single autoloaded option. */
 final class Settings
 {
     public const OPTION = 'selective_undo_settings';
@@ -38,9 +38,7 @@ final class Settings
     /** @var array<string, mixed>|null */
     private ?array $cache = null;
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public function defaults(): array
     {
         return [
@@ -58,9 +56,7 @@ final class Settings
         ];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public function all(): array
     {
         if ($this->cache !== null) {
@@ -100,9 +96,7 @@ final class Settings
         return (bool) $this->all()['capture_enabled'];
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     public function trackedPostTypes(): array
     {
         $types = (array) $this->all()['tracked_post_types'];
@@ -120,9 +114,7 @@ final class Settings
         ));
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     public function excludedPostTypes(): array
     {
         return array_values(array_unique(array_map(
@@ -151,9 +143,7 @@ final class Settings
         return (bool) $this->all()['evict_oldest_on_quota'];
     }
 
-    /**
-     * Configured limit, but never more than 25% of max_allowed_packet.
-     */
+    /** Configured limit, but never more than 25% of max_allowed_packet. */
     public function maxValueBytes(int $maxAllowedPacket): int
     {
         $configured = (int) $this->all()['max_value_kb'] * 1024;
@@ -172,9 +162,7 @@ final class Settings
         return (bool) $this->all()['coalesce_autosaves'];
     }
 
-    /**
-     * Whether recent WordPress revisions saved before recording started become history.
-     */
+    /** Whether recent WordPress revisions saved before recording started become history. */
     public function importRevisions(): bool
     {
         return (bool) apply_filters('selective_undo/import_revisions', (bool) $this->all()['import_revisions']);

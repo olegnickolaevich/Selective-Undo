@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+defined('ABSPATH') || exit;
+
 /**
  * Which change last modified each top-level block (or paragraph) of a text. Walks
  * the changes from the newest to the oldest and stops when every part is
@@ -101,9 +103,7 @@ final class Blame
         return [$toBefore, $hunkOf];
     }
 
-    /**
-     * @return list<string>|null
-     */
+    /** @return list<string>|null */
     private function tokens(string $value): ?array
     {
         return str_contains($value, '<!-- wp:') ? $this->segmenter->segments($value) : ContentMerger::paragraphs($value);

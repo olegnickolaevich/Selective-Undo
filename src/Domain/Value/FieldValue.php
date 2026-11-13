@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Value;
 
+defined('ABSPATH') || exit;
+
 /**
  * Immutable typed value of a field.
  *
@@ -19,9 +21,7 @@ final class FieldValue
 
     private ?string $canonical = null;
 
-    /**
-     * @param null|bool|int|string|array<array-key, mixed> $value
-     */
+    /** @param null|bool|int|string|array<array-key, mixed> $value */
     private function __construct(
         public readonly bool $exists,
         public readonly null|bool|int|string|array $value,
@@ -65,9 +65,7 @@ final class FieldValue
         return $this->canonical() === $other->canonical();
     }
 
-    /**
-     * Human readable representation for diffs. Never used for comparison.
-     */
+    /** Human readable representation for diffs. Never used for comparison. */
     public function toDisplayString(): string
     {
         if (!$this->exists) {
@@ -88,9 +86,7 @@ final class FieldValue
         return is_string($this->value) && !CanonicalEncoder::isUtf8($this->value);
     }
 
-    /**
-     * @throws InvalidFieldValue
-     */
+    /** @throws InvalidFieldValue */
     private static function assertSupported(mixed $value, int $depth, int &$nodes): void
     {
         if (++$nodes > self::MAX_NODES) {

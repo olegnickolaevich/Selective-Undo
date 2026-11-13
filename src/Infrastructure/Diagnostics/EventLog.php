@@ -7,6 +7,8 @@ namespace SelectiveUndo\Infrastructure\Diagnostics;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Technical log without content. Never throws and never records post content,
  * SQL, cookies, headers or keys: context keys are allow-listed and values scalar.
@@ -81,14 +83,12 @@ final class EventLog
         }
     }
 
-    /**
-     * @param ObjectRef|int|null $object An int is a post ID.
-     */
+    /** @param ObjectRef|int|null $object An int is a post ID. */
     public function exception(string $code, \Throwable $e, ObjectRef|int|null $object = null, ?int $jobId = null): void
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             // Developer aid only: exception messages of this plugin never contain content.
-            error_log(sprintf('[selective-undo] %s: %s: %s in %s:%d', $code, $e::class, $e->getMessage(), $e->getFile(), $e->getLine())); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
+            error_log(sprintf('[selective-undo] %s: %s: %s in %s:%d', $code, $e::class, $e->getMessage(), $e->getFile(), $e->getLine())); // phpcs:ignore WordPress.PHP.DevelopmentFunctions -- Only with WP_DEBUG.
         }
 
         $object = is_int($object) ? new ObjectRef('post', $object) : $object;

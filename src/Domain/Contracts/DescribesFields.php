@@ -6,6 +6,8 @@ namespace SelectiveUndo\Domain\Contracts;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
 
+defined('ABSPATH') || exit;
+
 /**
  * An adapter that lists its fields for an object (labels, types, merge strategy).
  *
@@ -13,8 +15,6 @@ use SelectiveUndo\Domain\Change\ObjectRef;
  */
 interface DescribesFields
 {
-    /**
-     * @return list<FieldDefinition>
-     */
+    /** @return list<FieldDefinition> */
     public function fields(ObjectRef $object): array;
 }

@@ -6,14 +6,12 @@ namespace SelectiveUndo\Presentation\Admin;
 
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 
-/**
- * Enqueues a compiled entry from build/ with its generated dependencies.
- */
+defined('ABSPATH') || exit;
+
+/** Enqueues a compiled entry from build/ with its generated dependencies. */
 final class Assets
 {
-    /**
-     * @param list<non-empty-string> $extraDependencies Scripts the bundle uses as globals (jQuery).
-     */
+    /** @param list<non-empty-string> $extraDependencies Scripts the bundle uses as globals (jQuery). */
     public static function enqueueScript(string $handle, string $entry, array $extraDependencies = []): bool
     {
         $assetFile = SELECTIVE_UNDO_DIR . '/build/' . $entry . '.asset.php';

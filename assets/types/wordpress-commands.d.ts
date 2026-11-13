@@ -1,6 +1,4 @@
-/**
- * The part of `@wordpress/commands` this plugin uses; the package ships no types.
- */
+/** The part of `@wordpress/commands` this plugin uses; the package ships no types. */
 declare module '@wordpress/commands' {
 	import type { ReduxStoreConfig, StoreDescriptor } from '@wordpress/data';
 
@@ -11,10 +9,7 @@ declare module '@wordpress/commands' {
 		callback: ( options: { close: () => void } ) => void;
 	}
 
-	/**
-	 * Registers a command while the calling component is mounted.
-	 * @param command
-	 */
+	/** Registers a command while the calling component is mounted. */
 	export function useCommand( command: WPCommand ): void;
 
 	export const store: StoreDescriptor<

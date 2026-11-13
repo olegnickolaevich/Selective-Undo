@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+defined('ABSPATH') || exit;
+
 /**
  * Splits serialized block markup into top-level segments without reserializing,
  * so the concatenation of the segments is byte-for-byte the input.
@@ -13,9 +15,7 @@ final class BlockSegmenter
     /** Same delimiter grammar as WP_Block_Parser::next_token(). */
     private const DELIMITER = '/<!--\s+(?P<closer>\/)?wp:(?P<namespace>[a-z][a-z0-9_-]*\/)?(?P<name>[a-z][a-z0-9_-]*)\s+(?P<attrs>{(?:(?:[^}]+|}+(?=})|(?!}\s+\/?-->).)*+)?}\s+)?(?P<void>\/)?-->/s';
 
-    /**
-     * @return list<string>|null Segments whose concatenation equals $markup, or null for broken nesting.
-     */
+    /** @return list<string>|null Segments whose concatenation equals $markup, or null for broken nesting. */
     public function segments(string $markup): ?array
     {
         if (!preg_match_all(self::DELIMITER, $markup, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE | PREG_UNMATCHED_AS_NULL)) {

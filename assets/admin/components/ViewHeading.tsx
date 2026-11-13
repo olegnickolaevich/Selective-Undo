@@ -4,9 +4,6 @@ import type { ReactNode } from 'react';
 /**
  * Heading of a view. After in-app navigation the focus moves here so that
  * keyboard and screen reader users land at the start of the new content.
- * @param root0
- * @param root0.children
- * @param root0.focus
  */
 export function ViewHeading( {
 	children,

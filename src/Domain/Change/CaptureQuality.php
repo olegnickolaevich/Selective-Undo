@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Change;
 
+defined('ABSPATH') || exit;
+
 enum CaptureQuality: string
 {
     /** Before and after were read directly from the database around the write. */

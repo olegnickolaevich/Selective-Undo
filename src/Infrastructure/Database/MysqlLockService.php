@@ -6,6 +6,8 @@ namespace SelectiveUndo\Infrastructure\Database;
 
 use SelectiveUndo\Domain\Contracts\LockService;
 
+defined('ABSPATH') || exit;
+
 /** MySQL named locks, scoped to the table prefix (several sites can share a database). */
 final class MysqlLockService implements LockService
 {

@@ -6,6 +6,8 @@ namespace SelectiveUndo\Application\Retention;
 
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Mark-and-sweep of unreferenced blobs with a grace period instead of reference
  * counters. A capture bumps last_seen_at when it reuses a blob, and the DELETE

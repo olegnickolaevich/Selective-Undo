@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
+defined('ABSPATH') || exit;
+
 /** A journal read or write failed. The message is a code; it never contains data. */
 final class StorageError extends \RuntimeException
 {

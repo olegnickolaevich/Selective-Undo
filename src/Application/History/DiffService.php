@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\History;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Restore\EditorMergePreview;
@@ -19,6 +19,8 @@ use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 use SelectiveUndo\Infrastructure\WordPress\BlockTitles;
+
+defined('ABSPATH') || exit;
 
 /**
  * Diffs for a journal change (before / after) and for plan items
@@ -35,9 +37,7 @@ final class DiffService
     ) {
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public function change(int $changeId, int $userId, int $offset): array
     {
         $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
@@ -261,9 +261,7 @@ final class DiffService
         }
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     private function result(string $mode, string $leftLabel, string $rightLabel, ?FieldValue $left, ?FieldValue $right, int $offset): array
     {
         $unavailable = $left === null || $right === null;

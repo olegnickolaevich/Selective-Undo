@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
-/**
- * The final job status is derived from item statuses only.
- */
+defined('ABSPATH') || exit;
+
+/** The final job status is derived from item statuses only. */
 final class JobOutcome
 {
     public function resolve(JobCounters $c, bool $cancelRequested): ?JobStatus

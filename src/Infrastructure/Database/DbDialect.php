@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
+defined('ABSPATH') || exit;
+
 /**
  * Which SQL engine WordPress talks to. SQLite means WordPress Playground or the
  * SQLite Database Integration plugin: restore runs in compatibility mode.

@@ -12,6 +12,8 @@ use SelectiveUndo\Domain\Merge\SetMerger;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\WordPress\BlockTitles;
 
+defined('ABSPATH') || exit;
+
 /**
  * Undo of one change of a field that changed again later: keeps the later edits of
  * other parts. Base is the value right after the change, "restored" the value
@@ -23,9 +25,7 @@ final class FieldMerger
     {
     }
 
-    /**
-     * @param array<int, 'current'|'restored'> $resolutions Conflict index => chosen side.
-     */
+    /** @param array<int, 'current'|'restored'> $resolutions Conflict index => chosen side. */
     public function undo(MergeStrategy $strategy, FieldValue $base, FieldValue $current, FieldValue $restored, array $resolutions = []): FieldMergeOutcome
     {
         return match ($strategy) {
@@ -36,9 +36,7 @@ final class FieldMerger
         };
     }
 
-    /**
-     * @param array<int, 'current'|'restored'> $resolutions
-     */
+    /** @param array<int, 'current'|'restored'> $resolutions */
     private function segments(FieldValue $base, FieldValue $current, FieldValue $restored, array $resolutions): FieldMergeOutcome
     {
         if (!is_string($base->value) || !is_string($current->value) || !is_string($restored->value)) {
@@ -73,9 +71,7 @@ final class FieldMerger
         return new FieldMergeOutcome(FieldValue::of($result->value), $open);
     }
 
-    /**
-     * @return array{index: int, label: string, current: string, restored: string}
-     */
+    /** @return array{index: int, label: string, current: string, restored: string} */
     private static function describe(MergeConflict $conflict): array
     {
         $current = implode('', $conflict->current);
@@ -118,9 +114,7 @@ final class FieldMerger
         return new FieldMergeOutcome(FieldValue::of($merged), $conflicts);
     }
 
-    /**
-     * @return array<array-key, mixed>|null
-     */
+    /** @return array<array-key, mixed>|null */
     private static function jsonObject(string $text): ?array
     {
         if (!str_starts_with(ltrim($text), '{')) {
@@ -132,9 +126,7 @@ final class FieldMerger
         return is_array($data) && !array_is_list($data) ? $data : null;
     }
 
-    /**
-     * @phpstan-assert-if-true list<int|string> $value
-     */
+    /** @phpstan-assert-if-true list<int|string> $value */
     private static function isList(mixed $value): bool
     {
         if (!is_array($value) || !array_is_list($value)) {

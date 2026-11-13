@@ -11,12 +11,6 @@ interface Options< T > {
 /**
  * Polling with backoff: paused while the tab is hidden, stops on a terminal state,
  * cancels the request on unmount, never runs requests in parallel.
- * @param root0
- * @param root0.fetcher
- * @param root0.isDone
- * @param root0.intervalMs
- * @param root0.maxIntervalMs
- * @param root0.key
  */
 export function usePolling< T >( {
 	fetcher,

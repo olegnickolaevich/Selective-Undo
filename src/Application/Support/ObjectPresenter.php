@@ -8,6 +8,8 @@ use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\WordPress\NavMenuAdapter;
 use SelectiveUndo\Infrastructure\WordPress\SiteOptionsAdapter;
 
+defined('ABSPATH') || exit;
+
 /**
  * Describes an object for the UI using its CURRENT state. Titles are returned as raw
  * text; the UI renders them as text nodes only.
@@ -75,9 +77,7 @@ final class ObjectPresenter
         ];
     }
 
-    /**
-     * @return array{id: int, name: string}|null
-     */
+    /** @return array{id: int, name: string}|null */
     public function actor(mixed $userId): ?array
     {
         $id = (int) $userId;

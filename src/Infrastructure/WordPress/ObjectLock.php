@@ -7,6 +7,8 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 
+defined('ABSPATH') || exit;
+
 /**
  * The first lock of every restore transaction: the object's own row. Adapters lock
  * their rows after it, so two restores of one object never wait on each other in

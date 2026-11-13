@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Capture;
 
+defined('ABSPATH') || exit;
+
 /**
  * Handle of an explicit operation. Pass $token->id between requests
  * (for example in a background job) and call OperationManager::resume().

@@ -8,6 +8,8 @@ use SelectiveUndo\Infrastructure\Database\Migration;
 use SelectiveUndo\Infrastructure\Database\SchemaError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Lock rows for databases without named locks (SQLite). Created everywhere so the
  * schema is the same on every database.

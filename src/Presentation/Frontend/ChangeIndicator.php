@@ -13,6 +13,8 @@ use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 use SelectiveUndo\Presentation\Admin\AdminPage;
 
+defined('ABSPATH') || exit;
+
 /**
  * Front end, for users who may see an item's history: an admin bar entry with the
  * latest change, and ?su_changes=<change id> to outline the top-level blocks of the
@@ -152,9 +154,7 @@ final class ChangeIndicator
         );
     }
 
-    /**
-     * Top-level blocks of the current content that hold what this change wrote.
-     */
+    /** Top-level blocks of the current content that hold what this change wrote. */
     private function locate(string $before, string $after, string $current): void
     {
         $segmenter = new BlockSegmenter();
@@ -210,9 +210,7 @@ final class ChangeIndicator
         return $content;
     }
 
-    /**
-     * @param array<string, mixed> $block
-     */
+    /** @param array<string, mixed> $block */
     public function beforeBlock(?string $pre, array $block): ?string
     {
         // Runs last: a short-circuited block is not rendered, so render_block will not follow.
@@ -223,9 +221,7 @@ final class ChangeIndicator
         return $pre;
     }
 
-    /**
-     * @param array<string, mixed> $block
-     */
+    /** @param array<string, mixed> $block */
     public function afterBlock(string $html, array $block): string
     {
         if (!$this->active || $this->depth === 0 || --$this->depth > 0 || !isset($this->changed[$this->index])) {

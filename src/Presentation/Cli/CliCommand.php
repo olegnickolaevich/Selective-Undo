@@ -6,9 +6,9 @@ namespace SelectiveUndo\Presentation\Cli;
 
 use SelectiveUndo\Bootstrap\Plugin;
 
-/**
- * Maintenance of the history: health checks, retention, the background queue and the import of revisions.
- */
+defined('ABSPATH') || exit;
+
+/** Maintenance of the history: health checks, retention, the background queue and the import of revisions. */
 final class CliCommand
 {
     /**

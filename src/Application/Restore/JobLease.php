@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Restore;
 
+defined('ABSPATH') || exit;
+
 final readonly class JobLease
 {
     public function __construct(

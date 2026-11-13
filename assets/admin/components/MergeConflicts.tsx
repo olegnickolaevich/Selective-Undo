@@ -34,9 +34,6 @@ function Side( { title, text }: { title: string; text: string } ) {
 /**
  * Parts of a field changed both by the undone change and by later edits: the user
  * chooses a side for each, and the preview is checked again with that choice.
- * @param root0
- * @param root0.plan
- * @param root0.item
  */
 export function MergeConflicts( {
 	plan,

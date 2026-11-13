@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Fills a disposable site with a large history for the load check (specification §12.2):
+ * Fills a disposable site with a large history for the load check:
  * posts, and changes in consistent before/after chains over a shared pool of stored
  * values, written straight into the journal tables.
  *
@@ -78,7 +78,7 @@ $insert($t->blobs, ['id', 'content_hash', 'encoding', 'payload', 'uncompressed_b
 })(), 200);
 $say("{$pool} stored values");
 
-// Change sets of 4 changes; each object gets $perObject changes spread over the last 30 days.
+// Changesets of 4 changes; each object gets $perObject changes spread over the last 30 days.
 $now = time();
 $changesetId = 0;
 $changeRows = static function () use ($objects, $perObject, $fields, $pool, &$hashes, $firstId, $now, &$changesetId, $t, $insert, $sources) {

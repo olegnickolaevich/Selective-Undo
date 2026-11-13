@@ -9,9 +9,7 @@ use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\Queue\ActionSchedulerQueue;
 use SelectiveUndo\Tests\IntegrationTestCase;
 
-/**
- * Critical restore scenarios from the specification (section 36.2).
- */
+/** Critical restore scenarios. */
 final class RestoreTest extends IntegrationTestCase
 {
     public function testTitleUndoRestoresOnlyTheTitle(): void

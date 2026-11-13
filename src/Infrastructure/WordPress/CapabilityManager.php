@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\DomainError;
+
+defined('ABSPATH') || exit;
 
 /**
  * Primitive capabilities live in roles (compatible with role editors).
@@ -42,9 +44,7 @@ final class CapabilityManager
         }
     }
 
-    /**
-     * @return array<string, array{name: string, caps: array<string, bool>}>
-     */
+    /** @return array<string, array{name: string, caps: array<string, bool>}> */
     public function roleMatrix(): array
     {
         $matrix = [];

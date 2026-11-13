@@ -6,9 +6,7 @@ namespace SelectiveUndo\Tests\Integration;
 
 use SelectiveUndo\Tests\IntegrationTestCase;
 
-/**
- * Real parallel processes (spec 36.3), not sequential simulations.
- */
+/** Real parallel processes, not sequential simulations. */
 final class ConcurrencyTest extends IntegrationTestCase
 {
     public function testParallelStartsOfOnePlanCreateOneJob(): void

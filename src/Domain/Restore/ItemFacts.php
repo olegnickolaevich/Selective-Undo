@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
+defined('ABSPATH') || exit;
+
 /**
  * Facts collected for one (object, field) pair while building a plan.
  * Everything that needs WordPress or the database is computed outside;

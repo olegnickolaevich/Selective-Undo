@@ -6,6 +6,8 @@ namespace SelectiveUndo\Domain\Contracts;
 
 use SelectiveUndo\Domain\Value\FieldValue;
 
+defined('ABSPATH') || exit;
+
 /** Current state of an object expressed in adapter fields. */
 interface ObjectSnapshot
 {

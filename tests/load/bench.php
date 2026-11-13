@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Load check (specification §12.2) on the site filled by tests/load/seed.php:
+ * Load check on the site filled by tests/load/seed.php:
  *
  *   SU_TEST_SITE=.work/load-site SU_DB_NAME=wpload bin/test-env.sh wp eval-file tests/load/bench.php [saves]
  *
@@ -22,9 +22,7 @@ $t = $s->tables();
 wp_set_current_user(1);
 $saves = (int) ($args[0] ?? 300);
 
-/**
- * @return array{0: float, 1: float} median and slowest, in ms
- */
+/** @return array{0: float, 1: float} median and slowest, in ms */
 $time = static function (callable $fn, int $runs = 7): array {
     $ms = [];
 
@@ -72,7 +70,7 @@ $report('One operation', $time(fn () => $history->changeset($oldSet, 1)), 300);
 $change = (int) $wpdb->get_var($wpdb->prepare("SELECT id FROM {$t->changes} WHERE object_id = %d AND field_key = 'post_title' ORDER BY object_seq LIMIT 1", $mid));
 $report('Restore plan: one change', $time(fn () => $s->buildPlan()->handle(1, ['type' => 'changes', 'change_ids' => [$change]]), 5), 300);
 
-// Plan with merge: 500 blocks, 100 edits after the change undone (NFR-3, ≤ 300 ms).
+// Plan with merge: 500 blocks, 100 edits after the change undone (budget 300 ms).
 $blocks = static fn (array $texts): string => implode("\n\n", array_map(static fn (string $x): string => "<!-- wp:paragraph -->\n<p>{$x}</p>\n<!-- /wp:paragraph -->", $texts));
 $texts = array_map(static fn (int $i): string => "Paragraph {$i} " . str_repeat('lorem ipsum ', 12), range(1, 500));
 $post = wp_insert_post(['post_title' => 'Merge 500', 'post_status' => 'publish', 'post_content' => $blocks($texts)]);
@@ -98,7 +96,7 @@ $report('Restore plan: merge, 500 blocks, 100 later edits', $time(function () us
 $status = $s->planView()->forUser((string) $plan, 1)['items'][0]['status'] ?? '?';
 WP_CLI::log("  (merged plan item: {$status})");
 
-// Saves (NFR-1: p95 ≤ 15 ms, p99 ≤ 40 ms extra for up to 4 fields of up to 100 KB; NFR-2: ≤ 2 ms without
+// Saves (budget: p95 ≤ 15 ms, p99 ≤ 40 ms extra for up to 4 fields of up to 100 KB; ≤ 2 ms without
 // changes), and a heavier case: 4 fields and 5 recorded meta keys, texts of up to 170 KB.
 add_filter('selective_undo/meta_fields', static fn (array $f): array => [...$f, ...array_map(static fn (int $i) => new FieldDefinition("meta:load_{$i}", "Load {$i}", 'text'), range(1, 5))]);
 $s->metaFields()->flush();

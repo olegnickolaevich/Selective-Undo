@@ -10,6 +10,8 @@ use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
 
+defined('ABSPATH') || exit;
+
 /**
  * Post-commit actions (cache invalidation, revisions, public hooks). Events are
  * written in the same transaction as the restore and delivered at least once.
@@ -29,9 +31,7 @@ final class Outbox
     ) {
     }
 
-    /**
-     * @param callable(array<string, mixed>): void $handler
-     */
+    /** @param callable(array<string, mixed>): void $handler */
     public function on(string $topic, callable $handler): void
     {
         $this->handlers[$topic][] = $handler;
@@ -104,9 +104,7 @@ final class Outbox
         }
     }
 
-    /**
-     * Delivers due events (cron). Returns the number of processed events.
-     */
+    /** Delivers due events (cron). Returns the number of processed events. */
     public function dispatchDue(int $limit = 50, float $budgetSeconds = 10.0): int
     {
         $started = microtime(true);

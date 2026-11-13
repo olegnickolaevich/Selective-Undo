@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Capture;
 
+defined('ABSPATH') || exit;
+
 /**
- * Pauses recording when writing history keeps failing or becomes slow (I-14): five
+ * Pauses recording when writing history keeps failing or becomes slow: five
  * failures within five minutes, or a median of the last 20 sampled writes above
  * 500 ms. After 15 minutes one write is let through as a trial; it closes the
  * breaker, or a failure opens it again for twice as long (up to an hour).
@@ -57,7 +59,7 @@ final class CaptureCircuitBreaker
     public function success(?float $ms): void
     {
         if ($this->blocks()) {
-            return; // bookkeeping while paused (sealing a change set) is no trial
+            return; // bookkeeping while paused (sealing a changeset) is no trial
         }
 
         $s = $this->load();
@@ -113,9 +115,7 @@ final class CaptureCircuitBreaker
         $this->save($s, true);
     }
 
-    /**
-     * @param array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int} $s
-     */
+    /** @param array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int} $s */
     private function open(array $s, string $why): void
     {
         $cooldown = $s['open_until'] > 0 ? min(self::MAX_COOLDOWN, $s['cooldown'] * 2) : self::COOLDOWN;
@@ -130,9 +130,7 @@ final class CaptureCircuitBreaker
         do_action('selective_undo/circuit_opened', $why);
     }
 
-    /**
-     * @return array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int}
-     */
+    /** @return array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int} */
     private function load(): array
     {
         if ($this->state !== null) {
@@ -153,9 +151,7 @@ final class CaptureCircuitBreaker
         return $this->state = $s;
     }
 
-    /**
-     * @param array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int} $s
-     */
+    /** @param array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int} $s */
     private function save(array $s, bool $persist): void
     {
         $this->state = $s;
@@ -175,9 +171,7 @@ final class CaptureCircuitBreaker
         $this->state = null;
     }
 
-    /**
-     * @return array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int}
-     */
+    /** @return array{failures: list<int>, samples: list<int>, open_until: int, cooldown: int, saved: int} */
     private static function fresh(): array
     {
         return ['failures' => [], 'samples' => [], 'open_until' => 0, 'cooldown' => self::COOLDOWN, 'saved' => 0];

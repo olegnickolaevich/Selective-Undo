@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+defined('ABSPATH') || exit;
+
 /**
  * Order of siblings kept as "comes after" links instead of positions: inserting an
  * element changes the neighbour of one element, not the position of every following

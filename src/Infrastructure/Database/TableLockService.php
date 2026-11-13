@@ -6,6 +6,8 @@ namespace SelectiveUndo\Infrastructure\Database;
 
 use SelectiveUndo\Domain\Contracts\LockService;
 
+defined('ABSPATH') || exit;
+
 /**
  * Lock rows with an expiry, for databases without named locks (SQLite).
  * A crashed holder releases the lock when it expires.

@@ -6,9 +6,9 @@ namespace SelectiveUndo\Bootstrap;
 
 use SelectiveUndo\Api;
 
-/**
- * Plugin entry point: wires services to WordPress hooks.
- */
+defined('ABSPATH') || exit;
+
+/** Plugin entry point: wires services to WordPress hooks. */
 final class Plugin
 {
     public const INSTANCE_OPTION = 'selective_undo_instance_id';
@@ -45,7 +45,7 @@ final class Plugin
         add_action(self::QUEUE_HOOK, [self::class, 'processQueue']);
         add_action(self::IMPORT_HOOK, [self::class, 'continueImport']);
         add_action(\SelectiveUndo\Application\Capture\ReconciliationScanner::HOOK, [self::class, 'continueReconcile']);
-        // A full check after bulk changes that bypass WordPress or arrive in bulk (FR-8.4.3).
+        // A full check after bulk changes that bypass WordPress or arrive in bulk.
         add_action('upgrader_process_complete', [self::class, 'scheduleReconcile']);
         add_action('import_end', [self::class, 'scheduleReconcile']);
 
@@ -130,9 +130,7 @@ final class Plugin
         self::services()->executeJob()->run((int) $jobId);
     }
 
-    /**
-     * Recovers stuck jobs and delivers due outbox events.
-     */
+    /** Recovers stuck jobs and delivers due outbox events. */
     public static function processQueue(): void
     {
         $s = self::services();

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Restore;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Support\Time;
 use SelectiveUndo\Domain\Change\ChangeEvent;
@@ -28,6 +28,8 @@ use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
+
+defined('ABSPATH') || exit;
 
 /**
  * Builds an immutable restore plan (the preview).
@@ -263,9 +265,7 @@ final class BuildRestorePlan
         }
     }
 
-    /**
-     * @param list<array{object: ObjectRef}> $groups
-     */
+    /** @param list<array{object: ObjectRef}> $groups */
     private function enforceLimits(array $groups): void
     {
         $objects = [];
@@ -604,9 +604,7 @@ final class BuildRestorePlan
         ]);
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     private function blockingReasons(
         AdapterInterface $adapter,
         int $userId,

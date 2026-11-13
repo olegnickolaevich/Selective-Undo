@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Change\CaptureQuality;
@@ -24,6 +24,8 @@ use SelectiveUndo\Domain\Merge\LinkedOrder;
 use SelectiveUndo\Domain\Merge\MergeStrategy;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\StorageError;
+
+defined('ABSPATH') || exit;
 
 /**
  * Classic navigation menus (Appearance → Menus, the Customizer): the object menu:<term
@@ -193,13 +195,11 @@ final class NavMenuAdapter implements AdapterInterface, CapturingAdapter, Descri
             }
         }, PHP_INT_MAX, 3);
 
-        // Before the post observer and the sealing of the request's change sets.
+        // Before the post observer and the sealing of the request's changesets.
         add_action('shutdown', fn () => $this->flush($sink), -1);
     }
 
-    /**
-     * Records the menus changed so far in this request (called at its end).
-     */
+    /** Records the menus changed so far in this request (called at its end). */
     public function flush(CaptureSink $sink): void
     {
         foreach ($this->pending as $menuId => $before) {
@@ -486,9 +486,7 @@ final class NavMenuAdapter implements AdapterInterface, CapturingAdapter, Descri
         return $this->db->get_var($this->db->prepare("SELECT term_id FROM {$this->db->term_taxonomy} WHERE term_id = %d AND taxonomy = 'nav_menu'", $menuId)) !== null;
     }
 
-    /**
-     * @return list<int>
-     */
+    /** @return list<int> */
     private function menusOfItem(int $itemId): array
     {
         $this->reading = true;

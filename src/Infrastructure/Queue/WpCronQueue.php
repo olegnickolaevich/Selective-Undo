@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Queue;
 
-/**
- * Single WP-Cron events: available on every site.
- */
+defined('ABSPATH') || exit;
+
+/** Single WP-Cron events: available on every site. */
 final class WpCronQueue implements JobQueue
 {
     public function enqueue(string $hook, array $args = [], int $delaySeconds = 0): void

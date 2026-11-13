@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Integrations;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Application\Capture\Source;
@@ -29,15 +29,13 @@ use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\FieldsSnapshot;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
- * Elementor layouts. "elementor:data" is the element tree of _elementor_data as an
- * ElementorTree map, so that an undo keeps later edits of other elements and of
- * other settings of the same element; a value that is not a valid tree stays the
- * raw JSON string (undone as a whole). "elementor:page_settings" is the raw
- * _elementor_page_settings meta value.
- *
- * After a restore the generated CSS and element caches of the post are removed;
- * Elementor builds them again on the next view.
+ * Elementor layouts. "elementor:data" is _elementor_data as an ElementorTree map, so
+ * an undo keeps later edits of other elements and settings (invalid trees stay raw
+ * JSON, undone as a whole); "elementor:page_settings" is the raw meta value. After a
+ * restore the post's generated CSS and caches are removed for Elementor to rebuild.
  */
 final class ElementorAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, MergeableAdapter, NormalizesValues, PresentsValues
 {
@@ -336,7 +334,7 @@ final class ElementorAdapter implements AdapterInterface, CapturingAdapter, Desc
         }
 
         // Shown only: never instantiate objects from stored data.
-        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- allowed_classes=false.
+        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- With allowed_classes=false.
         $data = @unserialize($raw, ['allowed_classes' => false]);
 
         return is_array($data) ? (string) wp_json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) : $raw;
@@ -396,9 +394,7 @@ final class ElementorAdapter implements AdapterInterface, CapturingAdapter, Desc
         )))));
     }
 
-    /**
-     * @param list<string> $rows
-     */
+    /** @param list<string> $rows */
     private static function toValue(string $field, array $rows): FieldValue
     {
         if ($rows === [] || $rows[0] === '') {
@@ -415,9 +411,7 @@ final class ElementorAdapter implements AdapterInterface, CapturingAdapter, Desc
         return FieldValue::of($map ?? $rows[0]);
     }
 
-    /**
-     * The meta value to write; null for a missing value or one this adapter never produces.
-     */
+    /** The meta value to write; null for a missing value or one this adapter never produces. */
     private static function toRaw(string $field, FieldValue $value): ?string
     {
         if (!$value->exists) {

@@ -62,17 +62,13 @@ abstract class TestCase
         }
     }
 
-    /**
-     * @param countable|array<mixed> $actual
-     */
+    /** @param countable|array<mixed> $actual */
     protected function assertCount(int $expected, \Countable|array $actual, string $message = ''): void
     {
         $this->assertSame($expected, count($actual), $message !== '' ? $message : 'Unexpected count');
     }
 
-    /**
-     * @param array<mixed> $haystack
-     */
+    /** @param array<mixed> $haystack */
     protected function assertContains(mixed $needle, array $haystack, string $message = ''): void
     {
         $this->assertions++;
@@ -82,9 +78,7 @@ abstract class TestCase
         }
     }
 
-    /**
-     * @param array<mixed> $haystack
-     */
+    /** @param array<mixed> $haystack */
     protected function assertNotContains(mixed $needle, array $haystack, string $message = ''): void
     {
         $this->assertions++;
@@ -94,9 +88,7 @@ abstract class TestCase
         }
     }
 
-    /**
-     * @param class-string $class
-     */
+    /** @param class-string $class */
     protected function assertInstanceOf(string $class, mixed $actual, string $message = ''): void
     {
         $this->assertions++;

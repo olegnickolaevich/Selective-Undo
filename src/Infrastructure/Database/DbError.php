@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
+defined('ABSPATH') || exit;
+
 /** A statement on the restore connection failed. The message is a code, never data. */
 class DbError extends \RuntimeException
 {

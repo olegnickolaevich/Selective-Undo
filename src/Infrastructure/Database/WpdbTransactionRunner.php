@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are codes, returned as REST API JSON errors or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\Contracts\TransactionRunner;
+
+defined('ABSPATH') || exit;
 
 /**
  * Compatibility mode: restore transactions run on the shared $wpdb connection.

@@ -1,6 +1,6 @@
 name: Load check
 
-# Specification §12.2 on a Linux runner: a journal of 1 million changes over 100 000
+# Load check on a Linux runner: a journal of 1 million changes over 100 000
 # items, then the timings of the history, plans, saves and reconciliation. Runs when
 # the load scripts change or on demand; the numbers are reported as notices.
 on:

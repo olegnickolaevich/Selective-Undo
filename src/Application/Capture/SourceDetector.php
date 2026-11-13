@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Capture;
 
+defined('ABSPATH') || exit;
+
 /**
  * Best-effort classification of where a change came from. Used for labels and
  * filters only, never for security decisions.
@@ -44,7 +46,7 @@ final class SourceDetector
             return is_user_logged_in() ? Source::BlockEditor : Source::Rest;
         }
 
-        // phpcs:disable WordPress.Security.NonceVerification -- classification only.
+        // phpcs:disable WordPress.Security.NonceVerification -- Classification only.
         $action = isset($_REQUEST['action']) ? sanitize_key(wp_unslash((string) $_REQUEST['action'])) : '';
 
         if (wp_doing_ajax()) {
@@ -83,7 +85,7 @@ final class SourceDetector
     {
         global $pagenow;
 
-        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- classification only.
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Classification only.
         return is_admin() && $pagenow === 'post.php' && isset($_GET['meta-box-loader']);
     }
 
@@ -93,7 +95,7 @@ final class SourceDetector
      */
     public function saveToken(): ?string
     {
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- validated as a UUID below.
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Validated as a UUID below.
         $raw = isset($_SERVER['HTTP_X_SELECTIVE_UNDO_SAVE']) ? wp_unslash((string) $_SERVER['HTTP_X_SELECTIVE_UNDO_SAVE']) : '';
 
         return is_string($raw) && wp_is_uuid($raw) ? strtolower($raw) : null;

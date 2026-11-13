@@ -6,6 +6,8 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 
 use SelectiveUndo\Domain\Contracts\FieldDefinition;
 
+defined('ABSPATH') || exit;
+
 /**
  * Post meta keys that are recorded, per post type: the featured image and the
  * image alt text always; SEO fields of Yoast SEO, Rank Math and SEOPress and the
@@ -34,9 +36,7 @@ final class MetaFieldRegistry
     /** @var array<string, array<string, FieldDefinition>> post type => meta key => definition */
     private array $cache = [];
 
-    /**
-     * @return list<FieldDefinition>
-     */
+    /** @return list<FieldDefinition> */
     public function definitions(string $postType): array
     {
         return array_values($this->forType($postType));
@@ -58,9 +58,7 @@ final class MetaFieldRegistry
         $this->cache = [];
     }
 
-    /**
-     * @return array<string, FieldDefinition>
-     */
+    /** @return array<string, FieldDefinition> */
     private function forType(string $postType): array
     {
         if (isset($this->cache[$postType])) {
@@ -89,9 +87,7 @@ final class MetaFieldRegistry
         return $definitions;
     }
 
-    /**
-     * @return array<mixed>
-     */
+    /** @return array<mixed> */
     private function collect(string $postType): array
     {
         $fields = [];
@@ -139,9 +135,7 @@ final class MetaFieldRegistry
         return (array) apply_filters('selective_undo/meta_fields', $fields, $postType);
     }
 
-    /**
-     * @return list<FieldDefinition>
-     */
+    /** @return list<FieldDefinition> */
     private function acfFields(string $postType): array
     {
         $group = __('Custom fields', 'selective-undo');

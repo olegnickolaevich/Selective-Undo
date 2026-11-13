@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+defined('ABSPATH') || exit;
+
 /**
  * Two-way diff of token lists as numbered hunks. Hunk numbers are the stable
  * handle the interface uses to undo only some blocks of one change.

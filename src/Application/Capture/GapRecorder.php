@@ -8,6 +8,8 @@ use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Records periods and objects for which history is known to be incomplete.
  * Never throws: it is called from failure paths.

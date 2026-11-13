@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
+defined('ABSPATH') || exit;
+
 /**
  * Folds the selected changes of one field of one object into a single
  * (target, expected) pair.

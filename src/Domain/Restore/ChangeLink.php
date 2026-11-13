@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
+defined('ABSPATH') || exit;
+
 /** A journal change of one field of one object, as seen by the chain resolver. */
 final readonly class ChangeLink
 {

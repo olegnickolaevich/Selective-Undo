@@ -6,18 +6,16 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 
 use SelectiveUndo\Infrastructure\Settings\Settings;
 
-/**
- * Decides which objects are captured and restorable.
- */
+defined('ABSPATH') || exit;
+
+/** Decides which objects are captured and restorable. */
 final class TrackingPolicy
 {
     public function __construct(private readonly Settings $settings)
     {
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     public function trackedPostTypes(): array
     {
         return $this->settings->trackedPostTypes();

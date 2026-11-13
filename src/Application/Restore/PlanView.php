@@ -11,9 +11,9 @@ use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\PlanRepository;
 
-/**
- * Read model of a plan for its owner.
- */
+defined('ABSPATH') || exit;
+
+/** Read model of a plan for its owner. */
 final class PlanView
 {
     /** Data categories a restore of post fields never touches. */
@@ -28,9 +28,7 @@ final class PlanView
     ) {
     }
 
-    /**
-     * @return array<string, mixed>|null Null when missing or not owned by the user.
-     */
+    /** @return array<string, mixed>|null Null when missing or not owned by the user. */
     public function forUser(string $uuid, int $userId): ?array
     {
         $plan = $this->plans->findByUuid($uuid);
@@ -80,7 +78,7 @@ final class PlanView
             'untouched' => self::UNTOUCHED,
             'items' => $items,
             'job_id' => $job !== null ? (string) $job['uuid'] : null,
-            // The history may come from another site until an administrator decides (FR-8.7.2).
+            // The history may come from another site until an administrator decides.
             'site_moved' => $this->site->isMoved(),
             // IDs only: lets the UI build a fresh preview when this one expires.
             'selection' => json_decode((string) $plan['selection_json'], true),

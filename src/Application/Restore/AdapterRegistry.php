@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\Restore;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\Contracts\AdapterInterface;
 use SelectiveUndo\Domain\Contracts\CaptureSink;
 use SelectiveUndo\Domain\Contracts\CapturingAdapter;
 use SelectiveUndo\Domain\Contracts\DescribesFields;
+
+defined('ABSPATH') || exit;
 
 /**
  * Registry of adapters. Core adapters are registered first, then integrations
@@ -34,9 +36,7 @@ final class AdapterRegistry
     private bool $initialized = false;
     private bool $capturing = false;
 
-    /**
-     * @param \Closure(self): void $registerCore
-     */
+    /** @param \Closure(self): void $registerCore */
     public function __construct(private readonly \Closure $registerCore)
     {
     }
@@ -63,9 +63,7 @@ final class AdapterRegistry
         return $this->adapters[$key] ?? null;
     }
 
-    /**
-     * @return array<string, AdapterInterface>
-     */
+    /** @return array<string, AdapterInterface> */
     public function all(): array
     {
         $this->initialize();

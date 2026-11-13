@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
-/**
- * Table names of the current site. Never built from request data.
- */
+defined('ABSPATH') || exit;
+
+/** Table names of the current site. Never built from request data. */
 final readonly class Tables
 {
     public string $operations;
@@ -54,9 +54,7 @@ final readonly class Tables
         return new self($db->prefix, $db->posts, $db->options);
     }
 
-    /**
-     * @return list<string> Plugin-owned tables.
-     */
+    /** @return list<string> Plugin-owned tables. */
     public function own(): array
     {
         return [

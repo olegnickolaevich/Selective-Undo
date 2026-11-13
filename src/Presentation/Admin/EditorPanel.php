@@ -7,9 +7,9 @@ namespace SelectiveUndo\Presentation\Admin;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
-/**
- * "Change history" panel in the block editor sidebar of tracked content.
- */
+defined('ABSPATH') || exit;
+
+/** "Change history" panel in the block editor sidebar of tracked content. */
 final class EditorPanel
 {
     public const HANDLE = 'selective-undo-editor';

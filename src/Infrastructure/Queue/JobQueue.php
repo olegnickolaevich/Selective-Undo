@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Queue;
 
+defined('ABSPATH') || exit;
+
 /**
  * Runs a hook later, in the background: continuing restore jobs, importing
  * revisions and other work that does not fit in one request.
@@ -19,9 +21,7 @@ interface JobQueue
      */
     public function enqueue(string $hook, array $args = [], int $delaySeconds = 0): void;
 
-    /**
-     * @param list<scalar> $args
-     */
+    /** @param list<scalar> $args */
     public function isScheduled(string $hook, array $args = []): bool;
 
     /** Removes every waiting call of the hook (deactivation). */

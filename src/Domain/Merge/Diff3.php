@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+defined('ABSPATH') || exit;
+
 /**
  * Three-way merge of token lists (Khanna, Kunal, Pierce: "A Formal Investigation of Diff3").
  * Base is the value after the change being undone, "current" the value now and

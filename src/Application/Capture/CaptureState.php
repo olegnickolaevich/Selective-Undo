@@ -7,9 +7,9 @@ namespace SelectiveUndo\Application\Capture;
 use SelectiveUndo\Infrastructure\Database\SchemaManager;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 
-/**
- * Site-wide capture state. Any exit from "active" opens a global history gap.
- */
+defined('ABSPATH') || exit;
+
+/** Site-wide capture state. Any exit from "active" opens a global history gap. */
 final class CaptureState
 {
     public const OPTION = 'selective_undo_capture_state';
@@ -27,9 +27,7 @@ final class CaptureState
         return $this->settings->captureEnabled() && $this->schema->isCurrent() && $this->pausedReason() === null && !$this->breaker->blocks();
     }
 
-    /**
-     * @return array{state: string, reason: string|null, since: int|null}
-     */
+    /** @return array{state: string, reason: string|null, since: int|null} */
     public function describe(): array
     {
         if (!$this->schema->isCurrent()) {
@@ -78,9 +76,7 @@ final class CaptureState
         $this->gaps->closeGlobal($reason);
     }
 
-    /**
-     * @return array{reason: string|null, since: int|null}
-     */
+    /** @return array{reason: string|null, since: int|null} */
     private function stored(): array
     {
         $value = get_option(self::OPTION, []);

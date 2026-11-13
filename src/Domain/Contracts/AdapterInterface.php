@@ -7,6 +7,8 @@ namespace SelectiveUndo\Domain\Contracts;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Value\FieldValue;
 
+defined('ABSPATH') || exit;
+
 /**
  * An adapter knows how to read, validate, write and post-process one kind of data.
  * Whether an item may be restored is decided by the application layer
@@ -34,14 +36,10 @@ interface AdapterInterface
     /** Human readable, translated field label. */
     public function fieldLabel(string $fieldKey): string;
 
-    /**
-     * Non-locking read for previews, directly from the database (no object cache).
-     */
+    /** Non-locking read for previews, directly from the database (no object cache). */
     public function read(ObjectRef $object): ?ObjectSnapshot;
 
-    /**
-     * Locking read (SELECT ... FOR UPDATE) inside a restore transaction.
-     */
+    /** Locking read (SELECT ... FOR UPDATE) inside a restore transaction. */
     public function lockAndRead(RestoreTransaction $tx, ObjectRef $object): ?ObjectSnapshot;
 
     /** @param 'view'|'restore' $action */

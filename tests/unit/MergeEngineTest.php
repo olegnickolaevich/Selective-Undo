@@ -19,9 +19,7 @@ final class MergeEngineTest extends TestCase
         return "<!-- wp:paragraph -->\n<p>{$text}</p>\n<!-- /wp:paragraph -->";
     }
 
-    /**
-     * @param list<string> $blocks
-     */
+    /** @param list<string> $blocks */
     private static function doc(array $blocks): string
     {
         return implode("\n\n", $blocks);

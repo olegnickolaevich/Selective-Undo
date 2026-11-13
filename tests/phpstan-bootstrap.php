@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Constants defined by selective-undo.php at runtime, for static analysis.
- */
+/** Constants defined by selective-undo.php at runtime, for static analysis. */
 
 defined('ABSPATH') || define('ABSPATH', __DIR__ . '/');
 defined('WPINC') || define('WPINC', 'wp-includes');

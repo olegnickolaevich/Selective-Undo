@@ -12,6 +12,8 @@ use SelectiveUndo\Infrastructure\Database\Migrations\Migration004;
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration005;
 use SelectiveUndo\Infrastructure\Database\Migrations\Migration006;
 
+defined('ABSPATH') || exit;
+
 /**
  * The schema version is stored separately from the plugin version. Migrations run
  * sequentially under a lock, so two parallel requests after a plugin
@@ -82,9 +84,7 @@ final class SchemaManager
         }
     }
 
-    /**
-     * @return list<string> Problems: missing tables or non-InnoDB engines.
-     */
+    /** @return list<string> Problems: missing tables or non-InnoDB engines. */
     public function verify(): array
     {
         if (DbDialect::isSqlite()) {
@@ -123,9 +123,7 @@ final class SchemaManager
         return $problems;
     }
 
-    /**
-     * Drops all plugin tables. Used by uninstall only.
-     */
+    /** Drops all plugin tables. Used by uninstall only. */
     public static function drop(\wpdb $db, Tables $tables): void
     {
         foreach ($tables->own() as $table) {
@@ -135,9 +133,7 @@ final class SchemaManager
         delete_option(self::OPTION);
     }
 
-    /**
-     * @return array<int, Migration>
-     */
+    /** @return array<int, Migration> */
     private function migrations(): array
     {
         return [

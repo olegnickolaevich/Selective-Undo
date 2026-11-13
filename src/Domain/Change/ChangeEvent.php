@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Change;
 
+defined('ABSPATH') || exit;
+
 enum ChangeEvent: string
 {
     case Update = 'update';

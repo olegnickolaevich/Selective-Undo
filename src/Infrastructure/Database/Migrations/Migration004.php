@@ -8,6 +8,8 @@ use SelectiveUndo\Infrastructure\Database\Migration;
 use SelectiveUndo\Infrastructure\Database\SchemaError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Merge state of a plan item: the strategy and the conflicts (indexes, labels and
  * hashes of both sides; the texts themselves are recomputed on request).

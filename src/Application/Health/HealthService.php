@@ -22,6 +22,8 @@ use SelectiveUndo\Infrastructure\Queue\JobQueue;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\WordPress\CacheInvalidator;
 
+defined('ABSPATH') || exit;
+
 /**
  * Health checks and the overview shown in the header of every screen.
  * Never reports "all protected" while something is degraded.
@@ -45,9 +47,7 @@ final class HealthService
     ) {
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     public function overview(): array
     {
         $stats = $this->retention->stats();
@@ -80,9 +80,7 @@ final class HealthService
         ];
     }
 
-    /**
-     * @return list<array{id: string, status: string, label: string, message: string, blocks_restore: bool}>
-     */
+    /** @return list<array{id: string, status: string, label: string, message: string, blocks_restore: bool}> */
     public function checks(): array
     {
         $checks = [];

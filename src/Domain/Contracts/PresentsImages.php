@@ -7,6 +7,8 @@ namespace SelectiveUndo\Domain\Contracts;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Value\FieldValue;
 
+defined('ABSPATH') || exit;
+
 /**
  * An adapter whose field values can be media library images (a featured image):
  * comparisons show the images next to the text.

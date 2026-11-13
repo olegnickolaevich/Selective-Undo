@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Contracts\AdapterCapabilities;
@@ -17,18 +17,15 @@ use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 
+defined('ABSPATH') || exit;
+
 /**
- * A permanently deleted post as one value ("snapshot"): its row, its meta rows in
- * order and its terms, taken right before WordPress deletes them. Restoring puts
- * the post back under its own ID as a draft (as WordPress does when it takes a post
- * out of the trash); the status it had is kept in a meta row, so that the restored
- * post reads back as exactly the value that was written.
+ * A permanently deleted post as one value ("snapshot"): its row, meta rows and terms,
+ * taken right before deletion. A restore brings it back under its own ID as a draft
+ * and keeps the former status in meta, so the post reads back as the value written.
+ * An existing post with the same ID is never overwritten (reason object_id_taken).
  *
- * A post that exists under the ID is never overwritten: it is not the deleted value,
- * so the plan reports the ID as taken.
- *
- * Not restored: comments, revisions, child posts and media files. Media are not
- * covered at all: their files are gone with them.
+ * Not restored: comments, revisions, child posts. Media are not covered.
  */
 final class PostDeletionAdapter implements AdapterInterface, DescribesFields, PresentsValues
 {
@@ -102,9 +99,7 @@ final class PostDeletionAdapter implements AdapterInterface, DescribesFields, Pr
         return [new FieldDefinition(self::FIELD, __('Whole item', 'selective-undo'), 'raw')];
     }
 
-    /**
-     * The value of a post about to be deleted, read from the database.
-     */
+    /** The value of a post about to be deleted, read from the database. */
     public function capture(int $postId): FieldValue
     {
         $row = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->db->posts} WHERE ID = %d", $postId), ARRAY_A);
@@ -219,7 +214,7 @@ final class PostDeletionAdapter implements AdapterInterface, DescribesFields, Pr
     {
         assert($current instanceof FieldsSnapshot);
 
-        // What a restore of a deletion does and does not bring back (FR-8.3.21, FR-8.3.22).
+        // What a restore of a deletion does and does not bring back.
         return $current->status === 'exists' ? [] : ['restored_as_draft'];
     }
 
@@ -379,9 +374,7 @@ final class PostDeletionAdapter implements AdapterInterface, DescribesFields, Pr
         ]);
     }
 
-    /**
-     * @return array<array-key, mixed>|null
-     */
+    /** @return array<array-key, mixed>|null */
     private static function post(FieldValue $value): ?array
     {
         return $value->exists && is_array($value->value) && is_array($value->value['post'] ?? null) ? $value->value['post'] : null;

@@ -9,9 +9,9 @@ use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
 use SelectiveUndo\Infrastructure\Database\DbDialect;
 
-/**
- * Packs a canonical value into a blobs table row and unpacks it with integrity checks.
- */
+defined('ABSPATH') || exit;
+
+/** Packs a canonical value into a blobs table row and unpacks it with integrity checks. */
 final class BlobCodec
 {
     public const ENCODING_PLAIN = 'c1';
@@ -67,9 +67,7 @@ final class BlobCodec
         ];
     }
 
-    /**
-     * @throws InvalidPayload
-     */
+    /** @throws InvalidPayload */
     public function unpack(string $encoding, string $payload, int $uncompressedBytes, string $expectedHash): FieldValue
     {
         if ($uncompressedBytes < 0 || $uncompressedBytes > $this->maxPayloadBytes) {

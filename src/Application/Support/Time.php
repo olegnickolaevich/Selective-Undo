@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Support;
 
+defined('ABSPATH') || exit;
+
 final class Time
 {
     /** MySQL UTC DATETIME → ISO 8601 with Z, or null. */

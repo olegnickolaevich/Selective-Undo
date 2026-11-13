@@ -26,9 +26,7 @@ final class RevisionImportTest extends IntegrationTestCase
         add_filter('selective_undo/tracked_post_types', [$this, 'trackOnlyTestType']);
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     public function trackOnlyTestType(): array
     {
         return [self::TYPE];
@@ -170,9 +168,7 @@ final class RevisionImportTest extends IntegrationTestCase
         return $id;
     }
 
-    /**
-     * Moves the item's revisions five days back and starts recording right after them.
-     */
+    /** Moves the item's revisions five days back and starts recording right after them. */
     private function pretendRecordingStartedAfter(int $id): void
     {
         $shift = 5 * DAY_IN_SECONDS;

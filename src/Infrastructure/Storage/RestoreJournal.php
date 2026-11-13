@@ -12,6 +12,8 @@ use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Journal writes inside restore transactions (invariant I-4: every content write
  * made by the plugin is journaled in the same transaction).

@@ -8,8 +8,6 @@ import { ErrorNotice, Loading } from './Feedback';
  * Historical content is untrusted data. Only text nodes are rendered: no
  * dangerouslySetInnerHTML, no blocks or shortcodes executed. The only previews are
  * images of the site's own media library, by URLs the server resolved.
- * @param root0
- * @param root0.line
  */
 function Line( { line }: { line: DiffLine } ) {
 	if ( line.op === 'collapsed' ) {
@@ -138,11 +136,7 @@ export function DiffViewer( {
 	);
 }
 
-/**
- * Loads a diff lazily and appends further pages on demand.
- * @param root0
- * @param root0.load
- */
+/** Loads a diff lazily and appends further pages on demand. */
 export function DiffLoader( {
 	load,
 }: {

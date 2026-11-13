@@ -9,6 +9,8 @@ use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
  * List screens of tracked post types: the "Undo" notice after Quick Edit and bulk
  * edit, and the "Last change" column.

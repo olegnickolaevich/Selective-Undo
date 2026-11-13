@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
+defined('ABSPATH') || exit;
+
 final readonly class JobCounters
 {
     public function __construct(
@@ -17,9 +19,7 @@ final readonly class JobCounters
     ) {
     }
 
-    /**
-     * @param array<string, int> $byStatus job item status => count
-     */
+    /** @param array<string, int> $byStatus job item status => count */
     public static function fromStatusCounts(array $byStatus): self
     {
         return new self(

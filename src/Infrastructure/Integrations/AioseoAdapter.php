@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Integrations;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Change\CaptureQuality;
@@ -25,15 +25,13 @@ use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\FieldsSnapshot;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
- * SEO fields of All in One SEO ("aioseo:<column>"), kept in its own table
- * {prefix}aioseo_posts, one row per post. A NULL or empty column is a missing value
- * (AIOSEO then uses its defaults); others are the column text.
- *
- * AIOSEO writes the table with its own queries and no hooks of its own on most
- * paths, so writes are observed on the query filter: the row is read right before
- * the first write of a request and again when AIOSEO reports the save, or at the
- * end of the request.
+ * All in One SEO fields ("aioseo:<column>") from its {prefix}aioseo_posts table; an
+ * empty column is a missing value (AIOSEO falls back to its defaults). AIOSEO writes
+ * the table without hooks, so writes are observed on the query filter: the row is read
+ * before the first write of a request and again after the save or at request end.
  */
 final class AioseoAdapter implements AdapterInterface, CapturingAdapter, DescribesFields, PresentsValues
 {
@@ -139,7 +137,7 @@ final class AioseoAdapter implements AdapterInterface, CapturingAdapter, Describ
         }, PHP_INT_MAX);
 
         add_action('aioseo_insert_post', fn (mixed $postId) => $this->flush($sink, (int) $postId), PHP_INT_MAX, 1);
-        // Before the post observer and the sealing of the request's change sets.
+        // Before the post observer and the sealing of the request's changesets.
         add_action('shutdown', function () use ($sink): void {
             foreach (array_keys($this->pending) as $postId) {
                 $this->flush($sink, $postId);
@@ -341,9 +339,7 @@ final class AioseoAdapter implements AdapterInterface, CapturingAdapter, Describ
             && $this->policy->shouldCapture($postId, $post->post_type);
     }
 
-    /**
-     * @return array<string, FieldValue>
-     */
+    /** @return array<string, FieldValue> */
     private function readRow(int $postId): array
     {
         $columns = $this->columns();
@@ -417,9 +413,7 @@ final class AioseoAdapter implements AdapterInterface, CapturingAdapter, Describ
         return $this->db->prefix . 'aioseo_posts';
     }
 
-    /**
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     private static function labels(): array
     {
         return [

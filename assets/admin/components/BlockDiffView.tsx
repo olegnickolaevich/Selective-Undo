@@ -47,12 +47,7 @@ function Blocks( {
 	);
 }
 
-/**
- * One change of the content as numbered parts; each part can be undone alone.
- * @param root0
- * @param root0.changeId
- * @param root0.canUndo
- */
+/** One change of the content as numbered parts; each part can be undone alone. */
 export function BlockDiffView( {
 	changeId,
 	canUndo,

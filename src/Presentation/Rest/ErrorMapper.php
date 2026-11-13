@@ -8,6 +8,8 @@ use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\Database\StorageUnavailable;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
 
+defined('ABSPATH') || exit;
+
 /**
  * Uniform error format: { code, message, data: { status, request_id, details? } }.
  * Messages never contain SQL, content or secrets.
@@ -20,9 +22,7 @@ final class ErrorMapper
     ) {
     }
 
-    /**
-     * @param callable(): mixed $fn
-     */
+    /** @param callable(): mixed $fn */
     public function run(callable $fn): \WP_REST_Response|\WP_Error
     {
         try {
@@ -42,9 +42,7 @@ final class ErrorMapper
         }
     }
 
-    /**
-     * @param array<string, mixed> $details
-     */
+    /** @param array<string, mixed> $details */
     public function error(string $code, string $message, int $status, array $details = []): \WP_Error
     {
         $data = ['status' => $status, 'request_id' => $this->requestUuid];

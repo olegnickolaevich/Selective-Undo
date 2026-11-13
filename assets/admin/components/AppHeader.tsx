@@ -24,9 +24,6 @@ function captureText( capture: Overview[ 'capture' ] ): string {
 /**
  * The history was copied with the database from another site: keep it, or clear it
  * through the two-step deletion.
- * @param root0
- * @param root0.restored
- * @param root0.onKept
  */
 function SiteMovedNotice( {
 	restored,
@@ -83,12 +80,7 @@ function SiteMovedNotice( {
 	);
 }
 
-/**
- * Never shows a green "everything is protected" when something is degraded.
- * @param root0
- * @param root0.overview
- * @param root0.onChanged
- */
+/** Never shows a green "everything is protected" when something is degraded. */
 export function AppHeader( {
 	overview,
 	onChanged,

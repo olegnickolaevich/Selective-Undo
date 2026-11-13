@@ -7,6 +7,8 @@ namespace SelectiveUndo\Application\Restore;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\Restore\JobItemStatus;
 
+defined('ABSPATH') || exit;
+
 final readonly class ObjectRestoreResult
 {
     /**
@@ -25,9 +27,7 @@ final readonly class ObjectRestoreResult
         return new self($object, [], []);
     }
 
-    /**
-     * @param list<ItemOutcome> $outcomes
-     */
+    /** @param list<ItemOutcome> $outcomes */
     public static function fromOutcomes(ObjectRef $object, array $outcomes): self
     {
         $restored = [];

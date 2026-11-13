@@ -6,6 +6,8 @@ namespace SelectiveUndo\Application\Restore;
 
 use SelectiveUndo\Domain\Change\ObjectRef;
 
+defined('ABSPATH') || exit;
+
 /**
  * Lets integrations (for example an editorial workflow) forbid a restore.
  * Evaluated while building the plan and again before the write, outside transactions.

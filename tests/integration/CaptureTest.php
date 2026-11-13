@@ -354,7 +354,7 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertFalse(str_contains((string) wp_json_encode($published), 'Secret'), 'no values in the summary');
         $this->assertSame($before, $outboxRows(), 'nothing is queued without background handlers');
 
-        // A background handler receives the change set from the outbox.
+        // A background handler receives the changeset from the outbox.
         $delivered = [];
         $handler = static function (array $summary) use (&$delivered): void {
             $delivered[] = $summary['uuid'];
@@ -451,9 +451,7 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertNotNull($this->gapRows('circuit_open')[0]['ended_at']);
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     private function truncateChangesOnly(): void
     {
         $this->db->query("DELETE FROM {$this->s->tables()->changes}");

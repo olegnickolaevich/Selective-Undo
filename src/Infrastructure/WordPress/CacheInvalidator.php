@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
+defined('ABSPATH') || exit;
+
 /**
  * Invalidates caches after a restore that bypassed wp_update_post().
  *
@@ -43,9 +45,7 @@ final class CacheInvalidator
         do_action('selective_undo/purge_post_cache', $postId);
     }
 
-    /**
-     * @return list<string> Detected full-page cache plugins without a built-in integration.
-     */
+    /** @return list<string> Detected full-page cache plugins without a built-in integration. */
     public function unsupportedPageCaches(): array
     {
         $supported = function_exists('rocket_clean_post') || function_exists('w3tc_flush_post')

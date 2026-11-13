@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
+defined('ABSPATH') || exit;
+
 /**
  * Current UTC time as a quoted SQL DATETIME literal, computed in PHP.
  *

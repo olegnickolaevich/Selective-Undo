@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
-/**
- * Cached database facts needed on hot paths.
- */
+defined('ABSPATH') || exit;
+
+/** Cached database facts needed on hot paths. */
 final class DbInfo
 {
     private const TRANSIENT = 'selective_undo_db_info';
@@ -34,9 +34,7 @@ final class DbInfo
         $this->info = null;
     }
 
-    /**
-     * @return array{max_allowed_packet: int, version: string}
-     */
+    /** @return array{max_allowed_packet: int, version: string} */
     private function info(): array
     {
         if ($this->info !== null) {

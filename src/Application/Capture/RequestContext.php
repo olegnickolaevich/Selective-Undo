@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Capture;
 
+defined('ABSPATH') || exit;
+
 /**
  * Per-request capture state: request UUID, source, sequence counter,
  * active explicit operation and changesets opened by this request.
@@ -53,7 +55,7 @@ final class RequestContext
         return ++$this->sequence;
     }
 
-    /** Continues numbering after rows already in a change set this request joins. */
+    /** Continues numbering after rows already in a changeset this request joins. */
     public function continueSequenceAfter(int $sequence): void
     {
         $this->sequence = max($this->sequence, $sequence);
@@ -69,17 +71,13 @@ final class RequestContext
         return $this->detector->saveToken();
     }
 
-    /**
-     * @return array{id: int, uuid: string, depth: int}|null
-     */
+    /** @return array{id: int, uuid: string, depth: int}|null */
     public function operation(): ?array
     {
         return $this->operation;
     }
 
-    /**
-     * @param array{id: int, uuid: string, depth: int}|null $operation
-     */
+    /** @param array{id: int, uuid: string, depth: int}|null $operation */
     public function setOperation(?array $operation): void
     {
         $this->operation = $operation;
@@ -100,9 +98,7 @@ final class RequestContext
         unset($this->changesets[$key]);
     }
 
-    /**
-     * @return array<string, int>
-     */
+    /** @return array<string, int> */
     public function changesets(): array
     {
         return $this->changesets;
@@ -175,9 +171,7 @@ final class RequestContext
         $this->revertIntent[$postId] = array_values(array_unique($changeIds));
     }
 
-    /**
-     * @return list<int>
-     */
+    /** @return list<int> */
     public function revertIntent(int $postId): array
     {
         return $this->revertIntent[$postId] ?? [];

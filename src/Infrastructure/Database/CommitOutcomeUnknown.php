@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Database;
 
+defined('ABSPATH') || exit;
+
 /**
  * COMMIT failed: the transaction may or may not be committed. Never retried
  * blindly; job recovery decides from the committed job item status.

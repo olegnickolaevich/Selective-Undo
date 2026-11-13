@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+defined('ABSPATH') || exit;
+
 /**
  * Undo of one change of post content that changed again later: diff3 over
  * top-level blocks (or paragraphs of classic text), recursing into blocks whose

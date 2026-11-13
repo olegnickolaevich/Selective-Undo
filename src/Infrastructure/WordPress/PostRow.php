@@ -7,9 +7,9 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 use SelectiveUndo\Domain\Contracts\ObjectSnapshot;
 use SelectiveUndo\Domain\Value\FieldValue;
 
-/**
- * Snapshot of the tracked wp_posts columns, normalised by the adapter.
- */
+defined('ABSPATH') || exit;
+
+/** Snapshot of the tracked wp_posts columns, normalised by the adapter. */
 final readonly class PostRow implements ObjectSnapshot
 {
     public const TRACKED_FIELDS = [

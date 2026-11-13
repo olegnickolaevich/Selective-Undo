@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Contracts;
 
-/**
- * Runs restore transactions. Statements outside transactional() run in autocommit.
- */
+defined('ABSPATH') || exit;
+
+/** Runs restore transactions. Statements outside transactional() run in autocommit. */
 interface TransactionRunner extends RestoreTransaction
 {
     public const DEDICATED = 'dedicated';

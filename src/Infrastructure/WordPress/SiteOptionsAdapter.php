@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper) or logged, never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Capture\RequestContext;
 use SelectiveUndo\Domain\Change\CaptureQuality;
@@ -20,6 +20,8 @@ use SelectiveUndo\Domain\Contracts\PresentsValues;
 use SelectiveUndo\Domain\Contracts\RestoreTransaction;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Infrastructure\Database\StorageError;
+
+defined('ABSPATH') || exit;
 
 /**
  * Site settings ("option:<name>") of the object site:<blog ID>: the options of
@@ -250,7 +252,7 @@ final class SiteOptionsAdapter implements AdapterInterface, CapturingAdapter, De
         }
 
         // Shown only: never instantiate objects from stored data.
-        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- allowed_classes=false.
+        // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- With allowed_classes=false.
         $data = @unserialize($value->value, ['allowed_classes' => false]);
 
         return (string) wp_json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -268,9 +270,7 @@ final class SiteOptionsAdapter implements AdapterInterface, CapturingAdapter, De
         return in_array($name, $this->tracked(), true);
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     private function tracked(): array
     {
         /**
@@ -287,9 +287,7 @@ final class SiteOptionsAdapter implements AdapterInterface, CapturingAdapter, De
             && !str_starts_with($o, '_transient') && !str_starts_with($o, '_site_transient')));
     }
 
-    /**
-     * @return array<string, string>
-     */
+    /** @return array<string, string> */
     private static function labels(): array
     {
         return [

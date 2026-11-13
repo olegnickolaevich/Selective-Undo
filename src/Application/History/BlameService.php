@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\History;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper), never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Application\Restore\AdapterRegistry;
 use SelectiveUndo\Application\Support\ObjectPresenter;
@@ -17,6 +17,8 @@ use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\PostFieldsAdapter;
 use SelectiveUndo\Infrastructure\WordPress\BlockTitles;
+
+defined('ABSPATH') || exit;
 
 /**
  * Who last changed each top-level block of a post's content. The result is cached

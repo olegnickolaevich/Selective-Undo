@@ -10,6 +10,8 @@ use SelectiveUndo\Infrastructure\Queue\JobQueue;
 use SelectiveUndo\Infrastructure\Storage\JobRepository;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
 
+defined('ABSPATH') || exit;
+
 /**
  * Processes a job object by object within a time budget. One object is one
  * transaction; a mass restore is never one global transaction.
@@ -28,9 +30,7 @@ final class ExecuteRestoreJob
     ) {
     }
 
-    /**
-     * @return bool True when the job reached a terminal status in this call.
-     */
+    /** @return bool True when the job reached a terminal status in this call. */
     public function run(int $jobId, float $budgetSeconds = 20.0): bool
     {
         $lease = $this->jobs->claim($jobId);

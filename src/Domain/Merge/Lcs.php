@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
+defined('ABSPATH') || exit;
+
 /**
  * Alignment of two token lists: Myers' O((N+M)·D) algorithm after trimming the
  * common prefix and suffix.

@@ -86,9 +86,7 @@ final class NavMenuTest extends IntegrationTestCase
         ));
     }
 
-    /**
-     * @return list<string>
-     */
+    /** @return list<string> */
     private function titles(): array
     {
         wp_cache_flush();

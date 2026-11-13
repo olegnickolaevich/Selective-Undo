@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Contracts;
 
+defined('ABSPATH') || exit;
+
 /**
  * A restore transaction. Implemented by Infrastructure\Database\RestoreConnection
  * and, in compatibility mode, by WpdbTransactionRunner.

@@ -8,6 +8,8 @@ use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Restore plans. A plan is written as "preparing" and switched to "ready" only
  * after all items exist, so a crash never leaves a partial ready plan.
@@ -82,9 +84,7 @@ final class PlanRepository
         return $itemId;
     }
 
-    /**
-     * @param array{item_count: int, ready_count: int, object_count: int} $counts
-     */
+    /** @param array{item_count: int, ready_count: int, object_count: int} $counts */
     public function markReady(int $planId, array $counts, string $planHash): void
     {
         $ok = $this->db->update(
@@ -109,9 +109,7 @@ final class PlanRepository
         $this->db->update($this->t->plans, ['status' => 'failed'], ['id' => $planId, 'status' => 'preparing']);
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function findByUuid(string $uuid): ?array
     {
         $row = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->t->plans} WHERE uuid = %s", $uuid), ARRAY_A);
@@ -119,9 +117,7 @@ final class PlanRepository
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function findById(int $id): ?array
     {
         $row = $this->db->get_row($this->db->prepare("SELECT * FROM {$this->t->plans} WHERE id = %d", $id), ARRAY_A);
@@ -129,9 +125,7 @@ final class PlanRepository
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * @return list<array<string, mixed>>
-     */
+    /** @return list<array<string, mixed>> */
     public function items(int $planId): array
     {
         return (array) $this->db->get_results($this->db->prepare(
@@ -140,9 +134,7 @@ final class PlanRepository
         ), ARRAY_A);
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
+    /** @return array<string, mixed>|null */
     public function item(int $planId, int $itemId): ?array
     {
         $row = $this->db->get_row($this->db->prepare(
@@ -154,9 +146,7 @@ final class PlanRepository
         return is_array($row) ? $row : null;
     }
 
-    /**
-     * @return array<int, list<int>> plan item id => source change ids
-     */
+    /** @return array<int, list<int>> plan item id => source change ids */
     public function sources(int $planId): array
     {
         $rows = (array) $this->db->get_results($this->db->prepare(

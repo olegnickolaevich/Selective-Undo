@@ -14,6 +14,8 @@ use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 
+defined('ABSPATH') || exit;
+
 /**
  * Content-addressed, deduplicated value storage.
  *
@@ -87,9 +89,8 @@ final class BlobStore
     }
 
     /**
-     * Stores the values of one capture with as few statements as the size limit of a
-     * query allows: one write instead of one per value. Each commit on the capture
-     * path costs a disk flush, which dominates the time a save spends on history.
+     * Stores the values of one capture in as few statements as the query size limit
+     * allows: every commit on the save path costs a disk flush.
      *
      * @param list<FieldValue> $values
      *
@@ -158,9 +159,8 @@ final class BlobStore
     }
 
     /**
-     * IDs of values already stored. Their last_seen_at is refreshed when it is more than
-     * a minute old, so the collector (grace period of at least 5 minutes) never removes
-     * a value a capture is about to reference.
+     * IDs of values already stored. last_seen_at is refreshed when older than a minute,
+     * so garbage collection (grace period of 5+ minutes) keeps values about to be used.
      *
      * @param list<string> $hashes
      *
@@ -312,9 +312,7 @@ final class BlobStore
         return 0;
     }
 
-    /**
-     * @throws InvalidPayload
-     */
+    /** @throws InvalidPayload */
     public function loadVerified(int $id, string $expectedHash): FieldValue
     {
         $row = $this->db->get_row(

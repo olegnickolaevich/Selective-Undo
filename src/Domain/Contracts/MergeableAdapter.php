@@ -6,6 +6,8 @@ namespace SelectiveUndo\Domain\Contracts;
 
 use SelectiveUndo\Domain\Merge\MergeStrategy;
 
+defined('ABSPATH') || exit;
+
 /**
  * Optional: an adapter whose fields can be undone part by part. Adapters without
  * it restore whole fields only.

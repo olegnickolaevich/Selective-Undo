@@ -24,7 +24,6 @@ function write( key: string, value: string ): void {
  * One idempotency key per plan: survives a reload, changes with the plan.
  * Duplicate protection lives on the server; the key only makes a retry of a
  * request with a lost response safe.
- * @param planId
  */
 export function useIdempotencyKey( planId: string ): string {
 	return useMemo( () => {

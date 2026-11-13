@@ -10,6 +10,8 @@ use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Storage\JournalRepository;
 
+defined('ABSPATH') || exit;
+
 final class OperationManager implements OperationManagerInterface
 {
     public const ABANDON_AFTER_SECONDS = DAY_IN_SECONDS;

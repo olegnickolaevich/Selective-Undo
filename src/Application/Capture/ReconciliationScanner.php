@@ -15,6 +15,8 @@ use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\PostDeletionAdapter;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
  * Finds values changed outside WordPress APIs (direct SQL, search-replace, migrations)
  * and records them as changes that can be undone, with the source "external". Only
@@ -51,7 +53,7 @@ final class ReconciliationScanner
         $result = ['checked' => 0, 'drifted' => 0, 'done_cycle' => false, 'restored_backup' => false];
 
         // While the history may belong to another copy of the database, differences
-        // are not edits; the administrator decides first (FR-8.7.2).
+        // are not edits; the administrator decides first.
         if (!$this->sink->isActive() || $this->site->isMoved()) {
             return $result;
         }
@@ -109,7 +111,7 @@ final class ReconciliationScanner
         update_option(self::CURSOR_OPTION, $result['done_cycle'] ? 0 : $cursor, false);
 
         if ($checked >= self::RESTORE_SUSPICION_MIN_ITEMS && $result['drifted'] > $checked * self::RESTORE_SUSPICION_RATIO) {
-            // Hundreds of "changes" at once: report a restored backup instead (FR-8.4.4).
+            // Hundreds of "changes" at once: report a restored backup instead.
             $this->site->flagRestoredBackup();
             $result['restored_backup'] = true;
 

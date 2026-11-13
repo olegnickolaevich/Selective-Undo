@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Restore;
 
-/**
- * Decides the status of a plan item. First matching rule wins.
- */
+defined('ABSPATH') || exit;
+
+/** Decides the status of a plan item. First matching rule wins. */
 final class PlanItemEvaluator
 {
     public function __construct(private readonly ConflictDetector $detector)

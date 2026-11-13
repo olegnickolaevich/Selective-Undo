@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\WordPress;
 
+defined('ABSPATH') || exit;
+
 final class Capabilities
 {
     public const VIEW_HISTORY = 'sundo_view_history';

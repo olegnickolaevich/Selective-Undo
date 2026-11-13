@@ -10,6 +10,8 @@ use SelectiveUndo\Infrastructure\Database\SqlTime;
 use SelectiveUndo\Infrastructure\Database\StorageError;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Journal writes on the capture path ($wpdb, autocommit).
  *
@@ -63,9 +65,7 @@ final class JournalRepository
         return ['id' => (int) $this->db->insert_id, 'uuid' => $uuid];
     }
 
-    /**
-     * @param list<ChangeRow> $rows Rows without object_seq get the next numbers of their object, in row order.
-     */
+    /** @param list<ChangeRow> $rows Rows without object_seq get the next numbers of their object, in row order. */
     public function insertChanges(array $rows): void
     {
         if ($rows === []) {
@@ -196,7 +196,7 @@ final class JournalRepository
     }
 
     /**
-     * The latest change set of a user from a given source that touched the object
+     * The latest changeset of a user from a given source that touched the object
      * since a moment.
      */
     public function findRecentChangeset(int $actor, ObjectRef $object, string $source, string $sinceUtc): ?int
@@ -217,7 +217,7 @@ final class JournalRepository
         return $id === null ? null : (int) $id;
     }
 
-    /** The edit change set an earlier request with the same request UUID (save token) opened. */
+    /** The edit changeset an earlier request with the same request UUID (save token) opened. */
     public function findChangesetByRequest(int $actor, string $requestUuid, string $sinceUtc): ?int
     {
         $id = $this->db->get_var($this->db->prepare(
@@ -232,7 +232,7 @@ final class JournalRepository
         return $id === null ? null : (int) $id;
     }
 
-    /** Opens a sealed change set again to add rows; sealing recomputes its summary. */
+    /** Opens a sealed changeset again to add rows; sealing recomputes its summary. */
     public function reopen(int $changesetId): void
     {
         $this->db->query($this->db->prepare(
@@ -258,9 +258,7 @@ final class JournalRepository
         return $id === null ? null : (int) $id;
     }
 
-    /**
-     * @return array{id: int, before_hash: string|null, after_hash: string|null}|null
-     */
+    /** @return array{id: int, before_hash: string|null, after_hash: string|null}|null */
     public function findFieldChange(int $changesetId, ObjectRef $object, string $field): ?array
     {
         $row = $this->db->get_row($this->db->prepare(
@@ -284,9 +282,7 @@ final class JournalRepository
         ];
     }
 
-    /**
-     * Autosave coalescing only: the one allowed mutation of a journal row (invariant I-2).
-     */
+    /** Autosave coalescing only: the one allowed mutation of a journal row (invariant I-2). */
     public function updateChangeAfter(int $changeId, ?int $afterBlobId, string $afterHash, bool $restorable, ?string $reason): void
     {
         $ok = $this->db->query($this->db->prepare(
@@ -384,7 +380,7 @@ final class JournalRepository
     }
 
     /**
-     * Called with the change set ID each time a change set is sealed. A change set that
+     * Called with the changeset ID each time a changeset is sealed. A changeset that
      * a later request of the same save reopens is sealed, and reported, again.
      *
      * @param callable(int): void $listener
@@ -394,9 +390,7 @@ final class JournalRepository
         $this->onSealed = $listener(...);
     }
 
-    /**
-     * Seals autosave sessions of this user for this object (a regular save ends the session).
-     */
+    /** Seals autosave sessions of this user for this object (a regular save ends the session). */
     public function sealAutosaveSessions(int $actor, ObjectRef $object): void
     {
         $ids = $this->db->get_col($this->db->prepare(

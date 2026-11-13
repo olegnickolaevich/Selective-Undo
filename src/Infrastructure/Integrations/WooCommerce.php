@@ -6,15 +6,13 @@ namespace SelectiveUndo\Infrastructure\Integrations;
 
 use SelectiveUndo\Domain\Contracts\FieldDefinition;
 
+defined('ABSPATH') || exit;
+
 /**
- * WooCommerce products. Their titles, descriptions, status, categories, tags and
- * images are post fields and terms, recorded once "Products" is a recorded content
- * type. This adds the regular price, the sale price and its dates, and the SKU of products and
- * of their variations (recorded together with the products), and refreshes what
- * WooCommerce derives from them right after a restore: the active price, the price
- * range of a variable product, the lookup table and the product caches.
- *
- * Stock is not recorded: it changes with every order.
+ * WooCommerce products: regular and sale price, sale dates and SKU of products and
+ * their variations (other product fields are post fields and terms). After a restore
+ * it refreshes what WooCommerce derives from them: the active price, the price range,
+ * the lookup table and caches. Stock is not recorded: it changes with every order.
  */
 final class WooCommerce
 {
@@ -70,9 +68,7 @@ final class WooCommerce
         return $types;
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
+    /** @param array<string, mixed> $payload */
     public function afterRestore(array $payload): void
     {
         $id = (int) ($payload['object_id'] ?? 0);

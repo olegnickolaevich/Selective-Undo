@@ -8,8 +8,10 @@ use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
 use SelectiveUndo\Infrastructure\Storage\Outbox;
 
+defined('ABSPATH') || exit;
+
 /**
- * Tells listeners that a change set was recorded: right away through an action, and
+ * Tells listeners that a changeset was recorded: right away through an action, and
  * later, delivered at least once, to the handlers registered for the outbox topic.
  * Only IDs and metadata are published, never field values.
  */
@@ -41,7 +43,7 @@ final class ChangesetEvents
             }
 
             /**
-             * A change set was recorded (or completed by a later request of the same save).
+             * A changeset was recorded (or completed by a later request of the same save).
              * IDs and metadata only, never values.
              *
              * @param array{uuid: string, kind: string, source: string, actor: int|null, objects: list<string>, fields: list<string>, change_count: int} $summary
@@ -53,7 +55,7 @@ final class ChangesetEvents
                 $this->outbox->enqueueNow(self::TOPIC, null, null, $summary);
             }
         } catch (\Throwable $e) {
-            // Recording never fails because of a listener (I-6).
+            // Recording never fails because of a listener.
             $this->log->exception('changeset_event_failed', $e);
         }
     }

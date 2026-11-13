@@ -124,10 +124,7 @@ export function useView(): View {
 	return view;
 }
 
-/**
- * Click handler for links that should navigate inside the app.
- * @param view
- */
+/** Click handler for links that should navigate inside the app. */
 export function linkHandler( view: View ) {
 	return ( event: {
 		preventDefault: () => void;

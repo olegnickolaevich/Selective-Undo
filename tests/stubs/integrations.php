@@ -1,8 +1,6 @@
 <?php
 
-/**
- * Functions of optional integrations, for static analysis only.
- */
+/** Functions of optional integrations, for static analysis only. */
 
 /**
  * @param array<string, mixed> $filter
@@ -34,25 +32,19 @@ function as_enqueue_async_action(string $hook, array $args = [], string $group =
     return 0;
 }
 
-/**
- * @param array<mixed> $args
- */
+/** @param array<mixed> $args */
 function as_schedule_single_action(int $timestamp, string $hook, array $args = [], string $group = '', bool $unique = false, int $priority = 10): int
 {
     return 0;
 }
 
-/**
- * @param array<mixed>|null $args
- */
+/** @param array<mixed>|null $args */
 function as_has_scheduled_action(string $hook, ?array $args = null, string $group = ''): bool
 {
     return false;
 }
 
-/**
- * @param array<mixed> $args
- */
+/** @param array<mixed> $args */
 function as_unschedule_all_actions(string $hook, array $args = [], string $group = ''): void
 {
 }
@@ -107,9 +99,7 @@ class WC_Product_Variable extends WC_Product
     }
 }
 
-/**
- * @return WC_Product|null|false
- */
+/** @return WC_Product|null|false */
 function wc_get_product(mixed $the_product = false, array $deprecated = [])
 {
     return null;

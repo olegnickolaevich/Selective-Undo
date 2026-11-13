@@ -7,6 +7,8 @@ namespace SelectiveUndo\Presentation\Admin;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 use SelectiveUndo\Infrastructure\WordPress\TrackingPolicy;
 
+defined('ABSPATH') || exit;
+
 /**
  * Admin menu and screens. The React bundle is loaded ONLY on the plugin's own
  * screens; other admin pages get nothing but a row action link.

@@ -6,9 +6,7 @@ namespace SelectiveUndo\Tests\Integration;
 
 use SelectiveUndo\Tests\IntegrationTestCase;
 
-/**
- * Against the real WooCommerce (installed on the test site in one CI configuration).
- */
+/** Against the real WooCommerce (installed on the test site in one CI configuration). */
 final class WooCommerceTest extends IntegrationTestCase
 {
     public function setUp(): void

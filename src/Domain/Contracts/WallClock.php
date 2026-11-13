@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Contracts;
 
+defined('ABSPATH') || exit;
+
 interface WallClock
 {
     /** Unix timestamp. */

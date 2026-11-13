@@ -9,6 +9,8 @@ use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 
+defined('ABSPATH') || exit;
+
 /**
  * "Last change" column on list screens of tracked post types. The data for all rows
  * of the page is read with one query on the first rendered cell.

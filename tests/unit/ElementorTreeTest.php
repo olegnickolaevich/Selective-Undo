@@ -94,9 +94,7 @@ final class ElementorTreeTest extends TestCase
         ]];
     }
 
-    /**
-     * @return array<string, mixed>
-     */
+    /** @return array<string, mixed> */
     private static function widget(string $id, string $title): array
     {
         return ['id' => $id, 'elType' => 'widget', 'settings' => ['title' => $title, 'align' => 'left'], 'widgetType' => 'heading', 'elements' => []];

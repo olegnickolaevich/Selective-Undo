@@ -16,5 +16,6 @@
 /.github
 /composer.json
 /composer.lock
+/eslint.config.cjs
 /phpstan.neon.dist
 /docs

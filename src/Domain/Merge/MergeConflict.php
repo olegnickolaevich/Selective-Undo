@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
-/**
- * A part changed both by the undo and by later edits, differently.
- */
+defined('ABSPATH') || exit;
+
+/** A part changed both by the undo and by later edits, differently. */
 final readonly class MergeConflict
 {
     /**

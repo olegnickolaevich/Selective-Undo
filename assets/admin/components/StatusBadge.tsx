@@ -9,12 +9,7 @@ const ICONS = {
 	neutral: info,
 } as const;
 
-/**
- * Status is never conveyed by colour alone: icon + text.
- * @param root0
- * @param root0.tone
- * @param root0.children
- */
+/** Status is never conveyed by colour alone: icon + text. */
 export function StatusBadge( {
 	tone,
 	children,

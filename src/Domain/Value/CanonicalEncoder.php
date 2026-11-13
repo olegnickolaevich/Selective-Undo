@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Value;
 
+defined('ABSPATH') || exit;
+
 /**
  * Canonical format c1.
  *
@@ -37,9 +39,7 @@ final class CanonicalEncoder
         return json_encode($root, self::FLAGS);
     }
 
-    /**
-     * @throws InvalidPayload
-     */
+    /** @throws InvalidPayload */
     public static function decode(string $canonical, int $maxBytes): FieldValue
     {
         if (strlen($canonical) > $maxBytes) {
@@ -85,9 +85,7 @@ final class CanonicalEncoder
         return preg_match('//u', $value) === 1;
     }
 
-    /**
-     * @return array<int, mixed>
-     */
+    /** @return array<int, mixed> */
     private static function node(mixed $value): array
     {
         return match (true) {
@@ -120,9 +118,7 @@ final class CanonicalEncoder
         return $pairs;
     }
 
-    /**
-     * @throws InvalidPayload
-     */
+    /** @throws InvalidPayload */
     private static function fromNode(mixed $node): mixed
     {
         if (!is_array($node) || !array_is_list($node) || $node === []) {

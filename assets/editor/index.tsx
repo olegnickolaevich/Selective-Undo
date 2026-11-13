@@ -32,9 +32,7 @@ declare global {
 const LIMIT = 5;
 const PANEL = 'selective-undo/selective-undo-history';
 
-/**
- * Opens the document sidebar with the history panel expanded.
- */
+/** Opens the document sidebar with the history panel expanded. */
 function showPanel(): void {
 	const area = dispatch( 'core/interface' ) as {
 		enableComplementaryArea?: ( scope: string, id: string ) => void;

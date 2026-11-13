@@ -10,6 +10,8 @@ use SelectiveUndo\Infrastructure\Database\SchemaManager;
 use SelectiveUndo\Infrastructure\Database\StorageUnavailable;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Strict mode requirements. When they are not met, capture may continue but restore
  * is blocked with an explanation; there is no silent fallback to a weaker mode.
@@ -28,9 +30,7 @@ final class RestoreReadiness
     ) {
     }
 
-    /**
-     * @return list<string> Blocking reason codes; empty when restore is possible.
-     */
+    /** @return list<string> Blocking reason codes; empty when restore is possible. */
     public function blockers(bool $fresh = false): array
     {
         if (!$this->schema->isCurrent()) {

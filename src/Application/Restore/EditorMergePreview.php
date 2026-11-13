@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Application\Restore;
 
-// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception messages are returned as REST API JSON errors (ErrorMapper), never printed as HTML.
+// phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Messages go to REST errors and logs, never to HTML.
 
 use SelectiveUndo\Domain\Change\ChangeEvent;
 use SelectiveUndo\Domain\Contracts\MergeableAdapter;
@@ -17,6 +17,8 @@ use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
 use SelectiveUndo\Infrastructure\Storage\JournalReader;
+
+defined('ABSPATH') || exit;
 
 /**
  * Undo of one change against the editor's own, possibly unsaved, value. Writes

@@ -75,9 +75,7 @@ final class PartialUndoTest extends IntegrationTestCase
         $this->assertSame(self::content('c0'), $post->post_content);
     }
 
-    /**
-     * @param array<string, string> $edit
-     */
+    /** @param array<string, string> $edit */
     private function moveLastChange(int $id, string $field, string $createdAt, array $edit): void
     {
         wp_update_post(['ID' => $id] + $edit);

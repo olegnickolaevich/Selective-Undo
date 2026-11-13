@@ -6,9 +6,9 @@ namespace SelectiveUndo\Application\Restore;
 
 use SelectiveUndo\Domain\Value\FieldValue;
 
-/**
- * Result of undoing one change of a field that changed again later.
- */
+defined('ABSPATH') || exit;
+
+/** Result of undoing one change of a field that changed again later. */
 final readonly class FieldMergeOutcome
 {
     /**

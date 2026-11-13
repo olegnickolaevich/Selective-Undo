@@ -21,19 +21,17 @@ use SelectiveUndo\Infrastructure\Storage\Outbox;
 use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
 use SelectiveUndo\Infrastructure\WordPress\ObjectLock;
 
+defined('ABSPATH') || exit;
+
 /**
- * Restores one object.
+ * Restores one object in three phases:
  *
- * Phase 1 (no transaction): permissions of the job author, loading and verifying
- *   targets, checks that call WordPress APIs or third-party filters (kses,
- *   preconditions). Third-party code must NOT run while FOR UPDATE locks are held:
- *   if it wrote the same row through $wpdb the PHP process would block itself.
- * Phase 2 (one short transaction on the dedicated connection, or on $wpdb in
- *   compatibility mode) for all adapters of the object: fencing, locking job
- *   items, locking the object row, then per adapter (by priority) a fresh three-way
- *   comparison, writing only ready fields, journal and item statuses; counters and
- *   outbox. All or nothing.
- * Phase 3 (after commit): immediate attempt to deliver outbox events.
+ * 1. No transaction: permissions, targets, checks that run WordPress or third-party
+ *    code (kses, preconditions). Such code must not run under FOR UPDATE locks: a
+ *    write of the same row through $wpdb would block the process on itself.
+ * 2. One short transaction for all adapters of the object: fencing, locks, a fresh
+ *    three-way comparison per adapter, writes of ready fields, journal, statuses.
+ * 3. After commit: delivery of outbox events.
  */
 final class RestoreObjectExecutor
 {
@@ -52,7 +50,7 @@ final class RestoreObjectExecutor
 
     public function restoreObject(JobLease $lease, ObjectRef $object): ObjectRestoreResult
     {
-        // ---------- Phase 1 ----------
+        // Phase 1: outside the transaction.
         $pending = $this->jobs->pendingFor($lease->jobId, $object);
 
         if ($pending === []) {
@@ -107,7 +105,7 @@ final class RestoreObjectExecutor
             $targets[$planItemId] = $target;
         }
 
-        // ---------- Phase 2 ----------
+        // Phase 2: the transaction.
         $result = $this->db->transactional(
             function (RestoreTransaction $tx) use ($lease, $object, $verdicts, $targets, $preBlocked): ObjectRestoreResult {
                 $this->jobs->fence($tx, $lease);
@@ -171,7 +169,7 @@ final class RestoreObjectExecutor
             }
         );
 
-        // ---------- Phase 3 ----------
+        // Phase 3: after commit.
         if ($result->restoredFields !== []) {
             // A failure here does not undo the restore: the event stays in the outbox.
             $this->outbox->dispatchPendingFor($lease->jobId, $object);

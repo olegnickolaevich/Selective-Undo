@@ -6,6 +6,8 @@ namespace SelectiveUndo\Infrastructure\WordPress;
 
 use SelectiveUndo\Infrastructure\Database\Tables;
 
+defined('ABSPATH') || exit;
+
 /**
  * Integration with the WordPress personal data tools. The history records who
  * changed what (activity data); content itself cannot be matched to an email
@@ -58,9 +60,7 @@ final class PrivacyIntegration
         return $erasers;
     }
 
-    /**
-     * @return array{data: list<array<string, mixed>>, done: bool}
-     */
+    /** @return array{data: list<array<string, mixed>>, done: bool} */
     public function export(string $email, int $page = 1): array
     {
         $user = get_user_by('email', $email);

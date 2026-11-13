@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Domain\Merge;
 
-/**
- * Undo of a change of a set (terms): later edits win for the members they touched.
- */
+defined('ABSPATH') || exit;
+
+/** Undo of a change of a set (terms): later edits win for the members they touched. */
 final class SetMerger
 {
     /**
