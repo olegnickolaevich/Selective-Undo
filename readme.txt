@@ -1,5 +1,5 @@
 === Selective Undo ===
-Contributors: olegnickolaevich
+Contributors: codeverse
 Tags: undo, revisions, rollback, restore, history
 Requires at least: 6.8
 Tested up to: 7.1
