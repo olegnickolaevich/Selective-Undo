@@ -27,7 +27,7 @@ use SelectiveUndo\Infrastructure\Storage\RestoreJournal;
  */
 final class CreateRestoreJob
 {
-    /** Objects above this count are processed by the queue (PRO bulk restore). */
+    /** Restores of more items than this run in the background queue. */
     public const INLINE_OBJECT_LIMIT = 5;
 
     public function __construct(

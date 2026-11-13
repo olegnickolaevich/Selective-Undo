@@ -7,7 +7,7 @@ namespace SelectiveUndo\Presentation\Cli;
 use SelectiveUndo\Bootstrap\Plugin;
 
 /**
- * Maintenance commands. Restoring from the command line is a PRO feature.
+ * Maintenance of the history: health checks, retention, the background queue and the import of revisions.
  */
 final class CliCommand
 {

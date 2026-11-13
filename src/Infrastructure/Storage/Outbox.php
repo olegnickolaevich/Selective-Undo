@@ -177,7 +177,7 @@ final class Outbox
                 substr((new \ReflectionClass($e))->getShortName(), 0, 64),
                 $id
             ));
-            $this->log->exception('outbox_delivery_failed', $e, isset($row['object_id']) ? (int) $row['object_id'] : null, isset($row['job_id']) ? (int) $row['job_id'] : null);
+            $this->log->exception('outbox_delivery_failed', $e, isset($row['object_id']) ? new ObjectRef((string) $row['object_type'], (int) $row['object_id']) : null, isset($row['job_id']) ? (int) $row['job_id'] : null);
         }
     }
 }

@@ -14,6 +14,7 @@ use SelectiveUndo\Domain\Contracts\LockService;
 use SelectiveUndo\Domain\Contracts\WallClock;
 use SelectiveUndo\Domain\Value\FieldValue;
 use SelectiveUndo\Domain\Value\InvalidPayload;
+use SelectiveUndo\Infrastructure\Database\Tables;
 use SelectiveUndo\Infrastructure\Diagnostics\EventLog;
 use SelectiveUndo\Infrastructure\Settings\Settings;
 use SelectiveUndo\Infrastructure\Storage\BlobStore;
@@ -52,13 +53,14 @@ final class CaptureService implements CaptureSink
         private readonly RevisionImporter $revisions,
         private readonly LockService $locks,
         private readonly CaptureCircuitBreaker $breaker,
+        private readonly Tables $tables,
     ) {
     }
 
     /** Writes made by a restore's own post-processing are not new history. */
     public function isActive(): bool
     {
-        return $this->state->isActive() && !$this->request->isRestoring();
+        return $this->recording() && !$this->request->isRestoring();
     }
 
     public function record(AdapterInterface $adapter, ObjectRef $object, array $changes, CaptureQuality $quality): void
@@ -76,7 +78,7 @@ final class CaptureService implements CaptureSink
                 );
             } catch (\Throwable $e) {
                 // Called from WordPress hooks: a journal error must never break the save.
-                $this->log->exception('capture_failed', $e, $object->id);
+                $this->log->exception('capture_failed', $e, $object);
                 $this->gaps->object('capture_failed', $object);
             }
         });
@@ -84,7 +86,7 @@ final class CaptureService implements CaptureSink
 
     public function recordPostUpdate(CaptureFrame $frame, PostRow $after, CaptureQuality $quality): void
     {
-        if (!$this->state->isActive()) {
+        if (!$this->recording()) {
             return;
         }
 
@@ -151,7 +153,7 @@ final class CaptureService implements CaptureSink
      */
     public function recordDeletion(ObjectRef $object, FieldValue $snapshot): void
     {
-        if (!$this->state->isActive()) {
+        if (!$this->recording()) {
             return;
         }
 
@@ -184,7 +186,7 @@ final class CaptureService implements CaptureSink
 
     public function recordEvent(ChangeEvent $event, ObjectRef $object, ?int $sequence = null): void
     {
-        if (!$this->state->isActive()) {
+        if (!$this->recording()) {
             return;
         }
 
@@ -495,5 +497,14 @@ final class CaptureService implements CaptureSink
         }
 
         $this->breaker->success($started === null ? null : (microtime(true) - $started) * 1000);
+    }
+
+    /**
+     * Recording is on and the current site is this history's site: after
+     * switch_to_blog() the posts written belong to another site of the network.
+     */
+    private function recording(): bool
+    {
+        return $this->db->prefix === $this->tables->prefix && $this->state->isActive();
     }
 }

@@ -24,6 +24,7 @@ use SelectiveUndo\Presentation\Admin\AdminPage;
 final class ChangeIndicator
 {
     public const QUERY_ARG = 'su_changes';
+    private const HANDLE = 'selective-undo-changes';
 
     private int $postId = 0;
     private string $field = '';
@@ -134,7 +135,21 @@ final class ChangeIndicator
         add_filter('the_content', [$this, 'leaveContent'], 10);
         add_filter('pre_render_block', [$this, 'beforeBlock'], PHP_INT_MAX, 2);
         add_filter('render_block', [$this, 'afterBlock'], 10, 2);
+        add_action('wp_enqueue_scripts', [$this, 'styles']);
         add_action('wp_footer', [$this, 'banner']);
+    }
+
+    public function styles(): void
+    {
+        wp_register_style(self::HANDLE, false, [], SELECTIVE_UNDO_VERSION);
+        wp_enqueue_style(self::HANDLE);
+        wp_add_inline_style(
+            self::HANDLE,
+            '.su-changed{outline:2px dashed #d63638;outline-offset:4px}'
+            . '.su-changes-banner{position:fixed;inset-inline:16px;bottom:16px;z-index:99999;max-width:40em;margin-inline:auto;'
+            . 'background:#1e1e1e;color:#fff;padding:12px 16px;border-radius:4px;font:14px/1.5 system-ui,sans-serif}'
+            . '.su-changes-banner a{color:#9ec2e6}'
+        );
     }
 
     /**
@@ -249,10 +264,6 @@ final class ChangeIndicator
             $message .= ' ' . __('The content was changed again after this edit.', 'selective-undo');
         }
 
-        echo '<style>.su-changed{outline:2px dashed #d63638;outline-offset:4px}'
-            . '.su-changes-banner{position:fixed;inset-inline:16px;bottom:16px;z-index:99999;max-width:40em;margin-inline:auto;'
-            . 'background:#1e1e1e;color:#fff;padding:12px 16px;border-radius:4px;font:14px/1.5 system-ui,sans-serif}'
-            . '.su-changes-banner a{color:#9ec2e6}</style>';
         printf(
             '<div class="su-changes-banner" role="status">%s <a href="%s">%s</a></div>',
             esc_html($message),

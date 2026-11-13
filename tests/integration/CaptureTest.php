@@ -39,6 +39,23 @@ final class CaptureTest extends IntegrationTestCase
         $this->assertCount(0, $this->changes($id, 'update'));
     }
 
+    public function testNothingIsRecordedWhileSwitchedToAnotherSite(): void
+    {
+        // switch_to_blog() changes the table prefix: the post written belongs to another site.
+        $id = $this->createPost();
+        $prefix = $this->db->prefix;
+        $this->db->prefix = $prefix . '2_';
+
+        try {
+            wp_update_post(['ID' => $id, 'post_title' => 'Another site']);
+            $this->endRequest();
+        } finally {
+            $this->db->prefix = $prefix;
+        }
+
+        $this->assertCount(0, $this->changes($id, 'update'));
+    }
+
     public function testMenuOrderIsTypedInt(): void
     {
         $id = $this->createPost(['menu_order' => 3]);

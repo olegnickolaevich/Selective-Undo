@@ -99,7 +99,7 @@ final class RevisionImporter
 
             $this->importItem($object->id, self::LOCK_WAIT_SECONDS);
         } catch (\Throwable $e) {
-            $this->log->exception('revision_import_failed', $e, $object->id);
+            $this->log->exception('revision_import_failed', $e, $object);
         }
     }
 

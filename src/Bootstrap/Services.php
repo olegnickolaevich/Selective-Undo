@@ -95,8 +95,12 @@ final class Services
     /** @var array<string, object> */
     private array $instances = [];
 
+    /** Tables of the request's site, fixed before any switch_to_blog(). */
+    private readonly Tables $tables;
+
     public function __construct(private readonly \wpdb $db)
     {
+        $this->tables = Tables::fromWpdb($db);
     }
 
     public function db(): \wpdb
@@ -106,7 +110,7 @@ final class Services
 
     public function tables(): Tables
     {
-        return $this->get(Tables::class, fn () => Tables::fromWpdb($this->db));
+        return $this->tables;
     }
 
     public function settings(): Settings
@@ -233,6 +237,7 @@ final class Services
             $this->revisionImporter(),
             $this->locks(),
             $this->circuitBreaker(),
+            $this->tables(),
         ));
     }
 

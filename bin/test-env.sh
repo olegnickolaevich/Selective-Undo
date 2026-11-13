@@ -33,6 +33,8 @@ CORE="$WORK/core/${WP_IMAGE//[:\/]/_}"
 mkdir -p "$WORK"
 
 wp() { php "$WPCLI" --path="$SITE" --allow-root "$@"; }
+# Paths written into PHP files: native on Windows (Git Bash), unchanged elsewhere.
+native() { cygpath -m "$1" 2>/dev/null || echo "$1"; }
 
 db_client() { [[ "$DB_IMAGE" == mariadb* ]] && echo mariadb || echo mysql; }
 
@@ -67,6 +69,12 @@ ensure_sqlite_plugin() {
   if [ ! -f "$SQLITE_PLUGIN/load.php" ]; then
     local tmp; tmp="$(mktemp -d)"
     git clone -q --depth 1 https://github.com/WordPress/sqlite-database-integration.git "$tmp/repo"
+    # Without symlink support (Windows) a link is checked out as a file with its target.
+    local link="$tmp/repo/packages/plugin-sqlite-database-integration/wp-includes/database"
+    if [ -f "$link" ]; then
+      local target; target="$(dirname "$link")/$(cat "$link")"
+      rm "$link" && cp -r "$target" "$link"
+    fi
     rm -rf "$SQLITE_PLUGIN"
     # -L: in the monorepo the plugin links to the driver package; copy the files instead.
     cp -rL "$tmp/repo/packages/plugin-sqlite-database-integration" "$SQLITE_PLUGIN"
@@ -78,7 +86,7 @@ db_config() {
   if [ "$DB_ENGINE" = sqlite ]; then
     cat <<PHP
 define('DB_ENGINE', 'sqlite');
-define('DB_DIR', '$SITE/wp-content/database/');
+define('DB_DIR', '$(native "$SITE")/wp-content/database/');
 define('DB_FILE', '.ht.sqlite');
 define('DB_NAME', '$DB_NAME');
 define('DB_USER', '');
@@ -114,7 +122,7 @@ define('DB_COLLATE', '');
 \$table_prefix = '$TABLE_PREFIX';
 define('WP_DEBUG', true);
 define('WP_DEBUG_DISPLAY', false);
-define('WP_DEBUG_LOG', '$SITE/debug.log');
+define('WP_DEBUG_LOG', '$(native "$SITE")/debug.log');
 define('DISABLE_WP_CRON', true);
 foreach (['AUTH_KEY','SECURE_AUTH_KEY','LOGGED_IN_KEY','NONCE_KEY','AUTH_SALT','SECURE_AUTH_SALT','LOGGED_IN_SALT','NONCE_SALT'] as \$k) { define(\$k, 'test-' . \$k); }
 if (!defined('ABSPATH')) define('ABSPATH', __DIR__ . '/');

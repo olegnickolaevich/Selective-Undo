@@ -21,6 +21,13 @@ final class ActivationTest extends IntegrationTestCase
         $this->assertSame('up_to_date', $this->s->schema()->migrate());
     }
 
+    public function testDeletingASiteOfANetworkDropsItsHistoryTables(): void
+    {
+        $tables = (array) apply_filters('wpmu_drop_tables', ['posts' => $this->db->posts], get_current_blog_id());
+
+        $this->assertSame([$this->db->posts, ...$this->s->tables()->own()], array_values($tables));
+    }
+
     public function testCapabilitiesAreGrantedToAdministratorsOnly(): void
     {
         $this->assertTrue(user_can(1, 'sundo_restore_changes'));

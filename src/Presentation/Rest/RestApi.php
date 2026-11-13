@@ -11,6 +11,8 @@ use SelectiveUndo\Bootstrap\Services;
 use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Domain\DomainError;
 use SelectiveUndo\Infrastructure\WordPress\Capabilities;
+use SelectiveUndo\Infrastructure\WordPress\NavMenuAdapter;
+use SelectiveUndo\Infrastructure\WordPress\SiteOptionsAdapter;
 
 /**
  * REST API /selective-undo/v1. Route permission callbacks are a coarse gate;
@@ -259,11 +261,16 @@ final class RestApi
                 $object = null;
 
                 if ($row['scope'] === 'object') {
-                    if (!user_can($userId, Capabilities::VIEW_OBJECT, (int) $row['object_id'])) {
+                    $type = (string) $row['object_type'];
+                    // Gaps keep no subtype; site settings and menus have capabilities of their own.
+                    $subtype = ['site' => SiteOptionsAdapter::SUBTYPE, 'menu' => NavMenuAdapter::SUBTYPE][$type] ?? '';
+                    $ref = new ObjectRef($type, (int) $row['object_id'], $subtype);
+
+                    if (!user_can($userId, Capabilities::VIEW_OBJECT, $ref->id, $ref->subtype)) {
                         continue;
                     }
 
-                    $object = $this->s->objectPresenter()->describe(new ObjectRef((string) $row['object_type'], (int) $row['object_id']), $userId);
+                    $object = $this->s->objectPresenter()->describe($ref, $userId);
                 }
 
                 $items[] = [

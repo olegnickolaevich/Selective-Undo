@@ -53,6 +53,7 @@ final class Plugin
             \WP_CLI::add_hook('after_invoke:search-replace', [self::class, 'scheduleReconcile']);
         }
         add_action(\SelectiveUndo\Application\Retention\RetentionService::CRON_HOOK, [self::class, 'runMaintenance']);
+        add_filter('wpmu_drop_tables', [self::class, 'siteTables'], 10, 2);
         $s->privacy()->register();
         // Plugins are loaded by then; WooCommerce registers its product types on init.
         add_action('plugins_loaded', static function (): void {
@@ -108,6 +109,20 @@ final class Plugin
         ];
 
         return $schedules;
+    }
+
+    /**
+     * Deleting a site of a network deletes its history tables too.
+     *
+     * @param array<string> $tables
+     *
+     * @return array<string>
+     */
+    public static function siteTables(array $tables, int $siteId): array
+    {
+        $db = self::services()->db();
+
+        return [...$tables, ...(new \SelectiveUndo\Infrastructure\Database\Tables($db->get_blog_prefix($siteId), '', ''))->own()];
     }
 
     public static function runJob(int|string $jobId): void

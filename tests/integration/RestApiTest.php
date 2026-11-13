@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Tests\Integration;
 
+use SelectiveUndo\Domain\Change\ObjectRef;
+use SelectiveUndo\Infrastructure\WordPress\NavMenuAdapter;
 use SelectiveUndo\Tests\IntegrationTestCase;
 
 final class RestApiTest extends IntegrationTestCase
@@ -159,6 +161,25 @@ final class RestApiTest extends IntegrationTestCase
             $role->remove_cap('sundo_view_history');
             $role->remove_cap('sundo_restore_changes');
         }
+    }
+
+    public function testGapsOfMenusAndSiteSettingsNeedTheirOwnCapabilities(): void
+    {
+        // The editor may edit post $id, but not a menu with the same ID.
+        $id = $this->createPost();
+        $this->s->gaps()->object('external_write_detected', new ObjectRef('post', $id, 'page'));
+        $this->s->gaps()->object('external_write_detected', new ObjectRef('menu', $id, NavMenuAdapter::SUBTYPE));
+        get_role('editor')->add_cap('sundo_view_history');
+
+        try {
+            [$status, $gaps] = $this->call('GET', '/gaps', [], [], $this->userId('editor'));
+        } finally {
+            get_role('editor')->remove_cap('sundo_view_history');
+        }
+
+        $this->assertSame(200, $status);
+        $seen = array_filter($gaps['items'], static fn (array $gap): bool => ($gap['object']['id'] ?? 0) === $id);
+        $this->assertSame(['page'], array_values(array_map(static fn (array $gap): string => $gap['object']['subtype'], $seen)));
     }
 
     public function testSettingsAndRoles(): void

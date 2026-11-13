@@ -67,7 +67,7 @@ final class ExecuteRestoreJob
                 } catch (LeaseLost) {
                     return false;
                 } catch (\Throwable $e) {
-                    $this->log->exception('restore_object_failed', $e, $next['object']->id, $jobId);
+                    $this->log->exception('restore_object_failed', $e, $next['object'], $jobId);
                     $final = $this->jobs->recordFailure($jobId, $next['object'], $this->codeOf($e));
 
                     if (!$final) {

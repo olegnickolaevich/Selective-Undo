@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SelectiveUndo\Infrastructure\Diagnostics;
 
+use SelectiveUndo\Domain\Change\ObjectRef;
 use SelectiveUndo\Infrastructure\Database\Tables;
 
 /**
@@ -80,14 +81,18 @@ final class EventLog
         }
     }
 
-    public function exception(string $code, \Throwable $e, ?int $objectId = null, ?int $jobId = null): void
+    /**
+     * @param ObjectRef|int|null $object An int is a post ID.
+     */
+    public function exception(string $code, \Throwable $e, ObjectRef|int|null $object = null, ?int $jobId = null): void
     {
         if (defined('WP_DEBUG') && WP_DEBUG) {
             // Developer aid only: exception messages of this plugin never contain content.
             error_log(sprintf('[selective-undo] %s: %s: %s in %s:%d', $code, $e::class, $e->getMessage(), $e->getFile(), $e->getLine())); // phpcs:ignore WordPress.PHP.DevelopmentFunctions
         }
 
-        $this->log('error', $code, ['exception' => (new \ReflectionClass($e))->getShortName(), 'reason' => $this->reasonOf($e)], $jobId, $objectId === null ? null : 'post', $objectId);
+        $object = is_int($object) ? new ObjectRef('post', $object) : $object;
+        $this->log('error', $code, ['exception' => (new \ReflectionClass($e))->getShortName(), 'reason' => $this->reasonOf($e)], $jobId, $object?->type, $object?->id);
     }
 
     private function reasonOf(\Throwable $e): string
