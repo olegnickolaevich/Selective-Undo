@@ -22,10 +22,10 @@ export function relativeDate( iso: string | null ): string {
 
 export function formatBytes( bytes: number ): string {
 	const units = [
-		_x( 'B', 'unit: bytes', 'selective-undo' ),
-		_x( 'KB', 'unit: kilobytes', 'selective-undo' ),
-		_x( 'MB', 'unit: megabytes', 'selective-undo' ),
-		_x( 'GB', 'unit: gigabytes', 'selective-undo' ),
+		_x( 'B', 'unit: bytes', 'undoly' ),
+		_x( 'KB', 'unit: kilobytes', 'undoly' ),
+		_x( 'MB', 'unit: megabytes', 'undoly' ),
+		_x( 'GB', 'unit: gigabytes', 'undoly' ),
 	];
 	let value = bytes;
 	let unit = 0;
@@ -41,7 +41,7 @@ export function formatBytes( bytes: number ): string {
 export function fieldsCount( count: number ): string {
 	return sprintf(
 		/* translators: %d: number of fields. */
-		_n( '%d field', '%d fields', count, 'selective-undo' ),
+		_n( '%d field', '%d fields', count, 'undoly' ),
 		count
 	);
 }
@@ -49,7 +49,7 @@ export function fieldsCount( count: number ): string {
 export function itemsCount( count: number ): string {
 	return sprintf(
 		/* translators: %d: number of posts or pages. */
-		_n( '%d item', '%d items', count, 'selective-undo' ),
+		_n( '%d item', '%d items', count, 'undoly' ),
 		count
 	);
 }

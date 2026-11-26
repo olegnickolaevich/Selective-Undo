@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Selective Undo
+ * Plugin Name:       Undoly – Selective Undo
  * Plugin URI:        https://github.com/olegnickolaevich/Selective-Undo
  * Description:       Undo one change and keep everything else: restore single fields of posts, pages, products, menus and site settings without overwriting newer edits.
  * Version:           1.0.0
@@ -10,7 +10,7 @@
  * Author URI:        https://github.com/olegnickolaevich
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       selective-undo
+ * Text Domain:       undoly
  * Domain Path:       /languages
  *
  * @package SelectiveUndo
@@ -33,7 +33,7 @@ if ( version_compare( PHP_VERSION, '8.2', '<' ) ) {
 		'admin_notices',
 		function () {
 			echo '<div class="notice notice-error"><p>';
-			echo esc_html__( 'Selective Undo requires PHP 8.2 or newer. The plugin is inactive.', 'selective-undo' );
+			echo esc_html__( 'Undoly requires PHP 8.2 or newer. The plugin is inactive.', 'undoly' );
 			echo '</p></div>';
 		}
 	);

@@ -22,7 +22,7 @@ function Side( { title, text }: { title: string; text: string } ) {
 			<p className="su-conflict__side-title">{ title }</p>
 			<p className="su-conflict__text">
 				{ text === '' ? (
-					<em>{ __( '(removed)', 'selective-undo' ) }</em>
+					<em>{ __( '(removed)', 'undoly' ) }</em>
 				) : (
 					text
 				) }
@@ -55,7 +55,7 @@ export function MergeConflicts( {
 	const [ planError, setPlanError ] = useState< unknown >( null );
 
 	if ( loading && ! data ) {
-		return <Loading label={ __( 'Loading…', 'selective-undo' ) } />;
+		return <Loading label={ __( 'Loading…', 'undoly' ) } />;
 	}
 	if ( error || ! data ) {
 		return <ErrorNotice error={ error } onRetry={ reload } />;
@@ -91,7 +91,7 @@ export function MergeConflicts( {
 			<p>
 				{ __(
 					'These parts were changed again after the change you are undoing. Choose what to keep for each part; everything else keeps its later edits.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 			<ol className="su-conflicts__list">
@@ -100,36 +100,30 @@ export function MergeConflicts( {
 						<p className="su-conflict__label">
 							{ sprintf(
 								/* translators: %s: block name, e.g. "paragraph". */
-								__( 'Block: %s', 'selective-undo' ),
+								__( 'Block: %s', 'undoly' ),
 								conflict.label
 							) }
 						</p>
 						<div className="su-conflict__sides">
 							<Side
-								title={ __( 'Now', 'selective-undo' ) }
+								title={ __( 'Now', 'undoly' ) }
 								text={ conflict.current_text }
 							/>
 							<Side
-								title={ __( 'Comes back', 'selective-undo' ) }
+								title={ __( 'Comes back', 'undoly' ) }
 								text={ conflict.restored_text }
 							/>
 						</div>
 						<RadioControl
-							label={ __( 'Keep', 'selective-undo' ) }
+							label={ __( 'Keep', 'undoly' ) }
 							selected={ choice[ conflict.index ] ?? 'current' }
 							options={ [
 								{
-									label: __(
-										'The current text',
-										'selective-undo'
-									),
+									label: __( 'The current text', 'undoly' ),
 									value: 'current',
 								},
 								{
-									label: __(
-										'The earlier text',
-										'selective-undo'
-									),
+									label: __( 'The earlier text', 'undoly' ),
 									value: 'restored',
 								},
 							] }
@@ -151,7 +145,7 @@ export function MergeConflicts( {
 				accessibleWhenDisabled
 				onClick={ recheck }
 			>
-				{ __( 'Check with this choice', 'selective-undo' ) }
+				{ __( 'Check with this choice', 'undoly' ) }
 			</Button>
 		</div>
 	);

@@ -49,7 +49,7 @@ final class BlameService
         $post = get_post($postId);
 
         if (!$post instanceof \WP_Post || !user_can($userId, 'sundo_view_object_history', $postId, $post->post_type)) {
-            throw new DomainError('su_not_found', 404, __('This item does not exist or you cannot see its history.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This item does not exist or you cannot see its history.', 'undoly'));
         }
 
         $object = new ObjectRef('post', $postId, $post->post_type);
@@ -60,7 +60,7 @@ final class BlameService
         }
 
         $rows = $this->journal->fieldChangesNewestFirst($object, self::FIELD, self::MAX_CHANGES);
-        $cacheKey = 'su_blame_' . $postId . '_' . ($rows[0]['id'] ?? 0) . '_' . substr(hash('sha256', $current), 0, 16);
+        $cacheKey = 'selective_undo_blame_' . $postId . '_' . ($rows[0]['id'] ?? 0) . '_' . substr(hash('sha256', $current), 0, 16);
         $cached = get_transient($cacheKey);
 
         if (is_array($cached) && isset($cached['complete'], $cached['owners'])) {

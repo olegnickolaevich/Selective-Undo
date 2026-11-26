@@ -1,8 +1,8 @@
-# Selective Undo
+# Undoly – Undoly
 
 Undo a specific content change in WordPress and keep everything else.
 
-Selective Undo records changes of the title, content, excerpt and menu order of posts, pages and chosen custom post types, whatever made them (block editor, Quick Edit, bulk edit, REST API, WP-CLI, other plugins). You can restore individual fields later. A field that was changed again after the selected change is reported as a conflict and skipped, never overwritten.
+Undoly records changes of the title, content, excerpt and menu order of posts, pages and chosen custom post types, whatever made them (block editor, Quick Edit, bulk edit, REST API, WP-CLI, other plugins). You can restore individual fields later. A field that was changed again after the selected change is reported as a conflict and skipped, never overwritten.
 
 The user-facing description, FAQ and privacy notes are in [`readme.txt`](readme.txt), in the format of the WordPress.org plugin directory.
 
@@ -16,11 +16,11 @@ The user-facing description, FAQ and privacy notes are in [`readme.txt`](readme.
 
 | Path | Contents |
 | --- | --- |
-| `selective-undo.php`, `uninstall.php` | Plugin entry points |
+| `undoly.php`, `uninstall.php` | Plugin entry points |
 | `src/` | PHP code (namespace `SelectiveUndo`, PSR-4, no runtime Composer dependencies) |
 | `assets/admin/` | Admin interface source (React, TypeScript) |
 | `build/` | Compiled admin interface, committed so that the plugin works without a build step |
-| `languages/` | `selective-undo.pot` and translations (`.po`) |
+| `languages/` | `undoly.pot` and translations (`.po`) |
 | `tests/` | Unit, integration, concurrency and E2E tests |
 | `bin/` | Development scripts |
 | `.wordpress-org/` | Screenshots for the plugin directory page |
@@ -62,11 +62,11 @@ Comments explain why, not what the code already says. In English, short:
 
 Translations follow the WordPress.org conventions:
 
-* source strings are in English, the text domain is the plugin slug `selective-undo`;
+* source strings are in English, the text domain is the plugin slug `undoly`;
 * PHP strings use `__()`, `_n()` and `_x()` with translator comments; JavaScript strings use `@wordpress/i18n` and are registered with `wp_set_script_translations()`;
 * the plugin does not call `load_plugin_textdomain()`: WordPress loads language packs from `wp-content/languages/plugins/` just in time.
 
-Once the plugin is in the directory, translations are managed at [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/selective-undo/). `languages/selective-undo-ru_RU.po` is the complete Russian translation, ready to be imported there.
+Once the plugin is in the directory, translations are managed at [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/undoly/). `languages/undoly-ru_RU.po` is the complete Russian translation, ready to be imported there.
 
 ```sh
 npm run build && bin/i18n.sh update     # regenerate the POT and merge new strings into languages/*.po

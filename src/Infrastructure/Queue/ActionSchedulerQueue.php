@@ -12,7 +12,7 @@ defined('ABSPATH') || exit;
  */
 final class ActionSchedulerQueue implements JobQueue
 {
-    public const GROUP = 'selective-undo';
+    public const GROUP = 'undoly';
 
     /** Whether Action Scheduler is loaded and ready to store actions. */
     public static function available(): bool

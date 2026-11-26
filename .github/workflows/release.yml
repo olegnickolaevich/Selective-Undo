@@ -22,17 +22,17 @@ jobs:
       - name: Version matches the tag
         run: |
           v="${GITHUB_REF_NAME#v}"
-          grep -qE "^ \* Version: +$v$" selective-undo.php
-          grep -qE "define\( 'SELECTIVE_UNDO_VERSION', '$v' \)" selective-undo.php
+          grep -qE "^ \* Version: +$v$" undoly.php
+          grep -qE "define\( 'SELECTIVE_UNDO_VERSION', '$v' \)" undoly.php
           grep -q "^Stable tag: $v$" readme.txt
       - run: bin/dist.sh
       - uses: softprops/action-gh-release@v2
         with:
-          files: dist/selective-undo-*.zip
+          files: dist/undoly-*.zip
       - name: Deploy to WordPress.org
         if: env.SVN_USERNAME != ''
         uses: 10up/action-wordpress-plugin-deploy@stable
         env:
-          SLUG: selective-undo
-          BUILD_DIR: dist/selective-undo
+          SLUG: undoly
+          BUILD_DIR: dist/undoly
           ASSETS_DIR: .wordpress-org

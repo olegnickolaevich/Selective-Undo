@@ -139,12 +139,12 @@ final class NavMenuAdapter implements AdapterInterface, CapturingAdapter, Descri
 
     public function fieldLabel(string $fieldKey): string
     {
-        return $fieldKey === self::FIELD ? __('Menu items', 'selective-undo') : $fieldKey;
+        return $fieldKey === self::FIELD ? __('Menu items', 'undoly') : $fieldKey;
     }
 
     public function fields(ObjectRef $object): array
     {
-        return [new FieldDefinition(self::FIELD, __('Menu items', 'selective-undo'), 'json', MergeStrategy::Keys)];
+        return [new FieldDefinition(self::FIELD, __('Menu items', 'undoly'), 'json', MergeStrategy::Keys)];
     }
 
     public function registerCapture(CaptureSink $sink): void

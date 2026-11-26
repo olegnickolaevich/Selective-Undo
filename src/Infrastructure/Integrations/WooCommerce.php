@@ -43,11 +43,11 @@ final class WooCommerce
             return $fields;
         }
 
-        $fields[] = new FieldDefinition('meta:_regular_price', __('Regular price', 'selective-undo'), 'text', group: 'WooCommerce');
-        $fields[] = new FieldDefinition('meta:_sale_price', __('Sale price', 'selective-undo'), 'text', group: 'WooCommerce');
-        $fields[] = new FieldDefinition('meta:_sale_price_dates_from', __('Sale starts', 'selective-undo'), 'timestamp', group: 'WooCommerce');
-        $fields[] = new FieldDefinition('meta:_sale_price_dates_to', __('Sale ends', 'selective-undo'), 'timestamp', group: 'WooCommerce');
-        $fields[] = new FieldDefinition('meta:_sku', __('SKU', 'selective-undo'), 'text', group: 'WooCommerce');
+        $fields[] = new FieldDefinition('meta:_regular_price', __('Regular price', 'undoly'), 'text', group: 'WooCommerce');
+        $fields[] = new FieldDefinition('meta:_sale_price', __('Sale price', 'undoly'), 'text', group: 'WooCommerce');
+        $fields[] = new FieldDefinition('meta:_sale_price_dates_from', __('Sale starts', 'undoly'), 'timestamp', group: 'WooCommerce');
+        $fields[] = new FieldDefinition('meta:_sale_price_dates_to', __('Sale ends', 'undoly'), 'timestamp', group: 'WooCommerce');
+        $fields[] = new FieldDefinition('meta:_sku', __('SKU', 'undoly'), 'text', group: 'WooCommerce');
 
         return $fields;
     }

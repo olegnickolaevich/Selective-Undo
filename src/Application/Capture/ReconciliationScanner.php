@@ -138,7 +138,7 @@ final class ReconciliationScanner
     {
         $previous = $this->request->source();
         $this->request->setSource(Source::External);
-        $token = $this->operations->begin(__('Changes made outside WordPress (found by the check)', 'selective-undo'), [], Source::External->value);
+        $token = $this->operations->begin(__('Changes made outside WordPress (found by the check)', 'undoly'), [], Source::External->value);
 
         try {
             foreach ($drift as [$adapter, $object, $field, $recorded, $now]) {

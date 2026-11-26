@@ -43,7 +43,7 @@ final class MergeView
         $item = $plan !== null && (int) $plan['actor_user_id'] === $userId ? $this->plans->item((int) $plan['id'], $itemId) : null;
 
         if ($plan === null || $item === null || $item['reason_code'] !== 'merge_conflict') {
-            throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'undoly'));
         }
 
         $adapter = $this->adapters->find((string) $item['adapter_key']);
@@ -52,13 +52,13 @@ final class MergeView
         $snapshot = $adapter?->read($object);
 
         if (!$adapter instanceof MergeableAdapter || $snapshot === null || !$adapter->authorize($userId, $object, 'restore')) {
-            throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'undoly'));
         }
 
         $current = $snapshot->field($field);
 
         if (!hash_equals((string) $item['expected_hash'], $current->hash())) {
-            throw new DomainError('su_plan_stale', 409, __('The content changed after this preview. Check the restore again.', 'selective-undo'));
+            throw new DomainError('su_plan_stale', 409, __('The content changed after this preview. Check the restore again.', 'undoly'));
         }
 
         // Undoing changes first..last: base is the value after the last, the target the value before the first.
@@ -74,7 +74,7 @@ final class MergeView
             $restored = $this->blobs->loadVerified((int) $first['before_blob_id'], (string) $first['before_hash']);
             $base = $this->blobs->loadVerified((int) $last['after_blob_id'], (string) $last['after_hash']);
         } catch (InvalidPayload) {
-            throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'undoly'));
         }
 
         $selection = json_decode((string) $plan['selection_json'], true);
@@ -84,7 +84,7 @@ final class MergeView
             $restored = EditorMergePreview::partialRevert($base, $restored, array_values(array_map('intval', (array) ($selection['hunks'] ?? []))));
 
             if ($restored === null) {
-                throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'selective-undo'));
+                throw new DomainError('su_not_found', 404, __('This preview has no conflicts to show.', 'undoly'));
             }
         }
 

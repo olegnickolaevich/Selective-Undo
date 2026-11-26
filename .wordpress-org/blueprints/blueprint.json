@@ -1,6 +1,6 @@
 {
   "$schema": "https://playground.wordpress.net/blueprint-schema.json",
-  "landingPage": "/wp-admin/admin.php?page=selective-undo",
+  "landingPage": "/wp-admin/admin.php?page=undoly",
   "preferredVersions": {
     "php": "8.3",
     "wp": "latest"
@@ -15,7 +15,7 @@
       "step": "installPlugin",
       "pluginData": {
         "resource": "wordpress.org/plugins",
-        "slug": "selective-undo"
+        "slug": "undoly"
       },
       "options": {
         "activate": true

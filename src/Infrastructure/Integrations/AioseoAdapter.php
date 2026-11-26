@@ -288,7 +288,7 @@ final class AioseoAdapter implements AdapterInterface, CapturingAdapter, Describ
         if (in_array($column, self::FLAGS, true)) {
             $flag = $value->exists ? $value->value : self::flagDefault($column);
 
-            return $flag === '1' ? __('Yes', 'selective-undo') : __('No', 'selective-undo');
+            return $flag === '1' ? __('Yes', 'undoly') : __('No', 'undoly');
         }
 
         return is_string($value->value) ? $value->value : '';
@@ -417,17 +417,17 @@ final class AioseoAdapter implements AdapterInterface, CapturingAdapter, Describ
     private static function labels(): array
     {
         return [
-            'title' => __('SEO title', 'selective-undo'),
-            'description' => __('Meta description', 'selective-undo'),
-            'focus_keyword' => __('Focus keyphrase', 'selective-undo'),
-            'canonical_url' => __('Canonical URL', 'selective-undo'),
-            'og_title' => __('Social title', 'selective-undo'),
-            'og_description' => __('Social description', 'selective-undo'),
-            'twitter_title' => __('X (Twitter) title', 'selective-undo'),
-            'twitter_description' => __('X (Twitter) description', 'selective-undo'),
-            'robots_default' => __('Default robots settings', 'selective-undo'),
-            'robots_noindex' => __('Hide from search engines (noindex)', 'selective-undo'),
-            'robots_nofollow' => __('Do not follow links (nofollow)', 'selective-undo'),
+            'title' => __('SEO title', 'undoly'),
+            'description' => __('Meta description', 'undoly'),
+            'focus_keyword' => __('Focus keyphrase', 'undoly'),
+            'canonical_url' => __('Canonical URL', 'undoly'),
+            'og_title' => __('Social title', 'undoly'),
+            'og_description' => __('Social description', 'undoly'),
+            'twitter_title' => __('X (Twitter) title', 'undoly'),
+            'twitter_description' => __('X (Twitter) description', 'undoly'),
+            'robots_default' => __('Default robots settings', 'undoly'),
+            'robots_noindex' => __('Hide from search engines (noindex)', 'undoly'),
+            'robots_nofollow' => __('Do not follow links (nofollow)', 'undoly'),
         ];
     }
 }

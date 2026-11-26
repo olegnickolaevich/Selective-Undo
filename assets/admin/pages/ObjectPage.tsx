@@ -62,7 +62,7 @@ function AsOfForm( {
 			<TextControl
 				__nextHasNoMarginBottom
 				type="datetime-local"
-				label={ __( 'Return to the state at', 'selective-undo' ) }
+				label={ __( 'Return to the state at', 'undoly' ) }
 				value={ at }
 				onChange={ setAt }
 			/>
@@ -73,7 +73,7 @@ function AsOfForm( {
 				disabled={ busy || Number.isNaN( moment.getTime() ) }
 				accessibleWhenDisabled
 			>
-				{ __( 'Check', 'selective-undo' ) }
+				{ __( 'Check', 'undoly' ) }
 			</Button>
 			{ error !== null && <ErrorNotice error={ error } /> }
 		</form>
@@ -153,7 +153,7 @@ export function ObjectPage( {
 			<ViewHeading>
 				{ object
 					? displayTitle( object.title, object.id )
-					: __( 'Item history', 'selective-undo' ) }
+					: __( 'Item history', 'undoly' ) }
 			</ViewHeading>
 			{ object && <ObjectTitle object={ object } withLinks={ false } /> }
 			{ object?.edit_url && (
@@ -165,7 +165,7 @@ export function ObjectPage( {
 				<EmptyState
 					title={ __(
 						'No recorded changes for this item.',
-						'selective-undo'
+						'undoly'
 					) }
 				/>
 			) : (
@@ -187,20 +187,14 @@ export function ObjectPage( {
 									</time>{ ' ' }
 									·{ ' ' }
 									{ first.changeset.actor?.name ??
-										__(
-											'System',
-											'selective-undo'
-										) }{ ' ' }
+										__( 'System', 'undoly' ) }{ ' ' }
 									· { sourceLabel( first.changeset.source ) }{ ' ' }
 									·{ ' ' }
 									<a
 										href={ viewToUrl( view ) }
 										onClick={ linkHandler( view ) }
 									>
-										{ __(
-											'Whole operation',
-											'selective-undo'
-										) }
+										{ __( 'Whole operation', 'undoly' ) }
 									</a>
 								</p>
 								<ul className="su-changes">
@@ -248,12 +242,12 @@ export function ObjectPage( {
 							)
 						}
 					>
-						{ __( 'Check restore', 'selective-undo' ) }
+						{ __( 'Check restore', 'undoly' ) }
 					</Button>
 					<p className="su-muted">
 						{ __(
 							'Select one change, or several consecutive changes of the same field to return to the state before the first one.',
-							'selective-undo'
+							'undoly'
 						) }
 					</p>
 				</div>

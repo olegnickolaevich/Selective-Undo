@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Builds the WordPress.org package: dist/selective-undo/ and dist/selective-undo-<version>.zip.
+# Builds the WordPress.org package: dist/undoly/ and dist/undoly-<version>.zip.
 # Top-level paths listed in .distignore are left out. The admin interface source (assets/admin,
 # package.json, tsconfig.json) is kept so that the compiled build/ can be reviewed and rebuilt.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SLUG="selective-undo"
+SLUG="undoly"
 VERSION="$(sed -n 's/^ \* Version: *//p' "$ROOT/$SLUG.php")"
 OUT="$ROOT/dist"
 
@@ -24,6 +24,8 @@ for path in "$ROOT"/*; do
   [[ " ${IGNORED[*]} " == *" $name "* ]] && continue
   cp -R "$path" "$OUT/$SLUG/"
 done
+# Translations come from translate.wordpress.org; the package keeps only the template.
+rm -f "$OUT/$SLUG"/languages/*.po "$OUT/$SLUG"/languages/*.mo
 if command -v zip >/dev/null; then
   (cd "$OUT" && zip -qr "$SLUG-$VERSION.zip" "$SLUG")
 else # Windows: the bsdtar of the system writes zip files too

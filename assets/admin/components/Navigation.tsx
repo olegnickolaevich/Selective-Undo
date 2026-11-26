@@ -23,12 +23,12 @@ export function Navigation( {
 	const items: Array< { key: string; label: string; view: View } > = [
 		{
 			key: 'history',
-			label: __( 'History', 'selective-undo' ),
+			label: __( 'History', 'undoly' ),
 			view: { name: 'history' },
 		},
 		{
 			key: 'restores',
-			label: __( 'Restores', 'selective-undo' ),
+			label: __( 'Restores', 'undoly' ),
 			view: { name: 'restores' },
 		},
 	];
@@ -36,7 +36,7 @@ export function Navigation( {
 	if ( canManage ) {
 		items.push( {
 			key: 'settings',
-			label: __( 'Settings', 'selective-undo' ),
+			label: __( 'Settings', 'undoly' ),
 			view: { name: 'settings', tab: 'recording' },
 		} );
 	}
@@ -44,7 +44,7 @@ export function Navigation( {
 	return (
 		<nav
 			className="su-nav"
-			aria-label={ __( 'Selective Undo sections', 'selective-undo' ) }
+			aria-label={ __( 'Undoly sections', 'undoly' ) }
 		>
 			<ul>
 				{ items.map( ( item ) => (

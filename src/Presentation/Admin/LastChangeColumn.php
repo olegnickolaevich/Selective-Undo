@@ -43,7 +43,7 @@ final class LastChangeColumn
      */
     public function columns(array $columns): array
     {
-        $columns[self::COLUMN] = __('Last change', 'selective-undo');
+        $columns[self::COLUMN] = __('Last change', 'undoly');
 
         return $columns;
     }
@@ -58,16 +58,16 @@ final class LastChangeColumn
         $row = $this->latest[$postId] ?? null;
 
         if ($row === null || !current_user_can(Capabilities::VIEW_OBJECT, $postId)) {
-            echo '<span aria-hidden="true">—</span><span class="screen-reader-text">' . esc_html__('No recorded changes', 'selective-undo') . '</span>';
+            echo '<span aria-hidden="true">—</span><span class="screen-reader-text">' . esc_html__('No recorded changes', 'undoly') . '</span>';
 
             return;
         }
 
         $user = $row['actor'] !== null ? get_userdata($row['actor']) : false;
         $parts = [
-            $user instanceof \WP_User ? $user->display_name : __('System', 'selective-undo'),
+            $user instanceof \WP_User ? $user->display_name : __('System', 'undoly'),
             /* translators: %s: time difference, e.g. "2 hours". */
-            sprintf(__('%s ago', 'selective-undo'), human_time_diff((int) strtotime($row['created_at'] . ' UTC'))),
+            sprintf(__('%s ago', 'undoly'), human_time_diff((int) strtotime($row['created_at'] . ' UTC'))),
         ];
 
         $object = new ObjectRef('post', $postId, (string) get_post_type($postId));
@@ -75,7 +75,7 @@ final class LastChangeColumn
 
         if (count($labels) > 2) {
             /* translators: 1: two field names, e.g. "Title, Author", 2: number of other changed fields. */
-            $labels = [sprintf(__('%1$s and %2$d more', 'selective-undo'), implode(', ', array_slice($labels, 0, 2)), count($labels) - 2)];
+            $labels = [sprintf(__('%1$s and %2$d more', 'undoly'), implode(', ', array_slice($labels, 0, 2)), count($labels) - 2)];
         }
 
         if ($labels !== []) {

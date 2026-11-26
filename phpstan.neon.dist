@@ -4,7 +4,7 @@ parameters:
   level: 8
   paths:
     - src
-    - selective-undo.php
+    - undoly.php
     - uninstall.php
   scanFiles:
     - vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php

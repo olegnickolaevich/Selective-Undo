@@ -1,5 +1,5 @@
 {
-  "name": "selective-undo",
+  "name": "undoly",
   "version": "1.0.0",
   "private": true,
   "description": "Selective Undo admin interface",

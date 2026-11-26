@@ -1,4 +1,4 @@
-=== Selective Undo ===
+=== Undoly – Selective Undo ===
 Contributors: codeverse
 Tags: undo, revisions, rollback, restore, history
 Requires at least: 6.8
@@ -12,14 +12,14 @@ Undo one change without losing newer edits: restore a title, block, price, menu 
 
 == Description ==
 
-A WordPress revision restores the whole post. Selective Undo restores only what you choose: the title changed by mistake, the excerpt someone rewrote, the content from before a bad paste. Everything else, including edits made after that change, stays as it is.
+A WordPress revision restores the whole post. Undoly restores only what you choose: the title changed by mistake, the excerpt someone rewrote, the content from before a bad paste. Everything else, including edits made after that change, stays as it is.
 
 Use it to undo a change in the block editor (Gutenberg), Elementor, WooCommerce products, menus and site settings, to roll back one block of a page, or to restore a permanently deleted page, with a preview and a conflict check before anything is written.
 
 **How it works**
 
-1. Selective Undo records changes of the title, content, excerpt, slug, status, date, author, parent, featured image, categories, tags and SEO fields of posts, pages, media and the custom post types you choose, whatever made them: the block editor, Quick Edit, bulk edit, the REST API, WP-CLI, XML-RPC or another plugin.
-2. Open **Change history** from the row actions on the Posts or Pages screen, from the **Change history** panel in the block editor sidebar, or go to **Selective Undo → History**.
+1. Undoly records changes of the title, content, excerpt, slug, status, date, author, parent, featured image, categories, tags and SEO fields of posts, pages, media and the custom post types you choose, whatever made them: the block editor, Quick Edit, bulk edit, the REST API, WP-CLI, XML-RPC or another plugin.
+2. Open **Change history** from the row actions on the Posts or Pages screen, from the **Change history** panel in the block editor sidebar, or go to **Undoly → History**.
 3. Compare before and after, select the changes to undo and click **Check restore**.
 4. The preview shows what will be restored, what is already in the desired state and what needs attention. Nothing is written yet.
 5. Click **Restore**. Every value is checked again inside a database transaction right before it is written.
@@ -33,7 +33,7 @@ Use it to undo a change in the block editor (Gutenberg), Elementor, WooCommerce 
 **Undo right where the mistake happened**
 
 * After Quick Edit or bulk edit on the Posts and Pages screens, a notice offers **Undo**. Small, conflict-free changes are undone at once; anything else opens the preview first.
-* In the command palette (Ctrl+K / ⌘K): **Undo my last change**, **Selective Undo: change history** and **Selective Undo: restores**.
+* In the command palette (Ctrl+K / ⌘K): **Undo my last change**, **Undoly: change history** and **Undoly: restores**.
 * A **Last change** column on the Posts and Pages screens shows who changed each item and when.
 * On the site, the toolbar shows when the page was last changed, and **Show the latest change on this page** outlines the blocks that change edited. Only users who may see the history get these; visitors never do.
 
@@ -46,7 +46,7 @@ Use it to undo a change in the block editor (Gutenberg), Elementor, WooCommerce 
 * **Transactional.** Each item is restored in a short database transaction on a dedicated connection, with row locks and a final comparison. A failure leaves the item unchanged.
 * **Honest about gaps.** Changes made directly in the database, bypassing WordPress, are detected and shown as gaps in the history instead of being guessed.
 
-**What Selective Undo covers**
+**What Undoly covers**
 
 * Existing posts, pages, media and the custom post types you choose (those with an admin screen).
 * Fields: title, content, excerpt, slug, status, publish date, author, parent, order and discussion settings; the featured image; categories, tags and the other taxonomies of the post type; the alternative text, caption and description of media.
@@ -70,22 +70,22 @@ Creation of new items, moving to and from the trash (use the trash for that), de
 
 **Permissions**
 
-On activation, only administrators can view the history and restore changes. Each permission (view history, restore changes, manage settings, delete history, export history) can be granted to other roles in **Selective Undo → Settings → Access**. A user always needs permission to edit an item to see or restore its history.
+On activation, only administrators can view the history and restore changes. Each permission (view history, restore changes, manage settings, delete history, export history) can be granted to other roles in **Undoly → Settings → Access**. A user always needs permission to edit an item to see or restore its history.
 
 **For developers**
 
 * REST API under `selective-undo/v1`, used by the admin interface.
-* WP-CLI: `wp selective-undo health`, `wp selective-undo maintenance`, `wp selective-undo queue`.
+* WP-CLI: `wp undoly health`, `wp undoly maintenance`, `wp undoly queue`.
 * Actions and filters use the `selective_undo/` prefix, for example `selective_undo/object_restored` after an item is restored.
 
 The source code of the admin interface (React, TypeScript) is in `assets`; the compiled files are in `build`. Development happens at [github.com/olegnickolaevich/Selective-Undo](https://github.com/olegnickolaevich/Selective-Undo), where you can also report bugs.
 
 == Installation ==
 
-1. Install the plugin from **Plugins → Add New** or upload the `selective-undo` folder to `/wp-content/plugins/`.
+1. Install the plugin from **Plugins → Add New** or upload the `undoly` folder to `/wp-content/plugins/`.
 2. Activate it on the **Plugins** screen. On a multisite network, activate it on individual sites.
-3. Open **Selective Undo → Settings → Diagnostics** and check that restoring is available. On MySQL and MariaDB it needs InnoDB tables and the PHP mysqli extension; SQLite sites work in compatibility mode.
-4. Changes of the title, content and excerpt saved in WordPress revisions during the retention period (30 days by default) are imported right away; everything else is recorded from activation on. Run `wp selective-undo import-revisions` on large sites where WP-Cron does not run.
+3. Open **Undoly → Settings → Diagnostics** and check that restoring is available. On MySQL and MariaDB it needs InnoDB tables and the PHP mysqli extension; SQLite sites work in compatibility mode.
+4. Changes of the title, content and excerpt saved in WordPress revisions during the retention period (30 days by default) are imported right away; everything else is recorded from activation on. Run `wp undoly import-revisions` on large sites where WP-Cron does not run.
 
 For rarely visited sites, run WP-Cron from a system cron job so that background maintenance and restores are not delayed.
 
@@ -93,7 +93,7 @@ For rarely visited sites, run WP-Cron from a system cron job so that background 
 
 = How is this different from WordPress revisions? =
 
-A revision restores the entire post as it was, including fields you did not want to change, and overwrites any newer edits. Selective Undo restores individual fields, works for changes made outside the editor (Quick Edit, bulk edit, REST API, WP-CLI, other plugins), checks for newer edits and skips conflicting fields instead of overwriting them.
+A revision restores the entire post as it was, including fields you did not want to change, and overwrites any newer edits. Undoly restores individual fields, works for changes made outside the editor (Quick Edit, bulk edit, REST API, WP-CLI, other plugins), checks for newer edits and skips conflicting fields instead of overwriting them.
 
 = What happens if someone edited the field after the change I want to undo? =
 
@@ -109,7 +109,7 @@ Yes. A restore is recorded in the history like any other change. Open it and cli
 
 = How do I undo a change in WordPress? =
 
-Open **Change history** from the post's row actions, the block editor sidebar or **Selective Undo → History**, select the change and click **Check restore**. After Quick Edit and bulk edit, a notice offers **Undo** right away.
+Open **Change history** from the post's row actions, the block editor sidebar or **Undoly → History**, select the change and click **Check restore**. After Quick Edit and bulk edit, a notice offers **Undo** right away.
 
 = Can I undo a WooCommerce price change? =
 
@@ -121,7 +121,7 @@ Yes. It comes back as a draft under its own ID, with its custom fields and terms
 
 = Does it work with Elementor and other page builders? =
 
-Elementor layouts are recorded and restored element by element: undoing one widget edit keeps later edits of other widgets, and the page's CSS and text copy are rebuilt after a restore. For other page builders (Bricks, Divi, Beaver Builder) Selective Undo restores the `post_content` field, and the preview warns that restoring the content may not change what visitors see.
+Elementor layouts are recorded and restored element by element: undoing one widget edit keeps later edits of other widgets, and the page's CSS and text copy are rebuilt after a restore. For other page builders (Bricks, Divi, Beaver Builder) Undoly restores the `post_content` field, and the preview warns that restoring the content may not change what visitors see.
 
 = How much space does the history use? =
 
@@ -141,11 +141,11 @@ Deactivating keeps the history and settings. Deleting the plugin keeps them too,
 
 = Is the interface translated? =
 
-The plugin is fully translatable. Translations are delivered by WordPress.org language packs; you can help translate Selective Undo into your language at [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/selective-undo/).
+The plugin is fully translatable. Translations are delivered by WordPress.org language packs; you can help translate Undoly into your language at [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/undoly/).
 
 == Privacy ==
 
-Selective Undo stores, in your site's database, the previous and new values of the fields it records, the user who made each change, when it was made and where it came from (for example, the block editor or the REST API). Text removed from a page can remain in the history until it expires. Nothing is sent to external services.
+Undoly stores, in your site's database, the previous and new values of the fields it records, the user who made each change, when it was made and where it came from (for example, the block editor or the REST API). Text removed from a page can remain in the history until it expires. Nothing is sent to external services.
 
 The plugin adds a suggested paragraph to the privacy policy guide and registers an exporter and an eraser for the WordPress personal data tools. Administrators can delete the history of one item, history older than a date, or all history in **Settings → Removal**.
 

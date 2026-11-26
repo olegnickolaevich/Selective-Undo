@@ -10,15 +10,15 @@ import { linkHandler, viewToUrl } from '../lib/router';
 
 function captureText( capture: Overview[ 'capture' ] ): string {
 	if ( capture.state === 'active' ) {
-		return __( 'active', 'selective-undo' );
+		return __( 'active', 'undoly' );
 	}
 	if ( capture.state === 'disabled' ) {
-		return __( 'turned off', 'selective-undo' );
+		return __( 'turned off', 'undoly' );
 	}
 	if ( capture.reason === 'quota_exceeded' ) {
-		return __( 'paused — size limit reached', 'selective-undo' );
+		return __( 'paused — size limit reached', 'undoly' );
 	}
-	return __( 'paused', 'selective-undo' );
+	return __( 'paused', 'undoly' );
 }
 
 /**
@@ -43,11 +43,11 @@ function SiteMovedNotice( {
 				{ restored
 					? __(
 							'The database seems to have been restored from a backup: most items with history changed at once.',
-							'selective-undo'
+							'undoly'
 						)
 					: __(
 							'The history was copied from another site. It may list changes made there.',
-							'selective-undo'
+							'undoly'
 						) }
 			</p>
 			<p className="su-notice-actions">
@@ -65,14 +65,14 @@ function SiteMovedNotice( {
 							.finally( () => setBusy( false ) );
 					} }
 				>
-					{ __( 'Keep history', 'selective-undo' ) }
+					{ __( 'Keep history', 'undoly' ) }
 				</Button>{ ' ' }
 				<Button
 					variant="secondary"
 					href={ viewToUrl( removal ) }
 					onClick={ linkHandler( removal ) }
 				>
-					{ __( 'Clear history', 'selective-undo' ) }
+					{ __( 'Clear history', 'undoly' ) }
 				</Button>
 			</p>
 			{ error !== null && <ErrorNotice error={ error } /> }
@@ -94,13 +94,10 @@ export function AppHeader( {
 		<header className="su-header">
 			<div className="su-header__titles">
 				<h1 className="su-header__title">
-					{ __( 'Selective Undo', 'selective-undo' ) }
+					{ __( 'Undoly', 'undoly' ) }
 				</h1>
 				<p className="su-header__subtitle">
-					{ __(
-						'Change history and safe restore',
-						'selective-undo'
-					) }
+					{ __( 'Change history and safe restore', 'undoly' ) }
 				</p>
 			</div>
 			{ overview && (
@@ -108,24 +105,24 @@ export function AppHeader( {
 					<div
 						className={ `su-fact su-fact--${ overview.capture.state === 'active' ? 'ok' : 'warning' }` }
 					>
-						<dt>{ __( 'Recording', 'selective-undo' ) }</dt>
+						<dt>{ __( 'Recording', 'undoly' ) }</dt>
 						<dd>{ captureText( overview.capture ) }</dd>
 					</div>
 					<div
 						className={ `su-fact su-fact--${ overview.storage.level }` }
 					>
-						<dt>{ __( 'Storage', 'selective-undo' ) }</dt>
+						<dt>{ __( 'Storage', 'undoly' ) }</dt>
 						<dd>
 							{ sprintf(
 								/* translators: 1: used size, 2: size limit. */
-								__( '%1$s of %2$s', 'selective-undo' ),
+								__( '%1$s of %2$s', 'undoly' ),
 								formatBytes( overview.storage.logical_bytes ),
 								formatBytes( overview.storage.quota_bytes )
 							) }
 						</dd>
 					</div>
 					<div className="su-fact">
-						<dt>{ __( 'Available', 'selective-undo' ) }</dt>
+						<dt>{ __( 'Available', 'undoly' ) }</dt>
 						<dd>
 							{ overview.oldest_event_at
 								? sprintf(
@@ -134,7 +131,7 @@ export function AppHeader( {
 											'last %1$d day, since %2$s',
 											'last %1$d days, since %2$s',
 											overview.retention_days,
-											'selective-undo'
+											'undoly'
 										),
 										overview.retention_days,
 										exactDate( overview.oldest_event_at )
@@ -145,7 +142,7 @@ export function AppHeader( {
 											'last %d day',
 											'last %d days',
 											overview.retention_days,
-											'selective-undo'
+											'undoly'
 										),
 										overview.retention_days
 									) }
@@ -157,7 +154,7 @@ export function AppHeader( {
 								{ _x(
 									'Restore',
 									'noun: header label for the restore mode',
-									'selective-undo'
+									'undoly'
 								) }
 							</dt>
 							<dd>
@@ -165,10 +162,7 @@ export function AppHeader( {
 									href={ viewToUrl( diagnostics ) }
 									onClick={ linkHandler( diagnostics ) }
 								>
-									{ __(
-										'compatibility mode',
-										'selective-undo'
-									) }
+									{ __( 'compatibility mode', 'undoly' ) }
 								</a>
 							</dd>
 						</div>
@@ -189,7 +183,7 @@ export function AppHeader( {
 						/* translators: %s: list of reasons. */
 						__(
 							'Restoring is unavailable: %s. History is still recorded.',
-							'selective-undo'
+							'undoly'
 						),
 						overview.restore_blockers
 							.map( blockerText )
@@ -199,7 +193,7 @@ export function AppHeader( {
 						href={ viewToUrl( diagnostics ) }
 						onClick={ linkHandler( diagnostics ) }
 					>
-						{ __( 'Diagnostics', 'selective-undo' ) }
+						{ __( 'Diagnostics', 'undoly' ) }
 					</a>
 				</Notice>
 			) }
@@ -207,13 +201,13 @@ export function AppHeader( {
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
 						'The history has gaps in the last 24 hours.',
-						'selective-undo'
+						'undoly'
 					) }{ ' ' }
 					<a
 						href={ viewToUrl( diagnostics ) }
 						onClick={ linkHandler( diagnostics ) }
 					>
-						{ __( 'Details', 'selective-undo' ) }
+						{ __( 'Details', 'undoly' ) }
 					</a>
 				</Notice>
 			) }
@@ -229,11 +223,11 @@ export function AppHeader( {
 					{ overview.storage.level === 'critical'
 						? __(
 								'The history is almost at its size limit. The oldest history will be removed or recording will pause.',
-								'selective-undo'
+								'undoly'
 							)
 						: __(
 								'The history uses more than 80% of its size limit.',
-								'selective-undo'
+								'undoly'
 							) }
 				</Notice>
 			) }

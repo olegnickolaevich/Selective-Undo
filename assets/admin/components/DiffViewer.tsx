@@ -20,7 +20,7 @@ function Line( { line }: { line: DiffLine } ) {
 						'%d unchanged line hidden',
 						'%d unchanged lines hidden',
 						count,
-						'selective-undo'
+						'undoly'
 					),
 					count
 				) }
@@ -30,9 +30,9 @@ function Line( { line }: { line: DiffLine } ) {
 
 	const marker = { equal: ' ', insert: '+', delete: '−' }[ line.op ];
 	const label = {
-		equal: __( 'Unchanged:', 'selective-undo' ),
-		insert: __( 'Added:', 'selective-undo' ),
-		delete: __( 'Removed:', 'selective-undo' ),
+		equal: __( 'Unchanged:', 'undoly' ),
+		insert: __( 'Added:', 'undoly' ),
+		delete: __( 'Removed:', 'undoly' ),
 	}[ line.op ];
 
 	return (
@@ -62,7 +62,7 @@ export function DiffViewer( {
 			<p className="su-muted">
 				{ __(
 					'The stored values are not available for comparison.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 		);
@@ -72,7 +72,7 @@ export function DiffViewer( {
 			<p className="su-muted">
 				{ __(
 					'This value contains binary data and cannot be shown as text.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 		);
@@ -104,7 +104,7 @@ export function DiffViewer( {
 								<img src={ url } alt={ label } />
 							) : (
 								<span className="su-muted">
-									{ __( 'No image', 'selective-undo' ) }
+									{ __( 'No image', 'undoly' ) }
 								</span>
 							) }
 						</div>
@@ -113,7 +113,7 @@ export function DiffViewer( {
 			) }
 			{ chunk.lines.length === 0 ? (
 				<p className="su-muted">
-					{ __( 'Both values are empty.', 'selective-undo' ) }
+					{ __( 'Both values are empty.', 'undoly' ) }
 				</p>
 			) : (
 				<ol className="su-diff__lines">
@@ -129,7 +129,7 @@ export function DiffViewer( {
 					isBusy={ loadingMore }
 					disabled={ loadingMore }
 				>
-					{ __( 'Show more of the comparison', 'selective-undo' ) }
+					{ __( 'Show more of the comparison', 'undoly' ) }
 				</Button>
 			) }
 		</figure>
@@ -164,9 +164,7 @@ export function DiffLoader( {
 		return <ErrorNotice error={ error } />;
 	}
 	if ( ! chunk ) {
-		return (
-			<Loading label={ __( 'Loading comparison…', 'selective-undo' ) } />
-		);
+		return <Loading label={ __( 'Loading comparison…', 'undoly' ) } />;
 	}
 
 	const more = async () => {

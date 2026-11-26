@@ -42,10 +42,7 @@ async function undoMyLastChange( settings: QuickUndoConfig ): Promise< void > {
 
 	if ( ! latest ) {
 		message(
-			__(
-				'You made no changes in the last 10 minutes.',
-				'selective-undo'
-			),
+			__( 'You made no changes in the last 10 minutes.', 'undoly' ),
 			'info'
 		);
 		return;
@@ -62,15 +59,12 @@ async function undoMyLastChange( settings: QuickUndoConfig ): Promise< void > {
 		message(
 			__(
 				'Your last change was undone. Reload the page to see it.',
-				'selective-undo'
+				'undoly'
 			),
 			'success'
 		);
 	} else if ( result.status === 'nothing_to_undo' ) {
-		message(
-			__( 'There is nothing left to undo.', 'selective-undo' ),
-			'info'
-		);
+		message( __( 'There is nothing left to undo.', 'undoly' ), 'info' );
 	} else if ( result.plan_id ) {
 		document.location.href = previewUrl( settings, result.plan_id );
 	}
@@ -81,7 +75,7 @@ if ( config ) {
 
 	registerCommand( {
 		name: 'selective-undo/history',
-		label: __( 'Selective Undo: change history', 'selective-undo' ),
+		label: __( 'Undoly: change history', 'undoly' ),
 		icon: backup,
 		callback: () => {
 			document.location.href = config.historyUrl;
@@ -90,7 +84,7 @@ if ( config ) {
 
 	registerCommand( {
 		name: 'selective-undo/restores',
-		label: __( 'Selective Undo: restores', 'selective-undo' ),
+		label: __( 'Undoly: restores', 'undoly' ),
 		icon: backup,
 		callback: () => {
 			document.location.href = config.restoresUrl;
@@ -100,7 +94,7 @@ if ( config ) {
 	if ( config.canRestore ) {
 		registerCommand( {
 			name: 'selective-undo/undo-my-last-change',
-			label: __( 'Undo my last change', 'selective-undo' ),
+			label: __( 'Undo my last change', 'undoly' ),
 			icon: undo,
 			callback: ( { close }: { close: () => void } ) => {
 				close();
@@ -108,7 +102,7 @@ if ( config ) {
 					message(
 						__(
 							'Could not undo. Open the history to try again.',
-							'selective-undo'
+							'undoly'
 						),
 						'error'
 					);

@@ -10,10 +10,10 @@ export function errorMessage( error: unknown ): string {
 	if ( error instanceof ApiError && error.code === 'fetch_error' ) {
 		return __(
 			'The server could not be reached. Check your connection and try again.',
-			'selective-undo'
+			'undoly'
 		);
 	}
-	return __( 'Something went wrong. Try again.', 'selective-undo' );
+	return __( 'Something went wrong. Try again.', 'undoly' );
 }
 
 export function ErrorNotice( {
@@ -31,7 +31,7 @@ export function ErrorNotice( {
 				onRetry
 					? [
 							{
-								label: __( 'Try again', 'selective-undo' ),
+								label: __( 'Try again', 'undoly' ),
 								onClick: onRetry,
 							},
 						]
@@ -47,7 +47,7 @@ export function Loading( { label }: { label?: string } ) {
 	return (
 		<p className="su-loading" role="status">
 			<Spinner />
-			<span>{ label ?? __( 'Loading…', 'selective-undo' ) }</span>
+			<span>{ label ?? __( 'Loading…', 'undoly' ) }</span>
 		</p>
 	);
 }
@@ -82,7 +82,7 @@ export function LoadMore( {
 				isBusy={ busy }
 				disabled={ busy }
 			>
-				{ __( 'Show more', 'selective-undo' ) }
+				{ __( 'Show more', 'undoly' ) }
 			</Button>
 		</div>
 	);

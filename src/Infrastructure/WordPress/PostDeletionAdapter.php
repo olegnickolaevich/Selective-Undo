@@ -91,12 +91,12 @@ final class PostDeletionAdapter implements AdapterInterface, DescribesFields, Pr
 
     public function fieldLabel(string $fieldKey): string
     {
-        return $fieldKey === self::FIELD ? __('Whole item', 'selective-undo') : $fieldKey;
+        return $fieldKey === self::FIELD ? __('Whole item', 'undoly') : $fieldKey;
     }
 
     public function fields(ObjectRef $object): array
     {
-        return [new FieldDefinition(self::FIELD, __('Whole item', 'selective-undo'), 'raw')];
+        return [new FieldDefinition(self::FIELD, __('Whole item', 'undoly'), 'raw')];
     }
 
     /** The value of a post about to be deleted, read from the database. */
@@ -301,10 +301,10 @@ final class PostDeletionAdapter implements AdapterInterface, DescribesFields, Pr
         }
 
         $lines = [
-            __('Title', 'selective-undo') . ': ' . (string) ($post['post_title'] ?? ''),
-            __('Status', 'selective-undo') . ': ' . (string) ($post['post_status'] ?? ''),
-            __('Slug', 'selective-undo') . ': ' . urldecode((string) ($post['post_name'] ?? '')),
-            __('Published', 'selective-undo') . ': ' . (string) ($post['post_date'] ?? ''),
+            __('Title', 'undoly') . ': ' . (string) ($post['post_title'] ?? ''),
+            __('Status', 'undoly') . ': ' . (string) ($post['post_status'] ?? ''),
+            __('Slug', 'undoly') . ': ' . urldecode((string) ($post['post_name'] ?? '')),
+            __('Published', 'undoly') . ': ' . (string) ($post['post_date'] ?? ''),
         ];
 
         foreach ((array) ($value->value['terms'] ?? []) as $term) {
@@ -315,7 +315,7 @@ final class PostDeletionAdapter implements AdapterInterface, DescribesFields, Pr
         }
 
         /* translators: %d: number of custom field rows. */
-        $lines[] = sprintf(__('Custom fields: %d', 'selective-undo'), count((array) ($value->value['meta'] ?? [])));
+        $lines[] = sprintf(__('Custom fields: %d', 'undoly'), count((array) ($value->value['meta'] ?? [])));
         $lines[] = '';
         $lines[] = (string) ($post['post_content'] ?? '');
 

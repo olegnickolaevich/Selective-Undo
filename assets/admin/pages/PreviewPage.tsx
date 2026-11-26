@@ -63,7 +63,7 @@ function Item( { plan, item }: { plan: RestorePlan; item: PlanItem } ) {
 							'%d change is undone together.',
 							'%d consecutive changes are undone together.',
 							item.change_ids.length,
-							'selective-undo'
+							'undoly'
 						),
 						item.change_ids.length
 					) }
@@ -89,10 +89,7 @@ function Item( { plan, item }: { plan: RestorePlan; item: PlanItem } ) {
 							)
 						}
 					>
-						{ __(
-							'Compare current and restored value',
-							'selective-undo'
-						) }
+						{ __( 'Compare current and restored value', 'undoly' ) }
 					</Button>
 					{ item.reason_code === 'merge_conflict' &&
 						conflicts > 0 && (
@@ -111,7 +108,7 @@ function Item( { plan, item }: { plan: RestorePlan; item: PlanItem } ) {
 										'Choose what to keep (%d part)',
 										'Choose what to keep (%d parts)',
 										conflicts,
-										'selective-undo'
+										'undoly'
 									),
 									conflicts
 								) }
@@ -127,7 +124,7 @@ function Item( { plan, item }: { plan: RestorePlan; item: PlanItem } ) {
 								)
 							}
 						>
-							{ __( 'What changed since', 'selective-undo' ) }
+							{ __( 'What changed since', 'undoly' ) }
 						</Button>
 					) }
 				</div>
@@ -189,14 +186,14 @@ function RestoreActions( {
 	if ( error instanceof ApiError && error.code === 'su_plan_expired' ) {
 		errorActions = [
 			{
-				label: __( 'Check again', 'selective-undo' ),
+				label: __( 'Check again', 'undoly' ),
 				onClick: onExpired,
 			},
 		];
 	} else if ( consumedJob ) {
 		errorActions = [
 			{
-				label: __( 'Open that restore', 'selective-undo' ),
+				label: __( 'Open that restore', 'undoly' ),
 				onClick: () => navigate( { name: 'job', id: consumedJob } ),
 			},
 		];
@@ -205,7 +202,7 @@ function RestoreActions( {
 	return (
 		<section
 			className="su-actions"
-			aria-label={ __( 'Restore actions', 'selective-undo' ) }
+			aria-label={ __( 'Restore actions', 'undoly' ) }
 		>
 			{ error !== null && (
 				<div ref={ noticeRef } tabIndex={ -1 }>
@@ -219,7 +216,7 @@ function RestoreActions( {
 							? errorMessage( error )
 							: __(
 									'Could not confirm that the restore started. You can safely try again: the same request will not run twice.',
-									'selective-undo'
+									'undoly'
 								) }
 					</Notice>
 				</div>
@@ -230,14 +227,14 @@ function RestoreActions( {
 					isDismissible={ false }
 					actions={ [
 						{
-							label: __( 'Check again', 'selective-undo' ),
+							label: __( 'Check again', 'undoly' ),
 							onClick: onExpired,
 						},
 					] }
 				>
 					{ __(
 						'This preview has expired. Check the changes again before restoring.',
-						'selective-undo'
+						'undoly'
 					) }
 				</Notice>
 			) }
@@ -247,7 +244,7 @@ function RestoreActions( {
 					isDismissible={ false }
 					actions={ [
 						{
-							label: __( 'Open that restore', 'selective-undo' ),
+							label: __( 'Open that restore', 'undoly' ),
 							onClick: () =>
 								navigate( { name: 'job', id: plan.job_id! } ),
 						},
@@ -255,7 +252,7 @@ function RestoreActions( {
 				>
 					{ __(
 						'This preview has already been used to start a restore.',
-						'selective-undo'
+						'undoly'
 					) }
 				</Notice>
 			) }
@@ -272,7 +269,7 @@ function RestoreActions( {
 						'Restore %d field',
 						'Restore %d fields',
 						ready,
-						'selective-undo'
+						'undoly'
 					),
 					ready
 				) }
@@ -281,7 +278,7 @@ function RestoreActions( {
 				<p className="su-muted">
 					{ __(
 						'Nothing in this preview can be restored.',
-						'selective-undo'
+						'undoly'
 					) }
 				</p>
 			) }
@@ -317,9 +314,7 @@ export function PreviewPage( { id }: { id: string } ) {
 
 	if ( loading && ! plan ) {
 		return (
-			<Loading
-				label={ __( 'Checking the current state…', 'selective-undo' ) }
-			/>
+			<Loading label={ __( 'Checking the current state…', 'undoly' ) } />
 		);
 	}
 	if ( error || ! plan ) {
@@ -332,19 +327,19 @@ export function PreviewPage( { id }: { id: string } ) {
 	const groups: Array< { key: string; title: string; items: PlanItem[] } > = [
 		{
 			key: 'attention',
-			title: __( 'Need attention', 'selective-undo' ),
+			title: __( 'Need attention', 'undoly' ),
 			items: plan.items.filter(
 				( i ) => ! [ 'ready', 'already_restored' ].includes( i.status )
 			),
 		},
 		{
 			key: 'ready',
-			title: __( 'Ready to restore', 'selective-undo' ),
+			title: __( 'Ready to restore', 'undoly' ),
 			items: plan.items.filter( ( i ) => i.status === 'ready' ),
 		},
 		{
 			key: 'already',
-			title: __( 'Already in the desired state', 'selective-undo' ),
+			title: __( 'Already in the desired state', 'undoly' ),
 			items: plan.items.filter(
 				( i ) => i.status === 'already_restored'
 			),
@@ -353,46 +348,37 @@ export function PreviewPage( { id }: { id: string } ) {
 
 	return (
 		<section className="su-panel">
-			<ViewHeading>
-				{ __( 'Check restore', 'selective-undo' ) }
-			</ViewHeading>
+			<ViewHeading>{ __( 'Check restore', 'undoly' ) }</ViewHeading>
 			{ plan.site_moved && (
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
 						'The history was copied from another site. Check that these values belong to this site before restoring.',
-						'selective-undo'
+						'undoly'
 					) }
 				</Notice>
 			) }
 			<p>
-				{ __( 'Will be processed:', 'selective-undo' ) }{ ' ' }
+				{ __( 'Will be processed:', 'undoly' ) }{ ' ' }
 				{ itemsCount( s.objects ) } · { fieldsCount( s.fields ) }
 			</p>
 			<dl className="su-summary">
 				<div className="su-summary__cell su-summary__cell--success">
-					<dt>{ __( 'Ready to restore', 'selective-undo' ) }</dt>
+					<dt>{ __( 'Ready to restore', 'undoly' ) }</dt>
 					<dd>{ s.ready }</dd>
 				</div>
 				<div className="su-summary__cell">
-					<dt>
-						{ __(
-							'Already in the desired state',
-							'selective-undo'
-						) }
-					</dt>
+					<dt>{ __( 'Already in the desired state', 'undoly' ) }</dt>
 					<dd>{ s.already_restored }</dd>
 				</div>
 				<div
 					className={ `su-summary__cell ${ attention > 0 ? 'su-summary__cell--warning' : '' }` }
 				>
-					<dt>{ __( 'Need attention', 'selective-undo' ) }</dt>
+					<dt>{ __( 'Need attention', 'undoly' ) }</dt>
 					<dd>{ attention }</dd>
 				</div>
 			</dl>
 			<p className="su-untouched">
-				<strong>
-					{ __( 'Will not be changed:', 'selective-undo' ) }
-				</strong>{ ' ' }
+				<strong>{ __( 'Will not be changed:', 'undoly' ) }</strong>{ ' ' }
 				{ plan.untouched.map( untouchedLabel ).join( ', ' ) }.
 			</p>
 			{ plan.status === 'ready' && (
@@ -401,7 +387,7 @@ export function PreviewPage( { id }: { id: string } ) {
 						/* translators: %s: date and time. */
 						__(
 							'This preview is valid until %s. Values are checked again right before writing.',
-							'selective-undo'
+							'undoly'
 						),
 						exactDate( plan.expires_at )
 					) }
@@ -429,10 +415,7 @@ export function PreviewPage( { id }: { id: string } ) {
 			) }
 			{ rechecking ? (
 				<Loading
-					label={ __(
-						'Checking the current state…',
-						'selective-undo'
-					) }
+					label={ __( 'Checking the current state…', 'undoly' ) }
 				/>
 			) : (
 				<RestoreActions plan={ plan } onExpired={ recheck } />

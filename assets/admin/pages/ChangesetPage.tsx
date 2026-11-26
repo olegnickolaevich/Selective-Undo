@@ -61,7 +61,7 @@ export function ChangeRow( {
 						__nextHasNoMarginBottom
 						label={
 							change.event === 'restore'
-								? `${ label } (${ __( 'restored value', 'selective-undo' ) })`
+								? `${ label } (${ __( 'restored value', 'undoly' ) })`
 								: label
 						}
 						checked={ selected }
@@ -72,7 +72,7 @@ export function ChangeRow( {
 				) }
 				{ isField && ! change.restorable && (
 					<StatusBadge tone="warning">
-						{ __( 'Not restorable', 'selective-undo' ) }
+						{ __( 'Not restorable', 'undoly' ) }
 					</StatusBadge>
 				) }
 				{ isField && (
@@ -82,8 +82,8 @@ export function ChangeRow( {
 						onClick={ () => setOpen( ! open ) }
 					>
 						{ open
-							? __( 'Hide comparison', 'selective-undo' )
-							: __( 'Compare before / after', 'selective-undo' ) }
+							? __( 'Hide comparison', 'undoly' )
+							: __( 'Compare before / after', 'undoly' ) }
 					</Button>
 				) }
 			</div>
@@ -97,8 +97,8 @@ export function ChangeRow( {
 					onClick={ () => setByBlocks( ! byBlocks ) }
 				>
 					{ byBlocks
-						? __( 'Compare line by line', 'selective-undo' )
-						: __( 'Compare block by block', 'selective-undo' ) }
+						? __( 'Compare line by line', 'undoly' )
+						: __( 'Compare block by block', 'undoly' ) }
 				</Button>
 			) }
 			{ open && blocks && (
@@ -181,21 +181,19 @@ export function ChangesetPage( {
 			</ViewHeading>
 			<dl className="su-meta">
 				<div>
-					<dt>{ __( 'Author', 'selective-undo' ) }</dt>
-					<dd>
-						{ data.actor?.name ?? __( 'System', 'selective-undo' ) }
-					</dd>
+					<dt>{ __( 'Author', 'undoly' ) }</dt>
+					<dd>{ data.actor?.name ?? __( 'System', 'undoly' ) }</dd>
 				</div>
 				<div>
-					<dt>{ __( 'Time', 'selective-undo' ) }</dt>
+					<dt>{ __( 'Time', 'undoly' ) }</dt>
 					<dd>{ exactDate( data.created_at ) }</dd>
 				</div>
 				<div>
-					<dt>{ __( 'Source', 'selective-undo' ) }</dt>
+					<dt>{ __( 'Source', 'undoly' ) }</dt>
 					<dd>{ sourceLabel( data.source ) }</dd>
 				</div>
 				<div>
-					<dt>{ __( 'Group', 'selective-undo' ) }</dt>
+					<dt>{ __( 'Group', 'undoly' ) }</dt>
 					<dd>{ groupingLabel( data ) }</dd>
 				</div>
 			</dl>
@@ -207,7 +205,7 @@ export function ChangesetPage( {
 							'This operation also changed %d item you are not allowed to view.',
 							'This operation also changed %d items you are not allowed to view.',
 							data.hidden_objects,
-							'selective-undo'
+							'undoly'
 						),
 						data.hidden_objects
 					) }
@@ -216,16 +214,16 @@ export function ChangesetPage( {
 			{ data.source === 'revisions' && (
 				<Notice status="info" isDismissible={ false }>
 					{ __(
-						'This change was taken from WordPress revisions saved before Selective Undo started recording. Changes WordPress did not keep in revisions are not included.',
-						'selective-undo'
+						'This change was taken from WordPress revisions saved before Undoly started recording. Changes WordPress did not keep in revisions are not included.',
+						'undoly'
 					) }
 				</Notice>
 			) }
 			{ data.source === 'revisions' && (
 				<Notice status="info" isDismissible={ false }>
 					{ __(
-						'This change was taken from WordPress revisions saved before Selective Undo started recording. Changes WordPress did not keep in revisions are not included.',
-						'selective-undo'
+						'This change was taken from WordPress revisions saved before Undoly started recording. Changes WordPress did not keep in revisions are not included.',
+						'undoly'
 					) }
 				</Notice>
 			) }
@@ -233,7 +231,7 @@ export function ChangesetPage( {
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
 						'Some values of this operation were recorded from WordPress hook data only. They are shown, but check them before restoring.',
-						'selective-undo'
+						'undoly'
 					) }
 				</Notice>
 			) }
@@ -242,10 +240,7 @@ export function ChangesetPage( {
 				{ data.objects.length > 1 && (
 					<nav
 						className="su-object-list"
-						aria-label={ __(
-							'Items in this operation',
-							'selective-undo'
-						) }
+						aria-label={ __( 'Items in this operation', 'undoly' ) }
 					>
 						<ul>
 							{ data.objects.map( ( o, index ) => (
@@ -283,7 +278,7 @@ export function ChangesetPage( {
 					<div className="su-object-detail">
 						<ObjectTitle object={ entry.object } />
 						<h3 className="su-subtitle">
-							{ __( 'Changed fields', 'selective-undo' ) }
+							{ __( 'Changed fields', 'undoly' ) }
 						</h3>
 						<ul className="su-changes">
 							{ entry.changes.map( ( c ) => (
@@ -311,7 +306,7 @@ export function ChangesetPage( {
 												'One restore can include at most %d item.',
 												'One restore can include at most %d items.',
 												maxObjects,
-												'selective-undo'
+												'undoly'
 											),
 											maxObjects
 										) }
@@ -333,7 +328,7 @@ export function ChangesetPage( {
 										)
 									}
 								>
-									{ __( 'Check restore', 'selective-undo' ) }
+									{ __( 'Check restore', 'undoly' ) }
 								</Button>
 								{ data.kind === 'restore' &&
 									data.objects.length === 1 && (
@@ -353,7 +348,7 @@ export function ChangesetPage( {
 										>
 											{ __(
 												'Check undo of this restore',
-												'selective-undo'
+												'undoly'
 											) }
 										</Button>
 									) }

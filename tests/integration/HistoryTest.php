@@ -158,10 +158,34 @@ final class HistoryTest extends IntegrationTestCase
         $id = $this->createPost(['post_title' => 'Secret title']);
         wp_update_post(['ID' => $id, 'post_content' => '=HYPERLINK("x")']);
         $this->endRequest();
-        $csv = $this->s->historyExport()->csv();
+        $csv = $this->s->historyExport()->csv(1);
         $this->assertTrue(str_starts_with($csv, 'changeset,created_at_utc'));
         $this->assertFalse(str_contains($csv, 'Secret title'));
         $this->assertFalse(str_contains($csv, 'HYPERLINK'));
         $this->assertTrue(str_contains($csv, ',post_content,'));
+    }
+
+    public function testCsvExportHasOnlyItemsTheUserMaySee(): void
+    {
+        $id = $this->createPost();
+        wp_update_post(['ID' => $id, 'post_title' => 'Edited']);
+        $format = (string) get_option('date_format');
+        update_option('date_format', 'd.m.Y');
+        $this->endRequest();
+        update_option('date_format', $format);
+        $this->endRequest();
+
+        // An editor with the history permissions may edit the post, but not the site settings.
+        get_role('editor')->add_cap('sundo_view_history');
+
+        try {
+            $csv = $this->s->historyExport()->csv($this->userId('editor'));
+        } finally {
+            get_role('editor')->remove_cap('sundo_view_history');
+        }
+
+        $this->assertTrue(str_contains($csv, ",{$id},post_title,"));
+        $this->assertFalse(str_contains($csv, 'option:date_format'));
+        $this->assertTrue(str_contains($this->s->historyExport()->csv(1), 'option:date_format'));
     }
 }

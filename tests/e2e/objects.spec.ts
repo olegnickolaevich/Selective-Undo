@@ -34,7 +34,7 @@ test( 'a permanently deleted post comes back as a draft from its history', async
 	wp( 'post', 'delete', id, '--force' ); // and permanently
 
 	await login( page );
-	await page.goto( `/wp-admin/admin.php?page=selective-undo&view=object&id=${ id }` );
+	await page.goto( `/wp-admin/admin.php?page=undoly&view=object&id=${ id }` );
 	await page.getByRole( 'checkbox', { name: 'Deleted permanently' } ).check();
 	await page.getByRole( 'button', { name: 'Check restore' } ).click();
 	await expect( page.getByText( 'The item comes back as a draft under its own ID' ) ).toBeVisible();
@@ -52,7 +52,7 @@ test( 'a change of the site settings is undone from the history of the settings'
 
 	try {
 		await login( page );
-		await page.goto( '/wp-admin/admin.php?page=selective-undo&view=object&id=1&type=site' );
+		await page.goto( '/wp-admin/admin.php?page=undoly&view=object&id=1&type=site' );
 		await expect( page.getByRole( 'heading', { name: 'Site settings' } ) ).toBeVisible();
 		await page.getByRole( 'checkbox', { name: 'Tagline' } ).first().check();
 		await restoreSelected( page );

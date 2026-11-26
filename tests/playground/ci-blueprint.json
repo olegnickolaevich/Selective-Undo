@@ -8,7 +8,7 @@
     },
     {
       "step": "activatePlugin",
-      "pluginPath": "selective-undo/selective-undo.php"
+      "pluginPath": "undoly/undoly.php"
     },
     {
       "step": "runPHP",

@@ -66,7 +66,7 @@ final class PurgeService
     public function execute(string $token, string $confirmation, int $userId, float $budgetSeconds = 20.0): array
     {
         if ($confirmation !== self::CONFIRMATION) {
-            throw new DomainError('su_confirmation_required', 400, __('Type DELETE to confirm.', 'selective-undo'));
+            throw new DomainError('su_confirmation_required', 400, __('Type DELETE to confirm.', 'undoly'));
         }
 
         $criteria = $this->verify($token, $userId);
@@ -151,12 +151,12 @@ final class PurgeService
         return match ($scope) {
             'object' => (int) ($criteria['object_id'] ?? 0) > 0
                 ? ['scope' => 'object', 'object_id' => (int) $criteria['object_id']]
-                : throw new DomainError('su_invalid_request', 400, __('Choose an item.', 'selective-undo')),
+                : throw new DomainError('su_invalid_request', 400, __('Choose an item.', 'undoly')),
             'before' => Time::mysqlFromIso((string) ($criteria['before'] ?? '')) !== null
                 ? ['scope' => 'before', 'before' => (string) Time::mysqlFromIso((string) $criteria['before'])]
-                : throw new DomainError('su_invalid_request', 400, __('Choose a valid date.', 'selective-undo')),
+                : throw new DomainError('su_invalid_request', 400, __('Choose a valid date.', 'undoly')),
             'all' => ['scope' => 'all'],
-            default => throw new DomainError('su_invalid_request', 400, __('Unknown deletion scope.', 'selective-undo')),
+            default => throw new DomainError('su_invalid_request', 400, __('Unknown deletion scope.', 'undoly')),
         };
     }
 
@@ -190,13 +190,13 @@ final class PurgeService
         [$payload, $mac] = array_pad(explode('.', $token, 2), 2, '');
 
         if ($mac === '' || !hash_equals(hash_hmac('sha256', $payload, wp_salt('auth')), $mac)) {
-            throw new DomainError('su_invalid_token', 400, __('The deletion preview is invalid. Preview again.', 'selective-undo'));
+            throw new DomainError('su_invalid_token', 400, __('The deletion preview is invalid. Preview again.', 'undoly'));
         }
 
         $data = json_decode((string) base64_decode($payload, true), true);
 
         if (!is_array($data) || (int) ($data['u'] ?? 0) !== $userId || (int) ($data['e'] ?? 0) < time()) {
-            throw new DomainError('su_invalid_token', 400, __('The deletion preview has expired. Preview again.', 'selective-undo'));
+            throw new DomainError('su_invalid_token', 400, __('The deletion preview has expired. Preview again.', 'undoly'));
         }
 
         // The token is signed, but its criteria are validated again like new input.

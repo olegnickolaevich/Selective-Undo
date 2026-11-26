@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace SelectiveUndo\Application\History;
 
 use SelectiveUndo\Infrastructure\Database\Tables;
+use SelectiveUndo\Infrastructure\WordPress\Capabilities;
 
 defined('ABSPATH') || exit;
 
-/** CSV export of history METADATA (no values, no titles). */
+/** CSV export of history METADATA (no values, no titles) of the items the user may see. */
 final class HistoryExport
 {
     public const MAX_ROWS = 10000;
@@ -19,7 +20,7 @@ final class HistoryExport
     ) {
     }
 
-    public function csv(): string
+    public function csv(int $userId): string
     {
         $rows = (array) $this->db->get_results($this->db->prepare(
             "SELECT cs.uuid, cs.created_at, cs.kind, cs.source, cs.actor_user_id, c.id AS change_id, c.event,
@@ -32,8 +33,15 @@ final class HistoryExport
         $csv = self::line(['changeset', 'created_at_utc', 'kind', 'source', 'actor_user_id', 'change_id', 'event',
             'object_type', 'post_type', 'object_id', 'field', 'restorable', 'reason', 'quality']);
 
+        $visible = [];
+
         foreach ($rows as $row) {
-            $csv .= self::line(array_values((array) $row));
+            $key = $row['object_type'] . ':' . $row['object_id'];
+            $visible[$key] ??= user_can($userId, Capabilities::VIEW_OBJECT, (int) $row['object_id'], (string) $row['object_subtype']);
+
+            if ($visible[$key]) {
+                $csv .= self::line(array_values((array) $row));
+            }
         }
 
         return $csv;

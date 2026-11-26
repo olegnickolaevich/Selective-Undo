@@ -98,7 +98,7 @@ function HistoryPanel() {
 
 	useCommand( {
 		name: 'selective-undo/show-item-history',
-		label: __( 'Show the change history of this item', 'selective-undo' ),
+		label: __( 'Show the change history of this item', 'undoly' ),
 		icon: backup,
 		callback: ( { close } ) => {
 			close();
@@ -114,8 +114,8 @@ function HistoryPanel() {
 	useCommand( {
 		name: 'selective-undo/toggle-block-authors',
 		label: authors
-			? __( 'Hide who changed each block', 'selective-undo' )
-			: __( 'Show who changed each block', 'selective-undo' ),
+			? __( 'Hide who changed each block', 'undoly' )
+			: __( 'Show who changed each block', 'undoly' ),
 		icon: backup,
 		callback: ( { close } ) => {
 			close();
@@ -132,19 +132,17 @@ function HistoryPanel() {
 	if ( failed ) {
 		body = (
 			<p className="su-editor__muted">
-				{ __( 'The history could not be loaded.', 'selective-undo' ) }
+				{ __( 'The history could not be loaded.', 'undoly' ) }
 			</p>
 		);
 	} else if ( items === null ) {
 		body = (
-			<p className="su-editor__muted">
-				{ __( 'Loading…', 'selective-undo' ) }
-			</p>
+			<p className="su-editor__muted">{ __( 'Loading…', 'undoly' ) }</p>
 		);
 	} else if ( items.length === 0 ) {
 		body = (
 			<p className="su-editor__muted">
-				{ __( 'No changes recorded yet.', 'selective-undo' ) }
+				{ __( 'No changes recorded yet.', 'undoly' ) }
 			</p>
 		);
 	} else {
@@ -159,7 +157,7 @@ function HistoryPanel() {
 						</a>
 						<span className="su-editor__muted">
 							{ item.changeset.actor?.name ??
-								__( 'System', 'selective-undo' ) }
+								__( 'System', 'undoly' ) }
 							{ ' · ' }
 							<time
 								dateTime={ item.created_at }
@@ -185,28 +183,28 @@ function HistoryPanel() {
 	return (
 		<PluginDocumentSettingPanel
 			name="selective-undo-history"
-			title={ __( 'Change history', 'selective-undo' ) }
+			title={ __( 'Change history', 'undoly' ) }
 		>
 			{ body }
 			<ToggleControl
 				__nextHasNoMarginBottom
-				label={ __( 'Show who changed each block', 'selective-undo' ) }
+				label={ __( 'Show who changed each block', 'undoly' ) }
 				help={ __(
 					'Marks every block with a stripe in the color of the person who last changed it. Select a block to see its change.',
-					'selective-undo'
+					'undoly'
 				) }
 				checked={ authors }
 				onChange={ toggleAuthors }
 			/>
 			<p>
 				<a href={ `${ config.historyUrl }&view=object&id=${ postId }` }>
-					{ __( 'Compare and undo changes', 'selective-undo' ) }
+					{ __( 'Compare and undo changes', 'undoly' ) }
 				</a>
 			</p>
 		</PluginDocumentSettingPanel>
 	);
 }
 
-registerPlugin( 'selective-undo', { render: HistoryPanel } );
+registerPlugin( 'undoly', { render: HistoryPanel } );
 registerBlockHistory();
 registerSaveToken();

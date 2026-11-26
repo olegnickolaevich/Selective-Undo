@@ -119,8 +119,8 @@ final class ElementorAdapter implements AdapterInterface, CapturingAdapter, Desc
     public function fieldLabel(string $fieldKey): string
     {
         return match ($fieldKey) {
-            'elementor:data' => 'Elementor: ' . __('Layout', 'selective-undo'),
-            'elementor:page_settings' => 'Elementor: ' . __('Page settings', 'selective-undo'),
+            'elementor:data' => 'Elementor: ' . __('Layout', 'undoly'),
+            'elementor:page_settings' => 'Elementor: ' . __('Page settings', 'undoly'),
             default => $fieldKey,
         };
     }
@@ -128,8 +128,8 @@ final class ElementorAdapter implements AdapterInterface, CapturingAdapter, Desc
     public function fields(ObjectRef $object): array
     {
         return [
-            new FieldDefinition('elementor:data', __('Layout', 'selective-undo'), 'json', MergeStrategy::Keys, group: 'Elementor'),
-            new FieldDefinition('elementor:page_settings', __('Page settings', 'selective-undo'), 'raw', group: 'Elementor'),
+            new FieldDefinition('elementor:data', __('Layout', 'undoly'), 'json', MergeStrategy::Keys, group: 'Elementor'),
+            new FieldDefinition('elementor:page_settings', __('Page settings', 'undoly'), 'raw', group: 'Elementor'),
         ];
     }
 

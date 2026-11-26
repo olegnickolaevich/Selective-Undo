@@ -92,17 +92,17 @@ final class PostFieldsAdapter implements AdapterInterface, DescribesFields, Merg
     public function fieldLabel(string $fieldKey): string
     {
         return match ($fieldKey) {
-            'post_title' => __('Title', 'selective-undo'),
-            'post_content' => __('Content', 'selective-undo'),
-            'post_excerpt' => __('Excerpt', 'selective-undo'),
-            'menu_order' => _x('Order', 'post menu order field', 'selective-undo'),
-            'post_name' => __('Slug', 'selective-undo'),
-            'post_status' => __('Status', 'selective-undo'),
-            'post_date' => __('Publish date', 'selective-undo'),
-            'post_author' => __('Author', 'selective-undo'),
-            'post_parent' => __('Parent', 'selective-undo'),
-            'comment_status' => __('Comments', 'selective-undo'),
-            'ping_status' => __('Pingbacks and trackbacks', 'selective-undo'),
+            'post_title' => __('Title', 'undoly'),
+            'post_content' => __('Content', 'undoly'),
+            'post_excerpt' => __('Excerpt', 'undoly'),
+            'menu_order' => _x('Order', 'post menu order field', 'undoly'),
+            'post_name' => __('Slug', 'undoly'),
+            'post_status' => __('Status', 'undoly'),
+            'post_date' => __('Publish date', 'undoly'),
+            'post_author' => __('Author', 'undoly'),
+            'post_parent' => __('Parent', 'undoly'),
+            'comment_status' => __('Comments', 'undoly'),
+            'ping_status' => __('Pingbacks and trackbacks', 'undoly'),
             default => $fieldKey,
         };
     }
@@ -117,9 +117,9 @@ final class PostFieldsAdapter implements AdapterInterface, DescribesFields, Merg
 
         foreach (self::FIELDS as $field) {
             $label = match (true) {
-                $object->subtype === 'attachment' && $field === 'post_excerpt' => __('Caption', 'selective-undo'),
-                $object->subtype === 'attachment' && $field === 'post_content' => __('Description', 'selective-undo'),
-                $object->subtype === 'wp_global_styles' && $field === 'post_content' => __('Styles', 'selective-undo'),
+                $object->subtype === 'attachment' && $field === 'post_excerpt' => __('Caption', 'undoly'),
+                $object->subtype === 'attachment' && $field === 'post_content' => __('Description', 'undoly'),
+                $object->subtype === 'wp_global_styles' && $field === 'post_content' => __('Styles', 'undoly'),
                 default => $this->fieldLabel($field),
             };
             $fields[] = new FieldDefinition($field, $label, in_array($field, self::INT_FIELDS, true) ? 'int' : 'text', $this->mergeStrategy($field));
@@ -451,7 +451,7 @@ final class PostFieldsAdapter implements AdapterInterface, DescribesFields, Merg
             $fieldKey === 'post_date' => self::dates($value)['local'] ?? '',
             $fieldKey === 'post_author' && is_int($v) => self::userName($v),
             $fieldKey === 'post_parent' && is_int($v) => $v === 0 ? '' : get_the_title($v) . ' (#' . $v . ')',
-            in_array($fieldKey, ['comment_status', 'ping_status'], true) => $v === 'open' ? __('Open', 'selective-undo') : __('Closed', 'selective-undo'),
+            in_array($fieldKey, ['comment_status', 'ping_status'], true) => $v === 'open' ? __('Open', 'undoly') : __('Closed', 'undoly'),
             // Global styles are one line of JSON: one setting per line instead.
             $fieldKey === 'post_content' && $object->subtype === 'wp_global_styles' && is_string($v) && is_array($json = json_decode($v, true))
                 => (string) wp_json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),

@@ -22,9 +22,7 @@ function Blocks( {
 		<div className={ `su-block-diff__side su-block-diff__side--${ tone }` }>
 			<p className="su-block-diff__side-title">{ title }</p>
 			{ blocks.length === 0 ? (
-				<p className="su-muted">
-					{ __( '(nothing)', 'selective-undo' ) }
-				</p>
+				<p className="su-muted">{ __( '(nothing)', 'undoly' ) }</p>
 			) : (
 				blocks.map( ( block, i ) => (
 					<div key={ i } className="su-block-diff__block">
@@ -65,7 +63,7 @@ export function BlockDiffView( {
 	const [ planError, setPlanError ] = useState< unknown >( null );
 
 	if ( loading && ! data ) {
-		return <Loading label={ __( 'Loading…', 'selective-undo' ) } />;
+		return <Loading label={ __( 'Loading…', 'undoly' ) } />;
 	}
 	if ( error || ! data ) {
 		return <ErrorNotice error={ error } onRetry={ reload } />;
@@ -75,7 +73,7 @@ export function BlockDiffView( {
 			<p className="su-muted">
 				{ __(
 					'This change cannot be shown block by block.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 		);
@@ -101,7 +99,7 @@ export function BlockDiffView( {
 		<div className="su-block-diff">
 			<CheckboxControl
 				__nextHasNoMarginBottom
-				label={ __( 'Show HTML', 'selective-undo' ) }
+				label={ __( 'Show HTML', 'undoly' ) }
 				checked={ html }
 				onChange={ setHtml }
 			/>
@@ -116,7 +114,7 @@ export function BlockDiffView( {
 										'%d unchanged block',
 										'%d unchanged blocks',
 										hunk.blocks,
-										'selective-undo'
+										'undoly'
 									),
 									hunk.blocks
 								) }
@@ -127,13 +125,13 @@ export function BlockDiffView( {
 							<div className="su-block-diff__sides">
 								<Blocks
 									blocks={ hunk.before }
-									title={ __( 'Before', 'selective-undo' ) }
+									title={ __( 'Before', 'undoly' ) }
 									tone="delete"
 									html={ html }
 								/>
 								<Blocks
 									blocks={ hunk.after }
-									title={ __( 'After', 'selective-undo' ) }
+									title={ __( 'After', 'undoly' ) }
 									tone="insert"
 									html={ html }
 								/>
@@ -144,7 +142,7 @@ export function BlockDiffView( {
 										__nextHasNoMarginBottom
 										label={ sprintf(
 											/* translators: %d: number of the part. */
-											__( 'Part %d', 'selective-undo' ),
+											__( 'Part %d', 'undoly' ),
 											hunk.index + 1
 										) }
 										checked={ chosen.includes(
@@ -167,10 +165,7 @@ export function BlockDiffView( {
 										accessibleWhenDisabled
 										onClick={ () => undo( [ hunk.index ] ) }
 									>
-										{ __(
-											'Undo this part',
-											'selective-undo'
-										) }
+										{ __( 'Undo this part', 'undoly' ) }
 									</Button>
 								</div>
 							) }
@@ -193,7 +188,7 @@ export function BlockDiffView( {
 							'Check undo of %d part',
 							'Check undo of %d parts',
 							chosen.length,
-							'selective-undo'
+							'undoly'
 						),
 						chosen.length
 					) }

@@ -27,11 +27,11 @@ import { displayTitle, gapReasonText, type Tone } from '../lib/labels';
 import { linkHandler, objectKind, viewToUrl } from '../lib/router';
 
 const TABS = [
-	{ key: 'recording', label: () => __( 'What to record', 'selective-undo' ) },
-	{ key: 'retention', label: () => __( 'Storage', 'selective-undo' ) },
-	{ key: 'access', label: () => __( 'Access', 'selective-undo' ) },
-	{ key: 'diagnostics', label: () => __( 'Diagnostics', 'selective-undo' ) },
-	{ key: 'removal', label: () => __( 'Removal', 'selective-undo' ) },
+	{ key: 'recording', label: () => __( 'What to record', 'undoly' ) },
+	{ key: 'retention', label: () => __( 'Storage', 'undoly' ) },
+	{ key: 'access', label: () => __( 'Access', 'undoly' ) },
+	{ key: 'diagnostics', label: () => __( 'Diagnostics', 'undoly' ) },
+	{ key: 'removal', label: () => __( 'Removal', 'undoly' ) },
 ];
 
 function download( filename: string, content: string, type: string ) {
@@ -63,7 +63,7 @@ function SaveBar( {
 				isBusy={ busy }
 				accessibleWhenDisabled
 			>
-				{ __( 'Save changes', 'selective-undo' ) }
+				{ __( 'Save changes', 'undoly' ) }
 			</Button>
 		</div>
 	);
@@ -93,10 +93,10 @@ function RecordingTab( {
 		<>
 			<ToggleControl
 				__nextHasNoMarginBottom
-				label={ __( 'Record changes', 'selective-undo' ) }
+				label={ __( 'Record changes', 'undoly' ) }
 				help={ __(
 					'When turned off, changes are not recorded and cannot be undone later. The period appears as a gap in the history.',
-					'selective-undo'
+					'undoly'
 				) }
 				checked={ draft.capture_enabled }
 				onChange={ ( v: boolean ) =>
@@ -104,11 +104,11 @@ function RecordingTab( {
 				}
 			/>
 			<fieldset className="su-fieldset">
-				<legend>{ __( 'Content types', 'selective-undo' ) }</legend>
+				<legend>{ __( 'Content types', 'undoly' ) }</legend>
 				<p className="su-muted">
 					{ __(
 						'Recorded for existing items: title, content, excerpt, slug, status, date, author and other post fields; featured image, categories and tags; fields of supported SEO plugins and Advanced Custom Fields; Elementor layouts. Permanently deleted items are kept so that they can be restored. Site settings: title, tagline, homepage, posts per page, default category, date and time formats, site icon and language. Menus. WooCommerce prices and SKUs of products and variations.',
-						'selective-undo'
+						'undoly'
 					) }
 				</p>
 				{ payload.post_types.map( ( t ) => (
@@ -124,13 +124,10 @@ function RecordingTab( {
 				) ) }
 				<ToggleControl
 					__nextHasNoMarginBottom
-					label={ __(
-						'Templates and site styles',
-						'selective-undo'
-					) }
+					label={ __( 'Templates and site styles', 'undoly' ) }
 					help={ __(
 						'For block themes: templates, template parts, navigation menus, synced patterns and global styles edited in the Site Editor.',
-						'selective-undo'
+						'undoly'
 					) }
 					checked={ draft.track_site_design }
 					onChange={ ( v: boolean ) =>
@@ -140,10 +137,10 @@ function RecordingTab( {
 			</fieldset>
 			<ToggleControl
 				__nextHasNoMarginBottom
-				label={ __( 'Merge autosaves of drafts', 'selective-undo' ) }
+				label={ __( 'Merge autosaves of drafts', 'undoly' ) }
 				help={ __(
 					'Autosaves of a draft by its author become one entry per editing session instead of one entry per minute.',
-					'selective-undo'
+					'undoly'
 				) }
 				checked={ draft.coalesce_autosaves }
 				onChange={ ( v: boolean ) =>
@@ -152,17 +149,14 @@ function RecordingTab( {
 			/>
 			<ToggleControl
 				__nextHasNoMarginBottom
-				label={ __(
-					'Import recent WordPress revisions',
-					'selective-undo'
-				) }
+				label={ __( 'Import recent WordPress revisions', 'undoly' ) }
 				help={ sprintf(
 					/* translators: %d: number of days history is kept. */
 					_n(
 						'Title, content and excerpt changes saved in WordPress revisions during the last %d day before recording started are added to the history, so they can be undone too.',
 						'Title, content and excerpt changes saved in WordPress revisions during the last %d days before recording started are added to the history, so they can be undone too.',
 						payload.settings.retention_days,
-						'selective-undo'
+						'undoly'
 					),
 					payload.settings.retention_days
 				) }
@@ -175,7 +169,7 @@ function RecordingTab( {
 				__nextHasNoMarginBottom
 				label={ __(
 					'Create a WordPress revision after a restore',
-					'selective-undo'
+					'undoly'
 				) }
 				checked={ draft.create_revision_after_restore }
 				onChange={ ( v: boolean ) =>
@@ -184,15 +178,12 @@ function RecordingTab( {
 			/>
 			<details className="su-details">
 				<summary>
-					{ __(
-						'What is not recorded or restored',
-						'selective-undo'
-					) }
+					{ __( 'What is not recorded or restored', 'undoly' ) }
 				</summary>
 				<p>
 					{ __(
 						'Creation of new items, moving to and from the trash (use the trash for that), deleted media, custom fields that are not listed above, comments, users, widgets, menu locations, settings other than the site title, tagline, homepage, date formats, site icon and language, files, stock, orders and payments. Emails, webhooks and other external effects are never undone.',
-						'selective-undo'
+						'undoly'
 					) }
 				</p>
 			</details>
@@ -277,13 +268,13 @@ function PurgeForm( {
 					'Deleted %d recorded change.',
 					'Deleted %d recorded changes.',
 					r.deleted_changes,
-					'selective-undo'
+					'undoly'
 				),
 				r.deleted_changes
 			);
 			setResult(
 				r.remaining
-					? `${ message } ${ __( 'Some history is left; run the deletion again.', 'selective-undo' ) }`
+					? `${ message } ${ __( 'Some history is left; run the deletion again.', 'undoly' ) }`
 					: message
 			);
 			speak( message );
@@ -298,33 +289,30 @@ function PurgeForm( {
 
 	return (
 		<fieldset className="su-fieldset">
-			<legend>{ __( 'Delete history', 'selective-undo' ) }</legend>
+			<legend>{ __( 'Delete history', 'undoly' ) }</legend>
 			<p className="su-muted">
 				{ __(
 					'Text removed from pages can stay in the history until it expires. Delete it here, for example after removing personal data.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 			<SelectControl
 				__nextHasNoMarginBottom
 				__next40pxDefaultSize
-				label={ __( 'What to delete', 'selective-undo' ) }
+				label={ __( 'What to delete', 'undoly' ) }
 				value={ scope }
 				options={ [
 					{
 						value: 'object',
-						label: __( 'History of one item', 'selective-undo' ),
+						label: __( 'History of one item', 'undoly' ),
 					},
 					{
 						value: 'before',
-						label: __(
-							'History older than a date',
-							'selective-undo'
-						),
+						label: __( 'History older than a date', 'undoly' ),
 					},
 					{
 						value: 'all',
-						label: __( 'All history', 'selective-undo' ),
+						label: __( 'All history', 'undoly' ),
 					},
 				] }
 				onChange={ ( v: string ) => {
@@ -336,7 +324,7 @@ function PurgeForm( {
 				<TextControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
-					label={ __( 'Item ID', 'selective-undo' ) }
+					label={ __( 'Item ID', 'undoly' ) }
 					type="number"
 					min={ 1 }
 					value={ objectId }
@@ -350,7 +338,7 @@ function PurgeForm( {
 				<TextControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
-					label={ __( 'Older than', 'selective-undo' ) }
+					label={ __( 'Older than', 'undoly' ) }
 					type="date"
 					value={ before }
 					onChange={ ( v: string ) => {
@@ -376,7 +364,7 @@ function PurgeForm( {
 						( scope === 'before' && ! before )
 					}
 				>
-					{ __( 'Preview deletion', 'selective-undo' ) }
+					{ __( 'Preview deletion', 'undoly' ) }
 				</Button>
 			) : (
 				<div className="su-danger-zone">
@@ -387,7 +375,7 @@ function PurgeForm( {
 								'%d recorded change will be deleted permanently.',
 								'%d recorded changes will be deleted permanently.',
 								preview.changes,
-								'selective-undo'
+								'undoly'
 							),
 							preview.changes
 						) }
@@ -399,7 +387,7 @@ function PurgeForm( {
 										'%d operation is kept because an open preview or a running restore uses it.',
 										'%d operations are kept because an open preview or a running restore uses them.',
 										preview.protected_changesets,
-										'selective-undo'
+										'undoly'
 									),
 									preview.protected_changesets
 								) }
@@ -407,10 +395,7 @@ function PurgeForm( {
 					<TextControl
 						__nextHasNoMarginBottom
 						__next40pxDefaultSize
-						label={ __(
-							'Type DELETE to confirm',
-							'selective-undo'
-						) }
+						label={ __( 'Type DELETE to confirm', 'undoly' ) }
 						value={ confirmation }
 						onChange={ setConfirmation }
 					/>
@@ -422,13 +407,13 @@ function PurgeForm( {
 						disabled={ busy || confirmation !== 'DELETE' }
 						accessibleWhenDisabled
 					>
-						{ __( 'Delete permanently', 'selective-undo' ) }
+						{ __( 'Delete permanently', 'undoly' ) }
 					</Button>{ ' ' }
 					<Button
 						variant="tertiary"
 						onClick={ () => setPreview( null ) }
 					>
-						{ __( 'Cancel', 'selective-undo' ) }
+						{ __( 'Cancel', 'undoly' ) }
 					</Button>
 				</div>
 			) }
@@ -459,25 +444,20 @@ function RetentionTab( {
 			{ overview && (
 				<dl className="su-meta">
 					<div>
-						<dt>{ __( 'Used', 'selective-undo' ) }</dt>
+						<dt>{ __( 'Used', 'undoly' ) }</dt>
 						<dd>
 							{ formatBytes( overview.storage.logical_bytes ) } /{ ' ' }
 							{ formatBytes( overview.storage.quota_bytes ) }
 						</dd>
 					</div>
 					<div>
-						<dt>{ __( 'On disk', 'selective-undo' ) }</dt>
+						<dt>{ __( 'On disk', 'undoly' ) }</dt>
 						<dd>
 							{ formatBytes( overview.storage.physical_bytes ) }
 						</dd>
 					</div>
 					<div>
-						<dt>
-							{ __(
-								'Oldest available change',
-								'selective-undo'
-							) }
-						</dt>
+						<dt>{ __( 'Oldest available change', 'undoly' ) }</dt>
 						<dd>
 							{ overview.oldest_event_at
 								? exactDate( overview.oldest_event_at )
@@ -489,7 +469,7 @@ function RetentionTab( {
 			<p className="su-muted">
 				{ __(
 					'The database file does not shrink automatically after deletions; freed space is reused for new history.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 			<TextControl
@@ -498,14 +478,14 @@ function RetentionTab( {
 				type="number"
 				min={ 1 }
 				max={ max }
-				label={ __( 'Keep history for (days)', 'selective-undo' ) }
+				label={ __( 'Keep history for (days)', 'undoly' ) }
 				help={ sprintf(
 					/* translators: %d: maximum number of days. */
 					_n(
 						'From 1 to %d day. The size limit below may remove older history earlier.',
 						'From 1 to %d days. The size limit below may remove older history earlier.',
 						max,
-						'selective-undo'
+						'undoly'
 					),
 					max
 				) }
@@ -520,7 +500,7 @@ function RetentionTab( {
 				type="number"
 				min={ payload.limits.quota_min_mb }
 				max={ payload.limits.quota_max_mb }
-				label={ __( 'History size limit (MB)', 'selective-undo' ) }
+				label={ __( 'History size limit (MB)', 'undoly' ) }
 				value={ String( draft.quota_mb ) }
 				onChange={ ( v: string ) =>
 					setDraft( { ...draft, quota_mb: Number( v ) } )
@@ -530,11 +510,11 @@ function RetentionTab( {
 				__nextHasNoMarginBottom
 				label={ __(
 					'Remove the oldest history when the limit is reached',
-					'selective-undo'
+					'undoly'
 				) }
 				help={ __(
 					'When off, recording pauses at the limit instead.',
-					'selective-undo'
+					'undoly'
 				) }
 				checked={ draft.evict_oldest_on_quota }
 				onChange={ ( v: boolean ) =>
@@ -547,12 +527,12 @@ function RetentionTab( {
 				type="number"
 				min={ 16 }
 				max={ 65536 }
-				label={ __( 'Largest value to store (KB)', 'selective-undo' ) }
+				label={ __( 'Largest value to store (KB)', 'undoly' ) }
 				help={ sprintf(
 					/* translators: %s: size. */
 					__(
 						'Effective limit on this server: %s. Larger values are listed in the history but cannot be restored.',
-						'selective-undo'
+						'undoly'
 					),
 					formatBytes( payload.limits.effective_max_value_bytes )
 				) }
@@ -602,19 +582,17 @@ function AccessTab( {
 			<p className="su-muted">
 				{ __(
 					'Each permission is granted separately. Users additionally need permission to edit an item to see or restore its history.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 			<div className="su-table-scroll">
 				<table className="su-table su-table--matrix widefat">
 					<caption className="screen-reader-text">
-						{ __( 'Permissions by role', 'selective-undo' ) }
+						{ __( 'Permissions by role', 'undoly' ) }
 					</caption>
 					<thead>
 						<tr>
-							<th scope="col">
-								{ __( 'Role', 'selective-undo' ) }
-							</th>
+							<th scope="col">{ __( 'Role', 'undoly' ) }</th>
 							{ payload.capabilities.map( ( c ) => (
 								<th scope="col" key={ c.key }>
 									{ c.label }
@@ -661,7 +639,7 @@ function AccessTab( {
 												_x(
 													'%1$s: %2$s',
 													'role: permission',
-													'selective-undo'
+													'undoly'
 												),
 												role.name,
 												c.label
@@ -728,12 +706,10 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 					) ) }
 				</ul>
 			) }
-			<h3 className="su-subtitle">
-				{ __( 'History gaps', 'selective-undo' ) }
-			</h3>
+			<h3 className="su-subtitle">{ __( 'History gaps', 'undoly' ) }</h3>
 			{ gaps.data && gaps.data.items.length === 0 && (
 				<p className="su-muted">
-					{ __( 'No gaps recorded.', 'selective-undo' ) }
+					{ __( 'No gaps recorded.', 'undoly' ) }
 				</p>
 			) }
 			{ gaps.data && gaps.data.items.length > 0 && (
@@ -772,7 +748,7 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 												/* translators: %s: date. */
 												__(
 													'since %s, ongoing',
-													'selective-undo'
+													'undoly'
 												),
 												exactDate( g.started_at )
 											)
@@ -802,10 +778,7 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 						}
 					} }
 				>
-					{ __(
-						'Download diagnostics (no content)',
-						'selective-undo'
-					) }
+					{ __( 'Download diagnostics (no content)', 'undoly' ) }
 				</Button>
 				<Button
 					variant="secondary"
@@ -823,11 +796,11 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 					{ queued
 						? __(
 								'Check started; changes made outside WordPress will appear in the history',
-								'selective-undo'
+								'undoly'
 							)
 						: __(
 								'Check for changes made outside WordPress',
-								'selective-undo'
+								'undoly'
 							) }
 				</Button>
 				{ overview?.user.can.export && (
@@ -848,7 +821,7 @@ function DiagnosticsTab( { overview }: { overview: Overview | null } ) {
 					>
 						{ __(
 							'Export history list (CSV, no values)',
-							'selective-undo'
+							'undoly'
 						) }
 					</Button>
 				) }
@@ -874,14 +847,14 @@ function RemovalTab( {
 			<p>
 				{ __(
 					'Deactivating the plugin keeps the history. Deleting the plugin keeps the history too, unless you allow it below.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 			<ToggleControl
 				__nextHasNoMarginBottom
 				label={ __(
 					'Delete all history and settings when the plugin is deleted',
-					'selective-undo'
+					'undoly'
 				) }
 				checked={ value }
 				onChange={ setValue }
@@ -890,7 +863,7 @@ function RemovalTab( {
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
 						'When the plugin is deleted from the Plugins screen, the history is destroyed and cannot be recovered.',
-						'selective-undo'
+						'undoly'
 					) }
 				</Notice>
 			) }
@@ -936,7 +909,7 @@ export function SettingsPage( {
 		try {
 			setPayload( await api.saveSettings( settings, roles ) );
 			setSaved( true );
-			speak( __( 'Settings saved.', 'selective-undo' ) );
+			speak( __( 'Settings saved.', 'undoly' ) );
 			onChanged();
 		} catch ( e: unknown ) {
 			setSaveError( e );
@@ -946,11 +919,11 @@ export function SettingsPage( {
 	return (
 		<section className="su-panel">
 			<ViewHeading focus={ false }>
-				{ __( 'Settings', 'selective-undo' ) }
+				{ __( 'Settings', 'undoly' ) }
 			</ViewHeading>
 			<nav
 				className="su-subnav"
-				aria-label={ __( 'Settings sections', 'selective-undo' ) }
+				aria-label={ __( 'Settings sections', 'undoly' ) }
 			>
 				<ul>
 					{ TABS.map( ( t ) => {
@@ -973,7 +946,7 @@ export function SettingsPage( {
 			</nav>
 			{ saved && (
 				<Notice status="success" onRemove={ () => setSaved( false ) }>
-					{ __( 'Settings saved.', 'selective-undo' ) }
+					{ __( 'Settings saved.', 'undoly' ) }
 				</Notice>
 			) }
 			{ saveError !== null && <ErrorNotice error={ saveError } /> }

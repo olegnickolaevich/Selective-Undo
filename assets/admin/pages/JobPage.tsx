@@ -24,35 +24,32 @@ import { checkRestore } from './ChangesetPage';
 function headline( job: RestoreJob ): string {
 	switch ( job.status ) {
 		case 'completed':
-			return __( 'Restore completed', 'selective-undo' );
+			return __( 'Restore completed', 'undoly' );
 		case 'completed_with_conflicts':
 			return __(
 				'Restore completed, some fields were skipped',
-				'selective-undo'
+				'undoly'
 			);
 		case 'partially_failed':
-			return __( 'Restore partially failed', 'selective-undo' );
+			return __( 'Restore partially failed', 'undoly' );
 		case 'failed':
-			return __( 'Restore failed', 'selective-undo' );
+			return __( 'Restore failed', 'undoly' );
 		case 'cancelled':
-			return __( 'Restore stopped', 'selective-undo' );
+			return __( 'Restore stopped', 'undoly' );
 		default:
-			return __( 'Restoring changes', 'selective-undo' );
+			return __( 'Restoring changes', 'undoly' );
 	}
 }
 
 function Counters( { job }: { job: RestoreJob } ) {
 	const c = job.counters;
 	const rows: Array< [ string, number ] > = [
-		[ __( 'Restored', 'selective-undo' ), c.restored ],
-		[
-			__( 'Already in the desired state', 'selective-undo' ),
-			c.already_restored,
-		],
-		[ __( 'Skipped: changed again', 'selective-undo' ), c.conflict ],
-		[ __( 'Skipped for another reason', 'selective-undo' ), c.skipped ],
-		[ __( 'Failed', 'selective-undo' ), c.failed ],
-		[ __( 'Not started', 'selective-undo' ), c.cancelled ],
+		[ __( 'Restored', 'undoly' ), c.restored ],
+		[ __( 'Already in the desired state', 'undoly' ), c.already_restored ],
+		[ __( 'Skipped: changed again', 'undoly' ), c.conflict ],
+		[ __( 'Skipped for another reason', 'undoly' ), c.skipped ],
+		[ __( 'Failed', 'undoly' ), c.failed ],
+		[ __( 'Not started', 'undoly' ), c.cancelled ],
 	];
 
 	return (
@@ -154,7 +151,7 @@ export function JobPage( { id }: { id: string } ) {
 								'Processed %1$d of %2$d field',
 								'Processed %1$d of %2$d fields',
 								job.counters.total,
-								'selective-undo'
+								'undoly'
 							),
 							done,
 							job.counters.total
@@ -168,7 +165,7 @@ export function JobPage( { id }: { id: string } ) {
 					<p className="su-muted">
 						{ __(
 							'You can close this page. The restore continues if background tasks on the site work.',
-							'selective-undo'
+							'undoly'
 						) }
 					</p>
 					{ job.queue_health !== 'ok' && (
@@ -179,7 +176,7 @@ export function JobPage( { id }: { id: string } ) {
 								{
 									label: __(
 										'Continue in this tab',
-										'selective-undo'
+										'undoly'
 									),
 									onClick: runHere,
 								},
@@ -187,7 +184,7 @@ export function JobPage( { id }: { id: string } ) {
 						>
 							{ __(
 								'Background processing on this site seems delayed.',
-								'selective-undo'
+								'undoly'
 							) }
 						</Notice>
 					) }
@@ -199,16 +196,13 @@ export function JobPage( { id }: { id: string } ) {
 							isBusy={ busy }
 							disabled={ busy }
 						>
-							{ __(
-								'Stop after the current item',
-								'selective-undo'
-							) }
+							{ __( 'Stop after the current item', 'undoly' ) }
 						</Button>
 					) }
 					<p className="su-muted">
 						{ __(
 							'Stopping does not undo items that were already restored.',
-							'selective-undo'
+							'undoly'
 						) }
 					</p>
 				</div>
@@ -222,7 +216,7 @@ export function JobPage( { id }: { id: string } ) {
 				<Notice status="info" isDismissible={ false }>
 					{ __(
 						'The content is restored. Cache clearing and other follow-up tasks are still running.',
-						'selective-undo'
+						'undoly'
 					) }
 				</Notice>
 			) }
@@ -230,7 +224,7 @@ export function JobPage( { id }: { id: string } ) {
 				<Notice status="warning" isDismissible={ false }>
 					{ __(
 						'The content is restored, but some follow-up tasks (such as clearing the page cache) failed. Clear the page cache manually if visitors still see the old version.',
-						'selective-undo'
+						'undoly'
 					) }
 				</Notice>
 			) }
@@ -239,7 +233,7 @@ export function JobPage( { id }: { id: string } ) {
 			{ terminal && items && items.length > 0 && (
 				<section>
 					<h3 className="su-subtitle">
-						{ __( 'Report', 'selective-undo' ) }
+						{ __( 'Report', 'undoly' ) }
 					</h3>
 					<ul className="su-plan-items">
 						{ items.map( ( item ) => (
@@ -285,10 +279,7 @@ export function JobPage( { id }: { id: string } ) {
 								)
 							}
 						>
-							{ __(
-								'Check undo of this restore',
-								'selective-undo'
-							) }
+							{ __( 'Check undo of this restore', 'undoly' ) }
 						</Button>
 					) }
 					<a
@@ -296,7 +287,7 @@ export function JobPage( { id }: { id: string } ) {
 						href={ viewToUrl( history ) }
 						onClick={ linkHandler( history ) }
 					>
-						{ __( 'Back to history', 'selective-undo' ) }
+						{ __( 'Back to history', 'undoly' ) }
 					</a>
 				</div>
 			) }
@@ -309,7 +300,7 @@ export function JobPage( { id }: { id: string } ) {
 						variant="link"
 						onClick={ () => navigate( { name: 'restores' } ) }
 					>
-						{ __( 'All restores', 'selective-undo' ) }
+						{ __( 'All restores', 'undoly' ) }
 					</Button>
 				</p>
 			) }

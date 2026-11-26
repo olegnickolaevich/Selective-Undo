@@ -372,7 +372,7 @@ final class RestApi
     public function getPlan(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(fn () => $this->s->planView()->forUser((string) $r['id'], get_current_user_id())
-            ?? throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'selective-undo')));
+            ?? throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'undoly')));
     }
 
     /** Both sides of each part that was changed again after the change being undone. */
@@ -435,7 +435,7 @@ final class RestApi
     public function getJob(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(fn () => $this->s->jobView()->forUser((string) $r['id'], get_current_user_id())
-            ?? throw new DomainError('su_not_found', 404, __('This restore does not exist.', 'selective-undo')));
+            ?? throw new DomainError('su_not_found', 404, __('This restore does not exist.', 'undoly')));
     }
 
     public function jobItems(\WP_REST_Request $r): \WP_REST_Response|\WP_Error
@@ -470,7 +470,7 @@ final class RestApi
             $job = $this->visibleJob((string) $r['id']);
 
             if ((int) $job['actor_user_id'] !== get_current_user_id()) {
-                throw new DomainError('su_forbidden', 403, __('Only the author of a restore can continue it.', 'selective-undo'));
+                throw new DomainError('su_forbidden', 403, __('Only the author of a restore can continue it.', 'undoly'));
             }
 
             $this->s->executeJob()->run((int) $job['id'], 10.0);
@@ -526,8 +526,8 @@ final class RestApi
     public function exportHistory(): \WP_REST_Response|\WP_Error
     {
         return $this->errors->run(fn () => [
-            'filename' => 'selective-undo-history-' . gmdate('Ymd-His') . '.csv',
-            'content' => $this->s->historyExport()->csv(),
+            'filename' => 'undoly-history-' . gmdate('Ymd-His') . '.csv',
+            'content' => $this->s->historyExport()->csv(get_current_user_id()),
         ]);
     }
 
@@ -582,11 +582,11 @@ final class RestApi
             'post_types' => $types,
             'roles' => $this->s->capabilities()->roleMatrix(),
             'capabilities' => [
-                ['key' => Capabilities::VIEW_HISTORY, 'label' => __('View history', 'selective-undo')],
-                ['key' => Capabilities::RESTORE_CHANGES, 'label' => __('Restore changes', 'selective-undo')],
-                ['key' => Capabilities::MANAGE_SETTINGS, 'label' => __('Manage settings', 'selective-undo')],
-                ['key' => Capabilities::MANAGE_RETENTION, 'label' => __('Delete history', 'selective-undo')],
-                ['key' => Capabilities::EXPORT_HISTORY, 'label' => __('Export history', 'selective-undo')],
+                ['key' => Capabilities::VIEW_HISTORY, 'label' => __('View history', 'undoly')],
+                ['key' => Capabilities::RESTORE_CHANGES, 'label' => __('Restore changes', 'undoly')],
+                ['key' => Capabilities::MANAGE_SETTINGS, 'label' => __('Manage settings', 'undoly')],
+                ['key' => Capabilities::MANAGE_RETENTION, 'label' => __('Delete history', 'undoly')],
+                ['key' => Capabilities::EXPORT_HISTORY, 'label' => __('Export history', 'undoly')],
             ],
             'capture_state' => $this->s->captureState()->describe(),
         ];
@@ -598,7 +598,7 @@ final class RestApi
         $job = $this->s->jobs()->findByUuid($uuid);
 
         if ($job === null || !$this->s->jobView()->canSee($job, get_current_user_id())) {
-            throw new DomainError('su_not_found', 404, __('This restore does not exist.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This restore does not exist.', 'undoly'));
         }
 
         return $job;

@@ -9,7 +9,7 @@
 # Optional environment:
 #   SU_WP_IMAGE=wordpress:6.8-php8.2-apache   WordPress version to take the core files from
 #   SU_TEST_SITE=/path  SU_DB_NAME=name  SU_E2E_PORT=8968  SU_TABLE_PREFIX=xyz_   a second, independent site
-#   SU_PLUGIN_ZIP=dist/selective-undo-1.0.0.zip   install the packaged plugin instead of linking this checkout
+#   SU_PLUGIN_ZIP=dist/undoly-1.0.0.zip   install the packaged plugin instead of linking this checkout
 #   SU_DB_ENGINE=sqlite   run the site on SQLite (as WordPress Playground does) instead of MySQL;
 #                         needs pdo_sqlite and the SQLite Database Integration plugin (cloned from GitHub)
 set -euo pipefail
@@ -139,8 +139,8 @@ PHP
     # The same installer WordPress uses for plugins from the directory.
     wp plugin install "$PLUGIN_ZIP" --activate >/dev/null
   else
-    ln -sfn "$ROOT" "$SITE/wp-content/plugins/selective-undo"
-    wp plugin activate selective-undo >/dev/null
+    ln -sfn "$ROOT" "$SITE/wp-content/plugins/undoly"
+    wp plugin activate undoly >/dev/null
   fi
   # Install bundled translations the way WordPress.org language packs are installed.
   SU_WPCLI="$WPCLI" SU_TEST_SITE="$SITE" "$ROOT/bin/i18n.sh" install-test-site >/dev/null

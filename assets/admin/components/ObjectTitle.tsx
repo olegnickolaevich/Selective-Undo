@@ -24,7 +24,7 @@ export function ObjectTitle( {
 			<span className="su-object__meta">
 				{ object.subtype_label } · #{ object.id }
 				{ object.status === 'trash' &&
-					` · ${ __( 'in trash', 'selective-undo' ) }` }
+					` · ${ __( 'in trash', 'undoly' ) }` }
 			</span>
 			{ withLinks && (
 				<span className="su-object__links">

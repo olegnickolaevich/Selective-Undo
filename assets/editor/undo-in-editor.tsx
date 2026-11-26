@@ -52,13 +52,13 @@ function apply( field: string, value: string, changeId: number ): void {
 	dispatch( noticesStore ).createSuccessNotice(
 		__(
 			'The change was undone in the editor. Save the post to keep it.',
-			'selective-undo'
+			'undoly'
 		),
 		{
 			type: 'snackbar',
 			actions: [
 				{
-					label: __( 'Revert', 'selective-undo' ),
+					label: __( 'Revert', 'undoly' ),
 					onClick: () => dispatch( editorStore ).undo(),
 				},
 			],
@@ -89,13 +89,13 @@ function ConflictModal( {
 
 	return (
 		<Modal
-			title={ __( 'Some parts were changed twice', 'selective-undo' ) }
+			title={ __( 'Some parts were changed twice', 'undoly' ) }
 			onRequestClose={ onClose }
 		>
 			<p>
 				{ __(
 					'These parts were changed again after the change you are undoing. Choose what to keep for each part; everything else keeps its later edits.',
-					'selective-undo'
+					'undoly'
 				) }
 			</p>
 			{ conflicts.map( ( c ) => (
@@ -104,33 +104,27 @@ function ConflictModal( {
 					<div className="su-editor__sides">
 						<div>
 							<p className="su-editor__muted">
-								{ __( 'Now', 'selective-undo' ) }
+								{ __( 'Now', 'undoly' ) }
 							</p>
 							<p>{ stripTags( c.current ) }</p>
 						</div>
 						<div>
 							<p className="su-editor__muted">
-								{ __( 'Comes back', 'selective-undo' ) }
+								{ __( 'Comes back', 'undoly' ) }
 							</p>
 							<p>{ stripTags( c.restored ) }</p>
 						</div>
 					</div>
 					<RadioControl
-						label={ __( 'Keep', 'selective-undo' ) }
+						label={ __( 'Keep', 'undoly' ) }
 						selected={ choice[ c.index ] ?? 'current' }
 						options={ [
 							{
-								label: __(
-									'The current text',
-									'selective-undo'
-								),
+								label: __( 'The current text', 'undoly' ),
 								value: 'current',
 							},
 							{
-								label: __(
-									'The earlier text',
-									'selective-undo'
-								),
+								label: __( 'The earlier text', 'undoly' ),
 								value: 'restored',
 							},
 						] }
@@ -156,7 +150,7 @@ function ConflictModal( {
 					)
 				}
 			>
-				{ __( 'Undo with this choice', 'selective-undo' ) }
+				{ __( 'Undo with this choice', 'undoly' ) }
 			</Button>
 		</Modal>
 	);
@@ -167,7 +161,7 @@ export function UndoInEditorButton( {
 	changeId,
 	field,
 	hunks = [],
-	label = __( 'Undo in the editor', 'selective-undo' ),
+	label = __( 'Undo in the editor', 'undoly' ),
 }: {
 	changeId: number;
 	field: string;
@@ -195,14 +189,14 @@ export function UndoInEditorButton( {
 				setConflicts( preview.conflicts ?? [] );
 			} else if ( preview.status === 'already' ) {
 				notices.createInfoNotice(
-					__( 'This change is already undone.', 'selective-undo' ),
+					__( 'This change is already undone.', 'undoly' ),
 					{ type: 'snackbar' }
 				);
 			} else {
 				notices.createWarningNotice(
 					__(
 						'This change cannot be undone in the editor. Use the change history instead.',
-						'selective-undo'
+						'undoly'
 					),
 					{ type: 'snackbar' }
 				);
@@ -211,7 +205,7 @@ export function UndoInEditorButton( {
 			notices.createErrorNotice(
 				__(
 					'Could not undo. Open the history to try again.',
-					'selective-undo'
+					'undoly'
 				),
 				{ type: 'snackbar' }
 			);

@@ -1,6 +1,6 @@
-# Extending Selective Undo
+# Undoly – Undoly
 
-Selective Undo records changes of fields and restores the ones a user selects. Each kind of
+Undoly records changes of fields and restores the ones a user selects. Each kind of
 data is handled by an **adapter**. This guide shows two ways to add your data:
 
 1. **Custom fields stored in post meta** (Meta Box, Pods, your own fields): register them with
@@ -94,7 +94,7 @@ add_filter( 'selective_undo/meta_fields', function ( array $fields, string $post
 }, 10, 2 );
 ```
 
-Check the result in **Selective Undo → History** after editing a field: the change should list
+Check the result in **Undoly → History** after editing a field: the change should list
 the field with its label, and **Check restore** should bring the old value back.
 
 ## 2. Site settings
@@ -129,7 +129,7 @@ Write an adapter when your data is not post meta. An adapter implements
 | `MergeableAdapter` | Undo of part of a value (sets, keyed values) instead of the whole value. |
 | `PresentsValues` / `PresentsImages` | Readable comparisons (names instead of IDs, images). |
 
-Register it once Selective Undo builds its registry:
+Register it once Undoly builds its registry:
 
 ```php
 add_action( 'selective_undo/register_adapters', function ( SelectiveUndo\Application\Restore\AdapterRegistry $registry ) {
@@ -200,7 +200,7 @@ The integrations in `src/Infrastructure/Integrations/` show two harder cases:
 
 ## 4. Listening to recorded changes
 
-Each time a change set (one save, one request, one restore) is recorded, Selective Undo fires
+Each time a change set (one save, one request, one restore) is recorded, Undoly fires
 an action with its summary. The summary holds IDs and metadata only, never field values:
 
 ```php

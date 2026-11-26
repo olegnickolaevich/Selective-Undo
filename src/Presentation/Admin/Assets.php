@@ -29,7 +29,7 @@ final class Assets
             $asset['version'],
             true
         );
-        wp_set_script_translations($handle, 'selective-undo');
+        wp_set_script_translations($handle, 'undoly');
 
         return true;
     }

@@ -15,9 +15,9 @@ defined('ABSPATH') || exit;
  */
 final class AdminPage
 {
-    public const SLUG = 'selective-undo';
-    public const SLUG_RESTORES = 'selective-undo-restores';
-    public const SLUG_SETTINGS = 'selective-undo-settings';
+    public const SLUG = 'undoly';
+    public const SLUG_RESTORES = 'undoly-restores';
+    public const SLUG_SETTINGS = 'undoly-settings';
     private const HANDLE = 'selective-undo-admin';
 
     /** @var array<string, 'history'|'restores'|'settings'> hook suffix => page */
@@ -39,8 +39,8 @@ final class AdminPage
     public function menu(): void
     {
         $hook = add_menu_page(
-            __('Selective Undo', 'selective-undo'),
-            __('Selective Undo', 'selective-undo'),
+            __('Undoly', 'undoly'),
+            __('Undoly', 'undoly'),
             Capabilities::VIEW_HISTORY,
             self::SLUG,
             [$this, 'render'],
@@ -50,13 +50,13 @@ final class AdminPage
         $this->hooks[(string) $hook] = 'history';
 
         $pages = [
-            [self::SLUG, __('History', 'selective-undo'), Capabilities::VIEW_HISTORY, 'history'],
-            [self::SLUG_RESTORES, __('Restores', 'selective-undo'), Capabilities::VIEW_HISTORY, 'restores'],
-            [self::SLUG_SETTINGS, __('Settings', 'selective-undo'), Capabilities::MANAGE_SETTINGS, 'settings'],
+            [self::SLUG, __('History', 'undoly'), Capabilities::VIEW_HISTORY, 'history'],
+            [self::SLUG_RESTORES, __('Restores', 'undoly'), Capabilities::VIEW_HISTORY, 'restores'],
+            [self::SLUG_SETTINGS, __('Settings', 'undoly'), Capabilities::MANAGE_SETTINGS, 'settings'],
         ];
 
         foreach ($pages as [$slug, $title, $cap, $page]) {
-            $sub = add_submenu_page(self::SLUG, $title . ' ‹ ' . __('Selective Undo', 'selective-undo'), $title, $cap, $slug, [$this, 'render']);
+            $sub = add_submenu_page(self::SLUG, $title . ' ‹ ' . __('Undoly', 'undoly'), $title, $cap, $slug, [$this, 'render']);
 
             if ($sub !== false) {
                 $this->hooks[(string) $sub] = $page;
@@ -68,7 +68,7 @@ final class AdminPage
     {
         echo '<div class="wrap su-wrap">';
         echo '<div id="selective-undo-root"></div>';
-        echo '<noscript><p>' . esc_html__('Selective Undo needs JavaScript to show the history.', 'selective-undo') . '</p></noscript>';
+        echo '<noscript><p>' . esc_html__('Undoly needs JavaScript to show the history.', 'undoly') . '</p></noscript>';
         echo '</div>';
     }
 
@@ -82,7 +82,7 @@ final class AdminPage
 
         if (!is_file($assetFile)) {
             add_action('admin_notices', static function (): void {
-                echo '<div class="notice notice-error"><p>' . esc_html__('Selective Undo: the admin interface is not built. Run "npm install && npm run build".', 'selective-undo') . '</p></div>';
+                echo '<div class="notice notice-error"><p>' . esc_html__('Undoly: the admin interface is not built. Run "npm install && npm run build".', 'undoly') . '</p></div>';
             });
 
             return;
@@ -96,7 +96,7 @@ final class AdminPage
         wp_enqueue_style(self::HANDLE, $url . 'index.css', ['wp-components'], $asset['version']);
         wp_style_add_data(self::HANDLE, 'rtl', 'replace');
         // Translations come from WordPress.org language packs (wp-content/languages/plugins).
-        wp_set_script_translations(self::HANDLE, 'selective-undo');
+        wp_set_script_translations(self::HANDLE, 'undoly');
 
         // Configuration only: no secrets. The REST nonce is set up by wp-api-fetch itself.
         $config = [
@@ -125,8 +125,8 @@ final class AdminPage
             '<a href="%s" aria-label="%s">%s</a>',
             esc_url($url),
             /* translators: %s: post title. */
-            esc_attr(sprintf(__('Change history of “%s”', 'selective-undo'), wp_strip_all_tags(get_the_title($post)))),
-            esc_html__('Change history', 'selective-undo')
+            esc_attr(sprintf(__('Change history of “%s”', 'undoly'), wp_strip_all_tags(get_the_title($post)))),
+            esc_html__('Change history', 'undoly')
         );
 
         return $actions;
@@ -143,7 +143,7 @@ final class AdminPage
             array_unshift($links, sprintf(
                 '<a href="%s">%s</a>',
                 esc_url(admin_url('admin.php?page=' . self::SLUG_SETTINGS)),
-                esc_html__('Settings', 'selective-undo')
+                esc_html__('Settings', 'undoly')
             ));
         }
 

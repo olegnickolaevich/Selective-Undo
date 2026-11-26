@@ -56,7 +56,7 @@ final class QuickUndo
         $plan = $this->planView->forUser($planUuid, $userId);
 
         if ($plan === null) {
-            throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'undoly'));
         }
 
         /** @var array<string, int> $s */

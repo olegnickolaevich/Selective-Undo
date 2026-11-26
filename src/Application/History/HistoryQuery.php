@@ -109,14 +109,14 @@ final class HistoryQuery
         $row = $this->journal->changesetByUuid($uuid);
 
         if ($row === null) {
-            throw new DomainError('su_not_found', 404, __('This operation no longer exists in the history.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This operation no longer exists in the history.', 'undoly'));
         }
 
         $details = $this->aggregate([(int) $row['id']]);
         $item = $this->present($row, $details[(int) $row['id']] ?? null, $userId, 500);
 
         if ($item === null) {
-            throw new DomainError('su_not_found', 404, __('This operation no longer exists in the history.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This operation no longer exists in the history.', 'undoly'));
         }
 
         $visible = [];
@@ -158,7 +158,7 @@ final class HistoryQuery
         $ref = new ObjectRef($object->type, $object->id, (string) $recorded);
 
         if (!user_can($userId, 'sundo_view_object_history', $ref->id, $ref->subtype)) {
-            throw new DomainError('su_forbidden', 403, __('You are not allowed to view the history of this item.', 'selective-undo'));
+            throw new DomainError('su_forbidden', 403, __('You are not allowed to view the history of this item.', 'undoly'));
         }
 
         $limit = max(1, min(self::MAX_LIMIT, $limit));
@@ -461,7 +461,7 @@ final class HistoryQuery
         $raw = base64_decode(strtr($cursor, '-_', '+/'), true);
 
         if ($raw === false || !preg_match('/^t1:(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\|(\d{1,19})$/', $raw, $m)) {
-            throw new DomainError('su_invalid_cursor', 400, __('Invalid page cursor.', 'selective-undo'));
+            throw new DomainError('su_invalid_cursor', 400, __('Invalid page cursor.', 'undoly'));
         }
 
         return [$m[1], (int) $m[2]];
@@ -473,7 +473,7 @@ final class HistoryQuery
         $raw = base64_decode(strtr($cursor, '-_', '+/'), true);
 
         if ($raw === false || !preg_match('/^c2:(-?\d{1,18})\|(\d{1,19})$/', $raw, $m)) {
-            throw new DomainError('su_invalid_cursor', 400, __('Invalid page cursor.', 'selective-undo'));
+            throw new DomainError('su_invalid_cursor', 400, __('Invalid page cursor.', 'undoly'));
         }
 
         return [(int) $m[1], (int) $m[2]];

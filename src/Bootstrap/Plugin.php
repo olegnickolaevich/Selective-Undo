@@ -76,7 +76,7 @@ final class Plugin
         }
 
         if (defined('WP_CLI') && WP_CLI && class_exists('WP_CLI')) {
-            \WP_CLI::add_command('selective-undo', \SelectiveUndo\Presentation\Cli\CliCommand::class);
+            \WP_CLI::add_command('undoly', \SelectiveUndo\Presentation\Cli\CliCommand::class);
         }
     }
 
@@ -105,7 +105,7 @@ final class Plugin
     {
         $schedules['sundo_five_minutes'] ??= [
             'interval' => 5 * MINUTE_IN_SECONDS,
-            'display' => __('Every five minutes (Selective Undo)', 'selective-undo'),
+            'display' => __('Every five minutes (Undoly)', 'undoly'),
         ];
 
         return $schedules;
@@ -216,8 +216,8 @@ final class Plugin
         if (is_multisite() && $networkWide) {
             deactivate_plugins(plugin_basename(SELECTIVE_UNDO_FILE), true, true);
             wp_die(
-                esc_html__('Selective Undo cannot be network activated. Activate it on individual sites instead.', 'selective-undo'),
-                esc_html__('Plugin activation', 'selective-undo'),
+                esc_html__('Undoly cannot be network activated. Activate it on individual sites instead.', 'undoly'),
+                esc_html__('Plugin activation', 'undoly'),
                 ['back_link' => true]
             );
         }

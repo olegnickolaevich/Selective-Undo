@@ -37,8 +37,8 @@ final class PrivacyIntegration
      */
     public function registerExporter(array $exporters): array
     {
-        $exporters['selective-undo'] = [
-            'exporter_friendly_name' => __('Selective Undo change history', 'selective-undo'),
+        $exporters['undoly'] = [
+            'exporter_friendly_name' => __('Undoly change history', 'undoly'),
             'callback' => [$this, 'export'],
         ];
 
@@ -52,8 +52,8 @@ final class PrivacyIntegration
      */
     public function registerEraser(array $erasers): array
     {
-        $erasers['selective-undo'] = [
-            'eraser_friendly_name' => __('Selective Undo change history', 'selective-undo'),
+        $erasers['undoly'] = [
+            'eraser_friendly_name' => __('Undoly change history', 'undoly'),
             'callback' => [$this, 'erase'],
         ];
 
@@ -83,15 +83,15 @@ final class PrivacyIntegration
 
         foreach ($rows as $row) {
             $data[] = [
-                'group_id' => 'selective-undo',
-                'group_label' => __('Content change history', 'selective-undo'),
+                'group_id' => 'undoly',
+                'group_label' => __('Content change history', 'undoly'),
                 'item_id' => 'sundo-' . $row['uuid'],
                 'data' => [
-                    ['name' => __('Date (UTC)', 'selective-undo'), 'value' => (string) $row['created_at']],
-                    ['name' => __('Type', 'selective-undo'), 'value' => (string) $row['kind']],
-                    ['name' => __('Source', 'selective-undo'), 'value' => (string) $row['source']],
-                    ['name' => __('Items', 'selective-undo'), 'value' => (string) $row['objects']],
-                    ['name' => __('Fields', 'selective-undo'), 'value' => (string) $row['fields']],
+                    ['name' => __('Date (UTC)', 'undoly'), 'value' => (string) $row['created_at']],
+                    ['name' => __('Type', 'undoly'), 'value' => (string) $row['kind']],
+                    ['name' => __('Source', 'undoly'), 'value' => (string) $row['source']],
+                    ['name' => __('Items', 'undoly'), 'value' => (string) $row['objects']],
+                    ['name' => __('Fields', 'undoly'), 'value' => (string) $row['fields']],
                 ],
             ];
         }
@@ -124,7 +124,7 @@ final class PrivacyIntegration
         return [
             'items_removed' => $changed,
             'items_retained' => 0,
-            'messages' => [__('Recorded content changes remain until they expire; delete them in Selective Undo → Settings if needed.', 'selective-undo')],
+            'messages' => [__('Recorded content changes remain until they expire; delete them in Undoly → Settings if needed.', 'undoly')],
             'done' => true,
         ];
     }
@@ -136,10 +136,10 @@ final class PrivacyIntegration
         }
 
         wp_add_privacy_policy_content(
-            'Selective Undo',
+            'Undoly',
             wp_kses_post(wpautop(__(
                 'This site records changes to selected content (titles, text, excerpts and order of posts and pages) so that administrators can undo specific changes. The history stores who made a change, when, and the previous and new values. Removed text can remain in the history until it expires (up to the retention period set by the administrator). The history is stored in this site\'s database and is not sent to third parties.',
-                'selective-undo'
+                'undoly'
             )))
         );
     }

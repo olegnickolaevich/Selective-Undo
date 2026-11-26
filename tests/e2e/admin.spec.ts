@@ -72,7 +72,7 @@ test( 'restore a title from the row action and undo the restore', async ( { page
 test( 'conflict is shown and nothing is overwritten', async ( { page } ) => {
 	wp( 'post', 'update', String( postId ), '--post_title=Edited again' );
 	await login( page );
-	await page.goto( `/wp-admin/admin.php?page=selective-undo&view=object&id=${ postId }` );
+	await page.goto( `/wp-admin/admin.php?page=undoly&view=object&id=${ postId }` );
 	// The oldest title change (Contacts -> Contacts OLD) is the last Title checkbox.
 	await page.getByRole( 'checkbox', { name: 'Title' } ).last().check();
 	await page.getByRole( 'button', { name: 'Check restore' } ).click();
@@ -85,8 +85,8 @@ test( 'conflict is shown and nothing is overwritten', async ( { page } ) => {
 
 test( 'history list, filters and accessibility', async ( { page } ) => {
 	await login( page );
-	await page.goto( '/wp-admin/admin.php?page=selective-undo' );
-	await expect( page.getByRole( 'heading', { level: 1, name: 'Selective Undo' } ) ).toBeVisible();
+	await page.goto( '/wp-admin/admin.php?page=undoly' );
+	await expect( page.getByRole( 'heading', { level: 1, name: 'Undoly' } ) ).toBeVisible();
 	await expect( page.getByRole( 'table' ) ).toBeVisible();
 	await expect( page.getByText( 'Recording', { exact: true } ) ).toBeVisible();
 	await page.getByLabel( 'Search by current title or ID' ).fill( String( postId ) );
@@ -99,7 +99,7 @@ test( 'history list, filters and accessibility', async ( { page } ) => {
 test( 'mobile layout at 360px has no horizontal scroll', async ( { page } ) => {
 	await page.setViewportSize( { width: 360, height: 800 } );
 	await login( page );
-	await page.goto( '/wp-admin/admin.php?page=selective-undo' );
+	await page.goto( '/wp-admin/admin.php?page=undoly' );
 	await expect( page.locator( '.su-cards .su-card' ).first() ).toBeVisible();
 	await expect( page.locator( '.su-table' ) ).toBeHidden();
 	const overflow = await page.evaluate( () => document.documentElement.scrollWidth - window.innerWidth );
@@ -108,7 +108,7 @@ test( 'mobile layout at 360px has no horizontal scroll', async ( { page } ) => {
 
 test( 'settings: diagnostics and access tabs', async ( { page } ) => {
 	await login( page );
-	await page.goto( '/wp-admin/admin.php?page=selective-undo-settings&tab=diagnostics' );
+	await page.goto( '/wp-admin/admin.php?page=undoly-settings&tab=diagnostics' );
 	await expect( page.getByText( 'Restore connection' ) ).toBeVisible();
 	await expect( page.getByText( 'A dedicated transactional connection to the primary database works and reaches the same database.' ) ).toBeVisible();
 	await page.getByRole( 'link', { name: 'Access' } ).click();
@@ -118,7 +118,7 @@ test( 'settings: diagnostics and access tabs', async ( { page } ) => {
 
 test( 'editors without permission do not see the plugin', async ( { page } ) => {
 	await login( page, 'editor' );
-	const response = await page.goto( '/wp-admin/admin.php?page=selective-undo' );
+	const response = await page.goto( '/wp-admin/admin.php?page=undoly' );
 	expect( response?.status() ).toBe( 403 );
 	await page.goto( '/wp-admin/edit.php?post_type=page' );
 	await expect( page.getByRole( 'link', { name: /Change history/ } ) ).toHaveCount( 0 );
@@ -138,7 +138,7 @@ test( 'interface follows the user language from an installed language pack', asy
 		await row.hover();
 		await row.getByRole( 'link', { name: `История изменений «${ title }!»` } ).click();
 		// JS strings come from the JSON file registered with wp_set_script_translations().
-		const sections = page.getByRole( 'navigation', { name: 'Разделы Selective Undo' } );
+		const sections = page.getByRole( 'navigation', { name: 'Разделы Undoly' } );
 		await expect( sections ).toBeVisible();
 		await expect( page.getByText( 'Журнал изменений', { exact: true } ) ).toBeVisible();
 		await expect( page.getByText( /последние 30 дней/ ) ).toBeVisible();
@@ -170,7 +170,7 @@ test.describe( 'return to a moment', () => {
 			}` );
 
 		await login( page );
-		await page.goto( `/wp-admin/admin.php?page=selective-undo&view=object&id=${ id }` );
+		await page.goto( `/wp-admin/admin.php?page=undoly&view=object&id=${ id }` );
 		// Ninety minutes ago in UTC, the site's time zone: between v2 and v3.
 		const moment = new Date( Date.now() - 90 * 60_000 ).toISOString().slice( 0, 16 );
 		await page.getByLabel( 'Return to the state at' ).fill( moment );

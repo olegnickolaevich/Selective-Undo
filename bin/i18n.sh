@@ -3,7 +3,7 @@
 # English source strings, text domain = plugin slug, translations delivered as
 # language packs from translate.wordpress.org into wp-content/languages/plugins.
 #
-#   bin/i18n.sh pot                 regenerate languages/selective-undo.pot (run after `npm run build`)
+#   bin/i18n.sh pot                 regenerate languages/undoly.pot (run after `npm run build`)
 #   bin/i18n.sh update              regenerate the POT and merge it into languages/*.po
 #   bin/i18n.sh compile <dir>       build .mo, .l10n.php and JS .json files from languages/*.po into <dir>
 #   bin/i18n.sh install-test-site   compile into the test site's wp-content/languages/plugins
@@ -14,7 +14,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WPCLI="${SU_WPCLI:-$ROOT/.work/wp-cli.phar}"
-SLUG="selective-undo"
+SLUG="undoly"
 
 wp() { php "$WPCLI" --allow-root "$@"; }
 

@@ -16,7 +16,7 @@ final class BlockTitles
     public static function title(string $name): string
     {
         if ($name === '') {
-            return __('Text', 'selective-undo');
+            return __('Text', 'undoly');
         }
 
         $full = str_contains($name, '/') ? $name : 'core/' . $name;

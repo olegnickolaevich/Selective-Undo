@@ -55,7 +55,7 @@ final class CreateRestoreJob
         $plan = $this->plans->findByUuid($planUuid);
 
         if ($plan === null || (int) $plan['actor_user_id'] !== $userId || (int) $plan['blog_id'] !== get_current_blog_id()) {
-            throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'undoly'));
         }
 
         $keyHash = hash('sha256', strtolower($idempotencyKey), true);
@@ -71,7 +71,7 @@ final class CreateRestoreJob
             throw new DomainError(
                 'su_restore_unavailable',
                 503,
-                __('Restoring is unavailable on this site right now. See Settings → Diagnostics.', 'selective-undo'),
+                __('Restoring is unavailable on this site right now. See Settings → Diagnostics.', 'undoly'),
                 ['blockers' => $blockers]
             );
         }
@@ -132,7 +132,7 @@ final class CreateRestoreJob
 
             $this->assertStartable($this->plans->findById((int) $plan['id']) ?? $plan, true);
 
-            throw new DomainError('su_plan_expired', 409, __('This preview has expired. Check the changes again.', 'selective-undo'));
+            throw new DomainError('su_plan_expired', 409, __('This preview has expired. Check the changes again.', 'undoly'));
         } catch (DbError $e) {
             if (!$e->isDuplicateKey()) {
                 throw $e;
@@ -145,7 +145,7 @@ final class CreateRestoreJob
                 return $this->replay($existing, (int) $plan['id']);
             }
 
-            throw new DomainError('su_plan_consumed', 409, __('This preview has already been used to start a restore.', 'selective-undo'));
+            throw new DomainError('su_plan_consumed', 409, __('This preview has already been used to start a restore.', 'undoly'));
         }
 
         $job = $this->jobs->findById($jobId);
@@ -184,7 +184,7 @@ final class CreateRestoreJob
     private function replay(array $existing, int $planId): array
     {
         if ((int) $existing['plan_id'] !== $planId) {
-            throw new DomainError('su_idempotency_key_reused', 422, __('This request key was already used for another restore.', 'selective-undo'));
+            throw new DomainError('su_idempotency_key_reused', 422, __('This request key was already used for another restore.', 'undoly'));
         }
 
         return ['job_uuid' => (string) $existing['uuid'], 'created' => false];
@@ -199,7 +199,7 @@ final class CreateRestoreJob
             throw new DomainError(
                 'su_plan_consumed',
                 409,
-                __('This preview has already been used to start a restore.', 'selective-undo'),
+                __('This preview has already been used to start a restore.', 'undoly'),
                 ['job_id' => $job['uuid'] ?? null]
             );
         }
@@ -207,11 +207,11 @@ final class CreateRestoreJob
         if ($plan['status'] !== 'ready' || strtotime((string) $plan['expires_at'] . ' UTC') <= time()) {
             $this->plans->expire((int) $plan['id']);
 
-            throw new DomainError('su_plan_expired', 409, __('This preview has expired. Check the changes again.', 'selective-undo'));
+            throw new DomainError('su_plan_expired', 409, __('This preview has expired. Check the changes again.', 'undoly'));
         }
 
         if (!$afterRace && (int) $plan['ready_count'] === 0) {
-            throw new DomainError('su_nothing_to_restore', 409, __('Nothing in this preview can be restored.', 'selective-undo'));
+            throw new DomainError('su_nothing_to_restore', 409, __('Nothing in this preview can be restored.', 'undoly'));
         }
     }
 }

@@ -37,7 +37,7 @@ final class CacheInvalidator
         }
 
         /**
-         * Fires after Selective Undo restored a post so that page caches, CDNs and
+         * Fires after Undoly restored a post so that page caches, CDNs and
          * search indexes can refresh it.
          *
          * @param int $postId Restored post ID.

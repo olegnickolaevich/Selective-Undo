@@ -50,7 +50,7 @@ export function App() {
 				) }
 				<main
 					className="su-main"
-					aria-label={ __( 'Selective Undo', 'selective-undo' ) }
+					aria-label={ __( 'Undoly', 'undoly' ) }
 				>
 					{ view.name === 'history' && (
 						<HistoryPage overview={ overview } />

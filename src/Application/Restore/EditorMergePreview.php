@@ -51,7 +51,7 @@ final class EditorMergePreview
         $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
 
         if ($row === null || $row['object_type'] !== 'post' || !ChangeEvent::from((string) $row['event'])->isFieldChange()) {
-            throw new DomainError('su_not_found', 404, __('This change no longer exists in the history.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This change no longer exists in the history.', 'undoly'));
         }
 
         $postId = (int) $row['object_id'];
@@ -60,7 +60,7 @@ final class EditorMergePreview
         // The user saves the result through the editor, so they must be able to edit the post.
         if (!user_can($userId, 'sundo_view_object_history', $postId, (string) $row['object_subtype'])
             || !user_can($userId, 'sundo_restore_object', $postId) || !user_can($userId, 'edit_post', $postId)) {
-            throw new DomainError('su_forbidden', 403, __('You are not allowed to edit this item.', 'selective-undo'));
+            throw new DomainError('su_forbidden', 403, __('You are not allowed to edit this item.', 'undoly'));
         }
 
         if (!in_array($field, self::FIELDS, true) || !(bool) (int) $row['restorable']) {

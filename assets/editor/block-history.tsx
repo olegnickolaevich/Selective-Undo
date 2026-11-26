@@ -127,11 +127,11 @@ function BlockOwner( {
 				{ complete
 					? __(
 							'This block has not changed since the history began.',
-							'selective-undo'
+							'undoly'
 						)
 					: __(
 							'This block is older than the recorded history, or the history has a gap.',
-							'selective-undo'
+							'undoly'
 						) }
 			</p>
 		);
@@ -142,8 +142,8 @@ function BlockOwner( {
 			<p>
 				{ sprintf(
 					/* translators: 1: user name, 2: relative time, e.g. "2 hours ago". */
-					__( 'Last changed by %1$s, %2$s.', 'selective-undo' ),
-					change.actor?.name ?? __( 'System', 'selective-undo' ),
+					__( 'Last changed by %1$s, %2$s.', 'undoly' ),
+					change.actor?.name ?? __( 'System', 'undoly' ),
 					change.created_at ? relativeDate( change.created_at ) : ''
 				) }
 				{ change.created_at && (
@@ -160,7 +160,7 @@ function BlockOwner( {
 						hunks={ [ change.hunk ] }
 						label={ __(
 							'Undo the change of this block',
-							'selective-undo'
+							'undoly'
 						) }
 					/>
 				) }
@@ -203,10 +203,7 @@ const withBlockHistory = createHigherOrderComponent(
 					{ active && (
 						<InspectorControls>
 							<PanelBody
-								title={ __(
-									'Change history',
-									'selective-undo'
-								) }
+								title={ __( 'Change history', 'undoly' ) }
 								opened={ opened }
 								onToggle={ () =>
 									setShared( panelOpened, ! opened )
@@ -216,7 +213,7 @@ const withBlockHistory = createHigherOrderComponent(
 									<p>
 										{ __(
 											'Save the post to see the history of this block.',
-											'selective-undo'
+											'undoly'
 										) }
 									</p>
 								) }

@@ -92,10 +92,10 @@ final class HealthService
         $add(
             'schema',
             $this->schema->isCurrent() ? 'ok' : 'error',
-            __('Database schema', 'selective-undo'),
+            __('Database schema', 'undoly'),
             $this->schema->isCurrent()
-                ? sprintf(/* translators: %d: schema version. */ __('Version %d, all tables present.', 'selective-undo'), SchemaManager::VERSION)
-                : __('The schema is outdated. Open any admin page to run the update.', 'selective-undo'),
+                ? sprintf(/* translators: %d: schema version. */ __('Version %d, all tables present.', 'undoly'), SchemaManager::VERSION)
+                : __('The schema is outdated. Open any admin page to run the update.', 'undoly'),
             !$this->schema->isCurrent()
         );
 
@@ -104,11 +104,11 @@ final class HealthService
         $add(
             'transactions',
             $innodb ? 'ok' : 'error',
-            __('Transactional tables', 'selective-undo'),
+            __('Transactional tables', 'undoly'),
             match (true) {
-                !$innodb => __('Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked.', 'selective-undo'),
-                DbDialect::isSqlite() => __('The site uses SQLite. Restores run in transactions of the SQLite database.', 'selective-undo'),
-                default => __('Posts and history tables use InnoDB.', 'selective-undo'),
+                !$innodb => __('Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked.', 'undoly'),
+                DbDialect::isSqlite() => __('The site uses SQLite. Restores run in transactions of the SQLite database.', 'undoly'),
+                default => __('Posts and history tables use InnoDB.', 'undoly'),
             },
             !$innodb
         );
@@ -117,8 +117,8 @@ final class HealthService
             $add(
                 'compat_mode',
                 'warning',
-                __('Compatibility mode', 'selective-undo'),
-                __('Restores use the WordPress database connection instead of a dedicated one, because the site runs on SQLite or SELECTIVE_UNDO_COMPAT_MODE is set. Every restored value is read back and checked before it is saved, but protection against a dropped connection in the middle of a restore is weaker. This mode is meant for demos and hosts that allow only one database connection.', 'selective-undo')
+                __('Compatibility mode', 'undoly'),
+                __('Restores use the WordPress database connection instead of a dedicated one, because the site runs on SQLite or SELECTIVE_UNDO_COMPAT_MODE is set. Every restored value is read back and checked before it is saved, but protection against a dropped connection in the middle of a restore is weaker. This mode is meant for demos and hosts that allow only one database connection.', 'undoly')
             );
         }
 
@@ -126,12 +126,12 @@ final class HealthService
         $add(
             'restore_connection',
             $connection === [] ? 'ok' : 'error',
-            __('Restore connection', 'selective-undo'),
+            __('Restore connection', 'undoly'),
             $connection === []
                 ? ($compat
-                    ? __('Restores use the WordPress database connection (compatibility mode).', 'selective-undo')
-                    : __('A dedicated transactional connection to the primary database works and reaches the same database.', 'selective-undo'))
-                : sprintf(/* translators: %s: error code. */ __('The dedicated database connection failed (%s). Restoring is blocked.', 'selective-undo'), implode(', ', $connection)),
+                    ? __('Restores use the WordPress database connection (compatibility mode).', 'undoly')
+                    : __('A dedicated transactional connection to the primary database works and reaches the same database.', 'undoly'))
+                : sprintf(/* translators: %s: error code. */ __('The dedicated database connection failed (%s). Restoring is blocked.', 'undoly'), implode(', ', $connection)),
             $connection !== []
         );
 
@@ -139,14 +139,14 @@ final class HealthService
         $add(
             'capture',
             $capture['state'] === 'active' ? 'ok' : 'warning',
-            __('Recording', 'selective-undo'),
+            __('Recording', 'undoly'),
             match ($capture['reason']) {
-                null => __('Changes of tracked content are being recorded.', 'selective-undo'),
-                'capture_disabled' => __('Recording is turned off in the settings.', 'selective-undo'),
-                'quota_exceeded' => __('Recording is paused: the history size limit is reached.', 'selective-undo'),
-                'schema_outdated' => __('Recording is paused until the database update finishes.', 'selective-undo'),
-                'circuit_open' => __('Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors.', 'selective-undo'),
-                default => __('Recording is paused.', 'selective-undo'),
+                null => __('Changes of tracked content are being recorded.', 'undoly'),
+                'capture_disabled' => __('Recording is turned off in the settings.', 'undoly'),
+                'quota_exceeded' => __('Recording is paused: the history size limit is reached.', 'undoly'),
+                'schema_outdated' => __('Recording is paused until the database update finishes.', 'undoly'),
+                'circuit_open' => __('Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors.', 'undoly'),
+                default => __('Recording is paused.', 'undoly'),
             }
         );
 
@@ -154,10 +154,10 @@ final class HealthService
             $add(
                 'site_moved',
                 'warning',
-                __('Copied history', 'selective-undo'),
+                __('Copied history', 'undoly'),
                 $this->site->reason() === SiteFingerprint::RESTORED_REASON
-                    ? __('Most items with history changed at once: the database seems to have been restored from a backup. Keep the history to record the differences as changes made outside WordPress, or clear it.', 'selective-undo')
-                    : __('The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it.', 'selective-undo')
+                    ? __('Most items with history changed at once: the database seems to have been restored from a backup. Keep the history to record the differences as changes made outside WordPress, or clear it.', 'undoly')
+                    : __('The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it.', 'undoly')
             );
         }
 
@@ -165,20 +165,17 @@ final class HealthService
         $add(
             'revision_import',
             'info',
-            __('Earlier changes', 'selective-undo'),
+            __('Earlier changes', 'undoly'),
             match (true) {
-                !$import['enabled'] => __('Importing WordPress revisions is turned off in the settings.', 'selective-undo'),
-                !$import['done'] => __('Changes saved in WordPress revisions before recording started are being imported.', 'selective-undo'),
+                !$import['enabled'] => __('Importing WordPress revisions is turned off in the settings.', 'undoly'),
+                !$import['done'] => __('Changes saved in WordPress revisions before recording started are being imported.', 'undoly'),
                 default => sprintf(
-                    /* translators: 1: number of changes, 2: number of items. */
-                    _n(
-                        '%1$d change from WordPress revisions of %2$d item was imported.',
-                        '%1$d changes from WordPress revisions of %2$d items were imported.',
-                        $import['changes'],
-                        'selective-undo'
-                    ),
-                    $import['changes'],
-                    $import['items']
+                    /* translators: 1: number of changes, e.g. "12 changes", 2: number of items, e.g. "3 items". */
+                    __('Imported from WordPress revisions: %1$s, %2$s.', 'undoly'),
+                    /* translators: %d: number of changes. */
+                    sprintf(_n('%d change', '%d changes', $import['changes'], 'undoly'), $import['changes']),
+                    /* translators: %d: number of items. */
+                    sprintf(_n('%d item', '%d items', $import['items'], 'undoly'), $import['items'])
                 ),
             }
         );
@@ -188,10 +185,10 @@ final class HealthService
         $add(
             'storage',
             $level === 'ok' ? 'ok' : ($level === 'warning' ? 'warning' : 'error'),
-            __('History size', 'selective-undo'),
+            __('History size', 'undoly'),
             sprintf(
                 /* translators: 1: used size, 2: limit. */
-                __('%1$s of %2$s used.', 'selective-undo'),
+                __('%1$s of %2$s used.', 'undoly'),
                 size_format($overview['storage']['logical_bytes']),
                 size_format($overview['storage']['quota_bytes'])
             )
@@ -201,10 +198,10 @@ final class HealthService
         $add(
             'max_value',
             'info',
-            __('Largest recorded value', 'selective-undo'),
+            __('Largest recorded value', 'undoly'),
             sprintf(
                 /* translators: %s: size. */
-                __('Values up to %s are stored. Larger values are listed but cannot be restored.', 'selective-undo'),
+                __('Values up to %s are stored. Larger values are listed but cannot be restored.', 'undoly'),
                 size_format($this->settings->maxValueBytes($packet))
             )
         );
@@ -215,45 +212,45 @@ final class HealthService
         $add(
             'cron',
             $cronLate ? 'warning' : 'ok',
-            __('Background tasks', 'selective-undo'),
+            __('Background tasks', 'undoly'),
             $cronLate
-                ? __('Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job.', 'selective-undo')
+                ? __('Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job.', 'undoly')
                 : ($cronDisabled
-                    ? __('WP-Cron is disabled; make sure a system cron job calls wp-cron.php.', 'selective-undo')
+                    ? __('WP-Cron is disabled; make sure a system cron job calls wp-cron.php.', 'undoly')
                     : ($this->queue->name() === 'action-scheduler'
-                        ? __('Maintenance runs through WP-Cron; restores and imports run through Action Scheduler.', 'selective-undo')
-                        : __('Maintenance runs through WP-Cron.', 'selective-undo')))
+                        ? __('Maintenance runs through WP-Cron; restores and imports run through Action Scheduler.', 'undoly')
+                        : __('Maintenance runs through WP-Cron.', 'undoly')))
         );
 
         $pageCaches = $this->caches->unsupportedPageCaches();
         $add(
             'page_cache',
             $pageCaches === [] ? 'ok' : 'warning',
-            __('Page cache', 'selective-undo'),
+            __('Page cache', 'undoly'),
             $pageCaches === []
-                ? __('No page cache without an integration was detected.', 'selective-undo')
-                : __('A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version.', 'selective-undo')
+                ? __('No page cache without an integration was detected.', 'undoly')
+                : __('A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version.', 'undoly')
         );
 
         $add(
             'object_cache',
             'info',
-            __('Object cache', 'selective-undo'),
+            __('Object cache', 'undoly'),
             wp_using_ext_object_cache()
-                ? __('A persistent object cache is used; restored posts are purged from it.', 'selective-undo')
-                : __('No persistent object cache.', 'selective-undo')
+                ? __('A persistent object cache is used; restored posts are purged from it.', 'undoly')
+                : __('No persistent object cache.', 'undoly')
         );
 
         $dropin = file_exists(WP_CONTENT_DIR . '/db.php');
         $add(
             'db_dropin',
             'info',
-            __('Database drop-in', 'selective-undo'),
+            __('Database drop-in', 'undoly'),
             match (true) {
-                !$dropin => __('None.', 'selective-undo'),
-                DbDialect::isSqlite() => __('The SQLite database drop-in is installed.', 'selective-undo'),
-                $compat => __('A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode).', 'selective-undo'),
-                default => __('A db.php drop-in is installed. Restores use a separate connection to the primary database.', 'selective-undo'),
+                !$dropin => __('None.', 'undoly'),
+                DbDialect::isSqlite() => __('The SQLite database drop-in is installed.', 'undoly'),
+                $compat => __('A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode).', 'undoly'),
+                default => __('A db.php drop-in is installed. Restores use a separate connection to the primary database.', 'undoly'),
             }
         );
 

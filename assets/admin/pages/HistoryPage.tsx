@@ -85,7 +85,7 @@ function Row( { cs }: { cs: ChangesetSummary } ) {
 					: itemsCount( cs.object_count ) }
 				{ cs.hidden_objects > 0 && (
 					<span className="su-muted su-block">
-						{ __( '+ items you cannot view', 'selective-undo' ) }
+						{ __( '+ items you cannot view', 'undoly' ) }
 					</span>
 				) }
 			</td>
@@ -94,7 +94,7 @@ function Row( { cs }: { cs: ChangesetSummary } ) {
 					? cs.fields.map( ( f ) => f.label ).join( ', ' )
 					: '—' }
 			</td>
-			<td>{ cs.actor?.name ?? __( 'System', 'selective-undo' ) }</td>
+			<td>{ cs.actor?.name ?? __( 'System', 'undoly' ) }</td>
 			<td>
 				<time
 					dateTime={ cs.created_at }
@@ -106,11 +106,11 @@ function Row( { cs }: { cs: ChangesetSummary } ) {
 			<td>
 				{ cs.has_limitations ? (
 					<StatusBadge tone="warning">
-						{ __( 'Partly restorable', 'selective-undo' ) }
+						{ __( 'Partly restorable', 'undoly' ) }
 					</StatusBadge>
 				) : (
 					<StatusBadge tone="neutral">
-						{ __( 'History available', 'selective-undo' ) }
+						{ __( 'History available', 'undoly' ) }
 					</StatusBadge>
 				) }
 			</td>
@@ -125,7 +125,7 @@ function Card( { cs }: { cs: ChangesetSummary } ) {
 		<li className="su-card">
 			<p className="su-card__title">{ changesetTitle( cs ) }</p>
 			<p className="su-muted">
-				{ cs.actor?.name ?? __( 'System', 'selective-undo' ) } ·{ ' ' }
+				{ cs.actor?.name ?? __( 'System', 'undoly' ) } ·{ ' ' }
 				<time
 					dateTime={ cs.created_at }
 					title={ exactDate( cs.created_at ) }
@@ -135,7 +135,7 @@ function Card( { cs }: { cs: ChangesetSummary } ) {
 			</p>
 			{ cs.fields.length > 0 && (
 				<p>
-					{ __( 'Changed:', 'selective-undo' ) }{ ' ' }
+					{ __( 'Changed:', 'undoly' ) }{ ' ' }
 					{ cs.fields
 						.map( ( f ) => f.label.toLowerCase() )
 						.join( ', ' ) }
@@ -146,7 +146,7 @@ function Card( { cs }: { cs: ChangesetSummary } ) {
 				href={ viewToUrl( view ) }
 				onClick={ linkHandler( view ) }
 			>
-				{ __( 'View changes', 'selective-undo' ) }
+				{ __( 'View changes', 'undoly' ) }
 			</a>
 		</li>
 	);
@@ -227,35 +227,32 @@ export function HistoryPage( { overview }: { overview: Overview | null } ) {
 	return (
 		<section className="su-panel">
 			<ViewHeading focus={ false }>
-				{ __( 'History', 'selective-undo' ) }
+				{ __( 'History', 'undoly' ) }
 			</ViewHeading>
 			<div className="su-filters" role="search">
 				<SearchControl
 					__nextHasNoMarginBottom
-					label={ __(
-						'Search by current title or ID',
-						'selective-undo'
-					) }
+					label={ __( 'Search by current title or ID', 'undoly' ) }
 					value={ searchDraft }
 					onChange={ ( v: string ) => setSearchDraft( v ) }
 				/>
 				<SelectControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
-					label={ __( 'Period', 'selective-undo' ) }
+					label={ __( 'Period', 'undoly' ) }
 					value={ filters.period }
 					options={ [
 						{
 							value: '',
-							label: __( 'Whole history', 'selective-undo' ),
+							label: __( 'Whole history', 'undoly' ),
 						},
 						{
 							value: '1',
-							label: __( 'Last 24 hours', 'selective-undo' ),
+							label: __( 'Last 24 hours', 'undoly' ),
 						},
 						{
 							value: '7',
-							label: __( 'Last 7 days', 'selective-undo' ),
+							label: __( 'Last 7 days', 'undoly' ),
 						},
 					] }
 					onChange={ set( 'period' ) }
@@ -263,16 +260,16 @@ export function HistoryPage( { overview }: { overview: Overview | null } ) {
 				<SelectControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
-					label={ __( 'Author', 'selective-undo' ) }
+					label={ __( 'Author', 'undoly' ) }
 					value={ filters.actor }
 					options={ [
 						{
 							value: '',
-							label: __( 'Everyone', 'selective-undo' ),
+							label: __( 'Everyone', 'undoly' ),
 						},
 						{
 							value: 'me',
-							label: __( 'My changes', 'selective-undo' ),
+							label: __( 'My changes', 'undoly' ),
 						},
 					] }
 					onChange={ set( 'actor' ) }
@@ -280,12 +277,12 @@ export function HistoryPage( { overview }: { overview: Overview | null } ) {
 				<SelectControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
-					label={ __( 'Content type', 'selective-undo' ) }
+					label={ __( 'Content type', 'undoly' ) }
 					value={ filters.subtype }
 					options={ [
 						{
 							value: '',
-							label: __( 'All types', 'selective-undo' ),
+							label: __( 'All types', 'undoly' ),
 						},
 						...types.map( ( t ) => ( { value: t, label: t } ) ),
 					] }
@@ -294,34 +291,31 @@ export function HistoryPage( { overview }: { overview: Overview | null } ) {
 				<SelectControl
 					__nextHasNoMarginBottom
 					__next40pxDefaultSize
-					label={ __( 'Operation', 'selective-undo' ) }
+					label={ __( 'Operation', 'undoly' ) }
 					value={ filters.kind }
 					options={ [
 						{
 							value: '',
 							label: __(
 								'Edits, restores and operations',
-								'selective-undo'
+								'undoly'
 							),
 						},
 						{
 							value: 'edit',
-							label: __( 'Edits', 'selective-undo' ),
+							label: __( 'Edits', 'undoly' ),
 						},
 						{
 							value: 'restore',
-							label: __( 'Restores', 'selective-undo' ),
+							label: __( 'Restores', 'undoly' ),
 						},
 						{
 							value: 'operation',
-							label: __(
-								'Integrated operations',
-								'selective-undo'
-							),
+							label: __( 'Integrated operations', 'undoly' ),
 						},
 						{
 							value: 'autosave',
-							label: __( 'Autosaved drafts', 'selective-undo' ),
+							label: __( 'Autosaved drafts', 'undoly' ),
 						},
 					] }
 					onChange={ set( 'kind' ) }
@@ -334,7 +328,7 @@ export function HistoryPage( { overview }: { overview: Overview | null } ) {
 							setFilters( EMPTY );
 						} }
 					>
-						{ __( 'Clear filters', 'selective-undo' ) }
+						{ __( 'Clear filters', 'undoly' ) }
 					</Button>
 				) }
 			</div>
@@ -350,18 +344,15 @@ export function HistoryPage( { overview }: { overview: Overview | null } ) {
 				<EmptyState
 					title={
 						filtered
-							? __(
-									'Nothing matches these filters.',
-									'selective-undo'
-								)
-							: __( 'No changes recorded yet.', 'selective-undo' )
+							? __( 'Nothing matches these filters.', 'undoly' )
+							: __( 'No changes recorded yet.', 'undoly' )
 					}
 				>
 					{ ! filtered && (
 						<p>
 							{ __(
 								'Edits of titles, content, excerpts and order of tracked content will appear here.',
-								'selective-undo'
+								'undoly'
 							) }
 						</p>
 					) }
@@ -373,29 +364,23 @@ export function HistoryPage( { overview }: { overview: Overview | null } ) {
 						<caption className="screen-reader-text">
 							{ __(
 								'Recorded operations, newest first',
-								'selective-undo'
+								'undoly'
 							) }
 						</caption>
 						<thead>
 							<tr>
 								<th scope="col">
-									{ __( 'Operation', 'selective-undo' ) }
+									{ __( 'Operation', 'undoly' ) }
+								</th>
+								<th scope="col">{ __( 'Items', 'undoly' ) }</th>
+								<th scope="col">
+									{ __( 'Changes', 'undoly' ) }
 								</th>
 								<th scope="col">
-									{ __( 'Items', 'selective-undo' ) }
+									{ __( 'Author', 'undoly' ) }
 								</th>
-								<th scope="col">
-									{ __( 'Changes', 'selective-undo' ) }
-								</th>
-								<th scope="col">
-									{ __( 'Author', 'selective-undo' ) }
-								</th>
-								<th scope="col">
-									{ __( 'Time', 'selective-undo' ) }
-								</th>
-								<th scope="col">
-									{ __( 'Notes', 'selective-undo' ) }
-								</th>
+								<th scope="col">{ __( 'Time', 'undoly' ) }</th>
+								<th scope="col">{ __( 'Notes', 'undoly' ) }</th>
 							</tr>
 						</thead>
 						<tbody>

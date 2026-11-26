@@ -54,14 +54,12 @@ export function RestoresPage() {
 	return (
 		<section className="su-panel">
 			<ViewHeading focus={ false }>
-				{ __( 'Restores', 'selective-undo' ) }
+				{ __( 'Restores', 'undoly' ) }
 			</ViewHeading>
 			{ error !== null && <ErrorNotice error={ error } /> }
 			{ loading && <Loading /> }
 			{ ! loading && items.length === 0 && ! error && (
-				<EmptyState
-					title={ __( 'No restores yet.', 'selective-undo' ) }
-				/>
+				<EmptyState title={ __( 'No restores yet.', 'undoly' ) } />
 			) }
 			{ items.length > 0 && (
 				<ul className="su-job-list">
@@ -80,7 +78,7 @@ export function RestoresPage() {
 												'%1$d of %2$d field restored',
 												'%1$d of %2$d fields restored',
 												job.counters.total,
-												'selective-undo'
+												'undoly'
 											),
 											job.counters.restored,
 											job.counters.total

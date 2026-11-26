@@ -43,11 +43,11 @@ final class DiffService
         $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
 
         if ($row === null || !user_can($userId, 'sundo_view_object_history', (int) $row['object_id'], (string) $row['object_subtype'])) {
-            throw new DomainError('su_not_found', 404, __('This change no longer exists in the history.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This change no longer exists in the history.', 'undoly'));
         }
 
         if ((string) $row['field_key'] === '') {
-            throw new DomainError('su_invalid_selection', 400, __('Informational events have no values to compare.', 'selective-undo'));
+            throw new DomainError('su_invalid_selection', 400, __('Informational events have no values to compare.', 'undoly'));
         }
 
         $object = new ObjectRef((string) $row['object_type'], (int) $row['object_id'], (string) $row['object_subtype']);
@@ -59,8 +59,8 @@ final class DiffService
 
         return $this->result(
             'before_after',
-            $isRestore ? __('Before restore', 'selective-undo') : __('Before', 'selective-undo'),
-            $isRestore ? __('After restore', 'selective-undo') : __('After', 'selective-undo'),
+            $isRestore ? __('Before restore', 'undoly') : __('Before', 'undoly'),
+            $isRestore ? __('After restore', 'undoly') : __('After', 'undoly'),
             $this->shown($adapterKey, $object, $field, $rawBefore),
             $this->shown($adapterKey, $object, $field, $rawAfter),
             $offset
@@ -80,7 +80,7 @@ final class DiffService
         $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
 
         if ($row === null || !user_can($userId, 'sundo_view_object_history', (int) $row['object_id'], (string) $row['object_subtype'])) {
-            throw new DomainError('su_not_found', 404, __('This change no longer exists in the history.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This change no longer exists in the history.', 'undoly'));
         }
 
         $before = $this->value($row['before_blob_id'], $row['before_hash'])?->value;
@@ -169,13 +169,13 @@ final class DiffService
         $plan = $this->plans->findByUuid($planUuid);
 
         if ($plan === null || (int) $plan['actor_user_id'] !== $userId) {
-            throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('This preview does not exist.', 'undoly'));
         }
 
         $item = $this->plans->item((int) $plan['id'], $itemId);
 
         if ($item === null || $item['target_blob_id'] === null) {
-            throw new DomainError('su_not_found', 404, __('Nothing to compare for this item.', 'selective-undo'));
+            throw new DomainError('su_not_found', 404, __('Nothing to compare for this item.', 'undoly'));
         }
 
         $object = new ObjectRef((string) $item['object_type'], (int) $item['object_id'], (string) $item['object_subtype']);
@@ -194,8 +194,8 @@ final class DiffService
 
             return $this->result(
                 'conflict',
-                __('After the selected change', 'selective-undo'),
-                __('Current value', 'selective-undo'),
+                __('After the selected change', 'undoly'),
+                __('Current value', 'undoly'),
                 $expected,
                 $current,
                 $offset
@@ -204,8 +204,8 @@ final class DiffService
 
         return $this->result(
             'current_target',
-            __('Current value', 'selective-undo'),
-            __('Will be restored', 'selective-undo'),
+            __('Current value', 'undoly'),
+            __('Will be restored', 'undoly'),
             $current,
             $target,
             $offset

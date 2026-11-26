@@ -2,266 +2,272 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Selective Undo 1.0.0\n"
+"Project-Id-Version: Undoly – Selective Undo 1.0.0\n"
 "Report-Msgid-Bugs-To: https://github.com/olegnickolaevich/Selective-Undo/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-30T03:46:41+05:00\n"
+"POT-Creation-Date: 2026-11-26T21:01:23+05:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: selective-undo\n"
+"X-Domain: undoly\n"
 
 #. Plugin Name of the plugin
-#: selective-undo.php
-#: src/Presentation/Admin/AdminPage.php:40
-#: src/Presentation/Admin/AdminPage.php:41
-#: src/Presentation/Admin/AdminPage.php:57
-#: build/index.js:3
-#: build/index.js:11
-#: build/index.js:37
-msgid "Selective Undo"
+#: undoly.php
+msgid "Undoly – Selective Undo"
 msgstr ""
 
 #. Plugin URI of the plugin
-#: selective-undo.php
+#: undoly.php
 msgid "https://github.com/olegnickolaevich/Selective-Undo"
 msgstr ""
 
 #. Description of the plugin
-#: selective-undo.php
+#: undoly.php
 msgid "Undo one change and keep everything else: restore single fields of posts, pages, products, menus and site settings without overwriting newer edits."
 msgstr ""
 
 #. Author of the plugin
-#: selective-undo.php
+#: undoly.php
 msgid "olegnickolaevich"
 msgstr ""
 
 #. Author URI of the plugin
-#: selective-undo.php
+#: undoly.php
 msgid "https://github.com/olegnickolaevich"
 msgstr ""
 
-#: selective-undo.php:36
-msgid "Selective Undo requires PHP 8.2 or newer. The plugin is inactive."
-msgstr ""
-
-#: src/Application/Capture/ReconciliationScanner.php:139
+#: src/Application/Capture/ReconciliationScanner.php:141
 msgid "Changes made outside WordPress (found by the check)"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:97
+#: src/Application/Health/HealthService.php:95
 msgid "Database schema"
 msgstr ""
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:99
+#: src/Application/Health/HealthService.php:97
 #, php-format
 msgid "Version %d, all tables present."
 msgstr ""
 
 #. translators: %d: schema version.
-#: src/Application/Health/HealthService.php:100
+#: src/Application/Health/HealthService.php:98
 msgid "The schema is outdated. Open any admin page to run the update."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:109
+#: src/Application/Health/HealthService.php:107
 msgid "Transactional tables"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:111
+#: src/Application/Health/HealthService.php:109
 msgid "Restoring requires InnoDB tables for posts and history. Recording continues, restoring is blocked."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:112
+#: src/Application/Health/HealthService.php:110
 msgid "The site uses SQLite. Restores run in transactions of the SQLite database."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:113
+#: src/Application/Health/HealthService.php:111
 msgid "Posts and history tables use InnoDB."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:122
+#: src/Application/Health/HealthService.php:120
 msgid "Compatibility mode"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:123
+#: src/Application/Health/HealthService.php:121
 msgid "Restores use the WordPress database connection instead of a dedicated one, because the site runs on SQLite or SELECTIVE_UNDO_COMPAT_MODE is set. Every restored value is read back and checked before it is saved, but protection against a dropped connection in the middle of a restore is weaker. This mode is meant for demos and hosts that allow only one database connection."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:131
+#: src/Application/Health/HealthService.php:129
 msgid "Restore connection"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:134
+#: src/Application/Health/HealthService.php:132
 msgid "Restores use the WordPress database connection (compatibility mode)."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:135
+#: src/Application/Health/HealthService.php:133
 msgid "A dedicated transactional connection to the primary database works and reaches the same database."
 msgstr ""
 
 #. translators: %s: error code.
-#: src/Application/Health/HealthService.php:136
+#: src/Application/Health/HealthService.php:134
 #, php-format
 msgid "The dedicated database connection failed (%s). Restoring is blocked."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:144
+#: src/Application/Health/HealthService.php:142
 #: build/index.js:11
 msgid "Recording"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:146
+#: src/Application/Health/HealthService.php:144
 msgid "Changes of tracked content are being recorded."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:147
+#: src/Application/Health/HealthService.php:145
 msgid "Recording is turned off in the settings."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:148
+#: src/Application/Health/HealthService.php:146
 msgid "Recording is paused: the history size limit is reached."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:149
+#: src/Application/Health/HealthService.php:147
 msgid "Recording is paused until the database update finishes."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:150
+#: src/Application/Health/HealthService.php:148
 msgid "Recording is paused for a while: writing the history failed repeatedly or was too slow. It resumes by itself; see the event log for the errors."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:151
+#: src/Application/Health/HealthService.php:149
 msgid "Recording is paused."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:159
+#: src/Application/Health/HealthService.php:157
 msgid "Copied history"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:161
+#: src/Application/Health/HealthService.php:159
 msgid "Most items with history changed at once: the database seems to have been restored from a backup. Keep the history to record the differences as changes made outside WordPress, or clear it."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:162
+#: src/Application/Health/HealthService.php:160
 msgid "The history was copied from another site (a different address or database). Keep it if this site took over from that one, or clear it."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:170
+#: src/Application/Health/HealthService.php:168
 msgid "Earlier changes"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:172
+#: src/Application/Health/HealthService.php:170
 msgid "Importing WordPress revisions is turned off in the settings."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:173
+#: src/Application/Health/HealthService.php:171
 msgid "Changes saved in WordPress revisions before recording started are being imported."
 msgstr ""
 
-#. translators: 1: number of changes, 2: number of items.
+#. translators: 1: number of changes, e.g. "12 changes", 2: number of items, e.g. "3 items".
+#: src/Application/Health/HealthService.php:174
+#, php-format
+msgid "Imported from WordPress revisions: %1$s, %2$s."
+msgstr ""
+
+#. translators: %d: number of changes.
 #: src/Application/Health/HealthService.php:176
 #, php-format
-msgid "%1$d change from WordPress revisions of %2$d item was imported."
-msgid_plural "%1$d changes from WordPress revisions of %2$d items were imported."
+msgid "%d change"
+msgid_plural "%d changes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Application/Health/HealthService.php:193
+#. translators: %d: number of items.
+#. translators: %d: number of posts or pages.
+#: src/Application/Health/HealthService.php:178
+#: build/index.js:2
+#, php-format,js-format
+msgid "%d item"
+msgid_plural "%d items"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Application/Health/HealthService.php:188
 msgid "History size"
 msgstr ""
 
 #. translators: 1: used size, 2: limit.
-#: src/Application/Health/HealthService.php:196
+#: src/Application/Health/HealthService.php:191
 #, php-format
 msgid "%1$s of %2$s used."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:206
+#: src/Application/Health/HealthService.php:201
 msgid "Largest recorded value"
 msgstr ""
 
 #. translators: %s: size.
-#: src/Application/Health/HealthService.php:209
+#: src/Application/Health/HealthService.php:204
 #, php-format
 msgid "Values up to %s are stored. Larger values are listed but cannot be restored."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:220
+#: src/Application/Health/HealthService.php:215
 msgid "Background tasks"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:222
+#: src/Application/Health/HealthService.php:217
 msgid "Background maintenance has not run for over two hours. Rarely visited sites should use a system cron job."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:224
+#: src/Application/Health/HealthService.php:219
 msgid "WP-Cron is disabled; make sure a system cron job calls wp-cron.php."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:226
+#: src/Application/Health/HealthService.php:221
 msgid "Maintenance runs through WP-Cron; restores and imports run through Action Scheduler."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:227
+#: src/Application/Health/HealthService.php:222
 msgid "Maintenance runs through WP-Cron."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:234
+#: src/Application/Health/HealthService.php:229
 msgid "Page cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:236
+#: src/Application/Health/HealthService.php:231
 msgid "No page cache without an integration was detected."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:237
+#: src/Application/Health/HealthService.php:232
 msgid "A page cache without a known integration is active. After a restore, clear the page cache manually if visitors still see the old version."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:243
+#: src/Application/Health/HealthService.php:238
 msgid "Object cache"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:245
+#: src/Application/Health/HealthService.php:240
 msgid "A persistent object cache is used; restored posts are purged from it."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:246
+#: src/Application/Health/HealthService.php:241
 msgid "No persistent object cache."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:253
+#: src/Application/Health/HealthService.php:248
 msgid "Database drop-in"
 msgstr ""
 
-#: src/Application/Health/HealthService.php:255
+#: src/Application/Health/HealthService.php:250
 msgid "None."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:256
+#: src/Application/Health/HealthService.php:251
 msgid "The SQLite database drop-in is installed."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:257
+#: src/Application/Health/HealthService.php:252
 msgid "A db.php drop-in is installed. Restores use the WordPress database connection (compatibility mode)."
 msgstr ""
 
-#: src/Application/Health/HealthService.php:258
+#: src/Application/Health/HealthService.php:253
 msgid "A db.php drop-in is installed. Restores use a separate connection to the primary database."
 msgstr ""
 
-#: src/Application/History/BlameService.php:50
+#: src/Application/History/BlameService.php:52
 msgid "This item does not exist or you cannot see its history."
 msgstr ""
 
 #: src/Application/History/DiffService.php:46
 #: src/Application/History/DiffService.php:83
-#: src/Application/Restore/EditorMergePreview.php:52
+#: src/Application/Restore/EditorMergePreview.php:54
 msgid "This change no longer exists in the history."
 msgstr ""
 
@@ -288,9 +294,9 @@ msgid "After"
 msgstr ""
 
 #: src/Application/History/DiffService.php:172
-#: src/Application/Restore/CreateRestoreJob.php:56
-#: src/Application/Restore/QuickUndo.php:57
-#: src/Presentation/Rest/RestApi.php:370
+#: src/Application/Restore/CreateRestoreJob.php:58
+#: src/Application/Restore/QuickUndo.php:59
+#: src/Presentation/Rest/RestApi.php:375
 msgid "This preview does not exist."
 msgstr ""
 
@@ -311,62 +317,62 @@ msgstr ""
 msgid "Will be restored"
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:113
-#: src/Application/History/HistoryQuery.php:120
-#: src/Application/Restore/BuildRestorePlan.php:151
+#: src/Application/History/HistoryQuery.php:112
+#: src/Application/History/HistoryQuery.php:119
+#: src/Application/Restore/BuildRestorePlan.php:153
 msgid "This operation no longer exists in the history."
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:162
+#: src/Application/History/HistoryQuery.php:161
 msgid "You are not allowed to view the history of this item."
 msgstr ""
 
-#: src/Application/History/HistoryQuery.php:469
-#: src/Application/History/HistoryQuery.php:483
+#: src/Application/History/HistoryQuery.php:464
+#: src/Application/History/HistoryQuery.php:476
 msgid "Invalid page cursor."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:129
+#: src/Application/Restore/BuildRestorePlan.php:131
 msgid "Select between 1 and 500 changes."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:135
+#: src/Application/Restore/BuildRestorePlan.php:137
 msgid "Some of the selected changes no longer exist in the history."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:140
+#: src/Application/Restore/BuildRestorePlan.php:142
 msgid "Informational events cannot be restored."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:164
+#: src/Application/Restore/BuildRestorePlan.php:166
 msgid "The selection contains no restorable changes."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:168
+#: src/Application/Restore/BuildRestorePlan.php:170
 msgid "Select at most 500 changes at a time."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:181
+#: src/Application/Restore/BuildRestorePlan.php:183
 msgid "Choose the parts of a change to undo."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:192
+#: src/Application/Restore/BuildRestorePlan.php:194
 msgid "Choose an item and a moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:199
+#: src/Application/Restore/BuildRestorePlan.php:201
 msgid "The item has not changed since this moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:203
+#: src/Application/Restore/BuildRestorePlan.php:205
 msgid "Too many changes since this moment. Choose a later moment."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:209
+#: src/Application/Restore/BuildRestorePlan.php:211
 msgid "Unknown selection type."
 msgstr ""
 
-#: src/Application/Restore/BuildRestorePlan.php:261
+#: src/Application/Restore/BuildRestorePlan.php:263
 msgid "You are not allowed to view the history of some of the selected items."
 msgstr ""
 
@@ -378,17 +384,17 @@ msgid_plural "One restore can include changes of at most %d items. Select fewer 
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Application/Restore/CreateRestoreJob.php:72
+#: src/Application/Restore/CreateRestoreJob.php:74
 msgid "Restoring is unavailable on this site right now. See Settings → Diagnostics."
 msgstr ""
 
-#: src/Application/Restore/CreateRestoreJob.php:133
-#: src/Application/Restore/CreateRestoreJob.php:212
+#: src/Application/Restore/CreateRestoreJob.php:135
+#: src/Application/Restore/CreateRestoreJob.php:210
 msgid "This preview has expired. Check the changes again."
 msgstr ""
 
-#: src/Application/Restore/CreateRestoreJob.php:146
-#: src/Application/Restore/CreateRestoreJob.php:204
+#: src/Application/Restore/CreateRestoreJob.php:148
+#: src/Application/Restore/CreateRestoreJob.php:202
 #: build/index.js:25
 msgid "This preview has already been used to start a restore."
 msgstr ""
@@ -397,24 +403,24 @@ msgstr ""
 msgid "This request key was already used for another restore."
 msgstr ""
 
-#: src/Application/Restore/CreateRestoreJob.php:216
+#: src/Application/Restore/CreateRestoreJob.php:214
 #: build/index.js:26
 msgid "Nothing in this preview can be restored."
 msgstr ""
 
-#: src/Application/Restore/EditorMergePreview.php:61
+#: src/Application/Restore/EditorMergePreview.php:63
 #: build/index.js:2
 msgid "You are not allowed to edit this item."
 msgstr ""
 
-#: src/Application/Restore/MergeView.php:44
-#: src/Application/Restore/MergeView.php:53
-#: src/Application/Restore/MergeView.php:75
-#: src/Application/Restore/MergeView.php:85
+#: src/Application/Restore/MergeView.php:46
+#: src/Application/Restore/MergeView.php:55
+#: src/Application/Restore/MergeView.php:77
+#: src/Application/Restore/MergeView.php:87
 msgid "This preview has no conflicts to show."
 msgstr ""
 
-#: src/Application/Restore/MergeView.php:59
+#: src/Application/Restore/MergeView.php:61
 msgid "The content changed after this preview. Check the restore again."
 msgstr ""
 
@@ -434,27 +440,27 @@ msgstr ""
 msgid "Unknown deletion scope."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:197
+#: src/Application/Retention/PurgeService.php:193
 msgid "The deletion preview is invalid. Preview again."
 msgstr ""
 
-#: src/Application/Retention/PurgeService.php:203
+#: src/Application/Retention/PurgeService.php:199
 msgid "The deletion preview has expired. Preview again."
 msgstr ""
 
-#: src/Application/Support/ObjectPresenter.php:37
-#: src/Presentation/Admin/AdminPage.php:53
-#: src/Presentation/Admin/AdminPage.php:144
+#: src/Application/Support/ObjectPresenter.php:39
+#: src/Presentation/Admin/AdminPage.php:55
+#: src/Presentation/Admin/AdminPage.php:146
 #: build/index.js:15
 #: build/index.js:37
 msgid "Settings"
 msgstr ""
 
-#: src/Application/Support/ObjectPresenter.php:38
+#: src/Application/Support/ObjectPresenter.php:40
 msgid "Site settings"
 msgstr ""
 
-#: src/Application/Support/ObjectPresenter.php:52
+#: src/Application/Support/ObjectPresenter.php:54
 msgid "Menu"
 msgstr ""
 
@@ -464,107 +470,107 @@ msgstr ""
 msgid "Deleted user #%d"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:107
-msgid "Every five minutes (Selective Undo)"
+#: src/Bootstrap/Plugin.php:108
+msgid "Every five minutes (Undoly)"
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:206
-msgid "Selective Undo cannot be network activated. Activate it on individual sites instead."
+#: src/Bootstrap/Plugin.php:219
+msgid "Undoly cannot be network activated. Activate it on individual sites instead."
 msgstr ""
 
-#: src/Bootstrap/Plugin.php:207
+#: src/Bootstrap/Plugin.php:220
 msgid "Plugin activation"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:293
+#: src/Infrastructure/Integrations/AioseoAdapter.php:291
 msgid "Yes"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:293
+#: src/Infrastructure/Integrations/AioseoAdapter.php:291
 msgid "No"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:426
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:107
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:115
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:123
+#: src/Infrastructure/Integrations/AioseoAdapter.php:420
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:103
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:111
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:119
 msgid "SEO title"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:427
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:108
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:116
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:124
+#: src/Infrastructure/Integrations/AioseoAdapter.php:421
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:104
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:112
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:120
 msgid "Meta description"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:428
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:109
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:117
+#: src/Infrastructure/Integrations/AioseoAdapter.php:422
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:105
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:113
 msgid "Focus keyphrase"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:429
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:110
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:119
+#: src/Infrastructure/Integrations/AioseoAdapter.php:423
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:106
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:115
 msgid "Canonical URL"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:430
+#: src/Infrastructure/Integrations/AioseoAdapter.php:424
 msgid "Social title"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:431
+#: src/Infrastructure/Integrations/AioseoAdapter.php:425
 msgid "Social description"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:432
+#: src/Infrastructure/Integrations/AioseoAdapter.php:426
 msgid "X (Twitter) title"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:433
+#: src/Infrastructure/Integrations/AioseoAdapter.php:427
 msgid "X (Twitter) description"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:434
+#: src/Infrastructure/Integrations/AioseoAdapter.php:428
 msgid "Default robots settings"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:435
+#: src/Infrastructure/Integrations/AioseoAdapter.php:429
 msgid "Hide from search engines (noindex)"
 msgstr ""
 
-#: src/Infrastructure/Integrations/AioseoAdapter.php:436
+#: src/Infrastructure/Integrations/AioseoAdapter.php:430
 msgid "Do not follow links (nofollow)"
 msgstr ""
 
-#: src/Infrastructure/Integrations/ElementorAdapter.php:124
-#: src/Infrastructure/Integrations/ElementorAdapter.php:133
+#: src/Infrastructure/Integrations/ElementorAdapter.php:122
+#: src/Infrastructure/Integrations/ElementorAdapter.php:131
 msgid "Layout"
 msgstr ""
 
-#: src/Infrastructure/Integrations/ElementorAdapter.php:125
-#: src/Infrastructure/Integrations/ElementorAdapter.php:134
+#: src/Infrastructure/Integrations/ElementorAdapter.php:123
+#: src/Infrastructure/Integrations/ElementorAdapter.php:132
 msgid "Page settings"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:48
+#: src/Infrastructure/Integrations/WooCommerce.php:46
 msgid "Regular price"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:49
+#: src/Infrastructure/Integrations/WooCommerce.php:47
 msgid "Sale price"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:50
+#: src/Infrastructure/Integrations/WooCommerce.php:48
 msgid "Sale starts"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:51
+#: src/Infrastructure/Integrations/WooCommerce.php:49
 msgid "Sale ends"
 msgstr ""
 
-#: src/Infrastructure/Integrations/WooCommerce.php:52
+#: src/Infrastructure/Integrations/WooCommerce.php:50
 msgid "SKU"
 msgstr ""
 
@@ -572,117 +578,117 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:100
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:96
 msgid "Alternative text"
 msgstr ""
 
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:102
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:98
 msgid "Featured image"
 msgstr ""
 
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:111
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:118
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:125
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:107
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:114
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:121
 msgid "Search engine indexing"
 msgstr ""
 
-#: src/Infrastructure/WordPress/MetaFieldRegistry.php:147
+#: src/Infrastructure/WordPress/MetaFieldRegistry.php:141
 msgid "Custom fields"
 msgstr ""
 
-#: src/Infrastructure/WordPress/NavMenuAdapter.php:140
-#: src/Infrastructure/WordPress/NavMenuAdapter.php:145
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:142
+#: src/Infrastructure/WordPress/NavMenuAdapter.php:147
 msgid "Menu items"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostDeletionAdapter.php:97
-#: src/Infrastructure/WordPress/PostDeletionAdapter.php:102
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:94
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:99
 msgid "Whole item"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostDeletionAdapter.php:309
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:93
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:304
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:95
 msgid "Title"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostDeletionAdapter.php:310
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:305
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:100
 msgid "Status"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostDeletionAdapter.php:311
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:306
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:99
 msgid "Slug"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostDeletionAdapter.php:312
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:307
 msgid "Published"
 msgstr ""
 
 #. translators: %d: number of custom field rows.
-#: src/Infrastructure/WordPress/PostDeletionAdapter.php:323
+#: src/Infrastructure/WordPress/PostDeletionAdapter.php:318
 #, php-format
 msgid "Custom fields: %d"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:94
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:96
 msgid "Content"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:95
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:97
 msgid "Excerpt"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:96
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:98
 msgctxt "post menu order field"
 msgid "Order"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:99
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:101
 msgid "Publish date"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:100
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:102
 #: build/index.js:19
 #: build/index.js:21
 msgid "Author"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:101
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:103
 msgid "Parent"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:102
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:104
 msgid "Comments"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:103
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:105
 msgid "Pingbacks and trackbacks"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:118
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:120
 msgid "Caption"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:119
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:121
 msgid "Description"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:120
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:122
 msgid "Styles"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:452
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:454
 msgid "Open"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PostFieldsAdapter.php:452
+#: src/Infrastructure/WordPress/PostFieldsAdapter.php:454
 msgid "Closed"
 msgstr ""
 
-#: src/Infrastructure/WordPress/PrivacyIntegration.php:39
-#: src/Infrastructure/WordPress/PrivacyIntegration.php:54
-msgid "Selective Undo change history"
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:41
+#: src/Infrastructure/WordPress/PrivacyIntegration.php:56
+msgid "Undoly change history"
 msgstr ""
 
 #: src/Infrastructure/WordPress/PrivacyIntegration.php:87
@@ -712,102 +718,111 @@ msgid "Fields"
 msgstr ""
 
 #: src/Infrastructure/WordPress/PrivacyIntegration.php:127
-msgid "Recorded content changes remain until they expire; delete them in Selective Undo → Settings if needed."
+msgid "Recorded content changes remain until they expire; delete them in Undoly → Settings if needed."
 msgstr ""
 
 #: src/Infrastructure/WordPress/PrivacyIntegration.php:140
 msgid "This site records changes to selected content (titles, text, excerpts and order of posts and pages) so that administrators can undo specific changes. The history stores who made a change, when, and the previous and new values. Removed text can remain in the history until it expires (up to the retention period set by the administrator). The history is stored in this site's database and is not sent to third parties."
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:239
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:241
 msgid "(no title)"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:294
 msgid "Site title"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:295
 msgid "Tagline"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:296
 msgid "Your homepage displays"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:297
 msgid "Homepage"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:298
 msgid "Posts page"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:299
 msgid "Blog pages show at most"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:300
 msgid "Default post category"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:303
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:301
 msgid "Date format"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:304
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:302
 msgid "Time format"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:305
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:303
 msgid "Site icon"
 msgstr ""
 
-#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:306
+#: src/Infrastructure/WordPress/SiteOptionsAdapter.php:304
 msgid "Site language"
 msgstr ""
 
-#: src/Presentation/Admin/AdminPage.php:51
+#: src/Presentation/Admin/AdminPage.php:42
+#: src/Presentation/Admin/AdminPage.php:43
+#: src/Presentation/Admin/AdminPage.php:59
+#: build/index.js:3
+#: build/index.js:11
+#: build/index.js:37
+msgid "Undoly"
+msgstr ""
+
+#: src/Presentation/Admin/AdminPage.php:53
 #: build/index.js:15
 #: build/index.js:21
 msgid "History"
 msgstr ""
 
-#: src/Presentation/Admin/AdminPage.php:52
+#: src/Presentation/Admin/AdminPage.php:54
 #: build/index.js:15
 #: build/index.js:21
 #: build/index.js:28
 msgid "Restores"
 msgstr ""
 
-#: src/Presentation/Admin/AdminPage.php:69
-msgid "Selective Undo needs JavaScript to show the history."
+#: src/Presentation/Admin/AdminPage.php:71
+msgid "Undoly needs JavaScript to show the history."
 msgstr ""
 
-#: src/Presentation/Admin/AdminPage.php:83
-msgid "Selective Undo: the admin interface is not built. Run \"npm install && npm run build\"."
+#: src/Presentation/Admin/AdminPage.php:85
+msgid "Undoly: the admin interface is not built. Run \"npm install && npm run build\"."
 msgstr ""
 
 #. translators: %s: post title.
-#: src/Presentation/Admin/AdminPage.php:126
+#: src/Presentation/Admin/AdminPage.php:128
 #, php-format
 msgid "Change history of “%s”"
 msgstr ""
 
-#: src/Presentation/Admin/AdminPage.php:127
+#: src/Presentation/Admin/AdminPage.php:129
 #: build/editor.js:2
 msgid "Change history"
 msgstr ""
 
-#: src/Presentation/Admin/LastChangeColumn.php:44
+#: src/Presentation/Admin/LastChangeColumn.php:46
 msgid "Last change"
 msgstr ""
 
-#: src/Presentation/Admin/LastChangeColumn.php:59
+#: src/Presentation/Admin/LastChangeColumn.php:61
 msgid "No recorded changes"
 msgstr ""
 
-#: src/Presentation/Admin/LastChangeColumn.php:66
+#: src/Presentation/Admin/LastChangeColumn.php:68
 #: build/editor.js:2
 #: build/index.js:19
 #: build/index.js:21
@@ -816,63 +831,63 @@ msgid "System"
 msgstr ""
 
 #. translators: %s: time difference, e.g. "2 hours".
-#: src/Presentation/Admin/LastChangeColumn.php:68
+#: src/Presentation/Admin/LastChangeColumn.php:70
 #, php-format
 msgid "%s ago"
 msgstr ""
 
 #. translators: 1: two field names, e.g. "Title, Author", 2: number of other changed fields.
-#: src/Presentation/Admin/LastChangeColumn.php:76
+#: src/Presentation/Admin/LastChangeColumn.php:78
 #, php-format
 msgid "%1$s and %2$d more"
 msgstr ""
 
 #. translators: %s: time difference, e.g. "2 hours".
-#: src/Presentation/Frontend/ChangeIndicator.php:79
+#: src/Presentation/Frontend/ChangeIndicator.php:82
 #, php-format
 msgid "Changed %s ago"
 msgstr ""
 
-#: src/Presentation/Frontend/ChangeIndicator.php:87
+#: src/Presentation/Frontend/ChangeIndicator.php:90
 msgid "Show the latest change on this page"
 msgstr ""
 
-#: src/Presentation/Frontend/ChangeIndicator.php:93
+#: src/Presentation/Frontend/ChangeIndicator.php:96
 #: build/index.js:8
 msgid "History of this item"
 msgstr ""
 
-#: src/Presentation/Frontend/ChangeIndicator.php:102
+#: src/Presentation/Frontend/ChangeIndicator.php:105
 msgid "Undo the latest change…"
 msgstr ""
 
 #. translators: %s: field name, e.g. "Title".
-#: src/Presentation/Frontend/ChangeIndicator.php:236
+#: src/Presentation/Frontend/ChangeIndicator.php:247
 #, php-format
 msgid "This change edited the %s, which is not outlined on the page."
 msgstr ""
 
-#: src/Presentation/Frontend/ChangeIndicator.php:239
+#: src/Presentation/Frontend/ChangeIndicator.php:250
 msgid "This content is not made of blocks, so the changed parts cannot be outlined."
 msgstr ""
 
-#: src/Presentation/Frontend/ChangeIndicator.php:240
+#: src/Presentation/Frontend/ChangeIndicator.php:251
 msgid "The text written by this change is no longer on the page."
 msgstr ""
 
 #. translators: %d: number of outlined blocks.
-#: src/Presentation/Frontend/ChangeIndicator.php:243
+#: src/Presentation/Frontend/ChangeIndicator.php:254
 #, php-format
 msgid "%d block changed by this edit is outlined."
 msgid_plural "%d blocks changed by this edit are outlined."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Presentation/Frontend/ChangeIndicator.php:249
+#: src/Presentation/Frontend/ChangeIndicator.php:260
 msgid "The content was changed again after this edit."
 msgstr ""
 
-#: src/Presentation/Frontend/ChangeIndicator.php:260
+#: src/Presentation/Frontend/ChangeIndicator.php:267
 msgid "Hide"
 msgstr ""
 
@@ -881,45 +896,49 @@ msgid "The history storage is temporarily unavailable."
 msgstr ""
 
 #: src/Presentation/Rest/ErrorMapper.php:41
-msgid "Something went wrong. The details were written to the Selective Undo diagnostics log."
+msgid "Something went wrong. The details were written to the Undoly diagnostics log."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:435
-#: src/Presentation/Rest/RestApi.php:604
+#: src/Presentation/Rest/RestApi.php:438
+#: src/Presentation/Rest/RestApi.php:601
 msgid "This restore does not exist."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:472
+#: src/Presentation/Rest/RestApi.php:473
 msgid "Only the author of a restore can continue it."
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:586
+#: src/Presentation/Rest/RestApi.php:585
 msgid "View history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:587
+#: src/Presentation/Rest/RestApi.php:586
 msgid "Restore changes"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:588
+#: src/Presentation/Rest/RestApi.php:587
 msgid "Manage settings"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:589
+#: src/Presentation/Rest/RestApi.php:588
 #: build/index.js:30
 msgid "Delete history"
 msgstr ""
 
-#: src/Presentation/Rest/RestApi.php:590
+#: src/Presentation/Rest/RestApi.php:589
 msgid "Export history"
 msgstr ""
 
-#: build/commands.js:1
-msgid "Selective Undo: change history"
+#: undoly.php:36
+msgid "Undoly requires PHP 8.2 or newer. The plugin is inactive."
 msgstr ""
 
 #: build/commands.js:1
-msgid "Selective Undo: restores"
+msgid "Undoly: change history"
+msgstr ""
+
+#: build/commands.js:1
+msgid "Undoly: restores"
 msgstr ""
 
 #: build/commands.js:1
@@ -1209,14 +1228,6 @@ msgstr ""
 msgctxt "unit: gigabytes"
 msgid "GB"
 msgstr ""
-
-#. translators: %d: number of posts or pages.
-#: build/index.js:2
-#, js-format
-msgid "%d item"
-msgid_plural "%d items"
-msgstr[0] ""
-msgstr[1] ""
 
 #: build/index.js:2
 msgid "Some parts were changed again after this change. Choose what to keep for them."
@@ -1780,7 +1791,7 @@ msgid "The history uses more than 80% of its size limit."
 msgstr ""
 
 #: build/index.js:15
-msgid "Selective Undo sections"
+msgid "Undoly sections"
 msgstr ""
 
 #: build/index.js:15
@@ -1911,7 +1922,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: build/index.js:20
-msgid "This change was taken from WordPress revisions saved before Selective Undo started recording. Changes WordPress did not keep in revisions are not included."
+msgid "This change was taken from WordPress revisions saved before Undoly started recording. Changes WordPress did not keep in revisions are not included."
 msgstr ""
 
 #: build/index.js:20

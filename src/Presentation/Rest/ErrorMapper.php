@@ -34,11 +34,11 @@ final class ErrorMapper
         } catch (StorageUnavailable $e) {
             $this->log->exception('rest_storage_unavailable', $e);
 
-            return $this->error('su_storage_unavailable', __('The history storage is temporarily unavailable.', 'selective-undo'), 503, ['reason' => $e->reasonCode]);
+            return $this->error('su_storage_unavailable', __('The history storage is temporarily unavailable.', 'undoly'), 503, ['reason' => $e->reasonCode]);
         } catch (\Throwable $e) {
             $this->log->exception('rest_internal_error', $e);
 
-            return $this->error('su_internal_error', __('Something went wrong. The details were written to the Selective Undo diagnostics log.', 'selective-undo'), 500);
+            return $this->error('su_internal_error', __('Something went wrong. The details were written to the Undoly diagnostics log.', 'undoly'), 500);
         }
     }
 

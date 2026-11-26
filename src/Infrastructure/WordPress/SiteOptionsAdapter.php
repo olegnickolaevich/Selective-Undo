@@ -238,7 +238,7 @@ final class SiteOptionsAdapter implements AdapterInterface, CapturingAdapter, De
         if (in_array($name, ['page_on_front', 'page_for_posts', 'site_icon'], true) && ctype_digit($value->value) && (int) $value->value > 0) {
             $title = get_the_title((int) $value->value);
 
-            return ($title !== '' ? $title : __('(no title)', 'selective-undo')) . ' (#' . $value->value . ')';
+            return ($title !== '' ? $title : __('(no title)', 'undoly')) . ' (#' . $value->value . ')';
         }
 
         if ($name === 'default_category' && ctype_digit($value->value)) {
@@ -291,17 +291,17 @@ final class SiteOptionsAdapter implements AdapterInterface, CapturingAdapter, De
     private static function labels(): array
     {
         return [
-            'blogname' => __('Site title', 'selective-undo'),
-            'blogdescription' => __('Tagline', 'selective-undo'),
-            'show_on_front' => __('Your homepage displays', 'selective-undo'),
-            'page_on_front' => __('Homepage', 'selective-undo'),
-            'page_for_posts' => __('Posts page', 'selective-undo'),
-            'posts_per_page' => __('Blog pages show at most', 'selective-undo'),
-            'default_category' => __('Default post category', 'selective-undo'),
-            'date_format' => __('Date format', 'selective-undo'),
-            'time_format' => __('Time format', 'selective-undo'),
-            'site_icon' => __('Site icon', 'selective-undo'),
-            'WPLANG' => __('Site language', 'selective-undo'),
+            'blogname' => __('Site title', 'undoly'),
+            'blogdescription' => __('Tagline', 'undoly'),
+            'show_on_front' => __('Your homepage displays', 'undoly'),
+            'page_on_front' => __('Homepage', 'undoly'),
+            'page_for_posts' => __('Posts page', 'undoly'),
+            'posts_per_page' => __('Blog pages show at most', 'undoly'),
+            'default_category' => __('Default post category', 'undoly'),
+            'date_format' => __('Date format', 'undoly'),
+            'time_format' => __('Time format', 'undoly'),
+            'site_icon' => __('Site icon', 'undoly'),
+            'WPLANG' => __('Site language', 'undoly'),
         ];
     }
 }

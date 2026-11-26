@@ -128,18 +128,18 @@ final class BuildRestorePlan
             $ids = array_values(array_unique(array_map('intval', (array) ($selection['change_ids'] ?? []))));
 
             if ($ids === [] || count($ids) > self::MAX_CHANGES) {
-                throw new DomainError('su_invalid_selection', 400, __('Select between 1 and 500 changes.', 'selective-undo'));
+                throw new DomainError('su_invalid_selection', 400, __('Select between 1 and 500 changes.', 'undoly'));
             }
 
             $rows = $this->journal->changesByIds($ids);
 
             if (count($rows) !== count($ids)) {
-                throw new DomainError('su_not_found', 404, __('Some of the selected changes no longer exist in the history.', 'selective-undo'));
+                throw new DomainError('su_not_found', 404, __('Some of the selected changes no longer exist in the history.', 'undoly'));
             }
 
             foreach ($rows as $row) {
                 if (!ChangeEvent::from((string) $row['event'])->isRestorable((string) $row['field_key'])) {
-                    throw new DomainError('su_invalid_selection', 400, __('Informational events cannot be restored.', 'selective-undo'));
+                    throw new DomainError('su_invalid_selection', 400, __('Informational events cannot be restored.', 'undoly'));
                 }
             }
 
@@ -150,7 +150,7 @@ final class BuildRestorePlan
             $changeset = $this->journal->changesetByUuid((string) ($selection['changeset_id'] ?? ''));
 
             if ($changeset === null) {
-                throw new DomainError('su_not_found', 404, __('This operation no longer exists in the history.', 'selective-undo'));
+                throw new DomainError('su_not_found', 404, __('This operation no longer exists in the history.', 'undoly'));
             }
 
             $fields = array_values(array_map('strval', (array) ($selection['fields'] ?? [])));
@@ -163,11 +163,11 @@ final class BuildRestorePlan
             ));
 
             if ($rows === []) {
-                throw new DomainError('su_invalid_selection', 400, __('The selection contains no restorable changes.', 'selective-undo'));
+                throw new DomainError('su_invalid_selection', 400, __('The selection contains no restorable changes.', 'undoly'));
             }
 
             if (count($rows) > self::MAX_CHANGES) {
-                throw new DomainError('su_selection_too_large', 422, __('Select at most 500 changes at a time.', 'selective-undo'));
+                throw new DomainError('su_selection_too_large', 422, __('Select at most 500 changes at a time.', 'undoly'));
             }
 
             return $rows;
@@ -180,7 +180,7 @@ final class BuildRestorePlan
             $row = $this->journal->changesByIds([$changeId])[$changeId] ?? null;
 
             if ($row === null || $hunks === [] || !ChangeEvent::from((string) $row['event'])->isFieldChange()) {
-                throw new DomainError('su_invalid_selection', 400, __('Choose the parts of a change to undo.', 'selective-undo'));
+                throw new DomainError('su_invalid_selection', 400, __('Choose the parts of a change to undo.', 'undoly'));
             }
 
             return [$row];
@@ -191,24 +191,24 @@ final class BuildRestorePlan
             $at = Time::mysqlFromIso((string) ($selection['at'] ?? ''));
 
             if ($objectId < 1 || $at === null) {
-                throw new DomainError('su_invalid_selection', 400, __('Choose an item and a moment.', 'selective-undo'));
+                throw new DomainError('su_invalid_selection', 400, __('Choose an item and a moment.', 'undoly'));
             }
 
             $fields = array_values(array_map('strval', (array) ($selection['fields'] ?? [])));
             $rows = $this->journal->fieldChangesAfter(new ObjectRef('post', $objectId), $at, $fields, self::MAX_CHANGES + 1);
 
             if ($rows === []) {
-                throw new DomainError('su_nothing_after', 422, __('The item has not changed since this moment.', 'selective-undo'));
+                throw new DomainError('su_nothing_after', 422, __('The item has not changed since this moment.', 'undoly'));
             }
 
             if (count($rows) > self::MAX_CHANGES) {
-                throw new DomainError('su_selection_too_large', 422, __('Too many changes since this moment. Choose a later moment.', 'selective-undo'));
+                throw new DomainError('su_selection_too_large', 422, __('Too many changes since this moment. Choose a later moment.', 'undoly'));
             }
 
             return $rows;
         }
 
-        throw new DomainError('su_invalid_selection', 400, __('Unknown selection type.', 'selective-undo'));
+        throw new DomainError('su_invalid_selection', 400, __('Unknown selection type.', 'undoly'));
     }
 
     /**
@@ -260,7 +260,7 @@ final class BuildRestorePlan
                 : user_can($userId, 'sundo_view_object_history', $group['object']->id, $group['object']->subtype);
 
             if (!$allowed) {
-                throw new DomainError('su_forbidden', 403, __('You are not allowed to view the history of some of the selected items.', 'selective-undo'));
+                throw new DomainError('su_forbidden', 403, __('You are not allowed to view the history of some of the selected items.', 'undoly'));
             }
         }
     }
@@ -286,7 +286,7 @@ final class BuildRestorePlan
                         'One restore can include changes of at most %d item. Select fewer items and restore them in several steps.',
                         'One restore can include changes of at most %d items. Select fewer items and restore them in several steps.',
                         $max,
-                        'selective-undo'
+                        'undoly'
                     ),
                     $max
                 ),

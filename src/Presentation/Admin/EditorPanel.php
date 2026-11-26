@@ -41,7 +41,7 @@ final class EditorPanel
         wp_enqueue_script(self::HANDLE, $url . 'editor.js', $asset['dependencies'], $asset['version'], true);
         wp_enqueue_style(self::HANDLE, $url . 'editor.css', [], $asset['version']);
         wp_style_add_data(self::HANDLE, 'rtl', 'replace');
-        wp_set_script_translations(self::HANDLE, 'selective-undo');
+        wp_set_script_translations(self::HANDLE, 'undoly');
         wp_add_inline_script(
             self::HANDLE,
             'window.selectiveUndoEditor = ' . wp_json_encode([

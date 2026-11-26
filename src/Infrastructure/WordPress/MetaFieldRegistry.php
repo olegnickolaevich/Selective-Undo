@@ -93,32 +93,32 @@ final class MetaFieldRegistry
         $fields = [];
 
         if ($postType === 'attachment') {
-            $fields[] = new FieldDefinition('meta:_wp_attachment_image_alt', __('Alternative text', 'selective-undo'), 'text');
+            $fields[] = new FieldDefinition('meta:_wp_attachment_image_alt', __('Alternative text', 'undoly'), 'text');
         } elseif (post_type_supports($postType, 'thumbnail')) {
-            $fields[] = new FieldDefinition('meta:_thumbnail_id', __('Featured image', 'selective-undo'), 'attachment');
+            $fields[] = new FieldDefinition('meta:_thumbnail_id', __('Featured image', 'undoly'), 'attachment');
         }
 
         // Several SEO plugins may be active at once: the group names the plugin.
         if (defined('WPSEO_VERSION')) {
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_title', __('SEO title', 'selective-undo'), 'text', group: 'Yoast SEO');
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_metadesc', __('Meta description', 'selective-undo'), 'text', group: 'Yoast SEO');
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_focuskw', __('Focus keyphrase', 'selective-undo'), 'text', group: 'Yoast SEO');
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_canonical', __('Canonical URL', 'selective-undo'), 'text', group: 'Yoast SEO');
-            $fields[] = new FieldDefinition('meta:_yoast_wpseo_meta-robots-noindex', __('Search engine indexing', 'selective-undo'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_title', __('SEO title', 'undoly'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_metadesc', __('Meta description', 'undoly'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_focuskw', __('Focus keyphrase', 'undoly'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_canonical', __('Canonical URL', 'undoly'), 'text', group: 'Yoast SEO');
+            $fields[] = new FieldDefinition('meta:_yoast_wpseo_meta-robots-noindex', __('Search engine indexing', 'undoly'), 'text', group: 'Yoast SEO');
         }
 
         if (class_exists('RankMath')) {
-            $fields[] = new FieldDefinition('meta:rank_math_title', __('SEO title', 'selective-undo'), 'text', group: 'Rank Math');
-            $fields[] = new FieldDefinition('meta:rank_math_description', __('Meta description', 'selective-undo'), 'text', group: 'Rank Math');
-            $fields[] = new FieldDefinition('meta:rank_math_focus_keyword', __('Focus keyphrase', 'selective-undo'), 'text', group: 'Rank Math');
-            $fields[] = new FieldDefinition('meta:rank_math_robots', __('Search engine indexing', 'selective-undo'), 'raw', group: 'Rank Math');
-            $fields[] = new FieldDefinition('meta:rank_math_canonical_url', __('Canonical URL', 'selective-undo'), 'text', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_title', __('SEO title', 'undoly'), 'text', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_description', __('Meta description', 'undoly'), 'text', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_focus_keyword', __('Focus keyphrase', 'undoly'), 'text', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_robots', __('Search engine indexing', 'undoly'), 'raw', group: 'Rank Math');
+            $fields[] = new FieldDefinition('meta:rank_math_canonical_url', __('Canonical URL', 'undoly'), 'text', group: 'Rank Math');
         }
 
         if (defined('SEOPRESS_VERSION')) {
-            $fields[] = new FieldDefinition('meta:_seopress_titles_title', __('SEO title', 'selective-undo'), 'text', group: 'SEOPress');
-            $fields[] = new FieldDefinition('meta:_seopress_titles_desc', __('Meta description', 'selective-undo'), 'text', group: 'SEOPress');
-            $fields[] = new FieldDefinition('meta:_seopress_robots_index', __('Search engine indexing', 'selective-undo'), 'text', group: 'SEOPress');
+            $fields[] = new FieldDefinition('meta:_seopress_titles_title', __('SEO title', 'undoly'), 'text', group: 'SEOPress');
+            $fields[] = new FieldDefinition('meta:_seopress_titles_desc', __('Meta description', 'undoly'), 'text', group: 'SEOPress');
+            $fields[] = new FieldDefinition('meta:_seopress_robots_index', __('Search engine indexing', 'undoly'), 'text', group: 'SEOPress');
         }
 
         if (function_exists('acf_get_field_groups') && function_exists('acf_get_fields')) {
@@ -138,7 +138,7 @@ final class MetaFieldRegistry
     /** @return list<FieldDefinition> */
     private function acfFields(string $postType): array
     {
-        $group = __('Custom fields', 'selective-undo');
+        $group = __('Custom fields', 'undoly');
         $fields = [];
 
         foreach ((array) acf_get_field_groups(['post_type' => $postType]) as $fieldGroup) {

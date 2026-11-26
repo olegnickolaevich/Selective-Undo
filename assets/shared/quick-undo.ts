@@ -25,7 +25,7 @@ function describe( cs: ChangesetSummary ): string {
 	if ( cs.object_count === 1 && fields !== '' ) {
 		return sprintf(
 			/* translators: 1: changed fields, e.g. "Title", 2: post title. */
-			__( '%1$s of “%2$s” changed.', 'selective-undo' ),
+			__( '%1$s of “%2$s” changed.', 'undoly' ),
 			fields,
 			cs.objects[ 0 ]?.title ?? ''
 		);
@@ -36,7 +36,7 @@ function describe( cs: ChangesetSummary ): string {
 			'Changes of %d item saved.',
 			'Changes of %d items saved.',
 			cs.object_count,
-			'selective-undo'
+			'undoly'
 		),
 		cs.object_count
 	);
@@ -66,25 +66,22 @@ export function settle(
 		const complete = result.job.status === 'completed';
 		text.append(
 			( complete
-				? __( 'Undone.', 'selective-undo' )
-				: __( 'Partly undone.', 'selective-undo' ) ) + ' ',
+				? __( 'Undone.', 'undoly' )
+				: __( 'Partly undone.', 'undoly' ) ) + ' ',
 			// The screen still shows the old value until the page is reloaded.
-			link(
-				window.location.href,
-				__( 'Reload the page', 'selective-undo' )
-			),
+			link( window.location.href, __( 'Reload the page', 'undoly' ) ),
 			' · ',
 			link(
 				`${ config.restoresUrl }&view=job&id=${ encodeURIComponent(
 					result.job.id
 				) }`,
-				__( 'Details', 'selective-undo' )
+				__( 'Details', 'undoly' )
 			)
 		);
 		speak(
 			complete
-				? __( 'The change was undone.', 'selective-undo' )
-				: __( 'The change was partly undone.', 'selective-undo' )
+				? __( 'The change was undone.', 'undoly' )
+				: __( 'The change was partly undone.', 'undoly' )
 		);
 		return;
 	}
@@ -92,7 +89,7 @@ export function settle(
 	if ( result.status === 'nothing_to_undo' ) {
 		text.textContent = __(
 			'There is nothing left to undo: the values are already back.',
-			'selective-undo'
+			'undoly'
 		);
 		speak( text.textContent );
 		return;
@@ -101,15 +98,15 @@ export function settle(
 	const reasons: Record< string, string > = {
 		changed_again: __(
 			'Some of these fields were changed again since. Review before undoing.',
-			'selective-undo'
+			'undoly'
 		),
 		blocked: __(
 			'Some of these fields cannot be undone as they are. Review before undoing.',
-			'selective-undo'
+			'undoly'
 		),
 		too_large: __(
 			'This change is too large to undo without a preview. Review before undoing.',
-			'selective-undo'
+			'undoly'
 		),
 	};
 
@@ -119,7 +116,7 @@ export function settle(
 			result.plan_id
 				? previewUrl( config, result.plan_id )
 				: config.historyUrl,
-			__( 'Review undo', 'selective-undo' )
+			__( 'Review undo', 'undoly' )
 		)
 	);
 	speak( text.textContent ?? '' );
@@ -169,7 +166,7 @@ export function showUndoNotice(
 		const button = document.createElement( 'button' );
 		button.type = 'button';
 		button.className = 'button-link';
-		button.textContent = __( 'Undo', 'selective-undo' );
+		button.textContent = __( 'Undo', 'undoly' );
 		button.addEventListener( 'click', async () => {
 			button.disabled = true;
 			try {
@@ -177,7 +174,7 @@ export function showUndoNotice(
 			} catch {
 				text.textContent = __(
 					'Could not undo. Open the history to try again.',
-					'selective-undo'
+					'undoly'
 				);
 				speak( text.textContent );
 			}
@@ -190,7 +187,7 @@ export function showUndoNotice(
 	dismiss.className = 'notice-dismiss';
 	const label = document.createElement( 'span' );
 	label.className = 'screen-reader-text';
-	label.textContent = __( 'Dismiss this notice.', 'selective-undo' );
+	label.textContent = __( 'Dismiss this notice.', 'undoly' );
 	dismiss.append( label );
 	dismiss.addEventListener( 'click', () => box.remove() );
 	box.classList.add( 'is-dismissible' );

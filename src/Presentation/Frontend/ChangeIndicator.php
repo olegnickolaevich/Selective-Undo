@@ -76,33 +76,33 @@ final class ChangeIndicator
 
         $show = add_query_arg(self::QUERY_ARG, $latest['id'], (string) get_permalink($post));
         $bar->add_node([
-            'id' => 'selective-undo',
+            'id' => 'undoly',
             'title' => esc_html(sprintf(
                 /* translators: %s: time difference, e.g. "2 hours". */
-                __('Changed %s ago', 'selective-undo'),
+                __('Changed %s ago', 'undoly'),
                 human_time_diff((int) strtotime($latest['created_at'] . ' UTC'))
             )),
             'href' => $show,
         ]);
         $bar->add_node([
-            'parent' => 'selective-undo',
+            'parent' => 'undoly',
             'id' => 'selective-undo-show',
-            'title' => esc_html__('Show the latest change on this page', 'selective-undo'),
+            'title' => esc_html__('Show the latest change on this page', 'undoly'),
             'href' => $show,
         ]);
         $bar->add_node([
-            'parent' => 'selective-undo',
+            'parent' => 'undoly',
             'id' => 'selective-undo-history',
-            'title' => esc_html__('History of this item', 'selective-undo'),
+            'title' => esc_html__('History of this item', 'undoly'),
             'href' => add_query_arg(['page' => AdminPage::SLUG, 'view' => 'object', 'id' => $post->ID], admin_url('admin.php')),
         ]);
 
         if (current_user_can(Capabilities::RESTORE_CHANGES)) {
             // The operation page checks the undo first; nothing is undone from here.
             $bar->add_node([
-                'parent' => 'selective-undo',
+                'parent' => 'undoly',
                 'id' => 'selective-undo-undo',
-                'title' => esc_html__('Undo the latest change…', 'selective-undo'),
+                'title' => esc_html__('Undo the latest change…', 'undoly'),
                 'href' => add_query_arg(['page' => AdminPage::SLUG, 'view' => 'changeset', 'id' => $latest['changeset']], admin_url('admin.php')),
             ]);
         }
@@ -244,27 +244,27 @@ final class ChangeIndicator
         $message = match (true) {
             $this->field !== 'post_content' => sprintf(
                 /* translators: %s: field name, e.g. "Title". */
-                __('This change edited the %s, which is not outlined on the page.', 'selective-undo'),
+                __('This change edited the %s, which is not outlined on the page.', 'undoly'),
                 $this->adapters->fieldLabel($this->field)
             ),
-            !$this->hasBlocks => __('This content is not made of blocks, so the changed parts cannot be outlined.', 'selective-undo'),
-            $count === 0 => __('The text written by this change is no longer on the page.', 'selective-undo'),
+            !$this->hasBlocks => __('This content is not made of blocks, so the changed parts cannot be outlined.', 'undoly'),
+            $count === 0 => __('The text written by this change is no longer on the page.', 'undoly'),
             default => sprintf(
                 /* translators: %d: number of outlined blocks. */
-                _n('%d block changed by this edit is outlined.', '%d blocks changed by this edit are outlined.', $count, 'selective-undo'),
+                _n('%d block changed by this edit is outlined.', '%d blocks changed by this edit are outlined.', $count, 'undoly'),
                 $count
             ),
         };
 
         if ($this->changedSince && $this->field === 'post_content') {
-            $message .= ' ' . __('The content was changed again after this edit.', 'selective-undo');
+            $message .= ' ' . __('The content was changed again after this edit.', 'undoly');
         }
 
         printf(
             '<div class="su-changes-banner" role="status">%s <a href="%s">%s</a></div>',
             esc_html($message),
             esc_url(remove_query_arg(self::QUERY_ARG)),
-            esc_html__('Hide', 'selective-undo')
+            esc_html__('Hide', 'undoly')
         );
     }
 }

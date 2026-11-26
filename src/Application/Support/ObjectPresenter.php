@@ -36,8 +36,8 @@ final class ObjectPresenter
                 'type' => 'site',
                 'id' => $object->id,
                 'subtype' => SiteOptionsAdapter::SUBTYPE,
-                'subtype_label' => __('Settings', 'selective-undo'),
-                'title' => __('Site settings', 'selective-undo'),
+                'subtype_label' => __('Settings', 'undoly'),
+                'title' => __('Site settings', 'undoly'),
                 'edit_url' => user_can($viewerUserId, 'manage_options') ? admin_url('options-general.php') : null,
                 'exists' => true,
                 'status' => null,
@@ -51,7 +51,7 @@ final class ObjectPresenter
                 'type' => 'menu',
                 'id' => $object->id,
                 'subtype' => NavMenuAdapter::SUBTYPE,
-                'subtype_label' => __('Menu', 'selective-undo'),
+                'subtype_label' => __('Menu', 'undoly'),
                 'title' => $menu instanceof \WP_Term ? $menu->name : null,
                 'edit_url' => $menu instanceof \WP_Term && user_can($viewerUserId, 'edit_theme_options') ? admin_url('nav-menus.php?action=edit&menu=' . $object->id) : null,
                 'exists' => $menu instanceof \WP_Term,
@@ -91,7 +91,7 @@ final class ObjectPresenter
         return [
             'id' => $id,
             /* translators: %d: user ID of a deleted user. */
-            'name' => $user instanceof \WP_User ? $user->display_name : sprintf(__('Deleted user #%d', 'selective-undo'), $id),
+            'name' => $user instanceof \WP_User ? $user->display_name : sprintf(__('Deleted user #%d', 'undoly'), $id),
         ];
     }
 }
